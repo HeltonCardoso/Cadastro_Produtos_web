@@ -6,31 +6,164 @@
 {% block content %}
 <div id="conteudoPrincipal">
   <div class="row mt-4">
-  <div class="col-md-3">
-    <div class="card text-center shadow">
-      <div class="card-body">
-        <h5 class="card-title">Processamentos Totais</h5>
-        <p class="display-6">{{ total_processamentos }}</p>
+    <!-- Cartão 1: Processamentos Totais -->
+    <div class="col-md-3 mb-4">
+      <div class="card text-center shadow h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title mb-0">Processamentos Totais</h5>
+        </div>
+        <div class="card-body">
+          <p class="display-4">{{ total_processamentos }}</p>
+          <div class="progress mt-2" style="height: 10px;">
+            <div class="progress-bar bg-success" style="width: {{ (processos_sucesso/total_processamentos*100 if total_processamentos > 0 else 0)|round(1) }}%"></div>
+            <div class="progress-bar bg-danger" style="width: {{ (processos_erro/total_processamentos*100 if total_processamentos > 0 else 0)|round(1) }}%"></div>
+          </div>
+          <small class="text-muted">
+            <span class="text-success">{{ processos_sucesso }} sucesso(s)</span> | 
+            <span class="text-danger">{{ processos_erro }} erro(s)</span>
+          </small>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-center shadow">
-      <div class="card-body">
-        <h5 class="card-title">Hoje</h5>
-        <p class="display-6">{{ processamentos_hoje }}</p>
+
+    <!-- Cartão 2: Processamentos Hoje -->
+    <div class="col-md-3 mb-4">
+      <div class="card text-center shadow h-100">
+        <div class="card-header bg-info text-white">
+          <h5 class="card-title mb-0">Processamentos Hoje</h5>
+        </div>
+        <div class="card-body">
+          <p class="display-4">{{ processamentos_hoje }}</p>
+          <div class="d-flex justify-content-around">
+            <div>
+              <span class="badge bg-success">{{ hoje_sucesso }}</span>
+              <small class="d-block">Sucesso</small>
+            </div>
+            <div>
+              <span class="badge bg-danger">{{ hoje_erro }}</span>
+              <small class="d-block">Erros</small>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <small>Atualizado: {{ now.strftime('%H:%M') }}</small>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-center shadow">
-      <div class="card-body">
-        <h5 class="card-title">Último</h5>
-        <p class="display-6">{{ ultima_execucao }}</p>
+
+    <!-- Cartão 3: Última Execução -->
+    <div class="col-md-3 mb-4">
+      <div class="card text-center shadow h-100">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="card-title mb-0">Último Processamento</h5>
+        </div>
+        <div class="card-body">
+          {% if ultima_execucao %}
+            <p class="text-muted mb-1">{{ ultima_execucao.split('|')[0]|trim }}</p>
+            <p class="h5 mb-1">{{ ultima_execucao.split('|')[1]|trim }}</p>
+            <span class="badge bg-{{ 'success' if 'sucesso' in ultima_execucao.lower() else 'danger' }}">
+              {{ 'Sucesso' if 'sucesso' in ultima_execucao.lower() else 'Erro' }}
+            </span>
+          {% else %}
+            <p class="text-muted">Nenhum registro</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Cartão 4: Última Planilha -->
+    <div class="col-md-3 mb-4">
+      <div class="card text-center shadow h-100">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="card-title mb-0">Última Planilha</h5>
+        </div>
+        <div class="card-body">
+          {% if ultima_planilha %}
+            <i class="fas fa-file-excel fa-3x text-success mb-2"></i>
+            <p class="mb-1 text-truncate" title="{{ ultima_planilha }}">
+              {{ ultima_planilha.split('/')[-1] }}
+            </p>
+            <small class="text-muted">
+              {{ ultima_planilha_data|default('Data desconhecida') }}
+            </small>
+          {% else %}
+            <i class="fas fa-file-excel fa-3x text-muted mb-2"></i>
+            <p class="text-muted">Nenhuma planilha</p>
+          {% endif %}
+        </div>
+        {% if ultima_planilha %}
+        <div class="card-footer">
+          <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha.split('/')[-1]) }}" 
+             class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-download"></i> Baixar
+          </a>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
+<!-- Seção de Gráficos -->
+<div class="row mt-4">
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-header">
+        <h5 class="mb-0">Processamentos por Dia (Últimos 7 dias)</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="graficoProcessamentos" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-header">
+        <h5 class="mb-0">Status dos Processamentos</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="graficoStatus" height="200"></canvas>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- JavaScript para os gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Gráfico de processamentos por dia
+const ctx1 = document.getElementById('graficoProcessamentos').getContext('2d');
+new Chart(
+  document.getElementById('graficoProcessamentos'), 
+  {
+    type: 'bar',
+    data: {
+      labels: {{ datas_grafico|tojson|safe }},
+      datasets: [{
+        label: 'Processamentos',
+        data: {{ valores_grafico|tojson|safe }},
+        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+      }]
+    }
+  }
+);
+
+// Gráfico de status
+new Chart(
+  document.getElementById('graficoStatus'), 
+  {
+    type: 'doughnut',
+    data: {
+      labels: ['Sucesso', 'Erros'],
+      datasets: [{
+        data: [{{ processos_sucesso }}, {{ processos_erro }}],
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.7)',
+          'rgba(255, 99, 132, 0.7)'
+        ]
+      }]
+    }
+  }
+);
+</script>
 {% endblock %}

@@ -19,7 +19,17 @@ def registrar_processo(modulo, qtd_itens, tempo_execucao, status="sucesso", usua
         )
 
 def registrar_itens_processados(modulo, itens, campos=None):
-    """Registra itens processados em arquivo CSV"""
+    """Registra itens processados em arquivo CSV com validação"""
+    if not itens:
+        raise ValueError("Lista de itens vazia")
+
+    campos = campos or ['ean', 'nome', 'status', 'data_processamento']
+    
+    # Valida campos
+    for item in itens:
+        if missing := [c for c in campos if c not in item]:
+            raise KeyError(f"Campos faltantes: {missing}")
+
     data_dir = datetime.now().strftime("%Y-%m-%d")
     log_dir = f"logs/itens/{modulo}/{data_dir}"
     os.makedirs(log_dir, exist_ok=True)

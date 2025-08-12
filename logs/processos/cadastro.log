@@ -6,3 +6,10 @@
 2025-08-11 17:00:27 | Produtos: 0 | Tempo: 0.00s | Status: ERRO: Planilha Online faltando as seguintes colunas: EAN, NOMEONCLICK, NOMEE-COMMERCE, TIPODEPRODUTO, EMBALTURA, EMBLARGURA, EMBCOMPRIMENTO, VOLUMES, EANCOMPONENTES, MARCA, CUSTO, DE, POR, FORNECEDOR, OUTROS, FRETE, NCM, CODFORN, CATEGORIA, GRUPO, COMPLEMENTO, DISPONIBILIDADEWEB, DESCRICAOHTML, PESOBRUTO, PESOLIQUIDO, VOLPESOBRUTO, VOLPESOLIQ, VOLLARGURA, VOLALTURA, VOLCOMPRIMENTO, CATEGORIAPRINCIPALTRAY, CATEGORIAPRINCIPALCORP, NIVELADICIONAL1CORP, CUSTOTOTAL
 2025-08-11 17:00:49 | Produtos: 372 | Tempo: 2.15s | Status: sucesso
 2025-08-11 17:23:04 | Produtos: 372 | Tempo: 1.99s | Status: sucesso
+2025-08-11 21:30:37 | Produtos: 0 | Tempo: 0.00s | Status: ERRO: Planilha Online faltando as seguintes colunas: FRETE, COMPLEMENTO
+2025-08-11 21:31:15 | Produtos: 84 | Tempo: 3.32s | Status: sucesso
+2025-08-11 21:42:40 | Produtos: 0 | Tempo: 0.00s | Status: ERRO: Planilha Online faltando as seguintes colunas: COMPLEMENTO
+2025-08-11 21:43:41 | Produtos: 1033 | Tempo: 22.81s | Status: sucesso
+2025-08-11 21:56:14 | Produtos: 84 | Tempo: 2.85s | Status: sucesso
+2025-08-11 21:59:11 | Produtos: 0 | Tempo: 0.00s | Status: ERRO: Planilha Online faltando as seguintes colunas: FRETE, COMPLEMENTO
+2025-08-11 22:12:12 | Produtos: 1033 | Tempo: 21.05s | Status: sucesso

@@ -6,7 +6,8 @@ import csv
 
 def configure_loggers():
     """Configura todos os loggers da aplicação"""
-    
+    LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO').upper()
+    log_level = getattr(logging, LOG_LEVEL, logging.INFO)
     # Configuração básica
     log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     log_directory = 'logs'
@@ -40,6 +41,7 @@ def configure_loggers():
     
     # Configura cada logger
     for logger_name, config in loggers_config.items():
+        config['level'] = log_level
         setup_logger(
             name=logger_name,
             filename=os.path.join(log_directory, config['filename']),
@@ -49,7 +51,9 @@ def configure_loggers():
 
 def setup_logger(name, filename, level, format):
     """Configura um logger individual"""
-    
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(format))
+
     # Cria o handler com rotação
     handler = RotatingFileHandler(
         filename,
@@ -64,6 +68,7 @@ def setup_logger(name, filename, level, format):
     
     # Configura o logger
     logger = logging.getLogger(name)
+    logger.addHandler(console_handler)
     logger.setLevel(level)
     logger.addHandler(handler)
     

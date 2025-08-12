@@ -1,0 +1,1037 @@
+[22:13:20] Iniciando processamento em 11/08/2025 22:13:20
+[22:13:20] Carregando arquivo: Planilha_Online_Todos_Cadastrados.xlsx
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Meia Lua 39cm Thaís C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 26cm Celine C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Redonda 34cm Sara C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Oval Canoa 46cm Tânia C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 38cm Dalila C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Gota 43cm Maitê C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Branco Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Quadrada 32cm Ágata C08 Preto Granit - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Quadrada 33cm Aya C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Quadrada 33cm Aya C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Quadrada 33cm Aya C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Quadrada 33cm Aya C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Quadrada 33cm Aya C08 Verde - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 36cm Jasmin C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 36cm Jasmin C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 36cm Jasmin C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 36cm Jasmin C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia Para Banheiro Retangular 36cm Jasmin C08 Verde - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 30cm Joy C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 30cm Joy C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 30cm Joy C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 30cm Joy C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 30cm Joy C08 Verde - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 55cm Ivy C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 55cm Ivy C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 55cm Ivy C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 55cm Ivy C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 55cm Ivy C08 Verde - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 54cm Alva C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 54cm Alva C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 54cm Alva C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 54cm Alva C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Retangular 54cm Alva C08 Verde - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Oval 43cm Hera C08 Branco - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Oval 43cm Hera C08 Bege - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Oval 43cm Hera C08 Cinza - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Oval 43cm Hera C08 Preto - Mpozenato
+[22:13:22] Processado: Cuba Pia de Apoio Para Banheiro Oval 43cm Hera C08 Verde - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Vick Bouclê Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Vick Bouclê Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Lola Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Lola Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Lola Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Lola Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Lola Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Lola Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Lola Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Lola Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Lola Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Lola Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Bouclê Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço e Puff Maju Sintético Branco F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Linho Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Linho Bege F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Veludo Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Veludo Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Bouclê Cinza F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Madeira Balanço Maju Bouclê Off F03 - Mpozenato
+[22:13:23] Processado: Poltrona Amamentação Base Balanço Maju Sintético Branco F03 - Mpozenato
+[22:13:23] Processado: Colchão Solteiro Espuma D33 88x15x188 Dream Preto - Gazin
+[22:13:23] Processado: Pia de Cozinha com Cuba e Válvula Bali 140cm Aço Inox - Ghel Plus
+[22:13:23] Processado: 200x56/01 CUBA N2-110 BALI - COMPONENTE
+[22:13:23] Processado: Pia de Cozinha com Cuba e Válvula Bali 200cm Aço Inox - Ghel Plus
+[22:13:23] Processado: Buffet Aparador Cristaleira e Mesa de Centro Ester Off/Castanho - HB Móveis
+[22:13:23] Processado: Buffet Aparador Cristaleira e Mesa de Centro Agnes Off/Castanho H01 - Mpozenato
+[22:13:23] Processado: Buffet Aparador Cristaleira e Mesa Centro Ester Pistache/Castanho - HB Móveis
+[22:13:23] Processado: Buffet Aparador Cristaleira e Mesa Centro Agnes Pistache/Castanho H01 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Aéreo 2 Portas 80cm Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Aéreo 2 Portas 80cm Minsk Freijó/Soft Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha 80cm 2 Portas de Vidro Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Aéreo 2 Portas 120cm Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Aéreo 2 Portas 120cm Minsk Freijó/Soft Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha 120cm 2 Portas de Vidro Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário Aéreo de Canto Reto Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário Aéreo de Canto Reto Minsk Freijó/Soft Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 80cm 2 Portas Minsk Vanilla Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 80cm 2 Portas Minsk Branco Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Canto Reto Com Tampo e Painel 94cm Minsk Vanilla Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Canto Reto Com Tampo e Painel 94cm Minsk Branco Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Vanilla/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Branco/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Branco/Soft/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro Cristaleira 2 Portas 38cm Minsk Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro de Cozinha 3 Portas Minsk Vanilla/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro de Cozinha 3 Portas Minsk Branco/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro de Cozinha 3 Portas Minsk Branco/Soft/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro de Cozinha Portas de Vidro Minsk Vanilla/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Paneleiro de Cozinha Portas de Vidro Minsk Branco/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Vanilla/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Branco/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Branco/Soft Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP06 Com Tampo 120cm Minsk Branco/Soft Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP07 Com Tampo 120cm Minsk Vanilla/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha CP08 Com Tampo 120cm Minsk Branco/Freijó Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Nogueira/Off White Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Freijó/Gris Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Freijó/Supremo Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Compacta 221cm Vivian Nogueira/Off White Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Compacta 221cm Vivian Freijó/Gris Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Compacta 221cm Vivian Freijó/Supremo Z06 - Mpozenato
+[22:13:23] Processado: Cozinha Compacta Com Balcão 221cm Vivian Nogueira/Off White Z06 - Mpozenato
+[22:13:23] Processado: Cozinha Compacta Com Balcão 221cm Vivian Freijó/Gris Z06 - Mpozenato
+[22:13:23] Processado: Cozinha Compacta Com Balcão 221cm Vivian Freijó/Supremo Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Plus Freijó/Soft Z06 - Mpozenato
+[22:13:23] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Plus Freijó/Gris Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Compacta 221cm Vivian Plus Freijó/Soft Z06 - Mpozenato
+[22:13:23] Processado: Armário de Cozinha Compacta 221cm Vivian Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 221cm Vivian Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 221cm Vivian Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 132cm Stella Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 132cm Stella Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 132cm Stella Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 180cm Turim Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 180cm Turim Plus Freijó/Supremo Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 121cm Pádua Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 121cm Pádua Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 90cm Bruna Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 90cm Bruna Plus Freijó/Supremo Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 121cm Bruna Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 121cm Bruna Plus Freijó/Supremo Z06 - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Com Tampo 120cm Louis Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Com Tampo 120cm Louis Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 251cm Louis Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 251cm Louis Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 251cm Louis Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 251cm Louis Plus Freijó/Gris Z06 - Mpozenato
+[22:13:24] Processado: TAMPO 1200 MDF 12MM - COMPONENTE - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Com Tampo 3 Portas Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Sem Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Com Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Com Pia 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 251cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Armário de Cozinha Compacta 251cm Laura Plus Freijó Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 251cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Com Balcão 251cm Laura Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Sem Tampo Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Sem Tampo Laura Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Com Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Com Tampo 120cm Laura Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Com Pia 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[22:13:24] Processado: Cozinha Compacta Balcão Com Pia 120cm Laura Plus Freijó/Soft Z06 - Mpozenato
+[22:13:24] Processado: Mesa Bancada Gourmet Para Cozinha Salt Branco Z06 - Mpozenato
+[22:13:24] Processado: Mesa Bancada Gourmet Para Cozinha Salt Preto Z06 - Mpozenato
+[22:13:24] Processado: Mesa Bancada Gourmet Cantinho do Café Salt Branco Z06 - Mpozenato
+[22:13:24] Processado: Mesa Bancada Gourmet Cantinho do Café Salt Preto Z06 - Mpozenato
+[22:13:24] Processado: Estante Escrivaninha Para Escritório Home Office Salt Branco Z06 - Mpozenato
+[22:13:24] Processado: Estante Escrivaninha Para Escritório Home Office Salt Preto Z06 - Mpozenato
+[22:13:24] Processado: Estante Escrivaninha Com Mesa Bancada Retrátil Salt Branco Z06 - Mpozenato
+[22:13:24] Processado: Estante Escrivaninha Com Mesa Bancada Retrátil Salt Preto Z06 - Mpozenato
+[22:13:24] Processado: Mesa Escrivaninha Bancada de Estudos Para Quarto Salt Branco Z06 - Mpozenato
+[22:13:24] Processado: Mesa Escrivaninha Bancada de Estudos Para Quarto Salt Preto Z06 - Mpozenato
+[22:13:24] Processado: Estante Painel Para TV 75 Pol 215cm Guape Nature/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 65 Pol e Bancada Suspensa Aruna Freijó/Off L06 - Mpozenato
+[22:13:24] Processado: Painel TV 60 Pol e Bancada Suspensa Cherry Nature/Off L06 - Mpozenato
+[22:13:24] Processado: Mesa de Centro Para Sala Estilo Industrial Ville Caramelo L06 - Mpozenato
+[22:13:24] Processado: Aparador Para Sala Industrial Com Prateleira Ville Caramelo L06 - Mpozenato
+[22:13:24] Processado: Cabeceira Casal e Queen Painel Ripado 241cm Palmeira Nature L06 - Mpozenato
+[22:13:24] Processado: Cabeceira Casal e Queen Painel Ripado 241cm Palmeira Off L06 - Mpozenato
+[22:13:24] Processado: Aparador e Mesa de Centro Estilo Industrial Ville Caramelo L06 - Mpozenato
+[22:13:24] Processado: Estante Painel Para TV 70 Pol 200cm Malik Tauari/Off L06 - Mpozenato
+[22:13:24] Processado: Estante Painel Para TV 70 Pol 200cm Apollo Tauari/Off L06 - Mpozenato
+[22:13:24] Processado: Painel TV 65 Pol e Bancada Suspensa Illumi Tauari/Off L06 - Mpozenato
+[22:13:24] Processado: Rack Bancada Para TV 75 Pol 239cm Martan Tauari/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Rack Bancada TV 75 Pol 239cm com LED Martan Tauari/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 75 Pol 239cm com LED Martan Tauari/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 75 Pol 201cm Ripado com Prateleira Benty Nature L06 - Mpozenato
+[22:13:24] Processado: Painel TV 55 Pol Extensível até 180cm Lana Nature/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 75 Pol e Rack Bancada 239cm Martan Tauari/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 75 Pol e Rack 239cm com LED Martan Tauari/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 75 Pol Benty e Rack Bancada 200cm Nice Nature/Off L06 - Mpozenato
+[22:13:24] Processado: Painel TV 55 Pol Lana e Rack 180cm Color Nature/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 55 Pol Lana e Rack 180cm Agata Nature/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Painel TV 55 Pol Lana e Rack 160cm Arum Nature/Off Flex L06 - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 98cm MDP M24 Branco - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 98cm MDP M24 Preto - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 98cm MDP M24 Freijó - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 98cm MDP M24 Grafite - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 118cm MDP M24 Branco - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 118cm MDP M24 Preto - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 118cm MDP M24 Freijó - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 118cm MDP M24 Grafite - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 148cm MDP M24 Branco - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 148cm MDP M24 Preto - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 148cm MDP M24 Freijó - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 148cm MDP M24 Grafite - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 178cm MDP M24 Branco - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 178cm MDP M24 Preto - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 178cm MDP M24 Freijó - Mpozenato
+[22:13:24] Processado: Tampo Para Balcão de Cozinha 178cm MDP M24 Grafite - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Para Cooktop 80cm Pérola M24 Branco - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Para Cooktop 80cm Pérola M24 Preto - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Para Cooktop 80cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:24] Processado: Balcão de Cozinha Para Cooktop 80cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 100cm Sem Tampo Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 100cm Sem Tampo Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 100cm Sem Tampo Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 100cm Sem Tampo Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 120cm Sem Tampo Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 120cm Sem Tampo Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 120cm Sem Tampo Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 120cm Sem Tampo Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 150cm Sem Tampo Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 150cm Sem Tampo Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 150cm Sem Tampo Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 150cm Sem Tampo Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 180cm Sem Tampo Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 180cm Sem Tampo Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 180cm Sem Tampo Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão Para Pia 180cm Sem Tampo Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 70cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 70cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 70cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 70cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 80cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 80cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 80cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 80cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 100cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 100cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 120cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 120cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 150cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 150cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola M24 Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola M24 Grafite - Mpozenato
+[22:13:25] Processado: Nicho Aéreo Adega Vertical 20cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Nicho Aéreo Adega Vertical 20cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Nicho Aéreo Adega Vertical 20cm Pérola M24 Freijó - Mpozenato
+[22:13:25] Processado: Nicho Aéreo Adega Vertical 20cm Pérola M24 Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Porta Pano 20cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Porta Pano 20cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Porta Pano 20cm Pérola M24 Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Porta Pano 20cm Pérola M24 Grafite - Mpozenato
+[22:13:25] Processado: Paneleiro de Cozinha Torre Quente Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Paneleiro de Cozinha Torre Quente Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Paneleiro de Cozinha Torre Quente Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Paneleiro de Cozinha Torre Quente Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Armário de Cozinha e Balcão Cooktop Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Armário de Cozinha e Balcão Cooktop Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Armário de Cozinha e Balcão Cooktop Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Armário de Cozinha e Balcão Cooktop Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 100cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 100cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 120cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 120cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 150cm Pérola M24 Branco - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 150cm Pérola M24 Preto - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:25] Processado: Balcão de Cozinha Com Pia Inox 180cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Balcão de Cozinha Com Pia Inox 180cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Balcão de Cozinha Com Pia Inox 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Balcão de Cozinha Com Pia Inox 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP01 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:26] Processado: Armário de Cozinha CP02 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP02 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:27] Processado: Armário de Cozinha CP07 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP07 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP04 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:28] Processado: Armário de Cozinha CP03 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP03 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:29] Processado: Armário de Cozinha CP05 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP05 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 98cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 98cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 98cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 98cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 148cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 148cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 148cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 148cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 100cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 100cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 100cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 100cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 120cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 120cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 120cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 120cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 150cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 150cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 150cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 150cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP06 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP08 Para Pia 140cm Pérola M24 Branco - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP08 Para Pia 140cm Pérola M24 Preto - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP08 Para Pia 140cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:30] Processado: Armário de Cozinha CP08 Para Pia 140cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 e Tampo 118cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 e Tampo 118cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 e Tampo 118cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 e Tampo 118cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 Com Pia 140cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 Com Pia 140cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 Com Pia 140cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP08 Com Pia 140cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Para Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Para Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Para Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Para Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Com Pia 180cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Com Pia 180cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Com Pia 180cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP10 Com Pia 180cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Para Pia 200cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Para Pia 200cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Para Pia 200cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Para Pia 200cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 e Tampo 178cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 e Tampo 178cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 e Tampo 178cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 e Tampo 178cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Com Pia 200cm Pérola M24 Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Com Pia 200cm Pérola M24 Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Com Pia 200cm Pérola M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha CP11 Com Pia 200cm Pérola M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Penteadeira Camarim Suspensa 1 Porta Elle M24 Freijó Branco - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda M24 Branco/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda M24 Preto/Freijó - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda M24 Grafite/Freijó - Mpozenato
+[22:13:31] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina M24 Branco - Mpozenato
+[22:13:31] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina M24 Preto - Mpozenato
+[22:13:31] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina M24 Freijó - Mpozenato
+[22:13:31] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina M24 Grafite - Mpozenato
+[22:13:31] Processado: Balcão Buffet Cantinho do Café Bianca Branco/Freijó Z34 - Mpozenato
+[22:13:31] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Branco Z34 - Mpozenato
+[22:13:31] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Grafite Z34 - Mpozenato
+[22:13:31] Processado: Balcão Buffet Cantinho do Café Bianca Preto/Freijó Z34 - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 100cm Basculante Mia M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 100cm Basculante Mia M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Aéreo 100cm Basculante Mia M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha 100cm Sem Tampo Julia M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha 100cm Sem Tampo Julia M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha 100cm Sem Tampo Julia M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Tampo Para Balcão de Cozinha 100cm MDP M24 Freijó - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Tampo 100cm Julia M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Tampo 100cm Julia M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Tampo 100cm Julia M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Pia Inox 100cm Julia M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Pia Inox 100cm Julia M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Balcão de Cozinha Com Pia Inox 100cm Julia M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 Para Pia 100cm M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 Para Pia 100cm M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 Para Pia 100cm M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 e Tampo 100cm M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 e Tampo 100cm M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Nichos CP01 e Tampo 100cm M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Com Nicho CP01 e Pia 100cm M24 Freijó/Grafite - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Com Nicho CP01 e Pia 100cm M24 Freijó/Preto - Mpozenato
+[22:13:31] Processado: Armário de Cozinha Com Nicho CP01 e Pia 100cm M24 Preto/Grafite - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 70 Pol 242cm Le Gard M01 Off/Calacata - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 70 Pol 242cm Le Gard M01 Off/Cinamomo - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 70 Pol 242cm Le Gard M01 Cumaru - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 60 Pol 200cm Sam M01 Off/Cinamomo - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 60 Pol 200cm Sam M01 Cumaru - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 183cm Luara M01 Off/Calacata - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 183cm Luara M01 Off/Cinamomo - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 183cm Luara M01 Cumaru/Opala - Mpozenato
+[22:13:31] Processado: Estante Painel de TV 65 Pol 183cm Ramona M01 Cumaru/Opala - Mpozenato
+[22:13:31] Processado: Estante Painel de TV 65 Pol 183cm Ramona M01 Off/Cinamomo - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 160cm Anny M01 Cumaru - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 160cm Anny M01 Off/Cinamomo - Mpozenato
+[22:13:31] Processado: Estante Painel Para TV 75 Pol 160cm Anny M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 238cm André M01 Off White - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 238cm André M01 Cumaru - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 238cm André M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 179cm Logus M01 Off White - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 179cm Logus M01 Cumaru - Mpozenato
+[22:13:32] Processado: Painel Para TV 75 Polegadas 179cm Logus M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 75 Pol e Bancada Suspensa Emília M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 75 Pol e Bancada Suspensa Emília M01 Cumaru - Mpozenato
+[22:13:32] Processado: Painel TV 65 Pol e Bancada Suspensa Igor M01 Cumaru - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Veena M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Veena M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 50 Pol e Bancada Suspensa Keren M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Painel TV 50 Pol e Bancada Suspensa Keren M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Painel TV 50 Pol e Bancada Suspensa Keren M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Neris M01 Cumaru - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Neris M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Neris M01 Off/Cumaru - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Talyn M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Talyn M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Talyn M01 Cumaru - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 75 Pol 200cm Celina M01 Cumaru - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 75 Pol 200cm Celina M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 75 Pol 200cm Celina M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 65 Pol 150cm Keli M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 65 Pol 150cm Keli M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 65 Pol 182cm Tery M01 Off White/Calacata - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 65 Pol 182cm Tery M01 Off White/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 65 Pol 182cm Tery M01 Cumaru - Mpozenato
+[22:13:32] Processado: Estante Painel Para TV 50 Pol 182cm Fire M01 Cumaru - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 70 Pol 164cm Gaia M01 Cumaru - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 70 Pol 164cm Gaia M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 70 Pol 164cm Gaia M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 55 Pol 136cm Alana M01 Naturale/Off - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 55 Pol 136cm Alana M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 55 Pol 136cm Alana M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 136cm Espain M01 Fendi/Naturali - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 136cm Espain M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 136cm Espain M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Com LED Eva 90cm M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Com LED Eva 90cm M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Com LED Eva 90cm M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Buffet Aparador Sala de Estar 135cm Toni M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Buffet Aparador Sala de Estar 135cm Toni M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Buffet Aparador Sala de Estar 135cm Toni M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Aparador de Sala Com Prateleiras 150cm Fire M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Aparador de Sala Com Prateleiras 150cm Fire M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Mesa de Centro Com Detalhe Ripado Fire M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Mesa de Centro Com Detalhe Ripado Fire M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Mesa de Centro Com Detalhe Ripado Fire M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 121cm Rute M01 Naturale/Off - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 121cm Rute M01 Off/Calacata - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 50 Pol 121cm Rute M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 75 Pol 183cm Arvin M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 75 Pol 183cm Arvin M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 60 Pol 136cm Helena M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Rack Bancada de TV 60 Pol 136cm Helena M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Estante Painel Para TV 60 Pol 160cm Orla M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Estante Painel Para TV 60 Pol 160cm Orla M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Balcão Buffet Sala de Jantar 183cm Mônica M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Balcão Buffet Sala de Jantar 183cm Mônica M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Com LED 67cm Melina M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Com LED 67cm Melina M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Mesa de Centro para Sala 90cm Indy M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Mesa de Centro para Sala 90cm Indy M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Estante Painel Para TV 75 Pol 216cm Mical M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Estante Painel Para TV 75 Pol 216cm Mical M01 Cumaru - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Melina e Buffet Monica M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Melina e Buffet Monica M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Eva e Buffet Monica M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Eva e Buffet Monica M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Melina e Buffet Toni M01 Off/Cinamomo - Mpozenato
+[22:13:32] Processado: Cristaleira de Vidro Melina e Buffet Toni M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Mesa de Centro e Aparador Ripado Fire M01 Off White/Cinamomo - Mpozenato
+[22:13:32] Processado: Mesa de Centro e Aparador Ripado Fire M01 Cumaru/Opala - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Romeo Nature/Off Flex Z49 - Mpozenato
+[22:13:32] Processado: Painel TV 55 Pol e Bancada Suspensa Romeo Off/Nature Flex Z49 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 175cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 175cm Dijon Couro Bege S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 175cm Dijon Couro Mel S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 175cm Dijon Couro Creme S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 175cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 215cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:32] Processado: Sofá Retrátil 2 Lugares Para Sala 215cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 2 Lugares Para Sala 215cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 2 Lugares Para Sala 215cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 2 Lugares Para Sala 215cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 250cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 250cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 250cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 250cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 250cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: MODULO BALI/Dijon CR B208 VNH S07 - Mpozenato
+[22:13:33] Processado: MODULO BALI/Dijon CR B204 BG S07 - Mpozenato
+[22:13:33] Processado: MODULO BALI/Dijon CR B201 MEL S07 - Mpozenato
+[22:13:33] Processado: MODULO BALI/Dijon CR A121 PRL S07 - Mpozenato
+[22:13:33] Processado: MODULO BALI/Dijon CR A113 CRM S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 257cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 257cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 257cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 257cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 257cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 297cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 297cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 297cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 297cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 3 Lugares Para Sala 297cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 332cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 332cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 332cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 332cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 332cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 339cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 339cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 339cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 339cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 339cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 379cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 379cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 379cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 379cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 4 Lugares Para Sala 379cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 5 Lugares Para Sala 414cm Dijon Couro Bordô S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 5 Lugares Para Sala 414cm Dijon Couro Bege S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 5 Lugares Para Sala 414cm Dijon Couro Mel S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 5 Lugares Para Sala 414cm Dijon Couro Creme S07 - Mpozenato
+[22:13:33] Processado: Sofá Retrátil 5 Lugares Para Sala 414cm Dijon Couro Caramelo S07 - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm 4 Portas Jacarandá Flex Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 270cm 4 Espelhos Jacarandá Flex Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 240cm Ripado 6 Portas Doble Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 240cm Ripado 6 Portas Doble Freijó/Titanium - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 240cm com Espelho Doble Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 240cm com Espelho Doble Freijó/Titanium - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 212cm 4 Portas Vivacce Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 212cm 4 Portas Vivacce Freijó/Titanium - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 212cm com Espelho Vivacce Off/Freijó - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 212cm com Espelho Vivacce Freijó/Titanium - Albatroz
+[22:13:33] Processado: Guarda Roupa Solteiro 120cm 3 Portas Ipê Cinamomo/Branco - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Cinamomo - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Off/Freijó - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Freijó/Titanium - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto com Painel TV 43 Pol Azaleia A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto com Painel TV 43 Pol Azaleia A02 Freijó/Off - Mpozenato
+[22:13:33] Processado: Cômoda Para Quarto 10 Gavetas 151cm Duetto Off/Freijó - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 2 Portas 125cm Verona Off/Cinamomo - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 2 Portas 125cm Verona Freijó/Titanium - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Off/Cinamomo - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Off/Freijó - Albatroz
+[22:13:33] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Cinamomo/Salvia - Albatroz
+[22:13:33] Processado: Cômoda Sapateira 1 Porta 4 Gavetas 120cm Ipê Branco/Cinamomo - Albatroz
+[22:13:33] Processado: Penteadeira Escrivaninha com Espelho Bent A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Penteadeira Camarim Com Espelho Studio Beauty A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Cabeceira Casal Queen e King 2 Mesas Laterais Olinda Freijó - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Branco/Freijó - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Freijó/Off White - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Freijó/Titanium - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Branco/Freijó - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Freijó/Off White - Albatroz
+[22:13:33] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Freijó/Titanium - Albatroz
+[22:13:33] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Cinamomo - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Off/Freijó - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Off/Cinamomo - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Cinamomo - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Off/Freijó - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 240cm 2 Portas Aline Flex A02 Off/Sálvia - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 240cm 2 Portas Aline Flex A02 Off/Titanium - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 240cm com Espelho Aline Flex A02 Off/Sálvia - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 240cm com Espelho Aline Flex A02 Off/Titanium - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Cinamomo - Mpozenato
+[22:13:33] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Off/Freijó - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Off/Freijó - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 201cm 11 Portas Thony A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 201cm 11 Portas Thony A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 200cm 6 Portas Viny A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 200cm 6 Portas Viny A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 200cm com Espelho Viny A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Casal 200cm com Espelho Viny A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm Rizatto Flex A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm Rizatto Flex A02 Off/Titanium - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro com Espelho Rizatto Flex A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro com Espelho Rizatto Flex A02 Off/Titanium - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Cinamomo/Off - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Branco - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Off/Freijó - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Freijó/Titanium - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Cinamomo/Off - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Branco - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Off/Freijó - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Freijó/Titanium - Albatroz
+[22:13:34] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Cinamomo/Sálvia - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Off/Freijó - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Freijó/Titanium - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony Flex A02 Branco - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony Flex A02 Branco - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Freijó/Titanium - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
+[22:13:34] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Cinamomo - Mpozenato
+[22:13:35] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Off/Cinamomo - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Cinamomo - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Freijó/Titanium - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Off/Freijó - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Azul/Rosa/Titanium - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Branco - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Cinamomo - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Off/Cinamomo - Mpozenato
+[22:13:35] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Off/Freijó - Mpozenato
+[22:13:35] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Branco/Freijó - Albatroz
+[22:13:35] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Off/Cinamomo - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Off/Freijó - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Freijó/Titanium - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 1 Porta 125cm Ripada Duetto Off/Freijó - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Branco - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Off/Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Freijó/Titanium - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Branco/Freijó - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Off/Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Off/Freijó - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Branco/Freijó - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Off/Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Off/Freijó - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 109cm 1 Porta Belize Plus Off/Cinamomo - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 109cm 1 Porta Belize Plus Off/Freijó - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Off/Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Cinamomo - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Freijó/Titanium - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 1 Porta 84cm Franci Flex A02 Branco - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Branco/Freijó - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Off/Cinamomo - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Off/Freijó - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Freijó/Titanium - Albatroz
+[22:13:36] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Branco - Mpozenato
+[22:13:36] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Cinamomo - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Off/Freijó - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Branco/Freijó - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Off/Freijó - Mpozenato
+[22:13:37] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais Flex A02 Branco - Mpozenato
+[22:13:37] Processado: Mesa Escrivaninha 3 Gavetas Painel TV 40 Pol Doble Branco - Albatroz
+[22:13:37] Processado: Mesa Escrivaninha 3 Gavetas Painel TV 40 Pol Doble Off/Cinamomo - Albatroz
+[22:13:37] Processado: Painel TV 42 Pol Suspenso com Closet 108cm Mimo A02 Branco - Mpozenato
+[22:13:37] Processado: Painel TV 42 Pol Suspenso com Closet 108cm Mimo A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Penteadeira Camarim Escrivaninha com LED Sulla A02 Branco - Mpozenato
+[22:13:37] Processado: Penteadeira Camarim Escrivaninha com LED Sulla A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Penteadeira Escrivaninha com Espelho 129cm Mandi A02 Branco - Mpozenato
+[22:13:37] Processado: Penteadeira Escrivaninha com Espelho 129cm Mandi A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Penteadeira Camarim com LED 2 Portas Loli A02 Branco - Mpozenato
+[22:13:37] Processado: Penteadeira Camarim com LED 2 Portas Loli A02 Off/Cinamomo - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 45 Pol 136cm Lucca Off White/Freijó C01 - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 45 Pol 136cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 55 Pol 150cm Lucca Off White/Freijó C01 - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 55 Pol 150cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 65 Pol 180cm Lucca Off White/Freijó C01 - Mpozenato
+[22:13:37] Processado: Rack Bancada Para TV 65 Pol 180cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:37] Processado: Painel TV 65 Pol Extensível 136cm até 180cm Lucca Off White C01 - Mpozenato
+[22:13:37] Processado: Painel TV 65 Pol Extensível 136cm até 180cm Lucca Areia C01 - Mpozenato
+[22:13:37] Processado: Balcão Buffet Sala de Jantar 179cm Lucca Off/Freijó C01 - Mpozenato
+[22:13:37] Processado: Balcão Buffet Sala de Jantar 179cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:37] Processado: Cristaleira Porta de Vidro Com LED 90cm Lucca Off/Freijó C01 - Mpozenato
+[22:13:37] Processado: Cristaleira Porta de Vidro Com LED 90cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:37] Processado: Painel Para TV 45 Pol e Rack Bancada 136cm Lucca Off/Freijó C01 - Mpozenato
+[22:13:37] Processado: Painel Para TV 45 Pol e Rack Bancada 136cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:38] Processado: Painel Para TV 55 Pol e Rack Bancada 150cm Lucca Off/Freijó C01 - Mpozenato
+[22:13:38] Processado: Painel Para TV 55 Pol e Rack Bancada 150cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:38] Processado: Painel Para TV 65 Pol e Rack Bancada 180cm Lucca Off/Freijó C01 - Mpozenato
+[22:13:38] Processado: Painel Para TV 65 Pol e Rack Bancada 180cm Lucca Areia/Freijó C01 - Mpozenato
+[22:13:38] Processado: Buffet Aparador e Cristaleira com LED Lucca Off White/Freijó C01 - Mpozenato
+[22:13:38] Processado: Buffet Aparador e Cristaleira com LED Lucca Areia/Freijó C01 - Mpozenato
+[22:13:40] Arquivo gerado: Atributos_Extraidos_20250811_221338.xlsx
+[22:13:40] Processamento concluído - 1033 itens em 19.49s

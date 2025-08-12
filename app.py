@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash
 import os
+from datetime import datetime, timedelta
+import json
 from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
@@ -36,16 +38,105 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 @app.route('/')
 def home():
     logger = get_logger('main')
-    logger.info("Acessando página home")
     
-    log_path = 'logs/cadastro.log'
+    # Estatísticas básicas
+    log_path = 'logs/processos/cadastro.log'
     stats = get_processing_stats(log_path)
     
+    # Contagem de sucessos/erros
+    processos_sucesso, processos_erro = contar_status_processos(log_path)
+    
+    # Contagem de hoje
+    hoje_sucesso, hoje_erro = contar_processos_hoje_por_status(log_path)
+    
+    # Última planilha processada
+    ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
+    
+    # Dados para gráficos (agora com tratamento seguro)
+    dados_grafico = obter_dados_grafico_7dias()
+    
     return render_template('home.html',
-                         total_processamentos=stats['total'],
-                         processamentos_hoje=stats['hoje'],
-                         ultima_execucao=stats['ultima'],
-                         now=datetime.now())
+        total_processamentos=stats['total'],
+        processamentos_hoje=stats['hoje'],
+        ultima_execucao=stats['ultima'],
+        processos_sucesso=processos_sucesso,
+        processos_erro=processos_erro,
+        hoje_sucesso=hoje_sucesso,
+        hoje_erro=hoje_erro,
+        ultima_planilha=ultima_planilha,
+        ultima_planilha_data=ultima_planilha_data,
+        datas_grafico=dados_grafico['datas'],  # Já convertido para lista segura
+        valores_grafico=dados_grafico['valores'],  # Já convertido para lista segura
+        now=datetime.now())
+
+# --- Funções auxiliares ---
+
+def contar_status_processos(log_file):
+    """Conta processos por status em todo o arquivo de log"""
+    sucesso = erro = 0
+    if os.path.exists(log_file):
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if 'status: sucesso' in line.lower():
+                    sucesso += 1
+                elif 'status: erro' in line.lower():
+                    erro += 1
+    return sucesso, erro
+
+def contar_processos_hoje_por_status(log_file):
+    """Conta processos por status apenas no dia atual"""
+    hoje = datetime.now().strftime('%Y-%m-%d')
+    sucesso = erro = 0
+    if os.path.exists(log_file):
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if hoje in line:
+                    if 'status: sucesso' in line.lower():
+                        sucesso += 1
+                    elif 'status: erro' in line.lower():
+                        erro += 1
+    return sucesso, erro
+
+def obter_ultima_planilha():
+    upload_folder = app.config['UPLOAD_FOLDER']
+    planilhas = []
+    
+    for root, _, files in os.walk(upload_folder):
+        for file in files:
+            if file.lower().endswith(('.xlsx', '.xls')):
+                path = os.path.join(root, file)
+                planilhas.append((path, os.path.getmtime(path)))
+    
+    if planilhas:
+        ultima = max(planilhas, key=lambda x: x[1])
+        return (ultima[0], datetime.fromtimestamp(ultima[1]).strftime('%d/%m/%Y %H:%M'))
+    return (None, None)
+
+def obter_dados_grafico_7dias():
+    """Retorna dados formatados de forma segura para o template"""
+    datas = []
+    valores = []
+    
+    for i in range(6, -1, -1):  # 7 dias (incluindo hoje)
+        date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        count = contar_processos_por_dia(date)
+        datas.append(date.split('-')[2] + '/' + date.split('-')[1])  # Formato DD/MM
+        valores.append(count)
+    
+    return {
+        'datas': datas,  # Lista simples não precisa de json.dumps
+        'valores': valores
+    }
+
+def contar_processos_por_dia(date):
+    log_file = 'logs/processos/cadastro.log'
+    count = 0
+    if os.path.exists(log_file):
+        with open(log_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                if date in line:
+                    count += 1
+    return count
 
 def get_processing_stats(log_path):
     stats = {'total': 0, 'hoje': 0, 'ultima': "—"}
