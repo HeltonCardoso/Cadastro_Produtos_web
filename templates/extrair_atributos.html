@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Extrair Atributos{% endblock %}
+
+{% block content %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Extração de atributos usando planilha de modelo Online.
+</div>
+  <h2 class="mb-4">Extração Atributos HTML</h2>
+  
+  <!-- Formulário (MESMO nome dos campos e enctype) -->
+  <form method="POST" enctype="multipart/form-data" onsubmit="mostrarProcessando()">
+    <div class="mb-3">
+      <label for="arquivo" class="form-label">Selecione a Planilha:</label>
+      <input type="file" class="form-control" id="arquivo" name="arquivo" required>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mt-3">
+      <button id="btnProcessar" type="submit" class="btn btn-primary">EXTRAIR ATRIBUTOS</button>
+      {% if arquivo_gerado %}
+        <a href="{{ url_for('baixar_arquivo', filename=arquivo_gerado) }}" class="btn btn-success">📥 BAIXAR PLANILHA XLSX</a>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- Script de Processamento (MESMO código) -->
+  <script>
+    function mostrarProcessando() {
+      const botao = document.getElementById("btnProcessar");
+      botao.disabled = true;
+      botao.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processando...`;
+    }
+  </script>
+
+  <!-- Área de Log (igual ao seu template) -->
+  <div class="mt-4">
+    <h5>Log de Extração:</h5>
+    <div style="background: #f1f1f1; padding: 10px; border-radius: 10px; height: 150px; overflow-y: auto;">
+      {% if log %}
+        {{ log|safe }}
+      {% else %}
+        <span class="text-muted">Aguardando processamento...</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Mensagens (MESMA estrutura) -->
+  <div id="mensagens-flash" class="mt-3" style="min-height: 120px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} mt-3">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if sucesso %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ sucesso }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% elif erro %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ erro }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

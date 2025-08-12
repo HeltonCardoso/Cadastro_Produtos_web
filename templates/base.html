@@ -1,0 +1,220 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Sistema Athus{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    footer.custom-footer {
+        background-color: #343a40; /* exemplo: mesma cor do bg-dark */
+        color: white;
+
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: #343a40;
+      padding: 20px;
+      color: white;
+    }
+    .logo {
+      font-size: 35px;
+      color: white;
+    }
+    .sidebar a {
+      color: white;
+      display: block;
+      margin: 10px 0;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 30px;
+      background-color: #f8f9fa;
+    }
+    .alert {
+      margin-bottom: 20px;
+    }
+    .logo-link {
+    display: block;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #343a40; /* opcional */
+    }
+
+    .logo-img {
+        max-height: 60px; /* ajuste conforme necessário */
+        width: auto;
+        transition: transform 0.3s;
+    }
+
+    .logo-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+.logo-link:hover {
+    text-decoration: none;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+}
+.logo-link, .logo-link:hover {
+    text-decoration: none !important;
+}
+.processing-popup {
+        position: fixed;
+        bottom: 80px;
+        right: 30px;
+        background-color: #0d6efd;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: none;
+        align-items: center;
+        gap: 15px;
+        z-index: 1050;
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+    
+    .processing-timer {
+        font-family: monospace;
+        font-size: 1.2rem;
+    }
+    #processingPopup {
+    position: fixed;
+    bottom: 60px; /* Aumente essa distância do rodapé */
+    right: 20px;
+    background: #0d6efd;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 1050; /* Valor alto para ficar acima de tudo */
+    display: none;
+    align-items: center;
+    gap: 15px;
+    min-width: 220px;
+    backdrop-filter: blur(2px); /* Efeito moderno opcional */
+}
+
+    #processingTimer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: white !important;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+    #logContainer {
+      transition: all 0.3s ease;
+    }
+    .fade-out {
+      animation: fadeOut 5s ease forwards;
+    }
+
+    .pulse-animation {
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.log-container {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.log-entry {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+    font-family: monospace;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+    font-weight: bold;
+    background-color: #e8f4ff;
+}
+
+</style>
+</head>
+<body>
+  <div class="sidebar">
+    <!-- Logo como link para home com imagem -->
+    <a href="{{ url_for('home') }}" class="logo-link">
+    <img src="{{ url_for('static', filename='img/logo-empresa.png') }}" class="logo-img">
+    <span class="logo-text">MPOZENATO</span>
+    </a>
+    <a href="{{ url_for('home') }}" class="active" >DASHBOARD</a>
+    <a href="{{ url_for('extrair_atributos') }}" >EXTRAIR ATRIBUTOS</a>
+    <a href="{{ url_for('preencher_planilha') }}">PRENCHER PLANILHA ATHUS</a>
+    <a href="{{ url_for('comparar_prazos') }}">VERIFICAR PRAZOS</a>
+    <a href="#">USUARIOS</a>
+    <a href="#" data-route="sobre" onclick="mostrarSobre()">SOBRE</a>
+    <a href="#">SAIR</a>
+  </div>
+  <div class="content"> <!-- Conteudo da pagina -->
+    {% block content %}{% endblock %}  
+  </div><!-- Fim do conteudo da pagina -->
+  {% block scripts %}
+  <script>
+    setTimeout(() => {
+      const alertas = document.querySelectorAll('.alert');
+      alertas.forEach(alerta => {
+        alerta.classList.remove('show');
+        alerta.classList.add('fade');
+        setTimeout(() => alerta.remove(), 500);
+      });
+    }, 90000);
+  </script>  
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('pt-BR');
+            const date = now.toLocaleDateString('pt-BR');
+            document.getElementById('clock').innerHTML = `${date} ${time}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+  {% endblock %}
+    <footer class="custom-footer text-center py-2 fixed-bottom border-top">
+        <div class="container d-flex justify-content-between">
+            <span>&copy; {{ now.year }} Sistema Cadastro Mpozenato - Desenvolvido por Helton Cardoso |</span> 
+            <span id="clock"></span></span>
+        </div>
+    </footer>
+</body>
+</html>

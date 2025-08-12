@@ -1,0 +1,36 @@
+<!-- templates/home.html -->
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Mpozenato{% endblock %}
+
+{% block content %}
+<div id="conteudoPrincipal">
+  <div class="row mt-4">
+  <div class="col-md-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h5 class="card-title">Processamentos Totais</h5>
+        <p class="display-6">{{ total_processamentos }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h5 class="card-title">Hoje</h5>
+        <p class="display-6">{{ processamentos_hoje }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h5 class="card-title">Último</h5>
+        <p class="display-6">{{ ultima_execucao }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}Comparar Prazos{% endblock %}
+
+{% block content %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Compare os prazos de entrega entre o sistema ONCLICK e os marketplaces.
+</div>
+  <h2 class="mb-4">Verificar Prazos ONCLICK | Marketplace</h2>  
+  
+  <form id="compararForm" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="arquivo_erp" class="form-label">Planilha(ONCLICK):</label>
+      <input type="file" class="form-control" id="arquivo_erp" name="arquivo_erp" accept=".xlsx,.xls,.csv" required>
+    </div>
+    <div class="mb-3">
+      <label for="arquivo_marketplace" class="form-label">Planilha Marketplace:</label>
+      <input type="file" class="form-control" id="arquivo_marketplace" name="arquivo_marketplace" accept=".xlsx,.xls,.csv" required>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-3">
+      <button id="btnProcessar" type="submit" class="btn btn-primary">COMPARAR PRAZOS</button>
+      <div id="downloadContainer"></div>
+    </div>
+  </form>
+
+  <!-- Área de Log -->
+  <div class="mt-4">
+    <h5>Log de Processamento:</h5>
+    <div id="logContainer" class="bg-light p-3 rounded" style="height: 200px; overflow-y: auto;">
+      <span class="text-muted">Aguardando processamento...</span>
+    </div>
+  </div>
+
+  <!-- Popup de processamento -->
+  <div id="processingPopup" style="display: none; position: fixed; bottom: 80px; right: 30px; background: #0d6efd; color: white; padding: 15px 20px; border-radius: 10px; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.25); min-width: 220px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div id="popupIcon">
+            <div class="spinner-border spinner-border-sm" style="width: 1.5rem; height: 1.5rem;"></div>
+        </div>
+        <div>
+            <div id="popupText" style="font-weight: 500; font-size: 1.1rem;">Processando...</div>
+            <div id="processingTimer" style="font-family: 'Courier New', monospace; font-size: 1.2rem; margin-top: 4px; color: white;">00:00</div>
+        </div>
+    </div>
+</div>
+
+  <script>
+  document.getElementById('compararForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById('btnProcessar');
+    const popup = document.getElementById('processingPopup');
+    const timer = document.getElementById('processingTimer');
+    const popupText = document.getElementById('popupText');
+    //const popupText = popup.querySelector('div > div:first-child'); // Elemento do texto
+    const logContainer = document.getElementById('logContainer');
+    const downloadContainer = document.getElementById('downloadContainer');
+    
+    timer.style.display = 'block';
+    timer.style.color = 'white'; // Cor contrastante
+    timer.style.fontWeight = 'bold';
+
+    // Resetar estado
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
+    popup.style.display = 'flex';
+    popup.style.zIndex = '1050';
+    popup.style.bottom = '80px';
+    
+    popup.style.background = '#0d6efd';
+    popup.style.opacity = '1';
+    popupText.textContent = 'Processando...'; // Texto inicial
+    timer.textContent = '00:00';
+    downloadContainer.innerHTML = '';
+
+    // Cronômetro
+    let seconds = 0;
+    const interval = setInterval(() => {
+    seconds++;
+    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    timer.textContent = `${mins}:${secs}`;
+    timer.style.visibility = 'visible'; // Forçar visibilidade
+}, 1000);
+
+    try {
+        const formData = new FormData(this);
+        const response = await fetch('/comparar-prazos', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.message || 'Erro no processamento');
+
+        // Atualizar interface
+        if (data.log) logContainer.innerHTML = data.log;
+        
+        if (data.arquivo_gerado) {
+           downloadContainer.innerHTML = `
+            <a href="/uploads/${data.arquivo_gerado}" 
+              class="btn btn-success pulse-animation">
+              <i class="fas fa-download"></i> BAIXAR RESULTADO
+            </a>
+          `;
+        }
+
+        // Feedback visual de conclusão
+        clearInterval(interval);
+        popup.style.background = '#28a745';
+        popupText.textContent = 'Concluído!'; // Altera o texto
+        timer.textContent = `${Math.floor(seconds/60).toString().padStart(2,'0')}:${(seconds%60).toString().padStart(2,'0')}`;
+
+        // Fade out após 3 segundos
+        setTimeout(() => {
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = 'COMPARAR PRAZOS';
+            }, 3000); // Duração do fade
+        }, 9000); // Tempo visível após conclusão
+
+    } catch (error) {
+        clearInterval(interval);
+        popup.style.background = '#dc3545';
+        popupText.textContent = 'Erro!';
+        
+        logContainer.innerHTML = `
+            <div class="alert alert-danger">
+                Erro: ${error.message}
+                <button class="btn btn-sm btn-light ms-2" onclick="this.parentElement.remove()">X</button>
+            </div>
+        `;
+
+        setTimeout(() => {
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = 'COMPARAR PRAZOS';
+            }, 1000);
+        }, 5000); // Mantém visível por mais tempo em caso de erro
+    }
+});
+  </script>
+  
+  <script>
+// Melhor tratamento de drag-and-drop
+document.querySelectorAll('.file-drop-area').forEach(dropArea => {
+    const input = dropArea.querySelector('.file-input');
+    const msg = dropArea.querySelector('.file-msg');
+    const info = dropArea.querySelector('.file-info');
+    
+    input.addEventListener('change', function() {
+        if (this.files.length) {
+            info.textContent = this.files[0].name;
+            dropArea.classList.add('active');
+        }
+    });
+
+    ['dragenter', 'dragover'].forEach(event => {
+        dropArea.addEventListener(event, () => dropArea.classList.add('highlight'));
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+        dropArea.addEventListener(event, () => dropArea.classList.remove('highlight'));
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        input.files = e.dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+    });
+});
+
+// Adicione feedback visual durante o upload
+document.getElementById('compararForm').addEventListener('submit', function() {
+    const progressBar = document.createElement('div');
+    progressBar.className = 'progress mt-3';
+    progressBar.innerHTML = `
+        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+             role="progressbar" style="width: 0%"></div>
+    `;
+    this.appendChild(progressBar);
+    
+    // Simular progresso (substitua por progresso real se possível)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 5;
+        progressBar.querySelector('.progress-bar').style.width = `${progress}%`;
+        if (progress >= 100) clearInterval(interval);
+    }, 300);
+});
+</script>
+
+<style>
+.file-drop-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+}
+.file-drop-area.highlight {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+}
+.file-drop-area.active {
+    border-color: #198754;
+}
+.file-msg {
+    cursor: pointer;
+}
+</style>
+{% endblock %}

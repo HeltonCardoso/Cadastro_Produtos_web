@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Preencher Planilha Athus{% endblock %}
+{% block content %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Prenchimento Automático da Planilha de Cadastro modelo ATHUS.
+</div>
+  <h2 class="mb-4">Preencher Planilha Athus</h2>
+  <form method="POST" enctype="multipart/form-data" onsubmit="mostrarProcessando()">
+    <div class="mb-3">
+      <label for="arquivo_origem" class="form-label">Planilha Online:</label>
+      <input type="file" class="form-control" id="arquivo_origem" name="arquivo_origem" required>
+    </div>
+    <div class="mb-3">
+      <label for="arquivo_destino" class="form-label">Planilha Modelo ATHUS:</label>
+      <input type="file" class="form-control" id="arquivo_destino" name="arquivo_destino" required>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-3">
+  <button id="btnProcessar" type="submit" class="btn btn-primary">PROCESSAR PLANILHA</button>
+  {% if arquivo_gerado %}
+    <a href="{{ url_for('baixar_arquivo', filename=arquivo_gerado) }}" class="btn btn-success">📥 BAIXAR PLANILHA XLSX</a>
+  {% endif %}
+</div>
+  </form>
+
+  <script>
+function mostrarProcessando() {
+    const botao = document.getElementById("btnProcessar");
+    botao.disabled = true;
+    botao.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processando...`;
+}
+</script>
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Histórico de Processos</h5>
+            </div>
+            <div class="card-body log-container">
+                {% if historico_processos %}
+                    {% for processo in historico_processos %}
+                        <div class="log-entry">{{ processo }}</div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhum processo registrado</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Log de Processamento</h5>
+            </div>
+            <div class="card-body log-container">
+                {% if log %}
+                    {{ log|safe }}
+                {% else %}
+                    <p>Aguardando processamento...</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+  <!-- Mensagens sempre no mesmo lugar abaixo do log -->
+  <div id="mensagens-flash" class="mt-3" style="min-height: 120px;">
+    <!-- Exibir mensagens flash (sucesso ou erro) -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'danger' if category == 'error' else category }} mt-3">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+    {% if sucesso %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ sucesso }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% elif erro %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ erro }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+
+    {% if qtd_produtos %}
+      <div class="alert alert-info mt-2">
+        <strong>{{ qtd_produtos }}</strong> produtos processados!
+      </div>
+    {% endif %}
+
+    {% if tempo_processamento %}
+      <div class="alert alert-secondary mt-2">
+        Tempo de processamento: <strong>{{ tempo_processamento }}</strong>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
