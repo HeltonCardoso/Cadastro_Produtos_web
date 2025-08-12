@@ -112,17 +112,7 @@
         <h5 class="mb-0">Processamentos por Dia (Últimos 7 dias)</h5>
       </div>
       <div class="card-body">
-        <canvas id="graficoProcessamentos" height="200"></canvas>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="card shadow">
-      <div class="card-header">
-        <h5 class="mb-0">Status dos Processamentos</h5>
-      </div>
-      <div class="card-body">
-        <canvas id="graficoStatus" height="200"></canvas>
+        <canvas id="graficoProcessamentos" height="160"></canvas>
       </div>
     </div>
   </div>
@@ -143,24 +133,6 @@ new Chart(
         label: 'Processamentos',
         data: {{ valores_grafico|tojson|safe }},
         backgroundColor: 'rgba(54, 162, 235, 0.7)'
-      }]
-    }
-  }
-);
-
-// Gráfico de status
-new Chart(
-  document.getElementById('graficoStatus'), 
-  {
-    type: 'doughnut',
-    data: {
-      labels: ['Sucesso', 'Erros'],
-      datasets: [{
-        data: [{{ processos_sucesso }}, {{ processos_erro }}],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.7)',
-          'rgba(255, 99, 132, 0.7)'
-        ]
       }]
     }
   }

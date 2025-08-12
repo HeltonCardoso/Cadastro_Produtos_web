@@ -1,0 +1,46 @@
+2025-08-12 08:46:25 | Itens: 0 | Tempo: 0.00s | Status: ERRO: not enough values to unpack (expected 4, got 3)
+2025-08-12 09:13:00 | Itens: 372 | Tempo: 0.96s | Status: sucesso
+2025-08-12 09:13:00 | Itens: 0 | Tempo: 0.00s | Status: ERRO: "Campos faltantes: ['atributos_extraidos']"
+2025-08-12 09:13:22 | Itens: 1033 | Tempo: 5.15s | Status: sucesso
+2025-08-12 09:13:22 | Itens: 0 | Tempo: 0.00s | Status: ERRO: "Campos faltantes: ['atributos_extraidos']"
+2025-08-12 09:21:35 | Itens: 0 | Tempo: 0.00s | Status: ERRO: not enough values to unpack (expected 4, got 3)
+2025-08-12 09:22:40 | Itens: 372 | Tempo: 1.30s | Status: sucesso
+2025-08-12 09:22:40 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 09:24:51 | Itens: 0 | Tempo: 0.00s | Status: ERRO: cannot access local variable 'qtd_itens' where it is not associated with a value
+2025-08-12 09:27:05 | Itens: 372 | Tempo: 1.26s | Status: sucesso
+2025-08-12 09:27:05 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 09:27:46 | Itens: 372 | Tempo: 1.10s | Status: sucesso
+2025-08-12 09:27:46 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 09:31:25 | Itens: 372 | Tempo: 0.90s | Status: sucesso
+2025-08-12 09:31:25 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 09:36:09 | Itens: 372 | Tempo: 0.93s | Status: sucesso
+2025-08-12 09:36:58 | Itens: 50 | Tempo: 0.28s | Status: sucesso
+2025-08-12 09:37:11 | Itens: 50 | Tempo: 0.29s | Status: sucesso
+2025-08-12 09:37:53 | Itens: 1 | Tempo: 0.08s | Status: sucesso
+2025-08-12 09:37:59 | Itens: 1 | Tempo: 0.07s | Status: sucesso
+2025-08-12 09:38:19 | Itens: 488 | Tempo: 2.71s | Status: sucesso
+2025-08-12 09:51:54 | Itens: 20 | Tempo: 0.25s | Status: sucesso
+2025-08-12 09:55:38 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Colunas faltando: EAN, NOMEE-COMMERCE, DESCRICAOHTML, MODMPZ, COR
+2025-08-12 09:55:52 | Itens: 136 | Tempo: 0.96s | Status: sucesso
+2025-08-12 10:09:50 | Itens: 36 | Tempo: 0.27s | Status: sucesso
+2025-08-12 10:09:56 | Itens: 4 | Tempo: 0.09s | Status: sucesso
+2025-08-12 10:10:15 | Itens: 1033 | Tempo: 5.05s | Status: sucesso
+2025-08-12 10:11:22 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Colunas faltando: EAN, NOMEE-COMMERCE, DESCRICAOHTML, MODMPZ, COR
+2025-08-12 10:11:32 | Itens: 372 | Tempo: 0.94s | Status: sucesso
+2025-08-12 10:16:57 | Itens: 372 | Tempo: 1.09s | Status: sucesso
+2025-08-12 10:50:47 | Itens: 372 | Tempo: 0.92s | Status: sucesso
+2025-08-12 11:16:34 | Itens: 50 | Tempo: 0.31s | Status: sucesso
+2025-08-12 11:22:10 | Itens: 50 | Tempo: 0.29s | Status: sucesso
+2025-08-12 11:22:39 | Itens: 20 | Tempo: 0.19s | Status: sucesso
+2025-08-12 11:22:54 | Itens: 1033 | Tempo: 4.94s | Status: sucesso
+2025-08-12 11:23:26 | Itens: 36 | Tempo: 0.24s | Status: sucesso
+2025-08-12 11:23:43 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Colunas faltando: EAN, NOMEE-COMMERCE, DESCRICAOHTML, MODMPZ, COR
+2025-08-12 11:41:52 | Itens: 36 | Tempo: 0.23s | Status: sucesso
+2025-08-12 11:42:15 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Colunas faltando: EAN, NOMEE-COMMERCE, DESCRICAOHTML, MODMPZ, COR
+2025-08-12 11:43:25 | Itens: 13778 | Tempo: 51.39s | Status: sucesso
+2025-08-12 13:43:30 | Itens: 372 | Tempo: 0.90s | Status: sucesso
+2025-08-12 13:49:16 | Itens: 22 | Tempo: 0.21s | Status: sucesso
+2025-08-12 13:49:39 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Colunas faltando: EAN, NOMEE-COMMERCE, DESCRICAOHTML, MODMPZ, COR
+2025-08-12 14:51:13 | Itens: 34 | Tempo: 0.20s | Status: sucesso
+2025-08-12 15:19:23 | Itens: 34 | Tempo: 0.22s | Status: sucesso
+2025-08-12 16:08:29 | Itens: 84 | Tempo: 0.45s | Status: sucesso

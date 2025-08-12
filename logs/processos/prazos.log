@@ -1,0 +1,78 @@
+2025-08-12 08:46:50 | Itens: 0 | Tempo: 0.00s | Status: ERRO: not enough values to unpack (expected 4, got 2)
+2025-08-12 08:48:57 | Itens: 0 | Tempo: 0.00s | Status: ERRO: not enough values to unpack (expected 4, got 2)
+2025-08-12 08:56:34 | Itens: 0 | Tempo: 0.00s | Status: ERRO: too many values to unpack (expected 4)
+2025-08-12 09:56:32 | Itens: 0 | Tempo: 0.00s | Status: ERRO: not enough values to unpack (expected 4, got 2)
+2025-08-12 10:07:05 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:07:46 | Itens: 0 | Tempo: 0.00s | Status: ERRO: 'COD BARRA'
+2025-08-12 10:13:19 | Itens: 14705 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:13:37 | Itens: 737 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:13:57 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:14:30 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Não foi possível identificar o marketplace pelo formato do arquivo
+2025-08-12 10:14:51 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Não foi possível identificar o marketplace pelo formato do arquivo
+2025-08-12 10:15:57 | Itens: 14724 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:44:49 | Itens: 14724 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:51:37 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 10:53:10 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:45:58 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:47:28 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:54:36 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:54:36 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 11:55:30 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:55:30 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 11:55:49 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:56:58 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:59:44 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 11:59:44 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 13:23:09 | Itens: 16574 | Tempo: 0.00s | Status: sem divergências
+2025-08-12 13:23:09 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 13:44:03 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:46:18 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:46:18 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 13:46:40 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:47:20 | Itens: 0 | Tempo: 0.00s | Status: ERRO: 'COD BARRA'
+2025-08-12 13:47:43 | Itens: 737 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:50:17 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:50:17 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 13:50:41 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 13:59:40 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 14:02:15 | Itens: 14730 | Tempo: 0.00s | Status: sucesso
+2025-08-12 14:38:12 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 14:38:12 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 14:38:36 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 14:38:36 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 14:38:54 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 14:38:54 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 14:39:08 | Itens: 90 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:09:49 | Itens: 90 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:10:10 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:10:10 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 15:11:58 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:11:58 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 15:12:07 | Itens: 90 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:12:58 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:12:58 | Itens: 0 | Tempo: 0.00s | Status: ERRO: Lista de itens vazia
+2025-08-12 15:13:11 | Itens: 90 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:15:56 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:29:27 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:29:52 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:30:31 | Itens: 0 | Tempo: 0.00s | Status: ERRO: 'COD BARRA'
+2025-08-12 15:31:07 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:34:03 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:39:48 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:41:35 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:42:02 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:45:23 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:45:40 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:46:48 | Itens: 8333 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:47:24 | Itens: 697 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:48:42 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:49:54 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:50:54 | Itens: 12606 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:53:53 | Itens: 12606 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:54:32 | Itens: 12606 | Tempo: 0.00s | Status: sucesso
+2025-08-12 15:54:54 | Itens: 12606 | Tempo: 0.00s | Status: sucesso
+2025-08-12 16:09:05 | Itens: 12606 | Tempo: 0.00s | Status: sucesso
+2025-08-12 16:09:30 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 16:09:52 | Itens: 16574 | Tempo: 0.00s | Status: sucesso
+2025-08-12 16:11:13 | Itens: 14758 | Tempo: 0.00s | Status: sucesso
+2025-08-12 16:13:15 | Itens: 14759 | Tempo: 0.00s | Status: sucesso

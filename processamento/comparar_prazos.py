@@ -63,7 +63,7 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
             raise ValueError("Não foi possível identificar o marketplace pelo formato do arquivo")
         
         # Obter configurações do marketplace
-        marketplace_config = MAPA_MARKETPLACES[marketplace_nome]
+        marketplace_config = MAPA_MARKETPLACES[marketplace_nome]  # <-- Definição aqui
         
         # 3. Comparar os dados
         df_resultado = comparar_dados(df_erp, df_market, marketplace_nome)
@@ -72,16 +72,17 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
         divergencias = df_resultado[df_resultado['DIFERENCA_PRAZO'] != 0].copy()
         
         # 5. Gerar logs e resumo
-        log = gerar_log(df_resultado, marketplace_nome)
-        resumo = gerar_resumo(df_resultado, marketplace_nome)
+        log = gerar_log(df_resultado, marketplace_nome)  # <-- Definição aqui
+        resumo = gerar_resumo(df_resultado, marketplace_nome)  # <-- Definição aqui
         
         # 6. Salvar resultado
-        nome_arquivo = f"divergencias_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        nome_arquivo = f"divergencias_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"  # <-- Definição aqui
         caminho = os.path.join(pasta_upload, nome_arquivo)
         
         cols_saida = ['COD_COMPARACAO', 'DIAS_PRAZO_ERP', 'DIAS_PRAZO_MARKETPLACE', 'DIFERENCA_PRAZO']
         divergencias[cols_saida].to_excel(caminho, index=False)
         
+        # 7. Retornar resultado (TODAS AS VARIÁVEIS JÁ DEFINIDAS)
         return {
             'sucesso': True,
             'arquivo': nome_arquivo,
@@ -91,9 +92,7 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
             'resumo': resumo,
             'marketplace': {
                 'nome': marketplace_nome,
-                'imagem': marketplace_config['imagem'],
-                # DEBUG - Adicione isso temporariamente
-            'debug_info': f"Arquivo esperado: static/img/{marketplace_config['imagem']}"
+                'imagem': f"/static/img/{marketplace_config['imagem']}"  # Caminho completo
             }
         }
         
@@ -102,6 +101,7 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
             'sucesso': False,
             'erro': str(e)
         }
+    
 
 def ler_arquivo(arquivo):
     """Função robusta para ler tanto Excel quanto CSV"""
@@ -214,9 +214,9 @@ def gerar_log(df, marketplace):
     """Gera o conteúdo do log para exibição na interface"""
     divergencias = df[df['DIFERENCA_PRAZO'] != 0]
     log_lines = [
-        f"<span style='color: blue; font-weight: bold;'>Marketplace: {marketplace}</span>",
-        f"<span style='color: green;'>Anuncios Analisados: {len(df)}</span>",
-        f"<span style='color: orange;'>Anuncios com Divergência: {len(divergencias)}</span>",
+       # f"<span style='color: blue; font-weight: bold;'>Marketplace: {marketplace}</span>",
+        f"<span style='color: black; font-weight: bold;font-size: 20px'>Anuncios Analisados: {len(df)}</span>",
+        f"<span style='color: red;font-weight: bold; font-size: 25px'>Anuncios com Divergência: {len(divergencias)}</span>",
        # "<hr>",
        # "<strong>PRINCIPAIS DIVERGÊNCIAS:</strong>"
     ]

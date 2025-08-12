@@ -292,19 +292,38 @@ class ExtratorAtributos:
         self.logs.append(log_entry)
         logger.info(log_entry) if tipo == "info" else logger.error(log_entry)
 
-def extrair_atributos_processamento(caminho_arquivo: str) -> Tuple[str, int, float]:
+def extrair_atributos_processamento(caminho_arquivo: str) -> Tuple[str, int, float, list]:
     """Função pública para integração com Flask"""
     extrator = ExtratorAtributos()
     try:
         caminho_saida, qtd_itens, tempo_segundos = extrator.processar_arquivo(caminho_arquivo)
         
+        # Obter os dados reais processados
+        itens_processados = []
+        df_resultado = pd.read_excel(caminho_saida)  # Lê o arquivo gerado
+        
+        for _, row in df_resultado.iterrows():
+            itens_processados.append({
+                    'ean': str(row['EAN']),
+                    'nome': row['Nome'],
+                    'atributos_extraidos': {
+                    'largura': row['Largura'],
+                    'altura': row['Altura'],
+                    'profundidade': row['Profundidade'],
+                    'peso': row['Peso'],
+                    # Adicione outros atributos conforme necessário
+                },
+                'status': 'sucesso'  # Ou defina status baseado em alguma regra
+            })
+        
         # Salva logs em arquivo
         with open('uploads/logs_atributos.txt', 'w', encoding='utf-8') as f:
             f.write("\n".join(extrator.logs))
         
-        return caminho_saida, qtd_itens, tempo_segundos
+        return caminho_saida, qtd_itens, tempo_segundos, itens_processados
+        
     except Exception as e:
-        # Garante que o erro seja registrado mesmo que ocorra falha
+        # Garante que o erro seja registrado
         with open('uploads/logs_atributos.txt', 'a', encoding='utf-8') as f:
             f.write(f"\nERRO: {str(e)}")
         raise

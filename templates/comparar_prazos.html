@@ -26,7 +26,7 @@
   <!-- Área de Log -->
   <div class="mt-4">
     <h5>Log de Processamento:</h5>
-    <div id="logContainer" class="bg-light p-3 rounded" style="height: 200px; overflow-y: auto;">
+    <div id="logContainer" class="bg-light p-3 rounded" style="height: 300px; overflow-y: auto; font-size: 1.1em;">
       <span class="text-muted">Aguardando processamento...</span>
     </div>
   </div>
@@ -94,17 +94,33 @@
         
         if (!response.ok) throw new Error(data.message || 'Erro no processamento');
 
-        // Atualizar interface
-        if (data.log) logContainer.innerHTML = data.log;
-        
-        if (data.arquivo_gerado) {
-           downloadContainer.innerHTML = `
-            <a href="/uploads/${data.arquivo_gerado}" 
-              class="btn btn-success pulse-animation">
-              <i class="fas fa-download"></i> BAIXAR RESULTADO
-            </a>
-          `;
+        // Atualizar interface - VERSÃO CORRIGIDA:
+        if (data.arquivo) {
+            downloadContainer.innerHTML = `
+                <a href="/uploads/${data.arquivo}" 
+                   class="btn btn-success">
+                   <i class="fas fa-download"></i> BAIXAR RESULTADO
+                </a>
+            `;
         }
+
+         if (data.divergencias === 0) {
+    logContainer.innerHTML = `
+    <div class="d-flex align-items-center mb-3">
+        <img src="${data.marketplace.imagem}" width="120" class="me-3" style="height: auto;">  <!-- Aumentei para 80px -->
+        <h4 class="m-0">${data.marketplace.nome}</h4>  <!-- Nome em h4 para destacar -->
+    </div>
+    ${data.log || ''}
+`;
+} else {
+    logContainer.innerHTML = `
+        <div class="mb-3">
+            <img src="${data.marketplace.imagem}" width="120" class="me-2">
+            <strong>${data.marketplace.nome}</strong>
+        </div>
+        ${data.log || ''}
+    `;
+}
 
         // Feedback visual de conclusão
         clearInterval(interval);
@@ -174,27 +190,7 @@ document.querySelectorAll('.file-drop-area').forEach(dropArea => {
         input.dispatchEvent(new Event('change'));
     });
 });
-
-// Adicione feedback visual durante o upload
-document.getElementById('compararForm').addEventListener('submit', function() {
-    const progressBar = document.createElement('div');
-    progressBar.className = 'progress mt-3';
-    progressBar.innerHTML = `
-        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-             role="progressbar" style="width: 0%"></div>
-    `;
-    this.appendChild(progressBar);
-    
-    // Simular progresso (substitua por progresso real se possível)
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 5;
-        progressBar.querySelector('.progress-bar').style.width = `${progress}%`;
-        if (progress >= 100) clearInterval(interval);
-    }, 300);
-});
 </script>
-
 <style>
 .file-drop-area {
     border: 2px dashed #dee2e6;
@@ -212,6 +208,18 @@ document.getElementById('compararForm').addEventListener('submit', function() {
 }
 .file-msg {
     cursor: pointer;
+}
+.log-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.log-container .alert {
+    margin-bottom: 10px;
 }
 </style>
 {% endblock %}

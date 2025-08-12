@@ -32,22 +32,31 @@ function mostrarProcessando() {
 </script>
 <div class="row mt-4">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5>Histórico de Processos</h5>
-            </div>
-            <div class="card-body log-container">
+    <div class="card">
+        <div class="card-header">
+            <h5>Histórico de Processos</h5>
+        </div>
+        <div class="card-body p-2">  <!-- Reduzi o padding -->
+            <div class="log-container" 
+                 style="height: calc(1.5em * 6 + 6px);  /* 3 linhas */
+                        line-height: 1.5em;          /* Altura da linha */
+                        overflow-y: auto;            /* Barra de rolagem vertical */
+                        font-size: 0.85rem;         /* Tamanho menor da fonte */
+                        border: 1px solid #dee2e6;  /* Borda sutil */
+                        border-radius: 4px;
+                        padding: 2px 8px;">
                 {% if historico_processos %}
                     {% for processo in historico_processos %}
-                        <div class="log-entry">{{ processo }}</div>
+                        <div class="log-entry mb-1">{{ processo }}</div>
                     {% endfor %}
                 {% else %}
-                    <p>Nenhum processo registrado</p>
+                    <div class="text-muted">Nenhum processo registrado</div>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+</div>
+    <div class="col-md-4">
         <div class="card">
             <div class="card-header">
                 <h5>Log de Processamento</h5>
