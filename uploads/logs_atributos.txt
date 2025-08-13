@@ -1,88 +1,112 @@
-[16:08:28] Iniciando processamento em 12/08/2025 16:08:28
-[16:08:28] Carregando arquivo: Planilha_Online_KITS.xlsx
-[16:08:28] Processado: Armário de Cozinha Aéreo 2 Portas 80cm Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Aéreo 2 Portas 80cm Minsk Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha 80cm 2 Portas de Vidro Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Aéreo 2 Portas 120cm Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Aéreo 2 Portas 120cm Minsk Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha 120cm 2 Portas de Vidro Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário Aéreo de Canto Reto Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário Aéreo de Canto Reto Minsk Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 80cm 2 Portas Minsk Vanilla Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 80cm 2 Portas Minsk Branco Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Canto Reto Com Tampo e Painel 94cm Minsk Vanilla Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Canto Reto Com Tampo e Painel 94cm Minsk Branco Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Vanilla/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Branco/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro Cozinha Torre Quente Duplo Minsk Branco/Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro Cristaleira 2 Portas 38cm Minsk Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro de Cozinha 3 Portas Minsk Vanilla/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro de Cozinha 3 Portas Minsk Branco/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro de Cozinha 3 Portas Minsk Branco/Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro de Cozinha Portas de Vidro Minsk Vanilla/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Paneleiro de Cozinha Portas de Vidro Minsk Branco/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Vanilla/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Branco/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP05 Com Tampo 120cm Minsk Branco/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP06 Com Tampo 120cm Minsk Branco/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP07 Com Tampo 120cm Minsk Vanilla/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha CP08 Com Tampo 120cm Minsk Branco/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Nogueira/Off White Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 221cm Vivian Nogueira/Off White Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 221cm Vivian Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 221cm Vivian Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 221cm Vivian Nogueira/Off White Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 221cm Vivian Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 221cm Vivian Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 91cm Vivian Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 221cm Vivian Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 221cm Vivian Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 221cm Vivian Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 221cm Vivian Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 132cm Stella Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 132cm Stella Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 132cm Stella Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 180cm Turim Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 180cm Turim Plus Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 121cm Pádua Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 121cm Pádua Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 90cm Bruna Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 90cm Bruna Plus Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 121cm Bruna Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 121cm Bruna Plus Freijó/Supremo Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 120cm Louis Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 120cm Louis Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 251cm Louis Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 251cm Louis Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 251cm Louis Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 251cm Louis Plus Freijó/Gris Z06 - Mpozenato
-[16:08:28] Processado: TAMPO 1200 MDF 12MM - COMPONENTE - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 3 Portas Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Sem Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Balcão de Cozinha Com Pia 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 251cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Armário de Cozinha Compacta 251cm Laura Plus Freijó Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 251cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Com Balcão 251cm Laura Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Sem Tampo Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Sem Tampo Laura Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Com Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Com Tampo 120cm Laura Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Com Pia 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
-[16:08:28] Processado: Cozinha Compacta Balcão Com Pia 120cm Laura Plus Freijó/Soft Z06 - Mpozenato
-[16:08:28] Processado: Mesa Bancada Gourmet Para Cozinha Salt Branco Z06 - Mpozenato
-[16:08:28] Processado: Mesa Bancada Gourmet Para Cozinha Salt Preto Z06 - Mpozenato
-[16:08:28] Processado: Mesa Bancada Gourmet Cantinho do Café Salt Branco Z06 - Mpozenato
-[16:08:28] Processado: Mesa Bancada Gourmet Cantinho do Café Salt Preto Z06 - Mpozenato
-[16:08:28] Processado: Estante Escrivaninha Para Escritório Home Office Salt Branco Z06 - Mpozenato
-[16:08:28] Processado: Estante Escrivaninha Para Escritório Home Office Salt Preto Z06 - Mpozenato
-[16:08:28] Processado: Estante Escrivaninha Com Mesa Bancada Retrátil Salt Branco Z06 - Mpozenato
-[16:08:28] Processado: Estante Escrivaninha Com Mesa Bancada Retrátil Salt Preto Z06 - Mpozenato
-[16:08:28] Processado: Mesa Escrivaninha Bancada de Estudos Para Quarto Salt Branco Z06 - Mpozenato
-[16:08:28] Processado: Mesa Escrivaninha Bancada de Estudos Para Quarto Salt Preto Z06 - Mpozenato
-[16:08:28] Arquivo gerado: Atributos_Extraidos_20250812_160828.xlsx
-[16:08:28] Processamento concluído - 84 itens em 0.45s
+[15:13:38] Iniciando processamento em 13/08/2025 15:13:38
+[15:13:38] Carregando arquivo: Planilha_Online_AB.xlsx
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Sintético Caramelo A14     - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Sintético Preto A14        - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Sintético Verde A14        - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Caramelo/Areia A14   - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Caramelo/Cinza A14   - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Cinza/Preto A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Cinza A14            - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Milli Linho Areia A14            - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Sintético Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Sintético Preto A14   - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Sintético Verde A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Cinza/Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Cinza A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 2 Milli Linho Areia A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Sintético Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Sintético Preto A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Sintético Verde A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Cinza/Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Cinza A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 4 Milli Linho Areia A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Sintético Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Sintético Preto A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Sintético Verde A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Cinza/Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Cinza A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 6 Milli Linho Areia A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Sintético Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Sintético Preto A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Sintético Verde A14  - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Cinza/Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Cinza A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 8 Milli Linho Areia A14      - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Sintético Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Sintético Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Sintético Verde A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Cinza/Preto A14 - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Cinza A14     - Mpozenato
+[15:13:38] Processado: Banqueta Alta Bar Estofada Kit 10 Milli Linho Areia A14     - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Sintético Caramelo A14         - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Sintético Preto A14            - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Sintético Verde A14            - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Grafite/Caramelo A14     - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Caramelo/Areia A14       - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Caramelo/Cinza A14       - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Cinza/Preto A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Cinza A14                - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Milli Linho Areia A14                - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Sintético Caramelo A14   - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Sintético Preto A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Sintético Verde A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Cinza/Preto A14    - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Cinza A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 2 Milli Linho Areia A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Sintético Caramelo A14   - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Sintético Preto A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Sintético Verde A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Cinza/Preto A14    - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Cinza A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 4 Milli Linho Areia A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Sintético Caramelo A14   - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Sintético Preto A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Sintético Verde A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Cinza/Preto A14    - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Cinza A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 6 Milli Linho Areia A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Sintético Caramelo A14   - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Sintético Preto A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Sintético Verde A14      - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Cinza/Preto A14    - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Cinza A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 8 Milli Linho Areia A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Sintético Caramelo A14  - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Sintético Preto A14     - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Sintético Verde A14     - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Grafite/Caramelo A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Caramelo/Areia A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Caramelo/Cinza A14 - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Cinza/Preto A14   - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Cinza A14          - Mpozenato
+[15:13:38] Processado: Banqueta Cozinha Média Kit 10 Milli Linho Areia A14         - Mpozenato
+[15:13:38] Arquivo gerado: Atributos_Extraidos_20250813_151338.xlsx
+[15:13:38] Processamento concluído - 108 itens em 0.59s

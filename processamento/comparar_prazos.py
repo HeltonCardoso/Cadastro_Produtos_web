@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from flask import current_app as app  # Acesso ao Flask app
+from flask import current_app as app
 
 # Configuração dos marketplaces (mantida do seu código original)
 MAPA_MARKETPLACES = {
@@ -102,7 +102,6 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
             'erro': str(e)
         }
     
-
 def ler_arquivo(arquivo):
     """Função robusta para ler tanto Excel quanto CSV"""
     try:
@@ -217,22 +216,7 @@ def gerar_log(df, marketplace):
        # f"<span style='color: blue; font-weight: bold;'>Marketplace: {marketplace}</span>",
         f"<span style='color: black; font-weight: bold;font-size: 20px'>Anuncios Analisados: {len(df)}</span>",
         f"<span style='color: red;font-weight: bold; font-size: 25px'>Anuncios com Divergência: {len(divergencias)}</span>",
-       # "<hr>",
-       # "<strong>PRINCIPAIS DIVERGÊNCIAS:</strong>"
     ]
-    
-    # Adiciona as top 10 divergências
-   # for _, row in divergencias.head(10).iterrows():
-    #    cor = "red" if row['DIFERENCA_PRAZO'] > 0 else "blue"
-     #   log_lines.append(
-    
-      #      f"<span style='color: {cor}'>"
-       #     f"EAN/SKU: {row['COD_COMPARACAO']} | "
-        #    f"ERP: {row['DIAS_PRAZO_ERP']}d | "
-         #   f"Marketplace: {row['DIAS_PRAZO_MARKETPLACE']}d | "
-          #  f"Diferença: <strong>{row['DIFERENCA_PRAZO']}d</strong>"
-          #  "</span>"
-       # )
     
     return "<br>".join(log_lines)
 
@@ -242,13 +226,8 @@ def gerar_resumo(df, marketplace):
     total_divergencias = len(df[df['DIFERENCA_PRAZO'] != 0])
     pct_divergencias = (total_divergencias / total_itens * 100) if total_itens > 0 else 0
     
-   # maior_diferenca_positiva = df['DIFERENCA_PRAZO'].max()
-   # maior_diferenca_negativa = df['DIFERENCA_PRAZO'].min()
-    
     return (
         f"<strong>Marketplace:</strong> {marketplace}<br>"
         f"<strong>Itens analisados:</strong> {total_itens}<br>"
         f"<strong>Itens com divergência:</strong> {total_divergencias} ({pct_divergencias:.1f}%)<br>"
-       # f"<strong>Maior atraso no ERP:</strong> {abs(maior_diferenca_negativa)} dias<br>"
-       # f"<strong>Maior atraso no Marketplace:</strong> {maior_diferenca_positiva} dias"
     )

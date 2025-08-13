@@ -12,9 +12,6 @@ import logging
 warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed")
 
 logger = logging.getLogger('cadastro')  # Usa o nome correspondente
-
-def executar_processamento():
-    logger.info("Iniciando processamento...")
     
 def copiar_validacoes(worksheet):
     return list(worksheet.data_validations.dataValidation)
@@ -115,10 +112,18 @@ def executar_processamento(planilha_origem, planilha_destino):
         ])
 
         if tipo_produto == "KIT" and pd.notna(componentes):
-            for comp in str(componentes).split("/"):
+            # Conta a quantidade de cada componente no campo EANCOMPONENTES
+            componentes_list = str(componentes).split("/")
+            componentes_contados = {}
+            
+            for comp in componentes_list:
                 comp_ean = comp.strip()
+                componentes_contados[comp_ean] = componentes_contados.get(comp_ean, 0) + 1
+            
+            # Adiciona cada componente com sua quantidade correta
+            for comp_ean, quantidade in componentes_contados.items():
                 nome_componente = produto_dict.get(comp_ean, "Desconhecido")
-                dados_sheets["KIT"].append([ean, comp_ean, nome_componente, "1", "", "0"])
+                dados_sheets["KIT"].append([ean, comp_ean, nome_componente, str(quantidade), "", "0"])  
 
         for i in range(volumes):
             if volumes == 1:

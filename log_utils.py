@@ -59,7 +59,7 @@ def obter_historico_processos(modulo, dias=30):
     return historico
 
 def contar_processos_hoje(modulo):
-    """Conta processos executados hoje para um módulo"""
+    """Conta processos do dia (versão original, sem parâmetro padrão)."""
     hoje = datetime.now().strftime("%Y-%m-%d")
     count = 0
     log_file = f"logs/processos/{modulo}.log"

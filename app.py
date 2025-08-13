@@ -20,6 +20,7 @@ from log_utils import (
     contar_processos_hoje
 )
 
+
 # Configura os loggers
 configure_loggers()
 
@@ -36,6 +37,15 @@ os.makedirs("logs/itens/prazos", exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # Rotas atualizadas com loggers específicos
+@app.route("/uploads/<filename>")
+def baixar_arquivo(filename):
+    """Rota para download de arquivos - DEVE ESTAR SEMPRE ATIVA"""
+    return send_from_directory(
+        directory=app.config['UPLOAD_FOLDER'],
+        path=filename,
+        as_attachment=True
+    )
+
 @app.route('/')
 def home():
     logger = get_logger('main')
@@ -447,33 +457,10 @@ def comparar_prazos():
                          historico_processos=obter_historico_processos("prazos"),
                          processos_hoje=contar_processos_hoje("prazos"))
 
-@app.route("/uploads/<filename>")
-def baixar_arquivo(filename):
-    """Rota para download de arquivos"""
-    return send_from_directory(
-        directory=app.config['UPLOAD_FOLDER'],
-        path=filename,
-        as_attachment=True
-    )
-
-# Funções auxiliares
-def format_time(seconds):
-
-    minutes = int(seconds // 60)
-    seconds = int(seconds % 60)
-    return f"{minutes}m {seconds}s"
-
 def contar_processos_hoje(modulo="cadastro"):
-    hoje = datetime.now().strftime("%Y-%m-%d")
-    count = 0
-    log_file = f"logs/processos/{modulo}.log"  # Usa o módulo para determinar o arquivo
-    
-    if os.path.exists(log_file):
-        with open(log_file, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith(hoje):
-                    count += 1
-    return count
+    """Função local necessária para o template (não remova!)."""
+    from log_utils import contar_processos_hoje as contar_logs  # Importa a função original
+    return contar_logs(modulo)  # Delega para a função de log_utils.py
 
 @app.context_processor
 def inject_stats():
@@ -482,41 +469,12 @@ def inject_stats():
         'now': datetime.now()
     }
 
-def registrar_processo(modulo="cadastro", qtd_itens=0, tempo_execucao=0, status="sucesso"):
-    """Registra uma execução no log de processos"""
-    log_dir = "logs/processos"
-    os.makedirs(log_dir, exist_ok=True)
-    
-    with open(f"{log_dir}/{modulo}.log", "a", encoding="utf-8") as f:
-        f.write(
-            f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | "
-            f"Itens: {qtd_itens} | "
-            f"Tempo: {tempo_execucao:.2f}s | "
-            f"Status: {status}\n"
-        )
-
-def registrar_produtos(produtos):
-    """Registra os produtos processados em arquivo por data"""
-    data_dir = datetime.now().strftime("%Y-%m-%d")
-    log_dir = f"logs/produtos/{data_dir}"
-    os.makedirs(log_dir, exist_ok=True)
-    
-    log_file = f"{log_dir}/processamento_{datetime.now().strftime('%H%M%S')}.log"
-    
-    with open(log_file, "w", encoding="utf-8") as f:
-        f.write(f"=== Processamento em {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} ===\n")
-        f.write(f"Total de produtos: {len(produtos)}\n\n")
-        f.write("Lista de produtos:\n")
-        for produto in produtos:
-            f.write(f"{produto['ean']} - {produto['nome']}\n")
-    
-    return log_file
-
 def format_time(seconds):
     """Formata segundos em minutos e segundos"""
     minutes = int(seconds // 60)
     seconds = int(seconds % 60)
     return f"{minutes}m {seconds}s"
+
 
 @app.errorhandler(500)
 def handle_500_error(e):
