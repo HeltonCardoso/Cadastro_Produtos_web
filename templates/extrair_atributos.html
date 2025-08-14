@@ -17,10 +17,16 @@
 
     <div class="d-flex align-items-center gap-2 mt-3">
       <button id="btnProcessar" type="submit" class="btn btn-primary">EXTRAIR ATRIBUTOS</button>
-      {% if arquivo_gerado %}
-        <a href="{{ url_for('baixar_arquivo', filename=arquivo_gerado) }}" class="btn btn-success">📥 BAIXAR PLANILHA XLSX</a>
-      {% endif %}
-    </div>
+      {% if nome_arquivo_saida is not none %}
+        <div class="alert alert-success mt-3">
+            Processamento concluído com sucesso!
+            <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
+              class="btn btn-primary ml-3">
+              Baixar Arquivo Processado
+            </a>
+        </div>
+        {% endif %}
+            </div>
   </form>
 
   <!-- Script de Processamento (MESMO código) -->
@@ -32,23 +38,24 @@
     }
   </script>
 
-  <div class="col-md-8 mt-3">
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Log de Processamento</h5>
-        </div>
-        <div class="card-body p-2">
-            <div class="log-container bg-light p-2 rounded" 
-                 style="height: calc(1.5em * 6 + 12px);
-                        overflow-y: auto;
-                        font-family: monospace;
-                        font-size: 0.85rem;">
-                {{ log|safe }}
-            </div>
-            <div class="mt-2 text-end small">
-                Total processado: <strong>{{ qtd_itens }}</strong> itens
-            </div>
-        </div>
+  <!-- Seção do Histórico de Processos -->
+<div class="card mt-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Histórico de Processos</h5>
+    </div>
+    <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+        {% if historico_processos %}
+            <ul class="list-unstyled">
+                {% for processo in historico_processos %}
+                <li class="mb-2">{{ processo }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Nenhum processo registrado ainda.</p>
+        {% endif %}
+    </div>
+    <div class="card-footer text-muted">
+        Total hoje: {{ processos_hoje }} processos
     </div>
 </div>
 

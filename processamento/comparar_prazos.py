@@ -53,6 +53,10 @@ MAPA_MARKETPLACES = {
 
 def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
     try:
+        # Verifica se os arquivos são válidos
+        if arquivo_erp is None or arquivo_marketplace is None:
+            raise ValueError("Arquivo(s) inválido(s) recebido(s)")
+
         # 1. Ler ambos os arquivos
         df_erp = ler_arquivo(arquivo_erp)
         df_market = ler_arquivo(arquivo_marketplace)
@@ -85,17 +89,15 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
         # 7. Retornar resultado (TODAS AS VARIÁVEIS JÁ DEFINIDAS)
         return {
             'sucesso': True,
-            'arquivo': nome_arquivo,
+            'arquivo': nome_arquivo,  # Nome do arquivo gerado
             'total_itens': len(df_resultado),
             'divergencias': len(divergencias),
-            'log': log,
-            'resumo': resumo,
+            'log': gerar_log(df_resultado, marketplace_nome),
             'marketplace': {
                 'nome': marketplace_nome,
-                'imagem': f"/static/img/{marketplace_config['imagem']}"  # Caminho completo
+                'imagem': f"/static/img/{marketplace_config['imagem']}"
             }
         }
-        
     except Exception as e:
         return {
             'sucesso': False,
@@ -103,50 +105,52 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
         }
     
 def ler_arquivo(arquivo):
-    """Função robusta para ler tanto Excel quanto CSV"""
-    try:
-        # Garantir que a pasta de upload existe
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    """Função robusta para ler arquivos Excel/CSV"""
+    if arquivo is None or arquivo.filename == '':
+        raise ValueError("Nenhum arquivo foi enviado ou arquivo inválido")
 
-        # Criar caminho seguro para o arquivo temporário
+    try:
+        # Verifica se é um objeto de arquivo válido
+        if not hasattr(arquivo, 'filename') or not hasattr(arquivo, 'save'):
+            raise ValueError("Objeto de arquivo inválido")
+
+        # Cria pasta de upload se não existir
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        
+        # Cria caminho seguro
         temp_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(arquivo.filename))
+        
+        # Salva o arquivo temporariamente
         arquivo.save(temp_path)
         
-        if arquivo.filename.lower().endswith('.csv'):
-            # Primeiro detectar o delimitador
-            with open(temp_path, 'r', encoding='latin1') as f:
-                first_lines = [f.readline() for _ in range(5)]
-            
-            # Verificar delimitadores comuns
-            for delim in [';', ',', '\t', '|']:
-                if delim in first_lines[0]:
-                    df = pd.read_csv(temp_path, delimiter=delim, encoding='latin1', 
-                                   on_bad_lines='skip', dtype=str)
-                    break
-            else:
-                # Se nenhum delimitador for óbvio, tentar automático
-                df = pd.read_csv(temp_path, encoding='latin1', 
-                               sep=None, engine='python', dtype=str)
-            
-        elif arquivo.filename.lower().endswith(('.xls', '.xlsx')):
-            df = pd.read_excel(temp_path, dtype=str)
+        # Verifica se o arquivo foi salvo
+        if not os.path.exists(temp_path):
+            raise ValueError("Falha ao salvar arquivo temporário")
+
+        # Processa conforme a extensão
+        if arquivo.filename.lower().endswith('.xlsx'):
+            df = pd.read_excel(temp_path, engine='openpyxl', dtype=str)
+        elif arquivo.filename.lower().endswith('.xls'):
+            try:
+                df = pd.read_excel(temp_path, engine='xlrd', dtype=str)
+            except:
+                # Fallback para openpyxl se xlrd falhar
+                df = pd.read_excel(temp_path, engine='openpyxl', dtype=str)
+        elif arquivo.filename.lower().endswith('.csv'):
+            df = pd.read_csv(temp_path, encoding='latin1', sep=None, engine='python', dtype=str)
         else:
             raise ValueError("Formato de arquivo não suportado")
-        
-        # Remover arquivo temporário
+
+        # Remove arquivo temporário
         os.remove(temp_path)
         
-        # Converter colunas numéricas
-        for col in df.columns:
-            if any(keyword in col.lower() for keyword in ['prazo', 'dias', 'dia', 'entrega']):
-                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
-        
         return df
-        
+
     except Exception as e:
-        if os.path.exists(temp_path):
+        # Limpeza em caso de erro
+        if 'temp_path' in locals() and os.path.exists(temp_path):
             os.remove(temp_path)
-        raise ValueError(f"Erro ao ler arquivo {arquivo.filename}: {str(e)}")
+        raise ValueError(f"Erro ao processar arquivo {arquivo.filename if arquivo else 'None'}: {str(e)}")
 
 def identificar_marketplace(df):
     """Identifica o marketplace baseado nas colunas presentes"""

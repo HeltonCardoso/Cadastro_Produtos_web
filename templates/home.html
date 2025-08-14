@@ -22,6 +22,7 @@
             <span class="text-success">{{ processos_sucesso }} sucesso(s)</span> | 
             <span class="text-danger">{{ processos_erro }} erro(s)</span>
           </small>
+          <p class="mt-2">Itens Processados: {{ total_itens_sucesso }} (Sucesso) | {{ total_itens_erro }} (Erro)</p>
         </div>
       </div>
     </div>
@@ -51,7 +52,7 @@
       </div>
     </div>
 
-    <!-- Cartão 3: Última Execução -->
+    <!-- Cartão 3: Último Processamento -->
     <div class="col-md-3 mb-4">
       <div class="card text-center shadow h-100">
         <div class="card-header bg-warning text-dark">
@@ -121,21 +122,42 @@
 <!-- JavaScript para os gráficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Gráfico de processamentos por dia
 const ctx1 = document.getElementById('graficoProcessamentos').getContext('2d');
-new Chart(
-  document.getElementById('graficoProcessamentos'), 
-  {
-    type: 'bar',
-    data: {
-      labels: {{ datas_grafico|tojson|safe }},
-      datasets: [{
-        label: 'Processamentos',
-        data: {{ valores_grafico|tojson|safe }},
-        backgroundColor: 'rgba(54, 162, 235, 0.7)'
-      }]
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: {{ datas_grafico|tojson|safe }},
+    datasets: [
+      {
+        label: 'Cadastro',
+        data: {{ (valores_grafico.cadastro if valores_grafico.cadastro is defined else [])|tojson|safe }},
+        backgroundColor: 'rgba(54, 162, 235, 0.7)', // Azul
+        stack: 'Stack 0'
+      },
+      {
+        label: 'Atributos',
+        data: {{ (valores_grafico.atributos if valores_grafico.atributos is defined else [])|tojson|safe }},
+        backgroundColor: 'rgba(255, 99, 132, 0.7)', // Vermelho
+        stack: 'Stack 0'
+      },
+      {
+        label: 'Prazos',
+        data: {{ (valores_grafico.prazos if valores_grafico.prazos is defined else [])|tojson|safe }},
+        backgroundColor: 'rgba(75, 192, 192, 0.7)', // Verde
+        stack: 'Stack 0'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { stacked: true },
+      y: { stacked: true, beginAtZero: true }
+    },
+    plugins: {
+      legend: { position: 'top' }
     }
   }
-);
+});
 </script>
 {% endblock %}
