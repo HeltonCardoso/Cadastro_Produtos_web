@@ -67,7 +67,7 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
             raise ValueError("Não foi possível identificar o marketplace pelo formato do arquivo")
         
         # Obter configurações do marketplace
-        marketplace_config = MAPA_MARKETPLACES[marketplace_nome]  # <-- Definição aqui
+        marketplace_config = MAPA_MARKETPLACES[marketplace_nome]
         
         # 3. Comparar os dados
         df_resultado = comparar_dados(df_erp, df_market, marketplace_nome)
@@ -76,81 +76,119 @@ def processar_comparacao(arquivo_erp, arquivo_marketplace, pasta_upload):
         divergencias = df_resultado[df_resultado['DIFERENCA_PRAZO'] != 0].copy()
         
         # 5. Gerar logs e resumo
-        log = gerar_log(df_resultado, marketplace_nome)  # <-- Definição aqui
-        resumo = gerar_resumo(df_resultado, marketplace_nome)  # <-- Definição aqui
+        log = gerar_log(df_resultado, marketplace_nome)
+        resumo = gerar_resumo(df_resultado, marketplace_nome)
         
         # 6. Salvar resultado
-        nome_arquivo = f"divergencias_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"  # <-- Definição aqui
+       # nome_arquivo = f"divergencias_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
+        nome_arquivo = f"divergencias_{marketplace_nome}_{datetime.now().strftime('%Y%m%d')}.xlsx"
         caminho = os.path.join(pasta_upload, nome_arquivo)
         
         cols_saida = ['COD_COMPARACAO', 'DIAS_PRAZO_ERP', 'DIAS_PRAZO_MARKETPLACE', 'DIFERENCA_PRAZO']
         divergencias[cols_saida].to_excel(caminho, index=False)
         
-        # 7. Retornar resultado (TODAS AS VARIÁVEIS JÁ DEFINIDAS)
+        # 7. Preparar itens processados para registro
+        itens_processados = []
+        for _, row in df_resultado.iterrows():
+            status = 'sucesso' if row['DIFERENCA_PRAZO'] == 0 else 'erro'
+            detalhes = (
+                f"ERP: {row['DIAS_PRAZO_ERP']} dias | "
+                f"Marketplace: {row['DIAS_PRAZO_MARKETPLACE']} dias | "
+                f"Diferença: {row['DIFERENCA_PRAZO']} dias"
+            )
+            
+            itens_processados.append({
+                'ean': str(row['COD_COMPARACAO']),
+                'nome': f"Comparação de prazos - {marketplace_nome}",
+                'status': status,
+                'detalhes': detalhes,
+                'data_processamento': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            })
+
+        # 8. Retornar resultado
         return {
             'sucesso': True,
-            'arquivo': nome_arquivo,  # Nome do arquivo gerado
+            'arquivo': nome_arquivo,
             'total_itens': len(df_resultado),
             'divergencias': len(divergencias),
-            'log': gerar_log(df_resultado, marketplace_nome),
+            'log': log,
+            'resumo': resumo,
             'marketplace': {
                 'nome': marketplace_nome,
                 'imagem': f"/static/img/{marketplace_config['imagem']}"
-            }
+            },
+            'itens_processados': itens_processados
         }
+        
     except Exception as e:
+        # Registrar itens com erro em caso de falha
+        itens_processados = [{
+            'ean': '0000000000000',
+            'nome': 'Processamento de prazos',
+            'status': 'erro',
+            'detalhes': str(e),
+            'data_processamento': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }]
+        
         return {
             'sucesso': False,
-            'erro': str(e)
+            'erro': str(e),
+            'itens_processados': itens_processados
         }
-    
+
 def ler_arquivo(arquivo):
-    """Função robusta para ler arquivos Excel/CSV"""
+    """Função robusta para ler arquivos Excel/CSV com tratamento de encoding"""
     if arquivo is None or arquivo.filename == '':
         raise ValueError("Nenhum arquivo foi enviado ou arquivo inválido")
 
     try:
-        # Verifica se é um objeto de arquivo válido
-        if not hasattr(arquivo, 'filename') or not hasattr(arquivo, 'save'):
-            raise ValueError("Objeto de arquivo inválido")
-
         # Cria pasta de upload se não existir
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        
-        # Cria caminho seguro
         temp_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(arquivo.filename))
-        
-        # Salva o arquivo temporariamente
         arquivo.save(temp_path)
-        
-        # Verifica se o arquivo foi salvo
-        if not os.path.exists(temp_path):
-            raise ValueError("Falha ao salvar arquivo temporário")
 
+        # Tenta detectar encoding automaticamente
+        def detect_encoding(file_path):
+            import chardet
+            with open(file_path, 'rb') as f:
+                result = chardet.detect(f.read(10000))  # Lê apenas os primeiros 10KB para análise
+            return result['encoding']
+
+        encoding = detect_encoding(temp_path)
+        
         # Processa conforme a extensão
-        if arquivo.filename.lower().endswith('.xlsx'):
+        if arquivo.filename.lower().endswith(('.xlsx', '.xls')):
             df = pd.read_excel(temp_path, engine='openpyxl', dtype=str)
-        elif arquivo.filename.lower().endswith('.xls'):
-            try:
-                df = pd.read_excel(temp_path, engine='xlrd', dtype=str)
-            except:
-                # Fallback para openpyxl se xlrd falhar
-                df = pd.read_excel(temp_path, engine='openpyxl', dtype=str)
         elif arquivo.filename.lower().endswith('.csv'):
-            df = pd.read_csv(temp_path, encoding='latin1', sep=None, engine='python', dtype=str)
+            # Tenta múltiplas combinações de encoding e separador
+            for enc in [encoding, 'latin1', 'ISO-8859-1', 'utf-8', 'windows-1252']:
+                for sep in [';', ',', '\t']:
+                    try:
+                        df = pd.read_csv(temp_path, 
+                                        encoding=enc,
+                                        sep=sep,
+                                        dtype=str,
+                                        on_bad_lines='warn')
+                        print(f"Arquivo lido com encoding: {enc} e separador: {repr(sep)}")
+                        break
+                    except Exception as e:
+                        continue
+                else:
+                    continue
+                break
+            else:
+                raise ValueError("Não foi possível ler o arquivo CSV com nenhum encoding/separador conhecido")
         else:
             raise ValueError("Formato de arquivo não suportado")
 
         # Remove arquivo temporário
         os.remove(temp_path)
-        
         return df
 
     except Exception as e:
-        # Limpeza em caso de erro
         if 'temp_path' in locals() and os.path.exists(temp_path):
             os.remove(temp_path)
-        raise ValueError(f"Erro ao processar arquivo {arquivo.filename if arquivo else 'None'}: {str(e)}")
+        raise ValueError(f"Erro ao processar arquivo {arquivo.filename}: {str(e)}")
 
 def identificar_marketplace(df):
     """Identifica o marketplace baseado nas colunas presentes"""
@@ -217,7 +255,6 @@ def gerar_log(df, marketplace):
     """Gera o conteúdo do log para exibição na interface"""
     divergencias = df[df['DIFERENCA_PRAZO'] != 0]
     log_lines = [
-       # f"<span style='color: blue; font-weight: bold;'>Marketplace: {marketplace}</span>",
         f"<span style='color: black; font-weight: bold;font-size: 20px'>Anuncios Analisados: {len(df)}</span>",
         f"<span style='color: red;font-weight: bold; font-size: 25px'>Anuncios com Divergência: {len(divergencias)}</span>",
     ]

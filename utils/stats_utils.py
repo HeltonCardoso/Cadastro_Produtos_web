@@ -3,59 +3,54 @@ from flask import current_app
 from models import db, Processo, ItemProcessado
 from datetime import datetime, date, timedelta
 
-def get_processing_stats(modulo: str = None) -> dict:
-    """
-    Retorna estatísticas de processos. Se modulo=None, retorna totais gerais.
-    """
-    with current_app.app_context():
-        # Filtro por módulo ou geral
-        query = Processo.query if modulo is None else Processo.query.filter_by(modulo=modulo)
-        hoje = date.today()
-        
-        # Total de processos
-        total = query.count()
-        
-        # Processos hoje
-        processos_hoje = query.filter(db.func.date(Processo.data) == hoje).count()
-        
-        # Sucessos e erros (total e hoje)
-        sucessos_total = query.filter_by(status='sucesso').count()
-        erros_total = query.filter_by(status='erro').count()
-        sucessos_hoje = query.filter(
-            Processo.status == 'sucesso',
-            db.func.date(Processo.data) == hoje
-        ).count()
-        erros_hoje = query.filter(
-            Processo.status == 'erro',
-            db.func.date(Processo.data) == hoje
-        ).count()
-        
-        # Última execução (geral ou por módulo)
-        ultima = query.order_by(Processo.data.desc()).first()
-        ultima_exec = (
-            f"{ultima.data.strftime('%Y-%m-%d %H:%M:%S')} | Módulo: {ultima.modulo} | "
-            f"Itens: {ultima.qtd_itens} | Status: {ultima.status}"
-        ) if ultima else None
-        
-        # Total de itens processados (sucesso e erro)
-        total_itens_sucesso = db.session.query(db.func.sum(Processo.qtd_itens)).filter(
-            Processo.status == 'sucesso'
-        ).filter(Processo.modulo == modulo if modulo else True).scalar() or 0
-        total_itens_erro = db.session.query(db.func.sum(Processo.qtd_itens)).filter(
-            Processo.status == 'erro'
-        ).filter(Processo.modulo == modulo if modulo else True).scalar() or 0
-        
-        return {
-            'total': total,
-            'hoje': processos_hoje,
-            'sucessos_total': sucessos_total,
-            'erros_total': erros_total,
-            'sucessos_hoje': sucessos_hoje,
-            'erros_hoje': erros_hoje,
-            'ultima': ultima_exec,
-            'total_itens_sucesso': total_itens_sucesso,
-            'total_itens_erro': total_itens_erro
-        }
+def get_processing_stats(modulo=None):
+    """Obtém estatísticas de processamento, opcionalmente filtradas por módulo"""
+    query = Processo.query
+    if modulo:
+        query = query.filter_by(modulo=modulo)
+    
+    # Obter totais gerais
+    total = query.count()
+    sucessos_total = query.filter_by(status="sucesso").count()
+    erros_total = query.filter_by(status="erro").count()
+    
+    # Obter totais do dia atual
+    hoje = datetime.now().date()
+    hoje_total = query.filter(db.func.date(Processo.data) == hoje).count()
+    hoje_sucesso = query.filter(
+        db.func.date(Processo.data) == hoje,
+        Processo.status == "sucesso"
+    ).count()
+    hoje_erro = hoje_total - hoje_sucesso
+    
+    # Obter última execução
+    ultimo_processo = query.order_by(Processo.data.desc()).first()
+    ultima_execucao = (
+        f"{ultimo_processo.data.strftime('%d/%m/%Y %H:%M')} | "
+        f"{ultimo_processo.modulo} | "
+        f"{'Sucesso' if ultimo_processo.status == 'sucesso' else 'Erro'}"
+    ) if ultimo_processo else "Nenhum registro"
+
+    # Obter totais de itens processados
+    query_itens = ItemProcessado.query
+    if modulo:
+        # Assumindo que ItemProcessado está relacionado com Processo
+        query_itens = query_itens.join(Processo).filter(Processo.modulo == modulo)
+    
+    total_itens_sucesso = query_itens.filter_by(status="sucesso").count()
+    total_itens_erro = query_itens.filter_by(status="erro").count()
+
+    return {
+        'total': total,
+        'sucessos_total': sucessos_total,
+        'erros_total': erros_total,
+        'hoje': hoje_total,
+        'sucessos_hoje': hoje_sucesso,
+        'erros_hoje': hoje_erro,
+        'ultima': ultima_execucao,
+        'total_itens_sucesso': total_itens_sucesso,
+        'total_itens_erro': total_itens_erro
+    }
 
 def contar_processos_por_dia(modulo: str, data_str: str) -> int:
     """

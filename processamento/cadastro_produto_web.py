@@ -7,12 +7,20 @@ from openpyxl.worksheet.datavalidation import DataValidation
 import warnings
 from datetime import datetime
 import logging
+import re
+import unicodedata
 
 
 warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed")
 
 logger = logging.getLogger('cadastro')  # Usa o nome correspondente
-    
+
+def sanitize_filename(texto):
+    """Remove acentos, caracteres especiais e sanitiza para nome de arquivo"""
+    texto = unicodedata.normalize('NFKD', str(texto))
+    texto = texto.encode('ASCII', 'ignore').decode('ASCII')
+    return re.sub(r'[^\w\-_]', '', texto).strip().replace(' ', '_')
+
 def copiar_validacoes(worksheet):
     return list(worksheet.data_validations.dataValidation)
 
@@ -181,7 +189,10 @@ def executar_processamento(planilha_origem, planilha_destino):
                 cell.fill = None
 
     marca_unica = next(iter(marcas_cadastradas)) if marcas_cadastradas else "saida"
-    novo_nome = f"Template_Produtos_Mpozenato_CADASTRO_{marca_unica}.xlsx"
+
+    # Por esta:
+    marca_sanitizada = sanitize_filename(marca_unica)
+    novo_nome = f"Template_Produtos_Mpozenato_Cadastro_{marca_sanitizada}.xlsx"
     caminho_saida = os.path.join("uploads", novo_nome)
 
     wb.save(caminho_saida)

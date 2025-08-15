@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
+import uuid
+from flask import Flask, abort, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
 from models import db
 from config import Config
 import os
@@ -15,58 +16,112 @@ from log_utils import (
     contar_processos_hoje
 )
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 db.init_app(app)
 
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
+handler.setLevel(logging.INFO)
+app.logger.addHandler(handler)
+
 with app.app_context():
     os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
     db.create_all()
 
 def obter_ultima_planilha():
-    upload_folder = app.config["UPLOAD_FOLDER"]
-    planilhas = [
-        f for f in os.listdir(upload_folder)
-        if os.path.isfile(os.path.join(upload_folder, f)) and f.endswith(('.xlsx', '.xls'))
-    ]
-    if not planilhas:
+    try:
+        upload_folder = app.config["UPLOAD_FOLDER"]
+        
+        if not os.path.exists(upload_folder):
+            app.logger.warning(f"Pasta uploads não encontrada: {upload_folder}")
+            return None, None
+
+        planilhas = []
+        for f in os.listdir(upload_folder):
+            file_path = os.path.join(upload_folder, f)
+            if os.path.isfile(file_path) and f.lower().endswith(('.xlsx', '.xls', '.csv')):
+                planilhas.append((f, os.path.getmtime(file_path)))
+
+        if not planilhas:
+            return None, None
+
+        # Ordena por data (mais recente primeiro)
+        planilhas.sort(key=lambda x: x[1], reverse=True)
+        ultima_planilha = planilhas[0][0]
+        
+        return ultima_planilha, datetime.fromtimestamp(planilhas[0][1]).strftime('%Y-%m-%d %H:%M:%S')
+    
+    except Exception as e:
+        app.logger.error(f"Erro em obter_ultima_planilha: {str(e)}")
         return None, None
-    ultima_planilha = max(
-        planilhas, key=lambda x: os.path.getmtime(os.path.join(upload_folder, x))
-    )
-    data_modificacao = datetime.fromtimestamp(
-        os.path.getmtime(os.path.join(upload_folder, ultima_planilha))
-    ).strftime('%Y-%m-%d %H:%M:%S')
-    return os.path.join(upload_folder, ultima_planilha), data_modificacao
 
 @app.route('/')
 def home():
-    stats = get_processing_stats()  # Totais gerais
-    dados_grafico = obter_dados_grafico_7dias()
-    ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
-    return render_template(
-        'home.html',
-        total_processamentos=stats['total'],
-        processos_sucesso=stats['sucessos_total'],
-        processos_erro=stats['erros_total'],
-        processamentos_hoje=stats['hoje'],
-        hoje_sucesso=stats['sucessos_hoje'],
-        hoje_erro=stats['erros_hoje'],
-        ultima_execucao=stats['ultima'],
-        ultima_planilha=ultima_planilha,
-        ultima_planilha_data=ultima_planilha_data,
-        datas_grafico=dados_grafico['datas'],
-        valores_grafico=dados_grafico['valores'],
-        total_itens_sucesso=stats['total_itens_sucesso'],
-        total_itens_erro=stats['total_itens_erro'],
-        now=datetime.now()
-    )
+    try:
+        stats = get_processing_stats()
+        dados_grafico = obter_dados_grafico_7dias()
+        ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
+        
+        # Debug - verifique os valores
+        app.logger.info(f"Última planilha: {ultima_planilha}")
+        app.logger.info(f"Dados gráfico: {dados_grafico}")
+        
+        return render_template(
+            'home.html',
+            total_processamentos=stats['total'],
+            processos_sucesso=stats['sucessos_total'],
+            processos_erro=stats['erros_total'],
+            processamentos_hoje=stats['hoje'],
+            hoje_sucesso=stats['sucessos_hoje'],
+            hoje_erro=stats['erros_hoje'],
+            ultima_execucao=stats['ultima'],
+            ultima_planilha=ultima_planilha,
+            ultima_planilha_data=ultima_planilha_data,
+            datas_grafico=dados_grafico['datas'],
+            valores_grafico=dados_grafico['valores'],
+            total_itens_sucesso=stats['total_itens_sucesso'],
+            total_itens_erro=stats['total_itens_erro'],
+            now=datetime.now()
+        )
+    except Exception as e:
+        app.logger.error(f"Erro na rota home: {str(e)}")
+        return render_template('error.html'), 500
 
 @app.route('/uploads/<filename>')
 def baixar_arquivo(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    try:
+        # Decodifica caracteres especiais na URL
+        from urllib.parse import unquote
+        filename = unquote(filename)
+        
+        upload_folder = app.config['UPLOAD_FOLDER']
+        safe_filename = secure_filename(os.path.basename(filename))
+        file_path = os.path.join(upload_folder, safe_filename)
+        
+        if not os.path.exists(file_path):
+            # Tenta encontrar o arquivo sem sanitização (para compatibilidade)
+            for f in os.listdir(upload_folder):
+                if f.startswith(os.path.splitext(safe_filename)[0]):
+                    file_path = os.path.join(upload_folder, f)
+                    break
+            
+            if not os.path.exists(file_path):
+                abort(404)
+        
+        return send_from_directory(
+            upload_folder,
+            os.path.basename(file_path),
+            as_attachment=True,
+            download_name=safe_filename  # Força o nome no download
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Erro ao baixar {filename}: {str(e)}")
+        abort(500)
 
 def contar_status_processos(log_file):
     """Conta processos por status em todo o arquivo de log"""
@@ -134,8 +189,7 @@ def registrar_produtos(produtos_processados):
             f.write(f"{produto['nome']} - {produto['ean']} - {produto['status']}\n")
     return log_file
 
-# app.py (atualize a rota /preencher-planilha)
-# app.py (exemplo de rota)
+
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
     nome_arquivo_saida = None  # Inicializa como None
@@ -306,26 +360,61 @@ def extrair_atributos():
 @app.route("/comparar-prazos", methods=["POST"])
 def comparar_prazos():
     try:
-        # Verificação robusta dos arquivos
         if ('arquivo_erp' not in request.files) or ('arquivo_marketplace' not in request.files):
+            registrar_processo(
+                modulo="prazos",
+                qtd_itens=0,
+                tempo_execucao=0,
+                status="erro",
+                erro_mensagem="Nenhum arquivo enviado"
+            )
             return jsonify({'sucesso': False, 'erro': "Nenhum arquivo enviado"}), 400
 
         arquivo_erp = request.files['arquivo_erp']
         arquivo_marketplace = request.files['arquivo_marketplace']
 
-        # Verifica se os arquivos foram selecionados
         if arquivo_erp.filename == '' or arquivo_marketplace.filename == '':
+            registrar_processo(
+                modulo="prazos",
+                qtd_itens=0,
+                tempo_execucao=0,
+                status="erro",
+                erro_mensagem="Nenhum arquivo selecionado"
+            )
             return jsonify({'sucesso': False, 'erro': "Nenhum arquivo selecionado"}), 400
 
-        # Processa os arquivos
+        inicio = datetime.now()
         resultado = processar_comparacao(arquivo_erp, arquivo_marketplace, app.config['UPLOAD_FOLDER'])
         
         if not resultado.get('sucesso', False):
+            registrar_processo(
+                modulo="prazos",
+                qtd_itens=0,
+                tempo_execucao=0,
+                status="erro",
+                erro_mensagem=resultado.get('erro', 'Erro desconhecido')
+            )
             raise Exception(resultado.get('erro', 'Erro desconhecido no processamento'))
+
+        # Registrar processo com sucesso
+        tempo_segundos = (datetime.now() - inicio).total_seconds()
+        registrar_processo(
+            modulo="prazos",
+            qtd_itens=resultado['total_itens'],
+            tempo_execucao=tempo_segundos,
+            status="sucesso"
+        )
 
         return jsonify(resultado)
 
     except Exception as e:
+        registrar_processo(
+            modulo="prazos",
+            qtd_itens=0,
+            tempo_execucao=0,
+            status="erro",
+            erro_mensagem=str(e)
+        )
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
 
 @app.route("/comparar-prazos", methods=["GET"])
@@ -334,7 +423,7 @@ def mostrar_tela_comparacao():
         "comparar_prazos.html",
         historico_processos=obter_historico_processos("prazos"),
         processos_hoje=contar_processos_hoje("prazos"),
-        stats=get_processing_stats("prazos")
+        stats=get_processing_stats("prazos")  # Agora aceita o parâmetro
     )
 
 def contar_processos_hoje(modulo="cadastro"):

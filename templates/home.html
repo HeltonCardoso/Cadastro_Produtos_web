@@ -93,13 +93,13 @@
           {% endif %}
         </div>
         {% if ultima_planilha %}
-        <div class="card-footer">
-          <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha.split('/')[-1]) }}" 
-             class="btn btn-sm btn-outline-primary">
-            <i class="fas fa-download"></i> Baixar
-          </a>
-        </div>
-        {% endif %}
+          <div class="card-footer">
+            <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha|urlencode) }}" 
+   class="btn btn-sm btn-outline-primary">
+   <i class="fas fa-download"></i> Baixar
+</a>
+          </div>
+          {% endif %}
       </div>
     </div>
   </div>

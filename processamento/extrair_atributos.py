@@ -26,15 +26,18 @@ class ExtratorAtributos:
             "Tipo de Encosto"
         ]
         self.colunas_necessarias = ["EAN", "NOMEE-COMMERCE", "DESCRICAOHTML", "MODMPZ", "COR"]
+        self.marca = "SemMarca"  # Valor padrão
 
     def processar_arquivo(self, caminho_arquivo: str) -> Tuple[str, int, float]:
-        """Processa o arquivo de entrada e retorna o caminho do arquivo de saída"""
         inicio = datetime.now()
         self._log(f"Iniciando processamento em {inicio.strftime('%d/%m/%Y %H:%M:%S')}")
         
         try:
             # 1. Carregar e validar arquivo
             df = self._carregar_arquivo(caminho_arquivo)
+            
+            # Capturar a marca (assumindo que está na coluna 'MARCA')
+            self.marca = df['MARCA'].iloc[0] if 'MARCA' in df.columns else "SemMarca"
             
             # 2. Processar cada linha
             dados_extraidos = []
@@ -264,15 +267,24 @@ class ExtratorAtributos:
         return atributos
 
     def _gerar_saida(self, dados: List[List]) -> str:
-        """Gera o arquivo Excel de saída"""
+        """Gera o arquivo Excel de saída com nome sanitizado"""
         if not dados:
             raise ValueError("Nenhum dado para exportar")
             
         df = pd.DataFrame(dados, columns=self.colunas_saida)
         
-        # Nome do arquivo de saída
+        # Função auxiliar para sanitizar (incluindo acentos)
+        def sanitizar(texto):
+            import unicodedata
+            texto = unicodedata.normalize('NFKD', str(texto))
+            texto = texto.encode('ASCII', 'ignore').decode('ASCII')
+            return re.sub(r'[^\w\-_]', '', texto).strip().replace(' ', '_')
+        
+        # Nome do arquivo de saída com marca (sanitizado)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        nome_arquivo = f"Atributos_Extraidos_{timestamp}.xlsx"
+        marca_sanitizada = sanitizar(self.marca)  # Usa a nova função
+        nome_arquivo = f"Atributos_Extraidos_{marca_sanitizada}_{timestamp}.xlsx"
+        
         caminho_saida = os.path.join("uploads", nome_arquivo)
         
         # Garante que o diretório existe
@@ -281,7 +293,7 @@ class ExtratorAtributos:
         # Salva o arquivo
         df.to_excel(caminho_saida, index=False)
         self._log(f"Arquivo gerado: {nome_arquivo}")
-        
+    
         return caminho_saida
 
     def _log(self, mensagem: str, tipo: str = "info") -> None:
