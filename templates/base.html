@@ -201,6 +201,21 @@
     padding: 15px;
     background-color: #f8f9fa;
 }
+.dark-mode {
+  background-color: #121212 !important;  /* Cor de fundo escura */
+  min-height: 100vh;  /* Cobrir toda a altura da tela */
+}
+
+.dark-mode body {
+  background-color: inherit !important;  /* Herda a cor do .dark-mode */
+}
+
+/* Aplicar a todos os elementos filhos */
+.dark-mode * {
+  background-color: inherit;
+  color: #e0e0e0 !important;  /* Cor clara para texto */
+}
+
 </style>
 </head>
 <body>
@@ -217,6 +232,9 @@
     <a href="#">USUARIOS</a>
     <a href="#" data-route="sobre" onclick="mostrarSobre()">SOBRE</a>
     <a href="#">SAIR</a>
+   <button id="btn-dark-mode" class="btn btn-sm btn-outline-secondary">
+  <i class="fas fa-moon"></i> Modo Escuro
+</button>
   </div>
   <div class="content"> <!-- Conteudo da pagina -->
     {% block content %}{% endblock %}  
@@ -242,6 +260,37 @@
         setInterval(updateClock, 1000);
         updateClock();
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const btnDarkMode = document.getElementById('btn-dark-mode');
+  const icon = btnDarkMode.querySelector('i');
+  
+  // Verifica preferência salva no localStorage
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    enableDarkMode();
+  }
+
+  // Evento de clique
+  btnDarkMode.addEventListener('click', function() {
+    if (document.body.classList.contains('dark-mode')) {
+      disableDarkMode();
+    } else {
+      enableDarkMode();
+    }
+  });
+
+  function enableDarkMode() {
+    document.body.classList.add('dark-mode');
+    icon.classList.replace('fa-moon', 'fa-sun');
+    localStorage.setItem('darkMode', 'enabled');
+  }
+
+  function disableDarkMode() {
+    document.body.classList.remove('dark-mode');
+    icon.classList.replace('fa-sun', 'fa-moon');
+    localStorage.setItem('darkMode', 'disabled');
+  }
+});</script>
   {% endblock %}
     <footer class="custom-footer text-center py-2 fixed-bottom border-top">
         <div class="container d-flex justify-content-between">

@@ -107,13 +107,13 @@
 
 <!-- Seção de Gráficos -->
 <div class="row mt-4">
-  <div class="col-md-6">
+  <div class="col-md-8">
     <div class="card shadow">
-      <div class="card-header">
+      <div class="card-header bg-primary text-white">
         <h5 class="mb-0">Processamentos por Dia (Últimos 7 dias)</h5>
       </div>
       <div class="card-body">
-        <canvas id="graficoProcessamentos" height="160"></canvas>
+        <canvas id="graficoProcessamentos" height="100"></canvas>
       </div>
     </div>
   </div>
@@ -122,42 +122,68 @@
 <!-- JavaScript para os gráficos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx1 = document.getElementById('graficoProcessamentos').getContext('2d');
-new Chart(ctx1, {
-  type: 'bar',
-  data: {
-    labels: {{ datas_grafico|tojson|safe }},
-    datasets: [
-      {
-        label: 'Cadastro',
-        data: {{ (valores_grafico.cadastro if valores_grafico.cadastro is defined else [])|tojson|safe }},
-        backgroundColor: 'rgba(54, 162, 235, 0.7)', // Azul
-        stack: 'Stack 0'
-      },
-      {
-        label: 'Atributos',
-        data: {{ (valores_grafico.atributos if valores_grafico.atributos is defined else [])|tojson|safe }},
-        backgroundColor: 'rgba(255, 99, 132, 0.7)', // Vermelho
-        stack: 'Stack 0'
-      },
-      {
-        label: 'Prazos',
-        data: {{ (valores_grafico.prazos if valores_grafico.prazos is defined else [])|tojson|safe }},
-        backgroundColor: 'rgba(75, 192, 192, 0.7)', // Verde
-        stack: 'Stack 0'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      x: { stacked: true },
-      y: { stacked: true, beginAtZero: true }
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx1 = document.getElementById('graficoProcessamentos').getContext('2d');
+  new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: {{ datas_grafico|tojson|safe }},
+      datasets: [
+        {
+          label: 'Cadastro',
+          data: {{ valores_grafico.cadastro|tojson|safe }},
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Atributos',
+          data: {{ valores_grafico.atributos|tojson|safe }},
+          backgroundColor: 'rgba(255, 99, 132, 0.7)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Prazos',
+          data: {{ valores_grafico.prazos|tojson|safe }},
+          backgroundColor: 'rgba(75, 192, 192, 0.7)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
     },
-    plugins: {
-      legend: { position: 'top' }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Processamentos por Módulo'
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Data'
+          }
+        },
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Quantidade'
+          },
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
     }
-  }
+  });
 });
 </script>
+
 {% endblock %}

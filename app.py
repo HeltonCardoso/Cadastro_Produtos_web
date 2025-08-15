@@ -1,6 +1,6 @@
 import uuid
 from flask import Flask, abort, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
-from models import db
+from models import Processo, db
 from config import Config
 import os
 from datetime import datetime, timedelta
@@ -82,7 +82,12 @@ def home():
             ultima_planilha=ultima_planilha,
             ultima_planilha_data=ultima_planilha_data,
             datas_grafico=dados_grafico['datas'],
-            valores_grafico=dados_grafico['valores'],
+           # valores_grafico=dados_grafico['valores'],
+            valores_grafico={
+                'cadastro': dados_grafico['valores_cadastro'],
+                'atributos': dados_grafico['valores_atributos'],
+                'prazos': dados_grafico['valores_prazos']
+            },
             total_itens_sucesso=stats['total_itens_sucesso'],
             total_itens_erro=stats['total_itens_erro'],
             now=datetime.now()
@@ -150,21 +155,41 @@ def contar_processos_hoje_por_status(log_file):
     return sucesso, erro
 
 def obter_dados_grafico_7dias():
-    """Retorna dados formatados de forma segura para o template"""
     datas = []
-    valores = []
+    valores_cadastro = []
+    valores_atributos = []
+    valores_prazos = []
     
     for i in range(6, -1, -1):  # 7 dias (incluindo hoje)
         date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-        count = contar_processos_por_dia(date)
         datas.append(date.split('-')[2] + '/' + date.split('-')[1])  # Formato DD/MM
-        valores.append(count)
+        
+        # Contar processos por módulo para cada dia
+        cadastro = Processo.query.filter(
+            db.func.date(Processo.data) == date,
+            Processo.modulo == 'cadastro'
+        ).count()
+        
+        atributos = Processo.query.filter(
+            db.func.date(Processo.data) == date,
+            Processo.modulo == 'atributos'
+        ).count()
+        
+        prazos = Processo.query.filter(
+            db.func.date(Processo.data) == date,
+            Processo.modulo == 'prazos'
+        ).count()
+        
+        valores_cadastro.append(cadastro)
+        valores_atributos.append(atributos)
+        valores_prazos.append(prazos)
     
     return {
-        'datas': datas,  # Lista simples não precisa de json.dumps
-        'valores': valores
+        'datas': datas,
+        'valores_cadastro': valores_cadastro,
+        'valores_atributos': valores_atributos,
+        'valores_prazos': valores_prazos
     }
-
 def contar_processos_por_dia(date):
     log_file = 'logs/processos/cadastro.log'
     count = 0
