@@ -221,6 +221,22 @@
  background-color: #38414a !important
 }
 
+.custom-toast {
+    min-width: 300px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 </style>
 </head>
 <body>
@@ -234,7 +250,7 @@
     <a href="{{ url_for('extrair_atributos') }}" >EXTRAIR ATRIBUTOS</a>
     <a href="{{ url_for('preencher_planilha') }}">PLANILHA ATHUS</a>
     <a href="{{ url_for('comparar_prazos') }}">VERIFICAR PRAZOS</a>
-    <a href="#">USUARIOS</a>
+    <a href="{{ url_for('configurar_google_sheets') }}">CONFIGURAÇÃO</a>
     <a href="#" data-route="sobre" onclick="mostrarSobre()">SOBRE</a>
     <a href="#">SAIR</a>
    <button id="btn-dark-mode" class="btn btn-sm btn-outline-secondary">

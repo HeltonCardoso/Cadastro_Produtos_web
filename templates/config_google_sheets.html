@@ -1,0 +1,91 @@
+<!-- templates/config_google_sheets.html -->
+{% extends 'base.html' %}
+
+{% block title %}Configurações - Google Sheets{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Configurações do Google Sheets</h2>
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Configuração da Planilha Padrão</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="sheet_id" class="form-label">ID da Planilha</label>
+                        <input type="text" class="form-control" id="sheet_id" name="sheet_id" 
+                               value="{{ config.sheet_id }}" required
+                               placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+                        <small class="text-muted">Encontre no URL: .../spreadsheets/d/[ID]/edit</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group mt-3">
+                    <button type="submit" name="acao" value="testar" class="btn btn-outline-primary">
+                        <i class="fas fa-test"></i> Testar Conexão
+                    </button>
+                    <button type="submit" name="acao" value="salvar" class="btn btn-success">
+                        <i class="fas fa-save"></i> Salvar ID da Planilha
+                    </button>
+            </div>
+
+              <div class="alert alert-info mt-3">
+                  <i class="fas fa-info-circle"></i>
+                  <strong>Nota:</strong> A seleção da aba será feita diretamente na tela de extração de atributos.
+              </div>
+                <!--<button type="submit" name="acao" value="salvar" class="btn btn-success">
+                    <i class="fas fa-save"></i> Salvar Configuração
+                </button> -->
+            </div>
+        </form>
+
+        {% if mensagem %}
+        <div class="alert alert-{{ tipo_mensagem }} mt-3">
+            {{ mensagem }}
+        </div>
+        {% endif %}
+
+        {% if config.ultima_atualizacao %}
+        <div class="mt-3 text-muted">
+            <small>Última atualização: {{ config.ultima_atualizacao }}</small>
+        </div>
+        {% endif %}
+    </div>
+    <div class="mt-3">
+    <a href="{{ url_for('extrair_atributos') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar para Extração
+    </a>
+</div>
+</div>
+
+
+
+<script>
+// JavaScript para carregar abas via AJAX quando o ID muda
+document.getElementById('sheet_id').addEventListener('change', function() {
+    const sheetId = this.value;
+    if (sheetId) {
+        fetch(`/api/abas-google-sheets?sheet_id=${encodeURIComponent(sheetId)}`)
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('aba_nome');
+                select.innerHTML = '<option value="">Selecione uma aba</option>';
+                
+                if (data.abas) {
+                    data.abas.forEach(aba => {
+                        const option = document.createElement('option');
+                        option.value = aba.title;
+                        option.textContent = `${aba.title} (${aba.row_count}x${aba.col_count})`;
+                        select.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+    }
+});
+</script>
+{% endblock %}

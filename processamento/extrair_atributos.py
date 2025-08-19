@@ -1,11 +1,42 @@
+from pathlib import Path
 import pandas as pd
 import os
 from datetime import datetime
 from bs4 import BeautifulSoup
 import re
 import logging
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Union
+try:
+    from google_sheets import ler_planilha_google
+except ImportError as e:
+    # Caso o módulo não possa ser importado (falta de dependências)
+    def ler_planilha_google(sheet_id, aba_nome):
+        """Lê dados do Google Sheets"""
+        try:
+            from google.oauth2 import service_account
+            import gspread
+            import pandas as pd
+        except ImportError:
+            raise ImportError("Instale as bibliotecas: pip install gspread pandas google-auth")
 
+        # Caminho CORRETO para o credentials.json
+        creds_path = str(Path(__file__).parent.parent / "credentials.json")
+        
+        if not os.path.exists(creds_path):
+            raise FileNotFoundError(f"Coloque o credentials.json em: {creds_path}")
+
+        try:
+            # Conecta ao Google
+            creds = service_account.Credentials.from_service_account_file(
+                creds_path,
+                scopes=["https://www.googleapis.com/auth/spreadsheets"]
+            )
+            planilha = gspread.authorize(creds).open_by_key(sheet_id)
+            dados = planilha.worksheet(aba_nome).get_all_records()
+            return pd.DataFrame(dados)
+        
+        except Exception as e:
+            raise Exception(f"Erro no Google Sheets: {str(e)}")
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,6 +71,41 @@ class ExtratorAtributos:
             self.marca = df['MARCA'].iloc[0] if 'MARCA' in df.columns else "SemMarca"
             
             # 2. Processar cada linha
+            dados_extraidos = []
+            for idx, row in df.iterrows():
+                try:
+                    dados_produto = self._processar_linha(row)
+                    dados_extraidos.append(dados_produto)
+                    self._log(f"Processado: {row['NOMEE-COMMERCE']}")
+                except Exception as e:
+                    self._log(f"Erro na linha {idx+1}: {str(e)}", tipo="erro")
+                    continue
+            
+            # 3. Gerar arquivo de saída
+            caminho_saida = self._gerar_saida(dados_extraidos)
+            
+            # 4. Finalizar
+            fim = datetime.now()
+            duracao = (fim - inicio).total_seconds()
+            qtd_itens = len(dados_extraidos)
+            
+            self._log(f"Processamento concluído - {qtd_itens} itens em {duracao:.2f}s")
+            return caminho_saida, qtd_itens, duracao
+            
+        except Exception as e:
+            self._log(f"ERRO: {str(e)}", tipo="erro")
+            raise
+
+    def processar_google_sheets(self, sheet_id: str, aba_nome: str) -> Tuple[str, int, float]:
+        """Processa dados diretamente do Google Sheets"""
+        inicio = datetime.now()
+        self._log(f"Iniciando processamento do Google Sheets em {inicio.strftime('%d/%m/%Y %H:%M:%S')}")
+        
+        try:
+            # 1. Carregar dados do Google Sheets
+            df = ler_planilha_google(sheet_id, aba_nome)
+            
+            # 2. Processar cada linha (mesma lógica do processar_arquivo)
             dados_extraidos = []
             for idx, row in df.iterrows():
                 try:
@@ -304,38 +370,84 @@ class ExtratorAtributos:
         self.logs.append(log_entry)
         logger.info(log_entry) if tipo == "info" else logger.error(log_entry)
 
-def extrair_atributos_processamento(caminho_arquivo: str) -> Tuple[str, int, float, list]:
-    """Função pública para integração com Flask"""
+# Atualize a função de processamento para aceitar ambas as fontes
+def extrair_atributos_processamento(fonte: Union[str, dict]) -> Tuple[str, int, float, list]:
+    """Função pública para integração com Flask
+    Aceita:
+    - str: caminho do arquivo local
+    - dict: {sheet_id: "ID_DA_PLANILHA", aba: "NOME_DA_ABA"}
+    """
     extrator = ExtratorAtributos()
     try:
-        caminho_saida, qtd_itens, tempo_segundos = extrator.processar_arquivo(caminho_arquivo)
+        if isinstance(fonte, str):
+            # Processamento de arquivo local
+            caminho_saida, qtd_itens, tempo_segundos = extrator.processar_arquivo(fonte)
+        elif isinstance(fonte, dict):
+            # Processamento do Google Sheets
+            caminho_saida, qtd_itens, tempo_segundos = extrator.processar_google_sheets(
+                fonte['sheet_id'], fonte['aba']
+            )
+        else:
+            raise ValueError("Fonte de dados inválida")
         
-        # Obter os dados reais processados
+        # Obter os dados reais processados (mesmo código)
         itens_processados = []
-        df_resultado = pd.read_excel(caminho_saida)  # Lê o arquivo gerado
+        df_resultado = pd.read_excel(caminho_saida)
         
         for _, row in df_resultado.iterrows():
             itens_processados.append({
-                    'ean': str(row['EAN']),
-                    'nome': row['Nome'],
-                    'atributos_extraidos': {
+                'ean': str(row['EAN']),
+                'nome': row['Nome'],
+                'atributos_extraidos': {
                     'largura': row['Largura'],
                     'altura': row['Altura'],
                     'profundidade': row['Profundidade'],
                     'peso': row['Peso'],
-                    # Adicione outros atributos conforme necessário
                 },
-                'status': 'sucesso'  # Ou defina status baseado em alguma regra
+                'status': 'sucesso'
             })
         
-        # Salva logs em arquivo
+        # Salva logs
         with open('uploads/logs_atributos.txt', 'w', encoding='utf-8') as f:
             f.write("\n".join(extrator.logs))
         
         return caminho_saida, qtd_itens, tempo_segundos, itens_processados
         
     except Exception as e:
-        # Garante que o erro seja registrado
         with open('uploads/logs_atributos.txt', 'a', encoding='utf-8') as f:
             f.write(f"\nERRO: {str(e)}")
         raise
+
+
+def processar_dataframe(self, df):
+        """Processa diretamente um DataFrame do pandas"""
+        inicio = datetime.now()
+        self._log(f"Iniciando processamento em {inicio.strftime('%d/%m/%Y %H:%M:%S')}")
+        
+        try:
+            # Capturar a marca (assumindo que está na coluna 'MARCA')
+            self.marca = df['MARCA'].iloc[0] if 'MARCA' in df.columns else "SemMarca"
+            
+            # Processar cada linha
+            dados_extraidos = []
+            for idx, row in df.iterrows():
+                try:
+                    dados_produto = self._processar_linha(row)
+                    dados_extraidos.append(dados_produto)
+                    self._log(f"Processado: {row['NOMEE-COMMERCE']}")
+                except Exception as e:
+                    self._log(f"Erro na linha {idx+1}: {str(e)}", tipo="erro")
+                    continue
+            
+            # Gerar arquivo de saída
+            caminho_saida = self._gerar_saida(dados_extraidos)
+            
+            # Finalizar
+            fim = datetime.now()
+            duracao = (fim - inicio).total_seconds()
+            
+            return caminho_saida, len(dados_extraidos), duracao
+            
+        except Exception as e:
+            self._log(f"ERRO: {str(e)}", tipo="erro")
+            raise

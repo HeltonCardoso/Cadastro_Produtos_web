@@ -1,5 +1,7 @@
+import sys
+from pathlib import Path
 import uuid
-from flask import Flask, abort, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
+from flask import Flask, abort, make_response, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
 from models import Processo, db
 from config import Config
 import os
@@ -18,6 +20,17 @@ from log_utils import (
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
+
+# Adicione a raiz do projeto ao path do Python
+sys.path.append(str(Path(__file__).parent))
+
+# Agora importe o google_sheets_utils
+from google_sheets_utils import (
+    carregar_configuracao_google_sheets, 
+    salvar_configuracao_google_sheets,
+    listar_abas_google_sheets,
+    testar_conexao_google_sheets
+)
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -59,6 +72,16 @@ def obter_ultima_planilha():
         app.logger.error(f"Erro em obter_ultima_planilha: {str(e)}")
         return None, None
 
+@app.route("/testar-google")
+def testar_google():
+    try:
+        from processamento.extrair_atributos import ler_planilha_google
+        # Use uma planilha de teste pública do Google
+        df = ler_planilha_google("1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms", "kitsparana")
+        return f"Funcionou! Primeiros dados: {df.head().to_html()}"
+    except Exception as e:
+        return f"ERRO: {str(e)}"
+    
 @app.route('/')
 def home():
     try:
@@ -190,6 +213,7 @@ def obter_dados_grafico_7dias():
         'valores_atributos': valores_atributos,
         'valores_prazos': valores_prazos
     }
+
 def contar_processos_por_dia(date):
     log_file = 'logs/processos/cadastro.log'
     count = 0
@@ -305,67 +329,109 @@ def preencher_planilha():
 @app.route("/extrair-atributos", methods=["GET", "POST"])
 def extrair_atributos():
     nome_arquivo_saida = None
+    config = carregar_configuracao_google_sheets()
+    abas = []
+    preview_data = None
+    sheet_id_input = request.form.get('sheet_id', config.get('sheet_id', ''))
+    aba_selecionada = request.form.get('aba_nome', '')
     
     try:
         if request.method == "POST":
-            if 'arquivo' not in request.files:
-                flash("Nenhum arquivo enviado", "danger")
+            action_type = request.form.get('action_type', '')
+            
+            # Se for para listar abas
+            if action_type == 'listar_abas':
+                sheet_id = request.form.get('sheet_id', '').strip()
+                if sheet_id:
+                    try:
+                        abas = listar_abas_google_sheets(sheet_id)
+                        flash(f"{len(abas)} abas encontradas", "success")
+                        sheet_id_input = sheet_id
+                    except Exception as e:
+                        flash(f"Erro ao listar abas: {str(e)}", "danger")
+                else:
+                    flash("Informe o ID da planilha primeiro", "warning")
+            
+            # Se for para fazer preview de uma aba
+            elif action_type == 'preview_aba':
+                sheet_id = request.form.get('sheet_id', '').strip()
+                aba_nome = request.form.get('aba_nome', '').strip()
+                if sheet_id and aba_nome:
+                    try:
+                        from google_sheets_utils import obter_dados_aba
+                        preview_data = obter_dados_aba(sheet_id, aba_nome)
+                        flash(f"Preview da aba '{aba_nome}' carregado", "success")
+                        sheet_id_input = sheet_id
+                        aba_selecionada = aba_nome
+                    except Exception as e:
+                        flash(f"Erro ao carregar preview: {str(e)}", "danger")
+                else:
+                    flash("Selecione uma aba para visualizar", "warning")
+            
+            # Se for para processar com Google Sheets
+            elif action_type == 'conectar_google':
+                sheet_id = request.form.get('sheet_id', '').strip()
+                aba_nome = request.form.get('aba_nome', '').strip()
+                
+                if not sheet_id or not aba_nome:
+                    flash("ID da planilha e aba são obrigatórios", "danger")
+                    return redirect(url_for("extrair_atributos"))
+                
+                # Salva a configuração completa
+                salvar_configuracao_google_sheets(sheet_id, aba_nome)
+                config = carregar_configuracao_google_sheets()
+                
+                inicio = datetime.now()
+                caminho_saida, qtd_itens, tempo_segundos, _ = extrair_atributos_processamento({
+                    'sheet_id': sheet_id,
+                    'aba': aba_nome
+                })
+                
+                nome_arquivo_saida = os.path.basename(caminho_saida)
+                
                 registrar_processo(
                     modulo="atributos",
-                    qtd_itens=0,
-                    tempo_execucao=0,
-                    status="erro",
-                    erro_mensagem="Nenhum arquivo enviado"
+                    qtd_itens=qtd_itens,
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso"
                 )
-                return redirect(url_for("extrair_atributos"))
+                
+                flash("Extração do Google Sheets concluída com sucesso!", "success")
             
-            arquivo = request.files["arquivo"]
-            if arquivo.filename == '':
-                flash("Nenhum arquivo selecionado", "danger")
+            # Modo upload de arquivo (apenas se for submit do formulário de upload)
+            elif 'arquivo' in request.files:
+                arquivo = request.files["arquivo"]
+                if arquivo.filename == '':
+                    flash("Nenhum arquivo selecionado", "danger")
+                    registrar_processo(
+                        modulo="atributos",
+                        qtd_itens=0,
+                        tempo_execucao=0,
+                        status="erro",
+                        erro_mensagem="Nenhum arquivo selecionado"
+                    )
+                    return redirect(url_for("extrair_atributos"))
+
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                nome_arquivo = secure_filename(arquivo.filename)
+                caminho_arquivo = os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo)
+                arquivo.save(caminho_arquivo)
+
+                caminho_saida, qtd_itens, tempo_segundos, _ = extrair_atributos_processamento(
+                    caminho_arquivo
+                )
+                
+                nome_arquivo_saida = os.path.basename(caminho_saida)
+                
                 registrar_processo(
                     modulo="atributos",
-                    qtd_itens=0,
-                    tempo_execucao=0,
-                    status="erro",
-                    erro_mensagem="Nenhum arquivo selecionado"
+                    qtd_itens=qtd_itens,
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso"
                 )
-                return redirect(url_for("extrair_atributos"))
-
-            # Garante que o diretório existe
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            
-            nome_arquivo = secure_filename(arquivo.filename)
-            caminho_arquivo = os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo)
-            arquivo.save(caminho_arquivo)
-
-            # Processa o arquivo
-            arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = extrair_atributos_processamento(
-                caminho_arquivo
-            )
-            
-            nome_arquivo_saida = os.path.basename(arquivo_saida)
-            
-            # Registra o processo
-            registrar_processo(
-                modulo="atributos",
-                qtd_itens=qtd_produtos,
-                tempo_execucao=tempo_segundos,
-                status="sucesso"
-            )
-            
-            flash("Extração concluída com sucesso!", "success")
-        
-        # Obter histórico (GET ou POST com sucesso)
-        historico = obter_historico_processos("atributos")
-        
-        return render_template(
-            "extrair_atributos.html",
-            historico_processos=historico,
-            processos_hoje=contar_processos_hoje("atributos"),
-            stats=get_processing_stats("atributos"),
-            nome_arquivo_saida=nome_arquivo_saida
-        )
-        
+                
+                flash("Extração concluída com sucesso!", "success")
+    
     except Exception as e:
         erro_msg = str(e)
         if "faltando as seguintes colunas" in erro_msg:
@@ -380,8 +446,56 @@ def extrair_atributos():
             erro_mensagem=erro_msg
         )
         flash(f"Erro: {erro_msg}", "danger")
-        return redirect(url_for("extrair_atributos"))
+    
+    # Adiciona parâmetro para manter a aba Google ativa
+    response = make_response(render_template(
+        "extrair_atributos.html",
+        historico_processos=obter_historico_processos("atributos"),
+        processos_hoje=contar_processos_hoje("atributos"),
+        stats=get_processing_stats("atributos"),
+        nome_arquivo_saida=nome_arquivo_saida,
+        config=config,
+        abas=abas,
+        preview_data=preview_data,
+        sheet_id_input=sheet_id_input,
+        aba_selecionada=aba_selecionada
+    ))
+    
+    # Adiciona parâmetro na URL para manter a aba
+    if request.method == "POST" and any(key in request.form for key in ['listar_abas', 'preview_aba', 'conectar_google']):
+        response.headers['Location'] = url_for('extrair_atributos', aba='google')
+    
+    return response
 
+@app.route("/api/abas-google-sheets")
+def api_abas_google_sheets():
+    """API para listar abas de uma planilha"""
+    sheet_id = request.args.get('sheet_id')
+    if not sheet_id:
+        return jsonify({'error': 'sheet_id é obrigatório'}), 400
+    
+    try:
+        abas = listar_abas_google_sheets(sheet_id)
+        return jsonify({'success': True, 'abas': abas})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route("/api/preview-aba")
+def api_preview_aba():
+    """API para preview de uma aba"""
+    sheet_id = request.args.get('sheet_id')
+    aba_nome = request.args.get('aba_nome')
+    
+    if not sheet_id or not aba_nome:
+        return jsonify({'error': 'sheet_id e aba_nome são obrigatórios'}), 400
+    
+    try:
+        from google_sheets_utils import obter_dados_aba
+        preview_data = obter_dados_aba(sheet_id, aba_nome)
+        return jsonify({'success': True, 'data': preview_data})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
 @app.route("/comparar-prazos", methods=["POST"])
 def comparar_prazos():
     try:
@@ -476,6 +590,61 @@ def handle_500_error(e):
         'message': 'Internal server error',
         'details': str(e) if app.debug else None
     }), 500
+@app.route("/configuracoes/google-sheets", methods=["GET", "POST"])
+def configurar_google_sheets():
+    """Tela de configuração do Google Sheets - Agora salva apenas o ID"""
+    config = carregar_configuracao_google_sheets()
+    abas = []
+    mensagem = None
+    tipo_mensagem = "info"
+    erro = None
+    
+    try:
+        if request.method == "POST":
+            sheet_id = request.form.get('sheet_id', '').strip()
+            acao = request.form.get('acao')
+            
+            if acao == 'testar':
+                sucesso, msg = testar_conexao_google_sheets(sheet_id)
+                mensagem = msg
+                tipo_mensagem = "success" if sucesso else "danger"
+                
+            elif acao == 'listar_abas':
+                if sheet_id:
+                    abas = listar_abas_google_sheets(sheet_id)
+                    mensagem = f"{len(abas)} abas encontradas"
+                    tipo_mensagem = "success"
+                else:
+                    mensagem = "Informe o ID da planilha primeiro"
+                    tipo_mensagem = "warning"
+                
+            elif acao == 'salvar':
+                if not sheet_id:
+                    mensagem = "ID da planilha é obrigatório"
+                    tipo_mensagem = "danger"
+                else:
+                    # Salva apenas o ID, a aba será selecionada na tela de extração
+                    if salvar_configuracao_google_sheets(sheet_id, ''):
+                        config = carregar_configuracao_google_sheets()
+                        mensagem = "ID da planilha salvo com sucesso! Selecione a aba na tela de extração."
+                        tipo_mensagem = "success"
+                    else:
+                        mensagem = "Erro ao salvar configuração"
+                        tipo_mensagem = "danger"
+    
+    except Exception as e:
+        erro = str(e)
+        mensagem = f"Erro: {erro}"
+        tipo_mensagem = "danger"
+    
+    return render_template(
+        "config_google_sheets.html",
+        config=config,
+        abas=abas,
+        mensagem=mensagem,
+        tipo_mensagem=tipo_mensagem,
+        erro=erro
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
