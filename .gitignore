@@ -33,3 +33,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Credenciais sensíveis
+credentials.json
+config/google_sheets_config.json
