@@ -119,12 +119,12 @@
     <h5>Preview da Aba: <small class="text-muted">{{ preview_data.total_linhas }} linhas, {{ preview_data.total_colunas }} colunas</small></h5>
     
     {% if preview_data.colunas and preview_data.dados %}
-    <div class="table-responsive" style="max-height: 300px;">
-        <table class="table table-sm table-striped">
-            <thead class="table-dark sticky-top">
-                <tr>
+    <div class="table-responsive" style="max-height: 400px; overflow-x: auto; white-space: nowrap;">
+    <table class="table table-sm table-striped table-bordered align-middle">
+        <thead class="table-dark sticky-top">
+            <tr>
                     {% for coluna in preview_data.colunas %}
-                    <th>{{ coluna }}</th>
+                    <th class="text-nowrap small"></th>>{{ coluna }}</th>
                     {% endfor %}
                 </tr>
             </thead>
@@ -132,7 +132,9 @@
                 {% for linha in preview_data.dados %}
                 <tr>
                     {% for coluna in preview_data.colunas %}
-                    <td>{{ linha[coluna] if coluna in linha else '' | truncate(30) }}</td>
+                    <td class="text-truncate" style="max-width: 200px;" title="{{ linha[coluna] if coluna in linha else '' }}">
+                        {{ linha[coluna] if coluna in linha else '' | truncate(30) }}
+                    </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
