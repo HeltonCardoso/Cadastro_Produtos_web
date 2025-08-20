@@ -7,20 +7,29 @@
     Extração de atributos usando planilha de modelo Online ou Google Sheets.
 </div>
 <h2 class="mb-4">Extração Atributos HTML</h2>
+                {% if nome_arquivo_saida is not none %}
+                                    <div class="alert alert-success mt-3">
+                                        Processamento concluído com sucesso!
+                                        <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
+                                        class="btn btn-primary ml-3">
+                                        Baixar Arquivo Processado
+                                        </a>
+                                    </div>
+                {% endif %}
 
 <!-- Abas para escolher o método -->
 <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab">Upload de Arquivo</button>
+        <button class="nav-link {% if aba_ativa == 'upload' %}active{% endif %}" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab">Upload de Arquivo</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="google-tab" data-bs-toggle="tab" data-bs-target="#google" type="button" role="tab">Google Sheets</button>
+        <button class="nav-link {% if aba_ativa == 'google' %}active{% endif %}" id="google-tab" data-bs-toggle="tab" data-bs-target="#google" type="button" role="tab">Google Sheets</button>
     </li>
 </ul>
 
 <div class="tab-content" id="myTabContent">
     <!-- Tab Upload de Arquivo -->
-    <div class="tab-pane fade show active" id="upload" role="tabpanel">
+    <div class="tab-pane fade {% if aba_ativa == 'upload' %}show active{% endif %}" id="upload" role="tabpanel">
         <form method="POST" enctype="multipart/form-data" onsubmit="mostrarProcessando()">
             <input type="hidden" name="upload_type" value="file">
             <div class="mb-3">
@@ -30,26 +39,17 @@
 
             <div class="d-flex align-items-center gap-2 mt-3">
                 <button id="btnProcessar" type="submit" class="btn btn-primary">EXTRAIR ATRIBUTOS</button>
-                {% if nome_arquivo_saida is not none %}
-                    <div class="alert alert-success mt-3">
-                        Processamento concluído com sucesso!
-                        <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
-                          class="btn btn-primary ml-3">
-                          Baixar Arquivo Processado
-                        </a>
-                    </div>
-                {% endif %}
             </div>
         </form>
     </div>
 
     <!-- Tab Google Sheets - COMPLETAMENTE REFEITA -->
-    <div class="tab-pane fade" id="google" role="tabpanel">
+    <div class="tab-pane fade {% if aba_ativa == 'google' %}show active{% endif %}" id="google" role="tabpanel">
         <!-- Modifique o formulário Google Sheets -->
 <form method="POST" id="googleForm">
     <input type="hidden" name="action_type" id="action_type" value="">
     
-    <div class="row">
+   <!-- <div class="row">
         <div class="col-md-8">
             <div class="mb-3">
                 <label for="sheet_id" class="form-label">ID da Planilha Google:</label>
@@ -64,8 +64,23 @@
                 <small class="text-muted">Encontre no URL: .../spreadsheets/d/[ID_DA_PLANILHA]/edit</small>
             </div>
         </div>
-    </div>
-
+    </div>-->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="sheet_id" class="form-label">ID da Planilha Google:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="sheet_id" name="sheet_id" 
+                                value="{{ sheet_id_input }}" required readonly
+                                placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+                            <button type="button" id="btnBuscarAbas" class="btn btn-outline-primary">
+                                <i class="fas fa-search"></i> Buscar Abas
+                            </button>
+                        </div>
+                        <small class="text-muted">Encontre no URL: .../spreadsheets/d/[ID_DA_PLANILHA]/edit</small>
+                    </div>
+                </div>
+            </div>
     {% if abas %}
     <div class="row">
         <div class="col-md-6">
@@ -146,7 +161,40 @@
         {% endif %}
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mantém a aba ativa após recarregar a página
+    const urlParams = new URLSearchParams(window.location.search);
+    const abaParam = urlParams.get('aba');
+    
+    if (abaParam === 'google') {
+        // Ativa a aba Google programaticamente
+        const googleTab = new bootstrap.Tab(document.getElementById('google-tab'));
+        googleTab.show();
+    }
 
+    // Modifique os event listeners para adicionar o parâmetro na URL
+    btnBuscarAbas.addEventListener('click', function() {
+        // ... código existente ...
+        // Adicione o parâmetro na URL
+        window.history.replaceState({}, '', '?aba=google');
+    });
+
+    btnVisualizar.addEventListener('click', function() {
+        // ... código existente ...
+        window.history.replaceState({}, '', '?aba=google');
+    });
+
+    btnExtrair.addEventListener('click', function() {
+        // ... código existente ...
+        window.history.replaceState({}, '', '?aba=google');
+    });
+});
+// Quando o formulário de upload for submetido, mantenha na aba upload
+document.querySelector('form[onsubmit="mostrarProcessando()"]').addEventListener('submit', function() {
+    window.history.replaceState({}, '', '?aba=upload');
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const btnBuscarAbas = document.getElementById('btnBuscarAbas');
@@ -269,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="card-header bg-info text-white">
         <h5 class="mb-0">Histórico de Processos</h5>
     </div>
-    <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+    <div class="card-body" style="max-height: 100px; overflow-y: auto;">
         {% if historico_processos %}
             <ul class="list-unstyled">
                 {% for processo in historico_processos %}

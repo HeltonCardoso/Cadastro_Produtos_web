@@ -224,7 +224,6 @@ def contar_processos_por_dia(date):
                     count += 1
     return count
 
-
 def registrar_produtos(produtos_processados):
     """Registra os produtos processados em arquivo separado"""
     data_dir = datetime.now().strftime("%Y-%m-%d")
@@ -237,7 +236,6 @@ def registrar_produtos(produtos_processados):
         for produto in produtos_processados:
             f.write(f"{produto['nome']} - {produto['ean']} - {produto['status']}\n")
     return log_file
-
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
@@ -335,6 +333,9 @@ def extrair_atributos():
     sheet_id_input = request.form.get('sheet_id', config.get('sheet_id', ''))
     aba_selecionada = request.form.get('aba_nome', '')
     
+    # Verifica se deve manter a aba Google ativa
+    aba_ativa = request.args.get('aba', 'upload')  # 'upload' ou 'google'
+    
     try:
         if request.method == "POST":
             action_type = request.form.get('action_type', '')
@@ -347,6 +348,7 @@ def extrair_atributos():
                         abas = listar_abas_google_sheets(sheet_id)
                         flash(f"{len(abas)} abas encontradas", "success")
                         sheet_id_input = sheet_id
+                        aba_ativa = 'google'  # Mantém na aba Google
                     except Exception as e:
                         flash(f"Erro ao listar abas: {str(e)}", "danger")
                 else:
@@ -363,6 +365,7 @@ def extrair_atributos():
                         flash(f"Preview da aba '{aba_nome}' carregado", "success")
                         sheet_id_input = sheet_id
                         aba_selecionada = aba_nome
+                        aba_ativa = 'google'  # Mantém na aba Google
                     except Exception as e:
                         flash(f"Erro ao carregar preview: {str(e)}", "danger")
                 else:
@@ -375,7 +378,7 @@ def extrair_atributos():
                 
                 if not sheet_id or not aba_nome:
                     flash("ID da planilha e aba são obrigatórios", "danger")
-                    return redirect(url_for("extrair_atributos"))
+                    return redirect(url_for("extrair_atributos", aba='google'))
                 
                 # Salva a configuração completa
                 salvar_configuracao_google_sheets(sheet_id, aba_nome)
@@ -397,6 +400,7 @@ def extrair_atributos():
                 )
                 
                 flash("Extração do Google Sheets concluída com sucesso!", "success")
+                aba_ativa = 'google'  # Mantém na aba Google
             
             # Modo upload de arquivo (apenas se for submit do formulário de upload)
             elif 'arquivo' in request.files:
@@ -410,8 +414,8 @@ def extrair_atributos():
                         status="erro",
                         erro_mensagem="Nenhum arquivo selecionado"
                     )
-                    return redirect(url_for("extrair_atributos"))
-
+                    return redirect(url_for("extrair_atributos", aba='upload'))
+                
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                 nome_arquivo = secure_filename(arquivo.filename)
                 caminho_arquivo = os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo)
@@ -431,6 +435,7 @@ def extrair_atributos():
                 )
                 
                 flash("Extração concluída com sucesso!", "success")
+                aba_ativa = 'upload'  # Mantém na aba Upload
     
     except Exception as e:
         erro_msg = str(e)
@@ -447,8 +452,7 @@ def extrair_atributos():
         )
         flash(f"Erro: {erro_msg}", "danger")
     
-    # Adiciona parâmetro para manter a aba Google ativa
-    response = make_response(render_template(
+    return render_template(
         "extrair_atributos.html",
         historico_processos=obter_historico_processos("atributos"),
         processos_hoje=contar_processos_hoje("atributos"),
@@ -458,14 +462,9 @@ def extrair_atributos():
         abas=abas,
         preview_data=preview_data,
         sheet_id_input=sheet_id_input,
-        aba_selecionada=aba_selecionada
-    ))
-    
-    # Adiciona parâmetro na URL para manter a aba
-    if request.method == "POST" and any(key in request.form for key in ['listar_abas', 'preview_aba', 'conectar_google']):
-        response.headers['Location'] = url_for('extrair_atributos', aba='google')
-    
-    return response
+        aba_selecionada=aba_selecionada,
+        aba_ativa=aba_ativa  # Passa qual aba deve ficar ativa
+    )
 
 @app.route("/api/abas-google-sheets")
 def api_abas_google_sheets():
@@ -590,6 +589,7 @@ def handle_500_error(e):
         'message': 'Internal server error',
         'details': str(e) if app.debug else None
     }), 500
+
 @app.route("/configuracoes/google-sheets", methods=["GET", "POST"])
 def configurar_google_sheets():
     """Tela de configuração do Google Sheets - Agora salva apenas o ID"""
