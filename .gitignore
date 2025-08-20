@@ -1,0 +1,35 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+*.pyo
+*.pyd
+
+# --- Virtual Envs ---
+.venv/
+venv/
+ENV/
+env/
+.python-version
+
+# --- Flask instance & DB ---
+instance/
+*.db
+
+# --- Logs & Uploads ---
+*.log
+/uploads/
+logs/
+logs_*.txt
+
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+
+# --- IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
