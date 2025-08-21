@@ -20,6 +20,7 @@ from log_utils import (
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
+from processamento.validar_xml import validar_xml_nfe
 
 # Adicione a raiz do projeto ao path do Python
 sys.path.append(str(Path(__file__).parent))
@@ -644,6 +645,28 @@ def configurar_google_sheets():
         mensagem=mensagem,
         tipo_mensagem=tipo_mensagem,
         erro=erro
+    )
+
+@app.route("/validar-xml", methods=["GET", "POST"])
+def validar_xml():
+    resultado = None
+    if request.method == "POST":
+        if "arquivo_xml" not in request.files:
+            return jsonify({"sucesso": False, "erro": "Nenhum arquivo enviado"}), 400
+
+        arquivo = request.files["arquivo_xml"]
+        if arquivo.filename == "":
+            return jsonify({"sucesso": False, "erro": "Nenhum arquivo selecionado"}), 400
+
+        resultado = validar_xml_nfe(arquivo)
+
+        return jsonify(resultado)
+
+    return render_template(
+        "validar_xml.html",
+        historico_processos=obter_historico_processos("xml"),
+        processos_hoje=contar_processos_hoje("xml"),
+        stats=get_processing_stats("xml")
     )
 
 if __name__ == "__main__":
