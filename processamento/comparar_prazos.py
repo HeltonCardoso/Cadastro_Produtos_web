@@ -14,6 +14,13 @@ MAPA_MARKETPLACES = {
         "prazo_erp": "DIAS P/ ENTREGA",
         "imagem": "wake.png"
     },
+    "Jet": {
+        "cod_barra": "GTIN",
+        "prazo": "Prazo Manuseio (Dias)",
+        "chave_comparacao": "EAN",
+        "prazo_erp": "DIAS P/ ENTREGA",
+        "imagem": "jet.png"
+    },
     "Tray": {
         "cod_barra": "EAN",
         "prazo": "Disponibilidade",
