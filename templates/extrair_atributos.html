@@ -69,6 +69,9 @@
                 <div class="col-md-8">
                     <div class="mb-3">
                         <label for="sheet_id" class="form-label">ID da Planilha Google:</label>
+                        <small class="text-muted d-block mt-1">
+                            <i class="fas fa-info-circle"></i> Apenas abas visíveis serão listadas
+                        </small>
                         <div class="input-group">
                             <input type="text" class="form-control" id="sheet_id" name="sheet_id" 
                                 value="{{ sheet_id_input }}" required readonly
@@ -116,30 +119,73 @@
         <!-- No template extrair_atributos.html, na seção de preview -->
 {% if preview_data %}
 <div class="mt-4">
-    <h5>Preview da Aba: <small class="text-muted">{{ preview_data.total_linhas }} linhas, {{ preview_data.total_colunas }} colunas</small></h5>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>Preview da Aba: <span class="text-muted">{{ preview_data.total_linhas }} linhas, {{ preview_data.total_colunas }} colunas</span></h5>
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(-100)">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(100)">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="button" class="btn btn-outline-info" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+            </button>
+        </div>
+    </div>
     
     {% if preview_data.colunas and preview_data.dados %}
-    <div class="table-responsive" style="max-height: 400px; overflow-x: auto; white-space: nowrap;">
-    <table class="table table-sm table-striped table-bordered align-middle">
-        <thead class="table-dark sticky-top">
-            <tr>
-                    {% for coluna in preview_data.colunas %}
-                    <th class="text-nowrap small"></th>>{{ coluna }}</th>
+    <div class="table-container-fixed" id="tableContainer">
+        <div class="table-header-fixed">
+            <table class="table table-sm table-bordered mb-0">
+                <thead>
+                    <tr>
+                        {% for coluna in preview_data.colunas %}
+                        <th class="text-nowrap small p-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-truncate" title="{{ coluna }}">{{ coluna }}</span>
+                                <small class="text-muted ms-1">#{{ loop.index }}</small>
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        
+        <div class="table-body-scroll">
+            <table class="table table-sm table-bordered table-hover mb-0">
+                <tbody>
+                    {% for linha in preview_data.dados %}
+                    <tr>
+                        {% for coluna in preview_data.colunas %}
+                        <td class="p-2">
+                            <div class="cell-content text-truncate" title="{{ linha[coluna] if coluna in linha else '' }}">
+                                {{ linha[coluna] if coluna in linha else '' }}
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for linha in preview_data.dados %}
-                <tr>
-                    {% for coluna in preview_data.colunas %}
-                    <td class="text-truncate" style="max-width: 200px;" title="{{ linha[coluna] if coluna in linha else '' }}">
-                        {{ linha[coluna] if coluna in linha else '' | truncate(30) }}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="table-scrollbar-vertical">
+            <div class="scrollbar-thumb"></div>
+        </div>
+    </div>
+    
+    <div class="table-info mt-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                Mostrando {{ preview_data.dados|length }} de {{ preview_data.total_linhas }} linhas |
+                {{ preview_data.colunas|length }} colunas
+            </small>
+            <small class="text-muted">
+                ↕️ Scroll vertical | ↔️ Scroll horizontal
+            </small>
+        </div>
     </div>
     {% else %}
     <div class="alert alert-warning">
@@ -148,6 +194,211 @@
     </div>
     {% endif %}
 </div>
+
+<style>
+.table-container-fixed {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background: white;
+    overflow: hidden;
+}
+
+.table-header-fixed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 17px; /* Compensa a barra de scroll vertical */
+    height: 45px;
+    overflow: hidden;
+    background: white;
+    z-index: 20;
+}
+
+.table-header-fixed table {
+    margin-bottom: 0;
+    width: auto;
+}
+
+.table-header-fixed th {
+    background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%);
+    border-bottom: 2px solid #adb5bd;
+    min-width: 120px;
+}
+
+.table-body-scroll {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.table-body-scroll table {
+    margin-bottom: 0;
+    width: auto;
+}
+
+.table-body-scroll td {
+    background: white;
+    transition: background-color 0.15s ease;
+    max-width: 200px;
+    min-width: 120px;
+}
+
+.table-body-scroll tr:hover td {
+    background-color: #f8f9fa !important;
+}
+
+.cell-content {
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Garante que o header e body tenham a mesma largura de colunas */
+.table-header-fixed table,
+.table-body-scroll table {
+    table-layout: fixed;
+}
+
+.table-header-fixed th,
+.table-body-scroll td {
+    width: 120px;
+    min-width: 120px;
+    max-width: 200px;
+}
+
+/* Scrollbar personalizada */
+.table-body-scroll::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.table-body-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.table-body-scroll::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+    border: 2px solid #f1f1f1;
+}
+
+.table-body-scroll::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Fullscreen mode */
+.table-container-fixed.fullscreen {
+    position: fixed;
+    top: 50px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1050;
+    background: white;
+    border-radius: 0.375rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.table-container-fixed.fullscreen .table-header-fixed {
+    right: 17px;
+}
+</style>
+
+<script>
+function scrollTableHorizontal(distance) {
+    const tableBody = document.querySelector('.table-body-scroll');
+    tableBody.scrollBy({ left: distance, behavior: 'smooth' });
+    
+    // Sincroniza o header com o scroll horizontal
+    const tableHeader = document.querySelector('.table-header-fixed');
+    tableHeader.scrollLeft = tableBody.scrollLeft;
+}
+
+function toggleFullscreen() {
+    const container = document.getElementById('tableContainer');
+    const button = document.querySelector('[onclick="toggleFullscreen()"]');
+    const icon = button.querySelector('i');
+    
+    if (container.classList.contains('fullscreen')) {
+        container.classList.remove('fullscreen');
+        icon.classList.remove('fa-compress');
+        icon.classList.add('fa-expand');
+        button.innerHTML = '<i class="fas fa-expand"></i>';
+    } else {
+        container.classList.add('fullscreen');
+        icon.classList.remove('fa-expand');
+        icon.classList.add('fa-compress');
+        button.innerHTML = '<i class="fas fa-compress"></i>';
+    }
+}
+
+// Sincroniza o scroll horizontal entre header e body
+document.querySelector('.table-body-scroll').addEventListener('scroll', function() {
+    const tableHeader = document.querySelector('.table-header-fixed');
+    tableHeader.scrollLeft = this.scrollLeft;
+});
+
+// Navegação com teclado
+document.addEventListener('keydown', function(e) {
+    const tableBody = document.querySelector('.table-body-scroll');
+    if (tableBody && document.activeElement.closest('.table-container-fixed')) {
+        if (e.key === 'ArrowLeft') {
+            scrollTableHorizontal(-100);
+            e.preventDefault();
+        } else if (e.key === 'ArrowRight') {
+            scrollTableHorizontal(100);
+            e.preventDefault();
+        } else if (e.key === 'Escape') {
+            const container = document.getElementById('tableContainer');
+            if (container.classList.contains('fullscreen')) {
+                toggleFullscreen();
+            }
+        }
+    }
+});
+
+// Tooltip para células com conteúdo truncado
+document.addEventListener('DOMContentLoaded', function() {
+    const cells = document.querySelectorAll('.cell-content');
+    cells.forEach(cell => {
+        if (cell.scrollWidth > cell.offsetWidth) {
+            cell.setAttribute('data-bs-toggle', 'tooltip');
+        }
+    });
+    
+    // Inicializa tooltips do Bootstrap
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+// Ajusta automaticamente a largura das colunas
+function adjustColumnWidths() {
+    const headerCells = document.querySelectorAll('.table-header-fixed th');
+    const bodyCells = document.querySelectorAll('.table-body-scroll td');
+    
+    headerCells.forEach((headerCell, index) => {
+        const bodyCell = bodyCells[index];
+        if (bodyCell) {
+            const maxWidth = Math.max(headerCell.scrollWidth, bodyCell.scrollWidth);
+            headerCell.style.minWidth = maxWidth + 'px';
+            bodyCell.style.minWidth = maxWidth + 'px';
+        }
+    });
+}
+
+// Executa após o carregamento da tabela
+setTimeout(adjustColumnWidths, 100);
+</script>
 {% endif %}
 
         <!-- Configuração Salva -->
@@ -264,31 +515,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function buscarAbasViaAPI(sheetId) {
-        fetch(`/api/abas-google-sheets-list?sheet_id=${encodeURIComponent(sheetId)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const select = document.getElementById('aba_nome');
-                    select.innerHTML = '<option value="">Selecione uma aba...</option>';
-                    
-                    data.abas.forEach(aba => {
-                        const option = document.createElement('option');
-                        option.value = aba.title;
-                        option.textContent = `${aba.title} (${aba.row_count} linhas)`;
-                        select.appendChild(option);
-                    });
-                    
-                    // Mostra mensagem suave
-                    showToast(`${data.abas.length} abas encontradas`, 'success');
-                } else {
-                    showToast('Erro: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                showToast('Erro ao buscar abas', 'error');
-            });
-    }
+    // CORREÇÃO: Usa a nova API para abas visíveis
+    fetch(`/api/abas-google-sheets-visiveis?sheet_id=${encodeURIComponent(sheetId)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const select = document.getElementById('aba_nome');
+                select.innerHTML = '<option value="">Selecione uma aba...</option>';
+                
+                data.abas.forEach(aba => {
+                    const option = document.createElement('option');
+                    option.value = aba.title;
+                    option.textContent = `${aba.title} (${aba.row_count} linhas)`;
+                    select.appendChild(option);
+                });
+                
+                // Mostra mensagem suave
+                showToast(`${data.abas.length} abas visíveis encontradas`, 'success');
+            } else {
+                showToast('Erro: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            showToast('Erro ao buscar abas', 'error');
+        });
+}
 
     function showToast(message, type) {
         // Implementação simples de toast notification

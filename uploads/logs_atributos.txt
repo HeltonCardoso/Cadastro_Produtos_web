@@ -1,17 +1,66 @@
-[17:04:32] Iniciando processamento do Google Sheets em 22/08/2025 17:04:32
-[17:04:33] Processado: Armário Multiuso 60cm Com 2 Portas Aline Imbuia/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Armário Multiuso 60cm Com 2 Portas Aline Imbuia V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 103cm Com 4 Portas Mayra Nature/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 103cm Com Espelho Mayra Nature/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com 6 Portas Mayra Branco Flex V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com 6 Portas Mayra Imbuia/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com 6 Portas Mayra Imbuia V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com 6 Portas Mayra Nature/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com Espelho Mayra Branco Flex V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com Espelho Mayra Imbuia/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com Espelho Mayra Imbuia V02 - Mpozenato
-[17:04:33] Processado: Guarda Roupa Solteiro 154cm Com Espelho Mayra Nature/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Cômoda Quarto Sapateira 2 Portas 4 Gavetas Lírio Imbuia/Champanhe V02 - Mpozenato
-[17:04:33] Processado: Cômoda Quarto Sapateira 2 Portas 4 Gavetas Lírio Imbuia V02 - Mpozenato
-[17:04:34] Arquivo gerado: Atributos_Extraidos_SemMarca_20250822_170433.xlsx
-[17:04:34] Processamento concluído - 14 itens em 1.08s
+[17:17:06] Iniciando processamento do Google Sheets em 26/08/2025 17:17:06
+[17:17:08] Erro na linha 1: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 2: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 3: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 4: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 5: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 6: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 7: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 8: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 9: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 10: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 11: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 12: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 13: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 14: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 15: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 16: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 17: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 18: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 19: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 20: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 21: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 22: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 23: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 24: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 25: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 26: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 27: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 28: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 29: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 30: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 31: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 32: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 33: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 34: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 35: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 36: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 37: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 38: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 39: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 40: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 41: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 42: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 43: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 44: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 45: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 46: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 47: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 48: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 49: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 50: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 51: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 52: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 53: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 54: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 55: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 56: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 57: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 58: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 59: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 60: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 61: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 62: 'NOMEE-COMMERCE'
+[17:17:08] Erro na linha 63: 'NOMEE-COMMERCE'
+[17:17:08] Arquivo gerado: Atributos_Extraidos_SemMarca_20250826_171708.xlsx
+[17:17:08] Processamento concluído - 63 itens em 1.60s

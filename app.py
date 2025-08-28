@@ -1,7 +1,9 @@
 import sys
 from pathlib import Path
 import uuid
-from flask import Flask, abort, make_response, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
+from flask import Flask, abort, current_app, make_response, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
+from gspread import service_account
+import gspread
 from models import Processo, db
 from config import Config
 import os
@@ -341,11 +343,13 @@ def extrair_atributos():
         if request.method == "POST":
             action_type = request.form.get('action_type', '')
             
-            # Se for para listar abas
+            # Se for para listar abas - USA FUNÇÃO COMPATÍVEL
             if action_type == 'listar_abas':
                 sheet_id = request.form.get('sheet_id', '').strip()
                 if sheet_id:
                     try:
+                        # CORREÇÃO: Usa a função original para compatibilidade
+                        from google_sheets_utils import listar_abas_google_sheets
                         abas = listar_abas_google_sheets(sheet_id)
                         flash(f"{len(abas)} abas encontradas", "success")
                         sheet_id_input = sheet_id
@@ -354,6 +358,23 @@ def extrair_atributos():
                         flash(f"Erro ao listar abas: {str(e)}", "danger")
                 else:
                     flash("Informe o ID da planilha primeiro", "warning")
+            
+            # Se for para fazer preview de uma aba
+            elif action_type == 'preview_aba':
+                sheet_id = request.form.get('sheet_id', '').strip()
+                aba_nome = request.form.get('aba_nome', '').strip()
+                if sheet_id and aba_nome:
+                    try:
+                        from google_sheets_utils import obter_dados_aba
+                        preview_data = obter_dados_aba(sheet_id, aba_nome)
+                        flash(f"Preview da aba '{aba_nome}' carregado", "success")
+                        sheet_id_input = sheet_id
+                        aba_selecionada = aba_nome
+                        aba_ativa = 'google'  # Mantém na aba Google
+                    except Exception as e:
+                        flash(f"Erro ao carregar preview: {str(e)}", "danger")
+                else:
+                    flash("Selecione uma aba para visualizar", "warning")
             
             # Se for para fazer preview de uma aba
             elif action_type == 'preview_aba':
@@ -464,18 +485,89 @@ def extrair_atributos():
         preview_data=preview_data,
         sheet_id_input=sheet_id_input,
         aba_selecionada=aba_selecionada,
-        aba_ativa=aba_ativa  # Passa qual aba deve ficar ativa
+        aba_ativa=aba_ativa
     )
 
+def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
+    """Obtém TODOS os dados de uma aba específica para preview"""
+    try:
+        # Encontra o caminho correto para o credentials.json
+        current_dir = Path(__file__).parent
+        credentials_path = current_dir / "credentials.json"
+        
+        if not credentials_path.exists():
+            raise FileNotFoundError("Arquivo credentials.json não encontrado")
+        
+        credentials = service_account.Credentials.from_service_account_file(
+            str(credentials_path),
+            scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        
+        gc = gspread.authorize(credentials)
+        planilha = gc.open_by_key(sheet_id)
+        worksheet = planilha.worksheet(aba_nome)
+        
+        # Obtém TODAS as linhas (sem limite)
+        todas_linhas = worksheet.get_all_values()
+        
+        if not todas_linhas:
+            return {
+                'colunas': [],
+                'dados': [],
+                'total_linhas': 0,
+                'total_colunas': 0
+            }
+        
+        # A primeira linha são os cabeçalhos
+        colunas = todas_linhas[0] if todas_linhas else []
+        
+        # Converte TODAS as linhas seguintes para dicionários
+        dados = []
+        for i, linha in enumerate(todas_linhas[1:], 1):
+            linha_dict = {}
+            for j, valor in enumerate(linha):
+                nome_coluna = colunas[j] if j < len(colunas) else f"Coluna_{j+1}"
+                linha_dict[nome_coluna] = valor
+            dados.append(linha_dict)
+        
+        return {
+            'colunas': colunas,
+            'dados': dados,  # TODAS as linhas
+            'total_linhas': worksheet.row_count,
+            'total_colunas': worksheet.col_count
+        }
+        
+    except Exception as e:
+        if current_app:
+            current_app.logger.error(f"Erro ao obter dados da aba: {str(e)}")
+        else:
+            print(f"Erro ao obter dados da aba: {str(e)}")
+        raise Exception(f"Erro ao obter dados da aba: {str(e)}")
 @app.route("/api/abas-google-sheets")
 def api_abas_google_sheets():
-    """API para listar abas de uma planilha"""
+    """API para listar abas de uma planilha - AGORA APENAS VISÍVEIS"""
     sheet_id = request.args.get('sheet_id')
     if not sheet_id:
         return jsonify({'error': 'sheet_id é obrigatório'}), 400
     
     try:
-        abas = listar_abas_google_sheets(sheet_id)
+        # ALTERAÇÃO: Usa a nova função para abas visíveis
+        from google_sheets_utils import listar_abas_visiveis_google_sheets
+        abas = listar_abas_visiveis_google_sheets(sheet_id)
+        return jsonify({'success': True, 'abas': abas})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
+@app.route("/api/abas-google-sheets-visiveis")
+def api_abas_google_sheets_visiveis():
+    """API para listar apenas abas visíveis de uma planilha"""
+    sheet_id = request.args.get('sheet_id')
+    if not sheet_id:
+        return jsonify({'error': 'sheet_id é obrigatório'}), 400
+    
+    try:
+        from google_sheets_utils import listar_abas_visiveis_google_sheets
+        abas = listar_abas_visiveis_google_sheets(sheet_id)
         return jsonify({'success': True, 'abas': abas})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -593,7 +685,7 @@ def handle_500_error(e):
 
 @app.route("/configuracoes/google-sheets", methods=["GET", "POST"])
 def configurar_google_sheets():
-    """Tela de configuração do Google Sheets - Agora salva apenas o ID"""
+    """Tela de configuração do Google Sheets - Agora mostra apenas abas visíveis"""
     config = carregar_configuracao_google_sheets()
     abas = []
     mensagem = None
@@ -612,8 +704,10 @@ def configurar_google_sheets():
                 
             elif acao == 'listar_abas':
                 if sheet_id:
-                    abas = listar_abas_google_sheets(sheet_id)
-                    mensagem = f"{len(abas)} abas encontradas"
+                    # ALTERAÇÃO: Usa a nova função para abas visíveis
+                    from google_sheets_utils import listar_abas_visiveis_google_sheets
+                    abas = listar_abas_visiveis_google_sheets(sheet_id)
+                    mensagem = f"{len(abas)} abas visíveis encontradas"
                     tipo_mensagem = "success"
                 else:
                     mensagem = "Informe o ID da planilha primeiro"

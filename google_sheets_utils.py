@@ -96,7 +96,7 @@ def listar_abas_google_sheets(sheet_id):
         raise Exception(f"Erro ao conectar com Google Sheets: {str(e)}")
 
 def obter_dados_aba(sheet_id, aba_nome, limite_linhas=5):
-    """Obtém os primeiros dados de uma aba específica para preview"""
+    """Obtém os primeiros dados de uma aba específica para preview - LIMITADO A 5 LINHAS"""
     try:
         # Encontra o caminho correto para o credentials.json
         current_dir = Path(__file__).parent
@@ -114,8 +114,8 @@ def obter_dados_aba(sheet_id, aba_nome, limite_linhas=5):
         planilha = gc.open_by_key(sheet_id)
         worksheet = planilha.worksheet(aba_nome)
         
-        # Obtém todas as linhas
-        todas_linhas = worksheet.get_all_values()
+        # Obtém apenas as primeiras 6 linhas (cabeçalho + 5 dados)
+        todas_linhas = worksheet.get_all_values()[:limite_linhas + 1]
         
         if not todas_linhas:
             return {
@@ -128,7 +128,7 @@ def obter_dados_aba(sheet_id, aba_nome, limite_linhas=5):
         # A primeira linha são os cabeçalhos
         colunas = todas_linhas[0] if todas_linhas else []
         
-        # Converte as linhas seguintes para dicionários
+        # Converte as linhas seguintes para dicionários (máximo 5 linhas)
         dados = []
         for i, linha in enumerate(todas_linhas[1:limite_linhas+1], 1):
             if i > limite_linhas:
@@ -182,4 +182,134 @@ def testar_conexao_google_sheets(sheet_id, aba_nome=None):
     except Exception as e:
         return False, f"Erro na conexão: {str(e)}"
     
-  
+def listar_abas_visiveis_google_sheets(sheet_id):
+    """Lista apenas as abas visíveis de uma planilha do Google Sheets"""
+    try:
+        # Encontra o caminho correto para o credentials.json
+        current_dir = Path(__file__).parent
+        credentials_path = current_dir / "credentials.json"
+        
+        if not credentials_path.exists():
+            raise FileNotFoundError("Arquivo credentials.json não encontrado")
+        
+        credentials = service_account.Credentials.from_service_account_file(
+            str(credentials_path),
+            scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        
+        gc = gspread.authorize(credentials)
+        planilha = gc.open_by_key(sheet_id)
+        
+        abas_visiveis = []
+        for worksheet in planilha.worksheets():
+            # CORREÇÃO: Verifica se a aba não está oculta usando _properties
+            is_hidden = worksheet._properties.get('hidden', False) if hasattr(worksheet, '_properties') else False
+            
+            if not is_hidden:
+                abas_visiveis.append({
+                    'id': worksheet.id,
+                    'title': worksheet.title,
+                    'row_count': worksheet.row_count,
+                    'col_count': worksheet.col_count,
+                    'hidden': False
+                })
+            else:
+                # Log para debugging
+                if current_app:
+                    current_app.logger.debug(f"Aba oculta encontrada: {worksheet.title}")
+        
+        return abas_visiveis
+        
+    except Exception as e:
+        if current_app:
+            current_app.logger.error(f"Erro ao listar abas visíveis: {str(e)}")
+        else:
+            print(f"Erro ao listar abas visíveis: {str(e)}")
+        raise Exception(f"Erro ao conectar com Google Sheets: {str(e)}")
+
+def obter_dados_apenas_abas_visiveis(sheet_id, limite_linhas=5):
+    """Obtém dados apenas das abas visíveis da planilha"""
+    try:
+        # Primeiro, obtém apenas as abas visíveis
+        abas_visiveis = listar_abas_visiveis_google_sheets(sheet_id)
+        
+        if not abas_visiveis:
+            return {
+                'abas_visiveis': [],
+                'dados': {},
+                'total_abas': 0
+            }
+        
+        # Encontra o caminho correto para o credentials.json
+        current_dir = Path(__file__).parent
+        credentials_path = current_dir / "credentials.json"
+        
+        if not credentials_path.exists():
+            raise FileNotFoundError("Arquivo credentials.json não encontrado")
+        
+        credentials = service_account.Credentials.from_service_account_file(
+            str(credentials_path),
+            scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        
+        gc = gspread.authorize(credentials)
+        planilha = gc.open_by_key(sheet_id)
+        
+        dados_abas = {}
+        
+        for aba_info in abas_visiveis:
+            try:
+                worksheet = planilha.worksheet(aba_info['title'])
+                
+                # Obtém todas as linhas
+                todas_linhas = worksheet.get_all_values()
+                
+                if not todas_linhas:
+                    dados_abas[aba_info['title']] = {
+                        'colunas': [],
+                        'dados': [],
+                        'total_linhas': 0,
+                        'total_colunas': 0
+                    }
+                    continue
+                
+                # A primeira linha são os cabeçalhos
+                colunas = todas_linhas[0] if todas_linhas else []
+                
+                # Converte as linhas seguintes para dicionários
+                dados = []
+                for i, linha in enumerate(todas_linhas[1:limite_linhas+1], 1):
+                    if i > limite_linhas:
+                        break
+                    linha_dict = {}
+                    for j, valor in enumerate(linha):
+                        nome_coluna = colunas[j] if j < len(colunas) else f"Coluna_{j+1}"
+                        linha_dict[nome_coluna] = valor
+                    dados.append(linha_dict)
+                
+                dados_abas[aba_info['title']] = {
+                    'colunas': colunas,
+                    'dados': dados,
+                    'total_linhas': worksheet.row_count,
+                    'total_colunas': worksheet.col_count
+                }
+                
+            except Exception as e:
+                if current_app:
+                    current_app.logger.error(f"Erro ao processar aba {aba_info['title']}: {str(e)}")
+                else:
+                    print(f"Erro ao processar aba {aba_info['title']}: {str(e)}")
+                continue
+        
+        return {
+            'abas_visiveis': [aba['title'] for aba in abas_visiveis],
+            'dados': dados_abas,
+            'total_abas': len(abas_visiveis)
+        }
+        
+    except Exception as e:
+        if current_app:
+            current_app.logger.error(f"Erro ao obter dados das abas visíveis: {str(e)}")
+        else:
+            print(f"Erro ao obter dados das abas visíveis: {str(e)}")
+        raise Exception(f"Erro ao obter dados das abas visíveis: {str(e)}")
