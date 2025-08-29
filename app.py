@@ -13,6 +13,7 @@ from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
 from processamento.comparar_prazos import processar_comparacao
+from processamento.google_sheets import ler_planilha_google
 from log_utils import (
     registrar_processo,
     registrar_itens_processados,
@@ -242,73 +243,173 @@ def registrar_produtos(produtos_processados):
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
-    nome_arquivo_saida = None  # Inicializa como None
+    nome_arquivo_saida = None
+    config = carregar_configuracao_google_sheets()
+    abas = []
+    sheet_id_input = request.form.get('sheet_id', config.get('sheet_id', ''))
+    aba_selecionada = request.form.get('aba_nome', '')
+    preview_data = None
+
+    # Aba ativa (upload ou google)
+    aba_ativa = request.args.get('aba', 'upload')
 
     if request.method == "POST":
+        action_type = request.form.get('action_type', '')
+
         try:
-            if 'arquivo_origem' not in request.files or 'arquivo_destino' not in request.files:
-                flash("Nenhum arquivo enviado", "danger")
+            # ====================================
+            # 🔹 LISTAR ABAS DO GOOGLE SHEETS
+            # ====================================
+            if action_type == "listar_abas":
+                sheet_id = request.form.get('sheet_id', '').strip()
+                if not sheet_id:
+                    flash("Informe o ID da planilha Google", "danger")
+                    return redirect(url_for("preencher_planilha", aba="google"))
+
+                abas = listar_abas_google_sheets(sheet_id)
+                config = carregar_configuracao_google_sheets()
+
+                return render_template(
+                    "preencher_planilha.html",
+                    historico_processos=obter_historico_processos("cadastro"),
+                    processos_hoje=contar_processos_hoje("cadastro"),
+                    stats=get_processing_stats("cadastro"),
+                    nome_arquivo_saida=None,
+                    config=config,
+                    abas=abas,
+                    sheet_id_input=sheet_id,
+                    aba_selecionada=None,
+                    aba_ativa="google"
+                )
+
+            # ====================================
+            # 🔹 PREVIEW DA ABA
+            # ====================================
+            elif action_type == "preview_aba":
+                sheet_id = request.form.get('sheet_id', '').strip()
+                aba_nome = request.form.get('aba_nome', '').strip()
+
+                if not sheet_id or not aba_nome:
+                    flash("ID da planilha e aba são obrigatórios para preview", "danger")
+                    return redirect(url_for("preencher_planilha", aba="google"))
+
+                df_preview = ler_planilha_google(sheet_id, aba_nome)
+                preview_data = {
+                    "total_linhas": len(df_preview),
+                    "total_colunas": len(df_preview.columns),
+                    "colunas": df_preview.columns.tolist(),
+                    "linhas": df_preview.head(10).to_dict(orient="records")
+                }
+
+                return render_template(
+                    "preencher_planilha.html",
+                    historico_processos=obter_historico_processos("cadastro"),
+                    processos_hoje=contar_processos_hoje("cadastro"),
+                    stats=get_processing_stats("cadastro"),
+                    nome_arquivo_saida=None,
+                    config=config,
+                    abas=listar_abas_google_sheets(sheet_id),
+                    sheet_id_input=sheet_id,
+                    aba_selecionada=aba_nome,
+                    aba_ativa="google",
+                    preview_data=preview_data
+                )
+
+            # ====================================
+            # 🔹 PROCESSAR (GOOGLE SHEETS)
+            # ====================================
+            elif action_type == "conectar_google":
+                sheet_id = request.form.get('sheet_id', '').strip()
+                aba_nome = request.form.get('aba_nome', '').strip()
+
+                if not sheet_id or not aba_nome:
+                    flash("ID da planilha e aba são obrigatórios", "danger")
+                    return redirect(url_for("preencher_planilha", aba="google"))
+
+                salvar_configuracao_google_sheets(sheet_id, aba_nome)
+                config = carregar_configuracao_google_sheets()
+
+                # precisa do template destino
+                destino = request.files.get("arquivo_destino")
+                if not destino or destino.filename == "":
+                    flash("Envie também o arquivo de destino (template)", "danger")
+                    return redirect(url_for("preencher_planilha", aba="google"))
+
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                nome_destino = secure_filename(destino.filename)
+                caminho_destino = os.path.join(app.config['UPLOAD_FOLDER'], nome_destino)
+                destino.save(caminho_destino)
+
+                # Processa
+                arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = executar_processamento(
+                    {"sheet_id": sheet_id, "aba": aba_nome},
+                    caminho_destino
+                )
+
+                nome_arquivo_saida = os.path.basename(arquivo_saida)
+
                 registrar_processo(
                     modulo="cadastro",
-                    qtd_itens=0,
-                    tempo_execucao=0,
-                    status="erro",
-                    erro_mensagem="Nenhum arquivo enviado"
+                    qtd_itens=qtd_produtos,
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso"
                 )
-                return redirect(url_for("preencher_planilha"))
-            
-            origem = request.files["arquivo_origem"]
-            destino = request.files["arquivo_destino"]
-            
-            if origem.filename == '' or destino.filename == '':
-                flash("Nenhum arquivo selecionado", "danger")
+                registrar_itens_processados("cadastro", produtos_processados)
+
+                flash("Cadastro concluído com sucesso a partir do Google Sheets!", "success")
+                aba_ativa = "google"
+
+            # ====================================
+            # 🔹 PROCESSAR (UPLOAD LOCAL)
+            # ====================================
+            elif 'arquivo_origem' in request.files and 'arquivo_destino' in request.files:
+                origem = request.files["arquivo_origem"]
+                destino = request.files["arquivo_destino"]
+
+                if origem.filename == '' or destino.filename == '':
+                    flash("Nenhum arquivo selecionado", "danger")
+                    registrar_processo(
+                        modulo="cadastro",
+                        qtd_itens=0,
+                        tempo_execucao=0,
+                        status="erro",
+                        erro_mensagem="Nenhum arquivo selecionado"
+                    )
+                    return redirect(url_for("preencher_planilha", aba="upload"))
+
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+                nome_origem = secure_filename(origem.filename)
+                nome_destino = secure_filename(destino.filename)
+                caminho_origem = os.path.join(app.config['UPLOAD_FOLDER'], nome_origem)
+                caminho_destino = os.path.join(app.config['UPLOAD_FOLDER'], nome_destino)
+
+                origem.save(caminho_origem)
+                destino.save(caminho_destino)
+
+                arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = executar_processamento(
+                    caminho_origem, caminho_destino
+                )
+
+                nome_arquivo_saida = os.path.basename(arquivo_saida)
+
                 registrar_processo(
                     modulo="cadastro",
-                    qtd_itens=0,
-                    tempo_execucao=0,
-                    status="erro",
-                    erro_mensagem="Nenhum arquivo selecionado"
+                    qtd_itens=qtd_produtos,
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso"
                 )
-                return redirect(url_for("preencher_planilha"))
+                registrar_itens_processados("cadastro", produtos_processados)
 
-            # Garante que o diretório de upload existe
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            
-            nome_origem = secure_filename(origem.filename)
-            nome_destino = secure_filename(destino.filename)
-            caminho_origem = os.path.join(app.config['UPLOAD_FOLDER'], nome_origem)
-            caminho_destino = os.path.join(app.config['UPLOAD_FOLDER'], nome_destino)
-            
-            origem.save(caminho_origem)
-            destino.save(caminho_destino)
-
-            # Processa os arquivos
-            arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = executar_processamento(
-                caminho_origem, caminho_destino
-            )
-            
-            # Obtém apenas o nome do arquivo de saída
-            nome_arquivo_saida = os.path.basename(arquivo_saida)
-            
-            # Registra o processo
-            processo_id = registrar_processo(
-                modulo="cadastro",
-                qtd_itens=qtd_produtos,
-                tempo_execucao=tempo_segundos,
-                status="sucesso"
-            )
-            
-            # Registra os itens processados
-            registrar_itens_processados("cadastro", produtos_processados)
-            
-            flash("Planilha preenchida com sucesso!", "success")
+                flash("Planilha preenchida com sucesso!", "success")
+                aba_ativa = "upload"
 
         except Exception as e:
             erro_msg = str(e)
             if "faltando as seguintes colunas" in erro_msg:
                 colunas_faltando = erro_msg.split(":")[1].strip()
                 erro_msg = f"Planilha fora do padrão. Colunas faltantes: {colunas_faltando}"
-            
+
             registrar_processo(
                 modulo="cadastro",
                 qtd_itens=0,
@@ -317,15 +418,22 @@ def preencher_planilha():
                 erro_mensagem=erro_msg
             )
             flash(f"Erro: {erro_msg}", "danger")
-            return redirect(url_for("preencher_planilha"))
-    
+            return redirect(url_for("preencher_planilha", aba=aba_ativa))
+
     return render_template(
         "preencher_planilha.html",
         historico_processos=obter_historico_processos("cadastro"),
         processos_hoje=contar_processos_hoje("cadastro"),
         stats=get_processing_stats("cadastro"),
-        nome_arquivo_saida=nome_arquivo_saida  # Passa o nome do arquivo para o template
+        nome_arquivo_saida=nome_arquivo_saida,
+        config=config,
+        abas=abas,
+        sheet_id_input=sheet_id_input,
+        aba_selecionada=aba_selecionada,
+        aba_ativa=aba_ativa,
+        preview_data=preview_data
     )
+
 
 @app.route("/extrair-atributos", methods=["GET", "POST"])
 def extrair_atributos():

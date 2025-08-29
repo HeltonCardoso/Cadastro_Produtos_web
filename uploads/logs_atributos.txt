@@ -1,66 +1,229 @@
-[17:17:06] Iniciando processamento do Google Sheets em 26/08/2025 17:17:06
-[17:17:08] Erro na linha 1: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 2: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 3: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 4: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 5: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 6: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 7: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 8: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 9: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 10: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 11: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 12: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 13: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 14: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 15: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 16: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 17: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 18: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 19: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 20: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 21: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 22: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 23: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 24: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 25: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 26: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 27: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 28: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 29: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 30: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 31: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 32: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 33: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 34: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 35: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 36: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 37: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 38: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 39: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 40: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 41: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 42: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 43: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 44: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 45: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 46: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 47: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 48: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 49: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 50: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 51: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 52: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 53: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 54: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 55: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 56: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 57: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 58: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 59: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 60: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 61: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 62: 'NOMEE-COMMERCE'
-[17:17:08] Erro na linha 63: 'NOMEE-COMMERCE'
-[17:17:08] Arquivo gerado: Atributos_Extraidos_SemMarca_20250826_171708.xlsx
-[17:17:08] Processamento concluído - 63 itens em 1.60s
+[14:24:36] Iniciando processamento do Google Sheets em 28/08/2025 14:24:36
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 97cm 1 Porta Delphi Avelã L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 97cm Delphi Avelã/Branco L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 97cm Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 97cm Delphi Avelã/Grey L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 145cm 2 Portas Delphi Avelã L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 145cm Delphi Avelã/Branco L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 145cm Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 145cm Delphi Avelã/Grey L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 165cm 2 Portas Delphi Avelã L01 - Mpozenato
+[14:24:37] Processado: Armário Aéreo Ponte Modulado 165cm Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 97cm Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 97cm 2 Portas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 97cm Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 97cm Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 145cm Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 145cm 3 Portas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 145cm Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 145cm 3 Portas Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm 3 Portas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Armário Aéreo Ponte Modulado 165cm Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm 1 Porta Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Taiga Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm 1 Porta Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Taiga Cinnamon/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado Sapateira 50cm Taiga Grey/Branco L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Escrivaninha Bancada Estudo Modulada 90cm Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm 1 Porta Taiga Branco/Avelã L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm 1 Porta Taiga Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm 1 Porta Taiga Branco/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm 1 Porta Taiga Branco/Grey L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm Espelho Delphi Avelã L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Obliquo 70cm Espelho Taiga Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Delphi Avelã L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Delphi Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Taiga Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Canto Reto 90cm com 1 Porta Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Avelã L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Avelã/Branco L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Branco/Avelã L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Branco L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 100cm com 3 Portas Delphi Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 38cm com 1 Porta Delphi Avelã L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 38cm com 1 Porta Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 38cm com 1 Porta Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 38cm com 1 Porta Delphi Avelã/Grey L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 79cm com 2 Portas Delphi Avelã L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 79cm com 2 Portas Delphi Avelã/Branco L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 79cm com 2 Portas Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 79cm com 2 Portas Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Modulado 90cm 2 Portas 4 Gavetas Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Gavetas Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas 3 Gavetas Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm Espelho Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm Espelho Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 2 Portas e Espelho Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Gavetas Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Taiga Branco/Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Gavetas Taiga Branco/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 3 Portas 4 Gavetas Taiga Branco/Grey L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Taiga Avelã L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Taiga Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Taiga Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Taiga Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Cabeceira Casal Painel Para Cama 145cm Delphi Avelã L01     - Mpozenato
+[14:24:38] Processado: Cabeceira Queen Painel Para Cama 165cm Delphi Avelã L01     - Mpozenato
+[14:24:38] Processado: Cabeceira Solteiro Painel Para Cama 97cm Delphi Avelã L01   - Mpozenato
+[14:24:38] Processado: Cabeceira Casal Painel Para Cama 145cm Taiga Branco L01     - Mpozenato
+[14:24:38] Processado: Cabeceira Queen Painel Para Cama 165cm Taiga Branco L01     - Mpozenato
+[14:24:38] Processado: Cabeceira Solteiro Painel Para Cama 97cm Taiga Branco L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Portas 4 Gavetas Taiga Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Portas 4 Gavetas Taiga Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Portas 4 Gavetas Taiga Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro 134cm 4 Portas 4 Gavetas Taiga Grey Sky L01 - Mpozenato
+[14:24:38] Processado: Cômoda Quarto Solteiro 63cm 4 Gavetas Samira Freijó L01 - Mpozenato 
+[14:24:38] Processado: Cômoda Quarto Solteiro 63cm 4 Gavetas Samira Freijó/Mocca L01 - Mpozenato 
+[14:24:38] Processado: Cômoda Quarto 93cm 4 Gavetas 1 Porta Samira Freijó L01  - Mpozenato 
+[14:24:38] Processado: Cômoda Quarto 93cm 4 Gavetas 1 Porta Samira Freijó/Mocca L01 - Mpozenato 
+[14:24:38] Processado: Cômoda Quarto 123cm 4 Gavetas 2 Portas Samira Freijó L01 - Mpozenato 
+[14:24:38] Processado: Cômoda Quarto 123cm 4 Gavetas 2 Portas Samira Freijó/Mocca L01 - Mpozenato 
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP01 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP01 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP01 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP01 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP01 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP01 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP01 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP01 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP02 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP02 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP02 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP02 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP02 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP02 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP02 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP02 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Delphi Avelã L01        - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Delphi Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Delphi Avelã/Grey L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP04 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP04 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP04 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP04 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP04 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP04 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP04 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP04 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP05 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP05 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP05 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP05 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP05 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP05 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP05 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP05 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado Espelho CP06 Delphi Avelã L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado Espelho CP06 Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado Espelho CP06 Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado Espelho CP06 Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado Espelho CP06 Delphi Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado Espelho CP06 Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado Espelho CP06 Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado Espelho CP06 Delphi Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP06 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP06 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP06 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP06 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP06 Delphi Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP06 Delphi Avelã/Branco L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP06 Delphi Avelã/Cinnamon L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP06 Delphi Avelã/Grey L01      - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP07 Delphi Avelã L01        - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP07 Delphi Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP07 Delphi Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP07 Delphi Avelã/Grey L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP01 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP01 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP01 Taiga Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP01 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP02 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP02 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP02 Taiga Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP02 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Taiga Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP03 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP04 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP04 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP04 Taiga Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP04 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP05 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP05 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP05 Taiga Avelã/Cinnamon L01- Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP05 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado Espelho CP06 Taiga Avelã L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado Espelho CP06 Taiga Avelã/Branco L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado Espelho CP06 Taiga Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado Espelho CP06 Taiga Avelã/Grey L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP07 Taiga Avelã L01            - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP07 Taiga Avelã/Branco L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP07 Taiga Avelã/Cinnamon L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP07 Taiga Avelã/Grey L01       - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP07 Taiga Avelã L01            - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP07 Taiga Avelã/Branco L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP07 Taiga Avelã/Cinnamon L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP07 Taiga Avelã/Grey L01       - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP08 Taiga Avelã L01         - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP08 Taiga Avelã/Branco L01  - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP08 Taiga Avelã/Cinnamon L01 - Mpozenato
+[14:24:38] Processado: Guarda Roupa Solteiro Modulado CP08 Taiga Avelã/Grey L01    - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP09 Taiga Avelã L01           - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP09 Taiga Avelã/Branco L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP09 Taiga Avelã/Cinnamon L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Queen Modulado CP09 Taiga Avelã/Grey L01       - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP09 Taiga Avelã L01            - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP09 Taiga Avelã/Branco L01     - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP09 Taiga Avelã/Cinnamon L01   - Mpozenato
+[14:24:38] Processado: Guarda Roupa Casal Modulado CP09 Taiga Avelã/Grey L01       - Mpozenato
+[14:24:38] Arquivo gerado: Atributos_Extraidos_SemMarca_20250828_142438.xlsx
+[14:24:38] Processamento concluído - 226 itens em 2.90s

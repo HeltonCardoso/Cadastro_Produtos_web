@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import NamedStyle
@@ -9,6 +10,7 @@ from datetime import datetime
 import logging
 import re
 import unicodedata
+from processamento.google_sheets import ler_planilha_google
 
 
 warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed")
@@ -31,7 +33,15 @@ def reaplicar_validacoes(worksheet, validacoes):
 def executar_processamento(planilha_origem, planilha_destino):
 
     inicio = datetime.now()
-    df = pd.read_excel(planilha_origem)
+    produtos_processados = []
+
+    # 🔹 Se for Google Sheets
+    if isinstance(planilha_origem, dict):
+        sheet_id = planilha_origem['sheet_id']
+        aba_nome = planilha_origem['aba']
+        df = ler_planilha_google(sheet_id, aba_nome)
+    else:
+        df = pd.read_excel(planilha_origem)
     # Lista para armazenar os produtos processados
     produtos_processados = []
 

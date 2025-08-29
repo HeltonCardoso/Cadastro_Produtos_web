@@ -1,23 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Preencher Planilha Athus{% endblock %}
+
 {% block content %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle me-2"></i>
-    Prenchimento Automático da Planilha de Cadastro modelo ATHUS.
+    Preenchimento automático da planilha de cadastro modelo ATHUS (via arquivo ou Google Sheets).
 </div>
-  <h2 class="mb-4">Preencher Planilha Athus</h2>
-  <form method="POST" enctype="multipart/form-data" onsubmit="mostrarProcessando()">
-    <div class="mb-3">
-      <label for="arquivo_origem" class="form-label">Planilha Online:</label>
-      <input type="file" class="form-control" id="arquivo_origem" name="arquivo_origem" required>
-    </div>
-    <div class="mb-3">
-      <label for="arquivo_destino" class="form-label">Planilha Modelo ATHUS:</label>
-      <input type="file" class="form-control" id="arquivo_destino" name="arquivo_destino" required>
-    </div>
-    <div class="d-flex align-items-center gap-2 mt-3">
-  <button id="btnProcessar" type="submit" class="btn btn-primary">PROCESSAR PLANILHA</button>
-  {% if nome_arquivo_saida is not none %}
+
+<h2 class="mb-4">Preencher Planilha Athus</h2>
+
+{% if nome_arquivo_saida is not none %}
 <div class="alert alert-success mt-3">
     Processamento concluído com sucesso!
     <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
@@ -26,71 +18,156 @@
     </a>
 </div>
 {% endif %}
-</div>
-  </form>
 
-  <script>
-function mostrarProcessando() {
-    const botao = document.getElementById("btnProcessar");
-    botao.disabled = true;
-    botao.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processando...`;
-}
-</script>
-<div class="row mt-4">
-    <div class="col-md-6">
-    <div class="card">
-        <div class="card-header">
-            <h5>Histórico de Processos</h5>
-        </div>
-        <div class="card-body" style="max-height: 200px; overflow-y: auto;">
-                {% if historico_processos %}
-                    {% for processo in historico_processos %}
-                        <div class="log-entry mb-1">{{ processo }}</div>
+<!-- Abas para escolher o método -->
+<ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link {% if aba_ativa == 'upload' %}active{% endif %}" 
+                id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab">
+            Upload de Arquivo
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link {% if aba_ativa == 'google' %}active{% endif %}" 
+                id="google-tab" data-bs-toggle="tab" data-bs-target="#google" type="button" role="tab">
+            Google Sheets
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+    <!-- TAB UPLOAD -->
+    <div class="tab-pane fade {% if aba_ativa == 'upload' %}show active{% endif %}" id="upload" role="tabpanel">
+        <form method="POST" enctype="multipart/form-data" onsubmit="mostrarProcessando()">
+            <div class="mb-3">
+                <label for="arquivo_origem" class="form-label">Planilha Online (dados de origem):</label>
+                <input type="file" class="form-control" id="arquivo_origem" name="arquivo_origem" required>
+            </div>
+            <div class="mb-3">
+                <label for="arquivo_destino" class="form-label">Planilha Modelo ATHUS (destino):</label>
+                <input type="file" class="form-control" id="arquivo_destino" name="arquivo_destino" required>
+            </div>
+            <button id="btnProcessar" type="submit" class="btn btn-primary">PROCESSAR PLANILHA</button>
+        </form>
+    </div>
+
+    <!-- TAB GOOGLE SHEETS -->
+    <div class="tab-pane fade {% if aba_ativa == 'google' %}show active{% endif %}" id="google" role="tabpanel">
+        <form method="POST" id="googleForm" enctype="multipart/form-data">
+            <input type="hidden" name="action_type" id="action_type" value="">
+
+            <div class="mb-3">
+                <label for="sheet_id" class="form-label">ID da Planilha Google:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="sheet_id" name="sheet_id"
+                           value="{{ sheet_id_input }}" required placeholder="ID da planilha">
+                    <button type="button" id="btnBuscarAbas" class="btn btn-outline-primary">
+                        <i class="fas fa-search"></i> Buscar Abas
+                    </button>
+                </div>
+                <small class="text-muted">URL: .../spreadsheets/d/<b>[ID]</b>/edit</small>
+            </div>
+
+            {% if abas %}
+            <div class="mb-3">
+                <label for="aba_nome" class="form-label">Selecione a Aba:</label>
+                <select class="form-select" id="aba_nome" name="aba_nome" required>
+                    <option value="">Selecione...</option>
+                    {% for aba in abas %}
+                        <option value="{{ aba.title }}" {% if aba.title == aba_selecionada %}selected{% endif %}>
+                            {{ aba.title }} ({{ aba.row_count }} linhas)
+                        </option>
                     {% endfor %}
-                {% else %}
-                    <div class="text-muted">Nenhum processo registrado</div>
-                {% endif %}
-            
-        </div>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="arquivo_destino_google" class="form-label">Planilha Modelo ATHUS (destino):</label>
+                <input type="file" class="form-control" id="arquivo_destino_google" name="arquivo_destino" required>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" id="btnVisualizar" class="btn btn-outline-info">
+                    <i class="fas fa-eye"></i> Visualizar
+                </button>
+                <button type="button" id="btnExtrair" class="btn btn-success">
+                    <i class="fas fa-play"></i> Processar
+                </button>
+            </div>
+            {% endif %}
+        </form>
     </div>
 </div>
+
+<script>
+function mostrarProcessando() {
+    const botao = document.getElementById("btnProcessar");
+    if(botao){
+        botao.disabled = true;
+        botao.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processando...`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('googleForm');
+    const actionType = document.getElementById('action_type');
+
+    const btnBuscarAbas = document.getElementById('btnBuscarAbas');
+    const btnVisualizar = document.getElementById('btnVisualizar');
+    const btnExtrair = document.getElementById('btnExtrair');
+
+    if(btnBuscarAbas){
+        btnBuscarAbas.addEventListener('click', function() {
+            actionType.value = 'listar_abas';
+            form.submit();
+        });
+    }
+    if(btnVisualizar){
+        btnVisualizar.addEventListener('click', function() {
+            actionType.value = 'preview_aba';
+            form.submit();
+        });
+    }
+    if(btnExtrair){
+        btnExtrair.addEventListener('click', function() {
+            btnExtrair.disabled = true;
+            btnExtrair.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
+            actionType.value = 'conectar_google';
+            form.submit();
+        });
+    }
+});
+</script>
+
+<!-- Histórico -->
+<div class="card mt-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Histórico de Processos</h5>
+    </div>
+    <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+        {% if historico_processos %}
+            <ul class="list-unstyled">
+                {% for processo in historico_processos %}
+                <li class="mb-2">{{ processo }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Nenhum processo registrado ainda.</p>
+        {% endif %}
+    </div>
+    <div class="card-footer text-muted">
+        Total hoje: {{ processos_hoje }} processos
+    </div>
 </div>
-  <!-- Mensagens sempre no mesmo lugar abaixo do log -->
-  <div id="mensagens-flash" class="mt-3" style="min-height: 120px;">
-    <!-- Exibir mensagens flash (sucesso ou erro) -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ 'danger' if category == 'error' else category }} mt-3">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
 
-
-    {% if sucesso %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ sucesso }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% elif erro %}
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ erro }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endif %}
-
-    {% if qtd_produtos %}
-      <div class="alert alert-info mt-2">
-        <strong>{{ qtd_produtos }}</strong> produtos processados!
-      </div>
-    {% endif %}
-
-    {% if tempo_processamento %}
-      <div class="alert alert-secondary mt-2">
-        Tempo de processamento: <strong>{{ tempo_processamento }}</strong>
-      </div>
-    {% endif %}
-  </div>
+<!-- Mensagens -->
+<div id="mensagens-flash" class="mt-3" style="min-height: 120px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 {% endblock %}
