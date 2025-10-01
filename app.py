@@ -12,6 +12,7 @@ import pandas as pd
 from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
+from processamento.api_anymarket import consultar_api_anymarket
 from processamento.comparar_prazos import processar_comparacao
 from processamento.google_sheets import ler_planilha_google
 from log_utils import (
@@ -23,7 +24,7 @@ from log_utils import (
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
-from processamento.validar_xml import validar_xml_nfe
+import processamento.validar_xml
 
 # Adicione a raiz do projeto ao path do Python
 sys.path.append(str(Path(__file__).parent))
@@ -240,6 +241,66 @@ def registrar_produtos(produtos_processados):
         for produto in produtos_processados:
             f.write(f"{produto['nome']} - {produto['ean']} - {produto['status']}\n")
     return log_file
+
+@app.route("/consultar-anymarket", methods=["GET", "POST"])
+def consultar_anymarket():
+    resultado = None
+    
+    if request.method == "POST":
+        try:
+            product_id = request.form.get('product_id', '').strip()
+            api_token = request.form.get('api_token', '').strip() or None
+            
+            if not product_id:
+                flash("ID do produto é obrigatório", "danger")
+                return redirect(url_for('consultar_anymarket'))
+            
+            # Registrar processo de consulta
+            registrar_processo(
+                modulo="anymarket",
+                qtd_itens=1,  # 1 produto consultado
+                tempo_execucao=0,  # Será atualizado após a consulta
+                status="processando"
+            )
+            
+            inicio = datetime.now()
+            
+            # Fazer a consulta à API
+            resultado = consultar_api_anymarket(product_id, api_token)
+            
+            tempo_segundos = (datetime.now() - inicio).total_seconds()
+            
+            # Atualizar processo com resultado
+            registrar_processo(
+                modulo="anymarket",
+                qtd_itens=1,
+                tempo_execucao=tempo_segundos,
+                status="sucesso" if resultado.get('sucesso') else "erro",
+                erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+            )
+            
+            if resultado.get('sucesso'):
+                flash(f"Consulta realizada com sucesso! {resultado.get('quantidade_fotos', 0)} fotos encontradas.", "success")
+            else:
+                flash(f"Erro na consulta: {resultado.get('erro', 'Erro desconhecido')}", "danger")
+                
+        except Exception as e:
+            registrar_processo(
+                modulo="anymarket",
+                qtd_itens=0,
+                tempo_execucao=0,
+                status="erro",
+                erro_mensagem=str(e)
+            )
+            flash(f"Erro ao consultar API: {str(e)}", "danger")
+    
+    return render_template(
+        "consultar_anymarket.html",
+        resultado=resultado,
+        historico_processos=obter_historico_processos("anymarket"),
+        processos_hoje=contar_processos_hoje("anymarket"),
+        stats=get_processing_stats("anymarket")
+    )
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():

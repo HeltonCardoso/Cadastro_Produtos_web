@@ -1,178 +1,44 @@
-[15:41:59] Iniciando processamento em 26/09/2025 15:41:59
-[15:41:59] Carregando arquivo: Planilha_Online_INCOLAR_36894.xlsx
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Luna/Preto I06 - Mpozenato
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Grigio/Preto I06 - Mpozenato
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Musgo/Preto I06 - Mpozenato
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Luna/Dourado I06 - Mpozenato
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Grigio/Dourado I06 - Mpozenato
-[15:41:59] Processado: Cômoda Quarto 97cm Solteiro 3 Gavetas Becca Musgo/Dourado I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Luna/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Grigio/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Musgo/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Luna/Dourado I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Grigio/Dourado I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Quarto 68cm 2 Gavetas Becca Musgo/Dourado I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Luna/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Grigio/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Musgo/Preto I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Luna/Dourado I06 - Mpozenato
-[15:41:59] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Becca Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Cômoda Quarto 178cm Casal 6 Gavetas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Quarto 68cm 3 Gavetas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Cabeceira Para Quarto 68cm Kit 2 Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 55 Pol 180cm Portas Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 55 Pol 180cm Portas Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 55 Pol 180cm Portas Lisas Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 55 Pol 180cm Portas Lisas Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm Portas Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm Portas Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm Portas Lisas Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm Portas Lisas Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Brise Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 75 Pol 220cm 4 Portas Lisas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Brise Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Rack TV 85 Pol 260cm 4 Portas Lisas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Painel Para TV 55 Pol 180cm Suspenso Blen Louro/Luna - Mpozenato
-[15:42:00] Processado: Painel Para TV 75 Pol 220cm Suspenso Blen Louro/Luna - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Brise Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 99cm 2 Portas Lisas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Brise Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Buffet Aparador 180cm 4 Portas Lisas Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Armário de Cozinha Cristaleira 99cm Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Aparador Sala de Estar Buffet 136cm Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Alta Para Sala Pés Metálicos Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Para Sala Pés Metálicos Kit 2 Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa de Centro Baixa Para Sala Pés Metálicos Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Alta Para Sala Pés Metálicos Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Para Sala Pés Metálicos Kit 2 Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Louro/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Grigio/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Musgo/Dourado I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Louro/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Grigio/Preto I06 - Mpozenato
-[15:42:00] Processado: Mesa Lateral Baixa Para Sala Pés Metálicos Blen Musgo/Preto I06 - Mpozenato
-[15:42:00] Processado: Painel TV 55 Pol e Rack Sala Porta Lisa Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Painel TV 55 Pol e Rack Sala Porta Lisa Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Painel TV 55 Pol e Rack Sala Porta Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Painel TV 55 Pol e Rack Sala Porta Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Painel TV 75 Pol e Rack Sala Porta Lisa Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Painel TV 75 Pol e Rack Sala Porta Lisa Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Processado: Painel TV 75 Pol e Rack Sala Porta Brise Blen Louro/Luna/Dourado I06 - Mpozenato
-[15:42:00] Processado: Painel TV 75 Pol e Rack Sala Porta Brise Blen Louro/Luna/Preto I06 - Mpozenato
-[15:42:00] Arquivo gerado: Atributos_Extraidos_Incolar_20250926_154200.xlsx
-[15:42:00] Processamento concluído - 174 itens em 0.78s
+[13:22:36] Iniciando processamento em 29/09/2025 13:22:36
+[13:22:36] Carregando arquivo: Planilha_Online_KONFORT_37782.xlsx
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Veludo Bege - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Veludo Bege - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Linho Cru Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Boucle Creme Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Sintético Caramelo Z08 - Mpozenato
+[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
+[13:22:36] Arquivo gerado: Atributos_Extraidos_KonfortMoveis_20250929_132236.xlsx
+[13:22:36] Processamento concluído - 40 itens em 0.38s

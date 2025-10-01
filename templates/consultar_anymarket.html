@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% block title %}Consultar AnyMarket API{% endblock %}
+
+{% block content %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    Consulta à API do AnyMarket para buscar informações de produtos e fotos.
+</div>
+
+<h2 class="mb-4">Buscar Imagens API- Anymarket</h2>
+
+<!-- Formulário de consulta -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Consulta de Produto</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="product_id" class="form-label">ID do Produto:</label>
+                        <input type="text" class="form-control" id="product_id" name="product_id" 
+                               value="{{ request.form.product_id if request.form }}" 
+                               placeholder="Ex: 347730499" required>
+                        <small class="text-muted">ID do produto no AnyMarket</small>
+                    </div>
+                </div>
+                </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary" id="btnConsultar">
+                    <i class="fas fa-search me-2"></i>Consultar
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="limparResultados()">
+                    <i class="fas fa-broom me-2"></i>Limpar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados da consulta -->
+{% if resultado %}
+<div class="card mb-4">
+    <div class="card-header {% if resultado.sucesso %}bg-success{% else %}bg-danger{% endif %} text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-{% if resultado.sucesso %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+            Resultado da Consulta - Produto: {{ resultado.product_id }}
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- Resumo -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card {% if resultado.sucesso %}border-success{% else %}border-danger{% endif %}">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Status</h6>
+                        <span class="badge bg-{% if resultado.sucesso %}success{% else %}danger{% endif %} fs-6">
+                            {{ "SUCESSO" if resultado.sucesso else "ERRO" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">HTTP Status</h6>
+                        <span class="badge bg-info fs-6">{{ resultado.status_code }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Fotos</h6>
+                        <span class="badge bg-primary fs-6">{{ resultado.quantidade_fotos if resultado.quantidade_fotos else 0 }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-secondary">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">Consulta</h6>
+                        <small class="text-muted">
+                            {% if resultado.timestamp %}
+                                {{ resultado.timestamp[:16]|replace('T', ' ') }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Galeria de Fotos -->
+        {% if resultado.sucesso and resultado.dados %}
+        <div class="mb-4">
+            <h6><i class="fas fa-images me-2"></i>Galeria de Fotos ({{ resultado.quantidade_fotos }} fotos)</h6>
+            
+            <div class="galeria-fotos">
+                {% for foto in resultado.dados %}
+                <div class="card-foto {% if foto.main %}foto-principal{% endif %}">
+                    <div class="foto-container">
+                        {% if foto.original %}
+                        <img src="{{ foto.original }}" alt="Foto ID {{ foto.id }}" 
+                             class="foto-imagem" loading="lazy"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/cccccc/969696?text=Erro+ao+Carregar'">
+                        {% else %}
+                        <div class="foto-placeholder">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                            <p class="text-muted mt-2">Imagem não disponível</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="foto-info">
+                        <div class="foto-meta">
+                            <span class="foto-id"><strong>ID:</strong> {{ foto.id if foto.id else 'N/A' }}</span>
+                            <span class="foto-index"><strong>Index:</strong> {{ foto.index if foto.index else 'N/A' }}</span>
+                            <span class="foto-principal-badge">
+                                {% if foto.main %}
+                                <span class="badge bg-success">Principal</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Secundária</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if foto.type %}
+                        <div class="foto-type">
+                            <small class="text-muted">Tipo: {{ foto.type }}</small>
+                        </div>
+                        {% endif %}
+                        {% if foto.original %}
+                        <div class="foto-url">
+                            <a href="{{ foto.original }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                <i class="fas fa-external-link-alt me-1"></i>Abrir Imagem
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Dados brutos JSON -->
+        <div class="mt-4">
+            <h6><i class="fas fa-code me-2"></i>Resposta Completa (JSON)</h6>
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <span>Dados Brutos da API</span>
+                    <button class="btn btn-sm btn-outline-light" onclick="copiarJSON()">
+                        <i class="fas fa-copy me-1"></i>Copiar
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <pre class="mb-0 p-3 bg-light" style="max-height: 400px; overflow-y: auto;" id="jsonOutput"><code>{{ resultado | tojson(indent=2) }}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens de erro -->
+        {% if not resultado.sucesso %}
+        <div class="alert alert-danger mt-3">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Erro na Consulta</h6>
+            <p class="mb-1"><strong>Detalhes:</strong> {{ resultado.erro }}</p>
+            {% if resultado.detalhes_erro %}
+            <p class="mb-0"><strong>Resposta da API:</strong> {{ resultado.detalhes_erro }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Informações da API -->
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Informações da API</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Endpoint Consultado:</h6>
+                <code>GET /rest/api/products/&#123;id&#125;/photos</code>
+            </div>
+            <div class="col-md-6">
+                <h6>Método:</h6>
+                <span class="badge bg-primary">GET</span>
+            </div>
+        </div>
+        <div class="mt-3">
+            <h6>Headers:</h6>
+            <ul class="list-unstyled">
+                <li><code>gumgaToken: *****</code></li>
+                <li><code>Content-Type: application/json;charset=UTF-8</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos para a galeria de fotos */
+.galeria-fotos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.card-foto {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-foto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.foto-principal {
+    border: 2px solid #007bff;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+.foto-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    min-height: 200px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.foto-imagem {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 6px;
+    transition: transform 0.3s ease;
+}
+
+.foto-imagem:hover {
+    transform: scale(1.05);
+}
+
+.foto-placeholder {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+.foto-info {
+    border-top: 1px solid #e9ecef;
+    padding-top: 12px;
+}
+
+.foto-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.foto-id, .foto-index {
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.foto-principal-badge {
+    margin-top: 4px;
+}
+
+.foto-type {
+    margin-bottom: 8px;
+}
+
+.foto-url {
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .galeria-fotos {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .card-foto {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .galeria-fotos {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mostrar loading ao submeter formulário
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = document.getElementById('btnConsultar');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Consultando...';
+    });
+    
+    // Focar no campo product_id ao carregar
+    document.getElementById('product_id').focus();
+});
+
+function limparResultados() {
+    window.location.href = "{{ url_for('consultar_anymarket') }}";
+}
+
+function copiarJSON() {
+    const jsonText = document.getElementById('jsonOutput').textContent;
+    navigator.clipboard.writeText(jsonText).then(function() {
+        showToast('JSON copiado para a área de transferência!', 'success');
+    }).catch(function(err) {
+        showToast('Erro ao copiar JSON', 'error');
+    });
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`;
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
+}
+
+// Função para expandir imagem ao clicar
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('foto-imagem')) {
+            const img = e.target;
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                cursor: zoom-out;
+            `;
+            
+            const modalImg = document.createElement('img');
+            modalImg.src = img.src;
+            modalImg.style.cssText = `
+                max-width: 90%;
+                max-height: 90%;
+                object-fit: contain;
+                border-radius: 8px;
+            `;
+            
+            modal.appendChild(modalImg);
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
