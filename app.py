@@ -21,6 +21,11 @@ from log_utils import (
     obter_historico_processos,
     contar_processos_hoje
 )
+from processamento.api_anymarket import (
+    consultar_api_anymarket, 
+    excluir_foto_anymarket, 
+    excluir_fotos_planilha_anymarket
+)
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
@@ -35,6 +40,13 @@ from google_sheets_utils import (
     salvar_configuracao_google_sheets,
     listar_abas_google_sheets,
     testar_conexao_google_sheets
+)
+from processamento.api_anymarket import (
+    consultar_api_anymarket, 
+    excluir_foto_anymarket, 
+    excluir_fotos_planilha_anymarket,
+    definir_foto_principal_anymarket,
+    reordenar_fotos_anymarket
 )
 
 app = Flask(__name__)
@@ -245,62 +257,255 @@ def registrar_produtos(produtos_processados):
 @app.route("/consultar-anymarket", methods=["GET", "POST"])
 def consultar_anymarket():
     resultado = None
+    acao = None
     
     if request.method == "POST":
-        try:
-            product_id = request.form.get('product_id', '').strip()
-            api_token = request.form.get('api_token', '').strip() or None
-            
-            if not product_id:
-                flash("ID do produto é obrigatório", "danger")
-                return redirect(url_for('consultar_anymarket'))
-            
-            # Registrar processo de consulta
-            registrar_processo(
-                modulo="anymarket",
-                qtd_itens=1,  # 1 produto consultado
-                tempo_execucao=0,  # Será atualizado após a consulta
-                status="processando"
-            )
-            
-            inicio = datetime.now()
-            
-            # Fazer a consulta à API
-            resultado = consultar_api_anymarket(product_id, api_token)
-            
-            tempo_segundos = (datetime.now() - inicio).total_seconds()
-            
-            # Atualizar processo com resultado
-            registrar_processo(
-                modulo="anymarket",
-                qtd_itens=1,
-                tempo_execucao=tempo_segundos,
-                status="sucesso" if resultado.get('sucesso') else "erro",
-                erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
-            )
-            
-            if resultado.get('sucesso'):
-                flash(f"Consulta realizada com sucesso! {resultado.get('quantidade_fotos', 0)} fotos encontradas.", "success")
-            else:
-                flash(f"Erro na consulta: {resultado.get('erro', 'Erro desconhecido')}", "danger")
+        acao = request.form.get('action', 'consultar')
+        
+        if acao == 'consultar':
+            try:
+                product_id = request.form.get('product_id', '').strip()
+                api_token = request.form.get('api_token', '').strip() or None
                 
-        except Exception as e:
-            registrar_processo(
-                modulo="anymarket",
-                qtd_itens=0,
-                tempo_execucao=0,
-                status="erro",
-                erro_mensagem=str(e)
-            )
-            flash(f"Erro ao consultar API: {str(e)}", "danger")
+                if not product_id:
+                    flash("ID do produto é obrigatório", "danger")
+                    return redirect(url_for('consultar_anymarket'))
+                
+                inicio = datetime.now()
+                resultado = consultar_api_anymarket(product_id, api_token)
+                tempo_segundos = (datetime.now() - inicio).total_seconds()
+                
+                registrar_processo(
+                    modulo="anymarket",
+                    qtd_itens=resultado.get('quantidade_fotos', 0),
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso" if resultado.get('sucesso') else "erro",
+                    erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+                )
+                
+                if resultado.get('sucesso'):
+                    flash(f"Consulta realizada com sucesso! {resultado.get('quantidade_fotos', 0)} fotos encontradas.", "success")
+                else:
+                    flash(f"Erro na consulta: {resultado.get('erro', 'Erro desconhecido')}", "danger")
+                    
+            except Exception as e:
+                flash(f"Erro ao consultar API: {str(e)}", "danger")
+        
+        elif acao == 'excluir_lote':
+            try:
+                if 'planilha' not in request.files:
+                    flash("Nenhum arquivo enviado", "danger")
+                    return redirect(url_for('consultar_anymarket'))
+                
+                planilha = request.files['planilha']
+                if planilha.filename == '':
+                    flash("Nenhum arquivo selecionado", "danger")
+                    return redirect(url_for('consultar_anymarket'))
+                
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                nome_arquivo = secure_filename(planilha.filename)
+                caminho_planilha = os.path.join(app.config['UPLOAD_FOLDER'], nome_arquivo)
+                planilha.save(caminho_planilha)
+                
+                inicio = datetime.now()
+                resultado = excluir_fotos_planilha_anymarket(caminho_planilha)
+                tempo_segundos = (datetime.now() - inicio).total_seconds()
+                
+                registrar_processo(
+                    modulo="anymarket_exclusao",
+                    qtd_itens=resultado.get('total_processado', 0),
+                    tempo_execucao=tempo_segundos,
+                    status="sucesso" if resultado.get('sucesso') else "erro",
+                    erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+                )
+                
+                if resultado.get('sucesso'):
+                    flash(f"Exclusão em lote concluída! {resultado.get('total_sucesso', 0)} de {resultado.get('total_processado', 0)} fotos excluídas.", "success")
+                else:
+                    flash(f"Erro na exclusão em lote: {resultado.get('erro', 'Erro desconhecido')}", "danger")
+                    
+            except Exception as e:
+                flash(f"Erro ao processar planilha: {str(e)}", "danger")
     
     return render_template(
         "consultar_anymarket.html",
         resultado=resultado,
+        acao=acao,
         historico_processos=obter_historico_processos("anymarket"),
         processos_hoje=contar_processos_hoje("anymarket"),
         stats=get_processing_stats("anymarket")
     )
+
+@app.route("/excluir-foto-anymarket", methods=["POST"])
+def excluir_foto_anymarket_route():
+    """API para exclusão individual de foto"""
+    try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        photo_id = data.get('photo_id')
+        
+        if not product_id or not photo_id:
+            return jsonify({'sucesso': False, 'erro': 'ID do produto e da foto são obrigatórios'}), 400
+        
+        resultado = excluir_foto_anymarket(product_id, photo_id)
+        
+        registrar_processo(
+            modulo="anymarket_exclusao",
+            qtd_itens=1,
+            tempo_execucao=0,
+            status="sucesso" if resultado.get('sucesso') else "erro",
+            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+        )
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route("/excluir-fotos-lote", methods=["POST"])
+def excluir_fotos_lote_route():
+    """API para exclusão em lote de fotos"""
+    try:
+        data = request.get_json()
+        fotos = data.get('fotos', [])
+        
+        if not fotos:
+            return jsonify({'sucesso': False, 'erro': 'Nenhuma foto selecionada'}), 400
+        
+        total_sucesso = 0
+        total_erro = 0
+        resultados = []
+        
+        for foto in fotos:
+            product_id = foto.get('product_id')
+            photo_id = foto.get('photo_id')
+            
+            if product_id and photo_id:
+                resultado = excluir_foto_anymarket(product_id, photo_id)
+                resultados.append(resultado)
+                
+                if resultado.get('sucesso'):
+                    total_sucesso += 1
+                else:
+                    total_erro += 1
+        
+        registrar_processo(
+            modulo="anymarket_exclusao",
+            qtd_itens=len(fotos),
+            tempo_execucao=0,
+            status="sucesso" if total_erro == 0 else "parcial",
+            erro_mensagem=f"{total_erro} erro(s)" if total_erro > 0 else None
+        )
+        
+        return jsonify({
+            'sucesso': True,
+            'total_processado': len(fotos),
+            'total_sucesso': total_sucesso,
+            'total_erro': total_erro,
+            'resultados': resultados
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route("/definir-foto-principal", methods=["POST"])
+def definir_foto_principal_route():
+    """API para definir uma foto como principal"""
+    try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        photo_id = data.get('photo_id')
+        
+        if not product_id or not photo_id:
+            return jsonify({'sucesso': False, 'erro': 'ID do produto e da foto são obrigatórios'}), 400
+        
+        resultado = definir_foto_principal_anymarket(product_id, photo_id)
+        
+        registrar_processo(
+            modulo="anymarket_principal",
+            qtd_itens=1,
+            tempo_execucao=0,
+            status="sucesso" if resultado.get('sucesso') else "erro",
+            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+        )
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route("/reordenar-fotos", methods=["POST"])
+def reordenar_fotos_route():
+    """API para reordenar fotos de um produto"""
+    try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        nova_ordem = data.get('nova_ordem', [])
+        
+        if not product_id:
+            return jsonify({'sucesso': False, 'erro': 'ID do produto é obrigatório'}), 400
+        
+        if not nova_ordem:
+            return jsonify({'sucesso': False, 'erro': 'Nova ordem não especificada'}), 400
+        
+        resultado = reordenar_fotos_anymarket(product_id, nova_ordem)
+        
+        registrar_processo(
+            modulo="anymarket_reordenar",
+            qtd_itens=len(nova_ordem),
+            tempo_execucao=0,
+            status="sucesso" if resultado.get('sucesso') else "erro",
+            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+        )
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+@app.route("/atualizar-foto-anymarket", methods=["POST"])
+def atualizar_foto_anymarket_route():
+    """API para atualizar índice e status principal de uma foto"""
+    try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        photo_id = data.get('photo_id')
+        index = data.get('index')
+        main = data.get('main', False)
+        
+        if not product_id or not photo_id or index is None:
+            return jsonify({'sucesso': False, 'erro': 'ID do produto, ID da foto e índice são obrigatórios'}), 400
+        
+        resultado = atualizar_foto_anymarket(product_id, photo_id, index, main)
+        
+        registrar_processo(
+            modulo="anymarket_atualizar",
+            qtd_itens=1,
+            tempo_execucao=0,
+            status="sucesso" if resultado.get('sucesso') else "erro",
+            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
+        )
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+    
+@app.route("/testar-endpoints-anymarket")
+def testar_endpoints_anymarket_route():
+    """Rota para testar quais endpoints são suportados"""
+    product_id = request.args.get('product_id', '347730532')
+    photo_id = request.args.get('photo_id', '')
+    
+    if not photo_id:
+        return jsonify({'erro': 'ID da foto é necessário'}), 400
+    
+    from processamento.api_anymarket import testar_endpoints_anymarket
+    resultado = testar_endpoints_anymarket(product_id, photo_id)
+    
+    return jsonify(resultado)
+
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
