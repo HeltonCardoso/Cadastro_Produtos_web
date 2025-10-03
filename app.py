@@ -12,7 +12,7 @@ import pandas as pd
 from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
-from processamento.api_anymarket import consultar_api_anymarket
+from processamento.api_anymarket import atualizar_foto_anymarket, consultar_api_anymarket
 from processamento.comparar_prazos import processar_comparacao
 from processamento.google_sheets import ler_planilha_google
 from log_utils import (
@@ -46,7 +46,8 @@ from processamento.api_anymarket import (
     excluir_foto_anymarket, 
     excluir_fotos_planilha_anymarket,
     definir_foto_principal_anymarket,
-    reordenar_fotos_anymarket
+    reordenar_fotos_anymarket,
+    atualizar_foto_anymarket
 )
 
 app = Flask(__name__)
@@ -1126,7 +1127,7 @@ def validar_xml():
         if arquivo.filename == "":
             return jsonify({"sucesso": False, "erro": "Nenhum arquivo selecionado"}), 400
 
-        resultado = validar_xml_nfe(arquivo)
+        resultado = validar_xml_nfe(arquivo) # type: ignore
 
         return jsonify(resultado)
 

@@ -1,44 +1,44 @@
-[13:22:36] Iniciando processamento em 29/09/2025 13:22:36
-[13:22:36] Carregando arquivo: Planilha_Online_KONFORT_37782.xlsx
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 174cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Modular 142cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Veludo Bege Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Telha Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Chaise Modular 138cm Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 316cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha 280cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Veludo Bege - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 452cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Veludo Bege - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Linho Cru Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Boucle Creme Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Sintético Caramelo Z08 - Mpozenato
-[13:22:36] Processado: Sofá Ilha Com Chaise 592cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
-[13:22:36] Arquivo gerado: Atributos_Extraidos_KonfortMoveis_20250929_132236.xlsx
-[13:22:36] Processamento concluído - 40 itens em 0.38s
+[09:02:21] Iniciando processamento em 03/10/2025 09:02:21
+[09:02:21] Carregando arquivo: Planilha_Online_KONFORT_CORRIGIDO37782.xlsx
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 174cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Modular 140cm Living Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Veludo Bege Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Chaise Modular 135cm Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 314cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Veludo Bege - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Boucle Telha Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Boucle Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha 275cm 2 Módulos Sala de Estar Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 449cm Living Moby Veludo Bege - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 449cm Living Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 449cm Living Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 449cm Living Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 449cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 589cm Living Moby Veludo Bege - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 589cm Living Moby Linho Cru Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 589cm Living Moby Boucle Creme Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 589cm Living Moby Sintético Caramelo Z08 - Mpozenato
+[09:02:21] Processado: Sofá Ilha Com Chaise 589cm Living Moby Boucle Telha/Grafite Z08 - Mpozenato
+[09:02:21] Arquivo gerado: Atributos_Extraidos_nan_20251003_090221.xlsx
+[09:02:21] Processamento concluído - 40 itens em 0.39s

@@ -345,45 +345,62 @@ class AnyMarketAPI:
 
     # MANTER AS FUNÇÕES AUXILIARES ORIGINAIS
     def _processar_fotos(self, dados: list) -> list:
-        """Processa os dados das fotos"""
+        """Processa os dados das fotos com debug detalhado"""
         fotos_processadas = []
         
-        for foto in dados:
+        for i, foto in enumerate(dados):
+            print(f"=== DEBUG FOTO {i} ===")
+            print(f"Campos disponíveis: {list(foto.keys())}")
+            
+            # Extrair URL com debug
+            url_original = self._extrair_url_imagem_com_debug(foto)
+            
             foto_processada = {
-                "id": foto.get("id"),
-                "index": foto.get("index"),
+                "id": str(foto.get("id", "")),
+                "index": foto.get("index", 0),
                 "main": foto.get("main", False),
-                "type": foto.get("type"),
-                "url": foto.get("url"),
-                "original": self._extrair_url_imagem(foto),
-                "status": "disponivel" if self._extrair_url_imagem(foto) else "indisponivel"
+                "type": foto.get("type", ""),
+                "url": foto.get("url", ""),
+                "original": url_original,
+                "status": "disponivel" if url_original else "indisponivel",
+                "debug_campos": list(foto.keys())  # Para debug no template
             }
             
+            # Log de debug
+            if not url_original:
+                print(f"❌ Nenhuma URL válida encontrada para foto {foto.get('id')}")
+                print(f"   Campos com 'http': {[k for k, v in foto.items() if isinstance(v, str) and 'http' in v]}")
+            else:
+                print(f"✅ URL encontrada: {url_original}")
+            
             fotos_processadas.append(foto_processada)
+            print("=====================")
         
         return fotos_processadas
     
-    def _extrair_url_imagem(self, foto: dict) -> str:
-        """Extrai a URL da imagem"""
+    def _extrair_url_imagem_com_debug(self, foto: dict) -> str:
+        """Extrai URL da imagem com debug detalhado"""
         campos_prioritarios = ["original", "standard", "high", "medium", "small", "thumbnail", "url"]
+        
+        print(f"  Buscando URL em campos: {campos_prioritarios}")
         
         for campo in campos_prioritarios:
             if campo in foto and foto[campo]:
                 url = foto[campo]
+                print(f"  Tentando campo '{campo}': {url}")
                 if self._eh_url_valida(url):
+                    print(f"  ✅ URL válida no campo '{campo}'")
                     return url
+                else:
+                    print(f"  ❌ URL inválida no campo '{campo}'")
         
+        # Buscar em todos os campos string
         for campo, valor in foto.items():
-            if isinstance(valor, str) and self._eh_url_valida(valor):
-                return valor
-        
-        for campo, valor in foto.items():
-            if isinstance(valor, dict):
-                for sub_campo in campos_prioritarios:
-                    if sub_campo in valor and valor[sub_campo]:
-                        url = valor[sub_campo]
-                        if self._eh_url_valida(url):
-                            return url
+            if isinstance(valor, str) and 'http' in valor.lower():
+                print(f"  Tentando campo genérico '{campo}': {valor}")
+                if self._eh_url_valida(valor):
+                    print(f"  ✅ URL válida no campo genérico '{campo}'")
+                    return valor
         
         return ""
     

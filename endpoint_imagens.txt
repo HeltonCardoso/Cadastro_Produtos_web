@@ -1,0 +1,45 @@
+PUT - /products/{productId}/images
+Consulta todas as imagens de um produto
+curl --request GET \
+  --url https://sandbox-api.anymarket.com.br/v2/products/productId/images \
+  --header 'Content-Type: application/json' \
+  --header 'gumgaToken: *****************'
+
+POST - /products/{productId}/images
+Cria uma imagem com os dados informados
+curl --request POST \
+  --url https://sandbox-api.anymarket.com.br/v2/products/productId/images \
+  --header 'Content-Type: application/json' \
+  --header 'gumgaToken: ********' \
+  --data '{
+  "index": 0,
+  "main": true,
+  "url": "string",
+  "variation": "string"
+}'
+
+PUT - /products/{productId}/images
+Edita o index e/ou main da imagem informada
+curl --request PUT \
+  --url https://sandbox-api.anymarket.com.br/v2/products/productId/images \
+  --header 'Content-Type: application/json' \
+  --header 'gumgaToken: ******' \
+  --data '{
+  "id": 0,
+  "index": 0,
+  "main": true
+}'
+
+GET - /products/{productId}/images/{imageId}
+Consulta os detalhes de uma imagem
+curl --request GET \
+  --url https://sandbox-api.anymarket.com.br/v2/products/productId/images/imageId \
+  --header 'Content-Type: application/json' \
+  --header 'gumgaToken: *****'
+
+DELETE - /products/{productId}/images/{imageId}
+Exclui a imagem informada
+curl --request DELETE \
+  --url https://sandbox-api.anymarket.com.br/v2/products/productId/images/imageId \
+  --header 'Content-Type: application/json' \
+  --header 'gumgaToken: *************'
