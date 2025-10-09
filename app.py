@@ -408,91 +408,7 @@ def excluir_fotos_lote_route():
         
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
-
-@app.route("/definir-foto-principal", methods=["POST"])
-def definir_foto_principal_route():
-    """API para definir uma foto como principal"""
-    try:
-        data = request.get_json()
-        product_id = data.get('product_id')
-        photo_id = data.get('photo_id')
-        
-        if not product_id or not photo_id:
-            return jsonify({'sucesso': False, 'erro': 'ID do produto e da foto são obrigatórios'}), 400
-        
-        resultado = definir_foto_principal_anymarket(product_id, photo_id)
-        
-        registrar_processo(
-            modulo="anymarket_principal",
-            qtd_itens=1,
-            tempo_execucao=0,
-            status="sucesso" if resultado.get('sucesso') else "erro",
-            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
-        )
-        
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
-
-@app.route("/reordenar-fotos", methods=["POST"])
-def reordenar_fotos_route():
-    """API para reordenar fotos de um produto"""
-    try:
-        data = request.get_json()
-        product_id = data.get('product_id')
-        nova_ordem = data.get('nova_ordem', [])
-        
-        if not product_id:
-            return jsonify({'sucesso': False, 'erro': 'ID do produto é obrigatório'}), 400
-        
-        if not nova_ordem:
-            return jsonify({'sucesso': False, 'erro': 'Nova ordem não especificada'}), 400
-        
-        resultado = reordenar_fotos_anymarket(product_id, nova_ordem)
-        
-        registrar_processo(
-            modulo="anymarket_reordenar",
-            qtd_itens=len(nova_ordem),
-            tempo_execucao=0,
-            status="sucesso" if resultado.get('sucesso') else "erro",
-            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
-        )
-        
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
-    
-@app.route("/atualizar-foto-anymarket", methods=["POST"])
-def atualizar_foto_anymarket_route():
-    """API para atualizar índice e status principal de uma foto"""
-    try:
-        data = request.get_json()
-        product_id = data.get('product_id')
-        photo_id = data.get('photo_id')
-        index = data.get('index')
-        main = data.get('main', False)
-        
-        if not product_id or not photo_id or index is None:
-            return jsonify({'sucesso': False, 'erro': 'ID do produto, ID da foto e índice são obrigatórios'}), 400
-        
-        resultado = atualizar_foto_anymarket(product_id, photo_id, index, main)
-        
-        registrar_processo(
-            modulo="anymarket_atualizar",
-            qtd_itens=1,
-            tempo_execucao=0,
-            status="sucesso" if resultado.get('sucesso') else "erro",
-            erro_mensagem=resultado.get('erro') if not resultado.get('sucesso') else None
-        )
-        
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
-    
-    
+   
 @app.route("/testar-endpoints-anymarket")
 def testar_endpoints_anymarket_route():
     """Rota para testar quais endpoints são suportados"""
@@ -506,7 +422,6 @@ def testar_endpoints_anymarket_route():
     resultado = testar_endpoints_anymarket(product_id, photo_id)
     
     return jsonify(resultado)
-
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
@@ -700,7 +615,6 @@ def preencher_planilha():
         aba_ativa=aba_ativa,
         preview_data=preview_data
     )
-
 
 @app.route("/extrair-atributos", methods=["GET", "POST"])
 def extrair_atributos():
@@ -918,6 +832,7 @@ def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
         else:
             print(f"Erro ao obter dados da aba: {str(e)}")
         raise Exception(f"Erro ao obter dados da aba: {str(e)}")
+
 @app.route("/api/abas-google-sheets")
 def api_abas_google_sheets():
     """API para listar abas de uma planilha - AGORA APENAS VISÍVEIS"""
