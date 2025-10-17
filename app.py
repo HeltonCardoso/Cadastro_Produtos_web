@@ -12,7 +12,7 @@ import pandas as pd
 from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
-from processamento.api_anymarket import atualizar_foto_anymarket, consultar_api_anymarket
+from processamento.api_anymarket import consultar_api_anymarket
 from processamento.comparar_prazos import processar_comparacao
 from processamento.google_sheets import ler_planilha_google
 from log_utils import (
@@ -29,7 +29,6 @@ from processamento.api_anymarket import (
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
-import processamento.validar_xml
 
 # Adicione a raiz do projeto ao path do Python
 sys.path.append(str(Path(__file__).parent))
@@ -45,9 +44,6 @@ from processamento.api_anymarket import (
     consultar_api_anymarket, 
     excluir_foto_anymarket, 
     excluir_fotos_planilha_anymarket,
-    definir_foto_principal_anymarket,
-    reordenar_fotos_anymarket,
-    atualizar_foto_anymarket
 )
 
 app = Flask(__name__)
@@ -330,6 +326,8 @@ def consultar_anymarket():
     
     return render_template(
         "consultar_anymarket.html",
+        active_page='consultar_anymarket',
+        active_module='anymarket',
         resultado=resultado,
         acao=acao,
         historico_processos=obter_historico_processos("anymarket"),
@@ -604,6 +602,8 @@ def preencher_planilha():
 
     return render_template(
         "preencher_planilha.html",
+        active_page='preencher_planilha',
+        active_module='cadastro',
         historico_processos=obter_historico_processos("cadastro"),
         processos_hoje=contar_processos_hoje("cadastro"),
         stats=get_processing_stats("cadastro"),
@@ -765,6 +765,8 @@ def extrair_atributos():
     
     return render_template(
         "extrair_atributos.html",
+        active_page='extrair_atributos',
+        active_module='cadastro',
         historico_processos=obter_historico_processos("atributos"),
         processos_hoje=contar_processos_hoje("atributos"),
         stats=get_processing_stats("atributos"),
@@ -832,6 +834,7 @@ def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
         else:
             print(f"Erro ao obter dados da aba: {str(e)}")
         raise Exception(f"Erro ao obter dados da aba: {str(e)}")
+
 
 @app.route("/api/abas-google-sheets")
 def api_abas_google_sheets():
@@ -942,6 +945,8 @@ def comparar_prazos():
 def mostrar_tela_comparacao():
     return render_template(
         "comparar_prazos.html",
+        active_page='comparar-prazos',
+        active_module='cadastro',
         historico_processos=obter_historico_processos("prazos"),
         processos_hoje=contar_processos_hoje("prazos"),
         stats=get_processing_stats("prazos")  # Agora aceita o parâmetro

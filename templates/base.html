@@ -8,295 +8,431 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    body {
-      display: flex;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    footer.custom-footer {
-        background-color: #343a40; /* exemplo: mesma cor do bg-dark */
-        border-color: #343a40;
-        border-top: #343a40;
-        color: white;
-
-    }
-
-    .sidebar {
-      width: 280px;
-      background-color: #343a40;
-      padding: 20px;
-      color: white;
-    }
-    .logo {
-      font-size: 35px;
-      color: white;
-    }
-    .sidebar a {
-      color: white;
-      display: block;
-      margin: 10px 0;
-      text-decoration: none;
-    }
-    .sidebar a:hover {
-      text-decoration: underline;
-    }
-    .content {
-      flex-grow: 1;
-      padding: 30px;
-      background-color: #f8f9fa;
-    }
-    .alert {
-      margin-bottom: 20px;
-    }
-    .logo-link {
-    display: block;
-    padding: 15px;
-    text-align: center;
-    border-bottom: 1px solid #343a40; /* opcional */
-    }
-
-    .logo-img {
-        max-height: 60px; /* ajuste conforme necessário */
-        width: auto;
-        transition: transform 0.3s;
-    }
-
-    .logo-text {
-    font-family: 'Arial', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
-}
-.logo-link:hover {
-    text-decoration: none;
-    transform: scale(1.02);
-    transition: all 0.2s ease;
-}
-.logo-link, .logo-link:hover {
-    text-decoration: none !important;
-}
-.processing-popup {
-        position: fixed;
-        bottom: 80px;
-        right: 30px;
-        background-color: #0d6efd;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        display: none;
-        align-items: center;
-        gap: 15px;
-        z-index: 1050;
-        animation: pulse 1.5s infinite;
-    }
-    
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-        100% { transform: scale(1); }
-    }
-
-    @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-    
-    .processing-timer {
-        font-family: monospace;
-        font-size: 1.2rem;
-    }
-    #processingPopup {
-    position: fixed;
-    bottom: 60px; /* Aumente essa distância do rodapé */
-    right: 20px;
-    background: #0d6efd;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    z-index: 1050; /* Valor alto para ficar acima de tudo */
-    display: none;
-    align-items: center;
-    gap: 15px;
-    min-width: 220px;
-    backdrop-filter: blur(2px); /* Efeito moderno opcional */
+/* === SIDEBAR MODERNA (Estilo Bootstrap) === */
+.sidebar {
+  width: 260px;
+  background: #1f2937; /* tom escuro mais elegante */
+  color: #e5e7eb;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  padding-top: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-    #processingTimer {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: white !important;
-    font-size: 1.2rem;
-    margin-top: 5px;
+/* Scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+  border-radius: 10px;
 }
 
-    #logContainer {
-      transition: all 0.3s ease;
-    }
-    .fade-out {
-      animation: fadeOut 5s ease forwards;
-    }
+/* Logo */
+.logo-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px 25px 20px;
+  text-decoration: none;
+  color: #fff;
+}
+.logo-img {
+  width: 42px;
+  height: 42px;
+  margin-right: 10px;
+}
+.logo-text {
+  font-weight: bold;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
 
-    .pulse-animation {
+/* Itens principais */
+.menu-item,
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  color: #d1d5db;
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.menu-item i,
+.menu-toggle i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Hover padrão */
+.menu-item:hover,
+.menu-toggle:hover {
+  background-color: #374151;
+  color: #fff;
+}
+
+/* Módulo ativo (btn-primary style) */
+.menu-item.active,
+.menu-toggle.open {
+  background-color: #0d6efd; /* cor do btn-primary Bootstrap */
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.5);
+}
+
+/* Hover no módulo ativo */
+.menu-item.active:hover,
+.menu-toggle.open:hover {
+  background-color: #0b5ed7;
+}
+
+/* Submenu */
+.submenu {
+  display: none;
+  flex-direction: column;
+  background-color: #2d3641;
+  border-left: 3px solid rgba(13, 110, 253, 0.4);
+}
+.submenu.show {
+  display: flex !important;
+  animation: slideDown 0.3s ease;
+}
+.submenu a {
+  padding: 12px 40px;
+  font-size: 15px;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+.submenu a:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+/* Submenu ativo */
+.submenu a.active {
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Animação suave de dropdown */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Seta do dropdown */
+.menu-toggle .arrow {
+  transition: transform 0.3s ease;
+}
+.menu-toggle.open .arrow {
+  transform: rotate(180deg);
+}
+
+/* Botão Modo Escuro (mantém o padrão Bootstrap) */
+#btn-dark-mode {
+  width: 90%;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #6c757d;
+  color: #e5e7eb;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+#btn-dark-mode:hover {
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+#btn-dark-mode i {
+  margin-right: 8px;
+}
+
+</style>
+<style>
+/* ===== BODY E CONTEÚDO ===== */
+body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.content {
+  margin-left: 250px;
+  padding: 30px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  width: calc(100% - 250px);
+  transition: margin-left 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== FOOTER ===== */
+footer.custom-footer {
+  background-color: #343a40;
+  border-color: #343a40;
+  color: white;
+}
+
+/* ===== LOGS ===== */
+.log-container {
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.log-entry {
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+  font-family: monospace;
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+  font-weight: bold;
+  background-color: #e8f4ff;
+}
+
+.log-summary {
+  font-weight: bold;
+  color: #0d6efd;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #ccc;
+  margin-bottom: 6px;
+}
+
+/* ===== BOTOES ===== */
+.btn-download {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-download:hover {
+  background-color: #218838;
+}
+
+/* ===== HISTÓRICO ===== */
+.card-historic {
+  margin-top: 20px;
+  border: 1px solid #17a2b8;
+}
+.card-historic .card-header {
+  background-color: #17a2b8;
+}
+.card-historic .card-body {
+  padding: 15px;
+  background-color: #f8f9fa;
+}
+
+/* ===== DARK MODE ===== */
+body.dark-mode {
+  background-color: #181a1b;
+  color: #ddd;
+}
+.dark-mode * {
+  background-color: inherit;
+  color: #e0e0e0 !important;
+}
+.dark-mode .card {
+  background-color: #38414a !important;
+}
+
+/* ===== POPUPS E TOAST ===== */
+.processing-popup,
+#processingPopup {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  background-color: #0d6efd;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 1050;
+  display: none;
+  align-items: center;
+  gap: 15px;
+  min-width: 220px;
+  backdrop-filter: blur(2px);
   animation: pulse 1.5s infinite;
 }
+
+.processing-timer,
+#processingTimer {
+  font-family: monospace;
+  font-size: 1.2rem;
+  color: white !important;
+}
+
+/* ===== ANIMAÇÕES ===== */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
-.log-container {
-    max-height: 300px;
-    overflow-y: auto;
-    background-color: #f8f9fa;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.log-entry {
-    padding: 5px;
-    border-bottom: 1px solid #eee;
-    font-family: monospace;
-}
-
-.log-entry:last-child {
-    border-bottom: none;
-    font-weight: bold;
-    background-color: #e8f4ff;
-}
-
-
-.log-summary {
-    font-weight: bold;
-    color: #0d6efd;
-    padding-bottom: 4px;
-    border-bottom: 1px dashed #ccc;
-    margin-bottom: 6px;
-}
-.btn-download {
-    margin-top: 10px;
-    padding: 8px 15px;
-    background-color: #28a745;
-    color: white;
-    border-radius: 4px;
-    text-decoration: none;
-    display: inline-block;
-}
-.btn-download:hover {
-    background-color: #218838;
-}
-/* Estilo para o histórico (igual em ambas telas) */
-.card-historic {
-    margin-top: 20px;
-    border: 1px solid #17a2b8;
-}
-.card-historic .card-header {
-    background-color: #17a2b8;
-}
-.card-historic .card-body {
-    padding: 15px;
-    background-color: #f8f9fa;
-}
-.dark-mode {
-  background-color: #343a40 !important;  /* Cor de fundo escura */
-  min-height: 100vh;  /* Cobrir toda a altura da tela */
-}
-
-.dark-mode body {
-  background-color: inherit !important;  /* Herda a cor do .dark-mode */
-}
-
-/* Aplicar a todos os elementos filhos */
-.dark-mode * {
-  background-color: inherit;
-  color: #e0e0e0 !important;  /* Cor clara para texto */
-}
-.dark-mode .card{
- background-color: #38414a !important
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 .custom-toast {
-    min-width: 300px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    animation: slideIn 0.3s ease-out;
+  min-width: 300px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
-/* Melhorias gerais para tabelas grandes */
+
+/* ===== TABELAS ===== */
 .table-responsive {
-    position: relative;
+  position: relative;
+  scroll-behavior: smooth;
 }
 
 .sticky-top {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-/* Melhoria no hover das linhas */
 .table-hover tbody tr {
-    transition: all 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .table-hover tbody tr:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Scroll suave */
-.table-responsive {
-    scroll-behavior: smooth;
-}
-
-/* Indicador de scroll */
+/* ===== SCROLL INDICADOR ===== */
 .scroll-indicator {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    z-index: 20;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  z-index: 20;
 }
+
+/* ===== BOTÃO DARK MODE ===== */
+.btn-dark {
+  margin: 20px;
+  width: calc(100% - 40px);
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: none;
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-dark:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+
 </style>
 </head>
 <body>
   <div class="sidebar">
-    <!-- Logo como link para home com imagem -->
-    <a href="{{ url_for('home') }}" class="logo-link">
+  <!-- Logo -->
+  <a href="{{ url_for('home') }}" class="logo-link">
     <img src="{{ url_for('static', filename='img/logo-empresa.png') }}" class="logo-img">
     <span class="logo-text">MPOZENATO</span>
-    </a>
-    <a href="{{ url_for('home') }}" class="active" >DASHBOARD</a>
-    <a href="{{ url_for('extrair_atributos') }}" >EXTRAIR ATRIBUTOS</a>
-    <a href="{{ url_for('preencher_planilha') }}">PLANILHA ATHUS</a>
-    <a href="{{ url_for('comparar_prazos') }}">VERIFICAR PRAZOS</a>
-    <a href="{{ url_for('validar_xml') }}">VALIDAR XML</a>
-    <a href="{{ url_for('consultar_anymarket') }}">MÓDULO ANYMARKET</a>
-    <a href="{{ url_for('configurar_google_sheets') }}">CONFIGURAÇÃO</a>
-    <a href="#" data-route="sobre" onclick="mostrarSobre()">SOBRE</a>
-    <a href="#">SAIR</a>
-   <button id="btn-dark-mode" class="btn btn-sm btn-outline-secondary">
-  <i class="fas fa-moon"></i> Modo Escuro
-</button>
+  </a>
+
+  <!-- Dashboard -->
+  <a href="{{ url_for('home') }}" class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+    <i class="fas fa-tachometer-alt"></i> Dashboard
+  </a>
+
+  <!-- Módulo Cadastro -->
+  <div class="menu-section">
+    <button class="menu-toggle {% if active_module == 'cadastro' %}open{% endif %}">
+      <i class="fas fa-box-open"></i> MÓDULO CADASTRO
+      <i class="fas fa-chevron-down arrow"></i>
+    </button>
+    <div class="submenu {% if active_module == 'cadastro' %}show{% endif %}">
+      <a href="{{ url_for('extrair_atributos') }}" class="{% if active_page == 'extrair' %}active{% endif %}">
+        <i class="fas fa-filter"></i> Extrair Atributos
+      </a>
+      <a href="{{ url_for('preencher_planilha') }}" class="{% if active_page == 'planilha' %}active{% endif %}">
+        <i class="fas fa-file-excel"></i> Planilha Athus
+      </a>
+      <a href="{{ url_for('comparar_prazos') }}" class="{% if active_page == 'prazos' %}active{% endif %}">
+        <i class="fas fa-clock"></i> Verificar Prazos
+      </a>
+    </div>
   </div>
+
+  <!-- Módulo AnyMarket -->
+  <div class="menu-section">
+    <button class="menu-toggle {% if active_module == 'anymarket' %}open{% endif %}">
+      <i class="fas fa-store"></i> MÓDULO ANYMARKET
+      <i class="fas fa-chevron-down arrow"></i>
+    </button>
+    <div class="submenu {% if active_module == 'anymarket' %}show{% endif %}">
+      <a href="{{ url_for('consultar_anymarket') }}" class="{% if active_page == 'anymarket' %}active{% endif %}">
+        <i class="fas fa-search"></i> Consultar
+      </a>
+      <!-- futuros submenus -->
+    </div>
+  </div>
+
+  <!-- Configurações -->
+  <a href="{{ url_for('configurar_google_sheets') }}" class="menu-item {% if active_page == 'config' %}active{% endif %}">
+    <i class="fas fa-cogs"></i> Configuração
+  </a>
+
+  <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item">
+    <i class="fas fa-info-circle"></i> Sobre
+  </a>
+  <a href="#" class="menu-item">
+    <i class="fas fa-sign-out-alt"></i> Sair
+  </a>
+
+  <!-- Botão Modo Escuro -->
+  <button id="btn-dark-mode" class="btn btn-sm btn-outline-secondary mt-3">
+    <i class="fas fa-moon"></i> Modo Escuro
+  </button>
+</div>
+
+
   <div class="content"> <!-- Conteudo da pagina -->
     {% block content %}{% endblock %}  
   </div><!-- Fim do conteudo da pagina -->
@@ -322,6 +458,7 @@
         updateClock();
     </script>
     <script>
+      
     document.addEventListener('DOMContentLoaded', function() {
   const btnDarkMode = document.getElementById('btn-dark-mode');
   const icon = btnDarkMode.querySelector('i');
@@ -339,6 +476,65 @@
       enableDarkMode();
     }
   });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  // Toggle de clique
+  document.querySelectorAll('.menu-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('open');
+      const submenu = btn.nextElementSibling;
+      if (submenu && submenu.classList.contains('submenu')) {
+        submenu.classList.toggle('show');
+      }
+    });
+  });
+
+  // Abre módulo ativo automaticamente
+  const openModule = document.querySelector('.menu-toggle.open');
+  if(openModule) {
+    const submenu = openModule.nextElementSibling;
+    if(submenu && submenu.classList.contains('submenu')) {
+      submenu.classList.add('show');
+    }
+  }
+});
+  // Submenus
+  document.querySelectorAll(".dropdown-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.classList.toggle("active");
+      const container = btn.nextElementSibling;
+      container.style.display = container.style.display === "flex" ? "none" : "flex";
+    });
+  });
+
+  document.querySelectorAll('.menu-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const submenu = toggle.nextElementSibling;
+    submenu.classList.toggle('show');
+    toggle.classList.toggle('open');
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Garante que o submenu do módulo ativo fique aberto
+    const openModule = document.querySelector('.menu-toggle.open');
+    if(openModule) {
+        const submenu = openModule.nextElementSibling;
+        if(submenu && submenu.classList.contains('submenu')) {
+            submenu.classList.add('show');
+        }
+    }
+});
+
+  // Modo escuro
+  const darkBtn = document.getElementById("btn-dark-mode");
+  darkBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    darkBtn.innerHTML = document.body.classList.contains("dark-mode")
+      ? '<i class="fas fa-sun"></i> Modo Claro'
+      : '<i class="fas fa-moon"></i> Modo Escuro';
+  });
+
 
   function enableDarkMode() {
     document.body.classList.add('dark-mode');

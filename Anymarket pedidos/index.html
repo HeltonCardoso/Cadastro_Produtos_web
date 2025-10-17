@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - AnyMarket</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Gestão de Pedidos - AnyMarket</h1>
+        </div>
+
+        <div class="controls">
+            <div class="filters-row">
+    <div class="token-section">
+        <div class="token-input">
+            <input type="text" id="tokenInput" placeholder="Digite seu GumgaToken..." value="MjU5MDYzNTUwLg==.rBQ4J2YTA5+gdf7MkHb5IEBemYg/ofJVCV0MwrJZ3gPPGlhatibrqk8xDmDTxqFgyQMIUp+kMkIlFwUlFPd5yQ==
+">
+        </div>
+        <button class="btn" onclick="carregarPedidos(1)">🔍 Buscar Pedidos</button>
+    </div>
+    <div class="filters">
+        <select id="statusFilter" class="filter-select">
+            <option value="">Todos status</option>
+            <option value="PENDING">Pendente</option>
+            <option value="PAID_WAITING_SHIP">Pago Aguardando Envio</option>
+            <option value="INVOICED">Faturado</option>
+            <option value="CONCLUDED">Concluído</option>
+            <option value="CANCELED">Cancelado</option>
+        </select>
+        <select id="marketplaceFilter" class="filter-select">
+            <option value="">Todos marketplaces</option>
+            <option value="MERCADOLIVRE">Mercado Livre</option>
+            <option value="SHOPEE">Shopee</option>
+            <option value="AMAZON">Amazon</option>
+            <option value="NUVEMSHOP">Nuvem Shop</option>
+            <option value="VTEX">VTEX</option>
+            <option value="TRAY">Tray</option>
+        </select>
+        <!-- Remover o limitInput já que agora controlamos por página -->
+    </div>
+</div>   
+
+            <div class="filters-row">
+                <div class="date-filters">
+                    <strong>Período:</strong>
+                    <input type="date" id="dataInicio" class="date-input">
+                    <span>até</span>
+                    <input type="date" id="dataFim" class="date-input">
+                </div>
+                <div class="filters">
+                    <button class="btn btn-secondary" onclick="limparTela()">🗑️ Limpar</button>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+           <!-- <p>🔄 Conectando com a API AnyMarket...</p>-->
+        </div>
+
+        <div id="errorMessage" class="error hidden"></div>
+        <div id="infoMessage" class="info hidden"></div>
+        <div id="debugInfo" class="debug hidden"></div>
+
+        <div id="stats" class="stats hidden"></div>
+
+        <div class="view-controls">
+            <div class="sort-controls">
+                <strong style="color: white;">Ordenar por:</strong>
+                <select id="sortSelect" class="sort-select" onchange="ordenarPedidos()">
+                    <option value="createdAt_desc">Data (Mais Recente)</option>
+                    <option value="createdAt_asc">Data (Mais Antigo)</option>
+                    <option value="total_desc">Valor (Maior)</option>
+                    <option value="total_asc">Valor (Menor)</option>
+                    <option value="marketPlace_asc">Marketplace (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="ordersContainer" class="orders-container hidden">
+            <div class="orders-header">
+                <div>ID</div>
+                <div>Marketplace</div>
+                <div>Status</div>
+                <div>Nº Marketplace</div>
+                <div>Comprador</div>
+                <div>Data Criação</div>
+                <div>Itens</div>
+                <div>Total</div>
+                <div>Ações</div>
+            </div>
+            <div id="ordersList"></div>
+        </div>
+
+        <div id="emptyState" style="text-align: center; color: white; padding: 60px;">
+            <h3>👆 Configure sua conexão com a API</h3>
+            <p>Digite seu GumgaToken e clique em "Carregar Pedidos" para começar</p>
+            <div style="margin-top: 20px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; display: inline-block;">
+                <h4>💡 Dicas:</h4>
+                <ul style="text-align: left; list-style: none; padding: 0;">
+                    <li>• Obtenha seu token no painel do AnyMarket</li>
+                    <li>• Use filtros para refinar sua busca</li>
+                    <li>• Clique em qualquer pedido para ver detalhes completos</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="fecharModal()">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="static/js/utils.js"></script>
+    <script src="static/js/api.js"></script>
+    <script src="static/js/ui.js"></script>
+    <script src="static/js/app.js"></script>
+</body>
+</html>
