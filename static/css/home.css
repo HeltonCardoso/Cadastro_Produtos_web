@@ -1,0 +1,39 @@
+/* home.css - Estilos específicos para a página home/dashboard */
+
+#conteudoPrincipal .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+}
+
+#conteudoPrincipal .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+#conteudoPrincipal .card-header {
+    font-weight: 600;
+    border-bottom: none;
+}
+
+#conteudoPrincipal .display-4 {
+    font-weight: 300;
+    color: #495057;
+}
+
+#conteudoPrincipal .progress {
+    border-radius: 10px;
+}
+
+#conteudoPrincipal .badge {
+    font-size: 0.9em;
+    padding: 0.5em 0.75em;
+}
+
+#conteudoPrincipal .text-truncate {
+    max-width: 200px;
+}
+
+#conteudoPrincipal .card-footer {
+    background-color: rgba(0,0,0,0.02);
+    border-top: 1px solid rgba(0,0,0,0.05);
+}

@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Preencher Planilha Athus{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/preencher_planilha.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle me-2"></i>
@@ -97,46 +101,6 @@
     </div>
 </div>
 
-<script>
-function mostrarProcessando() {
-    const botao = document.getElementById("btnProcessar");
-    if(botao){
-        botao.disabled = true;
-        botao.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Processando...`;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('googleForm');
-    const actionType = document.getElementById('action_type');
-
-    const btnBuscarAbas = document.getElementById('btnBuscarAbas');
-    const btnVisualizar = document.getElementById('btnVisualizar');
-    const btnExtrair = document.getElementById('btnExtrair');
-
-    if(btnBuscarAbas){
-        btnBuscarAbas.addEventListener('click', function() {
-            actionType.value = 'listar_abas';
-            form.submit();
-        });
-    }
-    if(btnVisualizar){
-        btnVisualizar.addEventListener('click', function() {
-            actionType.value = 'preview_aba';
-            form.submit();
-        });
-    }
-    if(btnExtrair){
-        btnExtrair.addEventListener('click', function() {
-            btnExtrair.disabled = true;
-            btnExtrair.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
-            actionType.value = 'conectar_google';
-            form.submit();
-        });
-    }
-});
-</script>
-
 <!-- Histórico -->
 <div class="card mt-4">
     <div class="card-header bg-info text-white">
@@ -170,4 +134,8 @@ document.addEventListener('DOMContentLoaded', function() {
         {% endif %}
     {% endwith %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/preencher_planilha.js') }}"></script>
 {% endblock %}

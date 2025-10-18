@@ -4,6 +4,7 @@ import uuid
 from flask import Flask, abort, current_app, make_response, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
 from gspread import service_account
 import gspread
+import requests
 from models import Processo, db
 from config import Config
 import os
@@ -46,7 +47,7 @@ from processamento.api_anymarket import (
     excluir_fotos_planilha_anymarket,
 )
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 db.init_app(app)
@@ -100,12 +101,7 @@ def testar_google():
 def home():
     try:
         stats = get_processing_stats()
-        dados_grafico = obter_dados_grafico_7dias()
         ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
-        
-        # Debug - verifique os valores
-        app.logger.info(f"Última planilha: {ultima_planilha}")
-        app.logger.info(f"Dados gráfico: {dados_grafico}")
         
         return render_template(
             'home.html',
@@ -118,13 +114,6 @@ def home():
             ultima_execucao=stats['ultima'],
             ultima_planilha=ultima_planilha,
             ultima_planilha_data=ultima_planilha_data,
-            datas_grafico=dados_grafico['datas'],
-           # valores_grafico=dados_grafico['valores'],
-            valores_grafico={
-                'cadastro': dados_grafico['valores_cadastro'],
-                'atributos': dados_grafico['valores_atributos'],
-                'prazos': dados_grafico['valores_prazos']
-            },
             total_itens_sucesso=stats['total_itens_sucesso'],
             total_itens_erro=stats['total_itens_erro'],
             now=datetime.now()
@@ -133,6 +122,94 @@ def home():
         app.logger.error(f"Erro na rota home: {str(e)}")
         return render_template('error.html'), 500
 
+@app.route('/pedidos-anymarket')
+def pedidos_anymarket():
+    """Página principal de pedidos do AnyMarket"""
+    return render_template('pedidos_anymarket.html', active_page='pedidos', active_module='anymarket')
+
+@app.route('/api/anymarket/pedidos')
+def api_pedidos_anymarket():
+    """API para buscar pedidos do AnyMarket"""
+    try:
+        # Obter token do header Authorization
+        auth_header = request.headers.get('Authorization', '')
+        if not auth_header.startswith('Bearer '):
+            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
+        
+        token = auth_header.replace('Bearer ', '')
+        
+        # Parâmetros da requisição
+        page = request.args.get('page', 1, type=int)
+        limit = request.args.get('limit', 20, type=int)
+        status = request.args.get('status')
+        marketplace = request.args.get('marketplace')
+        data_inicio = request.args.get('dataInicio')
+        data_fim = request.args.get('dataFim')
+        
+        # Construir URL da API AnyMarket
+        url = "https://api.anymarket.com.br/v2/orders"
+        params = {
+            'page': page,
+            'limit': limit
+        }
+        
+        # Adicionar filtros
+        if status:
+            params['status'] = status
+        if marketplace:
+            params['marketplace'] = marketplace
+        if data_inicio:
+            params['createdAt.start'] = f"{data_inicio}T00:00:00-03:00"
+        if data_fim:
+            params['createdAt.end'] = f"{data_fim}T23:59:59-03:00"
+        
+        # Fazer requisição para a API AnyMarket
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'gumgaToken': token
+        }
+        
+        response = requests.get(url, params=params, headers=headers, timeout=30)
+        
+        if response.status_code != 200:
+            return jsonify({
+                'success': False, 
+                'error': f'Erro na API AnyMarket: {response.status_code} - {response.text}'
+            }), response.status_code
+        
+        data = response.json()
+        
+        # Processar resposta
+        orders = data.get('content', [])
+        
+        # Calcular estatísticas
+        stats = {
+            'total': len(orders),
+            'pendentes': len([o for o in orders if o.get('status') == 'PENDING']),
+            'valorTotal': sum(float(o.get('totalAmount', 0)) for o in orders)
+        }
+        
+        # Paginação
+        pagination = {
+            'currentPage': page,
+            'totalPages': data.get('page', {}).get('totalPages', 1),
+            'hasNext': not data.get('page', {}).get('last', True),
+            'hasPrev': not data.get('page', {}).get('first', True)
+        }
+        
+        return jsonify({
+            'success': True,
+            'orders': orders,
+            'stats': stats,
+            'pagination': pagination
+        })
+        
+    except requests.exceptions.RequestException as e:
+        return jsonify({'success': False, 'error': f'Erro de conexão: {str(e)}'}), 500
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
+    
 @app.route('/uploads/<filename>')
 def baixar_arquivo(filename):
     try:
@@ -191,42 +268,6 @@ def contar_processos_hoje_por_status(log_file):
                         erro += 1
     return sucesso, erro
 
-def obter_dados_grafico_7dias():
-    datas = []
-    valores_cadastro = []
-    valores_atributos = []
-    valores_prazos = []
-    
-    for i in range(6, -1, -1):  # 7 dias (incluindo hoje)
-        date = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
-        datas.append(date.split('-')[2] + '/' + date.split('-')[1])  # Formato DD/MM
-        
-        # Contar processos por módulo para cada dia
-        cadastro = Processo.query.filter(
-            db.func.date(Processo.data) == date,
-            Processo.modulo == 'cadastro'
-        ).count()
-        
-        atributos = Processo.query.filter(
-            db.func.date(Processo.data) == date,
-            Processo.modulo == 'atributos'
-        ).count()
-        
-        prazos = Processo.query.filter(
-            db.func.date(Processo.data) == date,
-            Processo.modulo == 'prazos'
-        ).count()
-        
-        valores_cadastro.append(cadastro)
-        valores_atributos.append(atributos)
-        valores_prazos.append(prazos)
-    
-    return {
-        'datas': datas,
-        'valores_cadastro': valores_cadastro,
-        'valores_atributos': valores_atributos,
-        'valores_prazos': valores_prazos
-    }
 
 def contar_processos_por_dia(date):
     log_file = 'logs/processos/cadastro.log'

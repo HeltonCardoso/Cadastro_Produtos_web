@@ -1,38 +1,43 @@
 {% extends 'base.html' %}
 {% block title %}Comparar Prazos{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comparar_prazos.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle me-2"></i>
     Compare os prazos de entrega entre o sistema ONCLICK e os marketplaces.
 </div>
-  <h2 class="mb-4">Verificar Prazos ONCLICK | Marketplace</h2>  
-  
-  <form id="compararForm" method="POST" enctype="multipart/form-data">
+
+<h2 class="mb-4">Verificar Prazos ONCLICK | Marketplace</h2>  
+
+<form id="compararForm" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
-      <label for="arquivo_erp" class="form-label">Planilha(ONCLICK):</label>
-      <input type="file" class="form-control" id="arquivo_erp" name="arquivo_erp" accept=".xlsx,.xls,.csv" required>
+        <label for="arquivo_erp" class="form-label">Planilha(ONCLICK):</label>
+        <input type="file" class="form-control" id="arquivo_erp" name="arquivo_erp" accept=".xlsx,.xls,.csv" required>
     </div>
     <div class="mb-3">
-      <label for="arquivo_marketplace" class="form-label">Planilha Marketplace:</label>
-      <input type="file" class="form-control" id="arquivo_marketplace" name="arquivo_marketplace" accept=".xlsx,.xls,.csv" required>
+        <label for="arquivo_marketplace" class="form-label">Planilha Marketplace:</label>
+        <input type="file" class="form-control" id="arquivo_marketplace" name="arquivo_marketplace" accept=".xlsx,.xls,.csv" required>
     </div>
     <div class="d-flex align-items-center gap-2 mt-3">
-      <button id="btnProcessar" type="submit" class="btn btn-primary">COMPARAR PRAZOS</button>
-      <div id="downloadContainer"></div>
+        <button id="btnProcessar" type="submit" class="btn btn-primary">COMPARAR PRAZOS</button>
+        <div id="downloadContainer"></div>
     </div>
-  </form>
+</form>
 
-  <!-- Área de Log -->
-  <div class="mt-4">
+<!-- Área de Log -->
+<div class="mt-4">
     <h5>Log de Processamento:</h5>
     <div id="logContainer" class="bg-light p-3 rounded" style="height: 300px; overflow-y: auto; font-size: 1.1em;">
-      <span class="text-muted">Aguardando processamento...</span>
+        <span class="text-muted">Aguardando processamento...</span>
     </div>
-  </div>
+</div>
 
-  <!-- Popup de processamento -->
-  <div id="processingPopup" style="display: none; position: fixed; bottom: 80px; right: 30px; background: #0d6efd; color: white; padding: 15px 20px; border-radius: 10px; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.25); min-width: 220px;">
+<!-- Popup de processamento -->
+<div id="processingPopup" style="display: none; position: fixed; bottom: 80px; right: 30px; background: #0d6efd; color: white; padding: 15px 20px; border-radius: 10px; z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.25); min-width: 220px;">
     <div style="display: flex; align-items: center; gap: 12px;">
         <div id="popupIcon">
             <div class="spinner-border spinner-border-sm" style="width: 1.5rem; height: 1.5rem;"></div>
@@ -43,161 +48,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-  <script>
-  document.getElementById('compararForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const btn = document.getElementById('btnProcessar');
-    const popup = document.getElementById('processingPopup');
-    const timer = document.getElementById('processingTimer');
-    const popupText = document.getElementById('popupText');
-    const logContainer = document.getElementById('logContainer');
-    const downloadContainer = document.getElementById('downloadContainer');
-    
-    // Resetar estado
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
-    popup.style.display = 'flex';
-    popupText.textContent = 'Processando...';
-    timer.textContent = '00:00';
-    downloadContainer.innerHTML = '';
-    logContainer.innerHTML = '<span class="text-muted">Processando arquivos...</span>';
-
-    // Cronômetro
-    let seconds = 0;
-    const interval = setInterval(() => {
-        seconds++;
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        timer.textContent = `${mins}:${secs}`;
-    }, 1000);
-
-    try {
-        const formData = new FormData(this);
-        const response = await fetch('/comparar-prazos', {
-            method: 'POST',
-            body: formData
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) throw new Error(data.erro || 'Erro no processamento');
-
-        // Atualizar interface
-        if (data.sucesso) {
-            downloadContainer.innerHTML = `
-                <a href="/uploads/${data.arquivo}" 
-                   class="btn btn-success">
-                   <i class="fas fa-download"></i> BAIXAR RESULTADO
-                </a>
-            `;
-
-            logContainer.innerHTML = `
-                <div class="d-flex align-items-center mb-3">
-                    <img src="${data.marketplace.imagem}" width="120" class="me-3">
-                    <h4 class="m-0">${data.marketplace.nome}</h4>
-                </div>
-                ${data.log || ''}
-            `;
-        }
-
-        // Feedback visual de conclusão
-        clearInterval(interval);
-        popup.style.background = '#28a745';
-        popupText.textContent = 'Concluído!';
-        
-        // Fade out após 3 segundos
-        setTimeout(() => {
-            popup.style.opacity = '0';
-            setTimeout(() => {
-                popup.style.display = 'none';
-                btn.disabled = false;
-                btn.innerHTML = 'COMPARAR PRAZOS';
-            }, 1000);
-        }, 3000);
-
-    } catch (error) {
-        clearInterval(interval);
-        popup.style.background = '#dc3545';
-        popupText.textContent = 'Erro!';
-        
-        logContainer.innerHTML = `
-            <div class="alert alert-danger">
-                Erro: ${error.message}
-            </div>
-        `;
-
-        setTimeout(() => {
-            popup.style.opacity = '0';
-            setTimeout(() => {
-                popup.style.display = 'none';
-                btn.disabled = false;
-                btn.innerHTML = 'COMPARAR PRAZOS';
-            }, 1000);
-        }, 5000);
-    }
-});
-  </script>
-  
-  <script>
-// Melhor tratamento de drag-and-drop
-document.querySelectorAll('.file-drop-area').forEach(dropArea => {
-    const input = dropArea.querySelector('.file-input');
-    const msg = dropArea.querySelector('.file-msg');
-    const info = dropArea.querySelector('.file-info');
-    
-    input.addEventListener('change', function() {
-        if (this.files.length) {
-            info.textContent = this.files[0].name;
-            dropArea.classList.add('active');
-        }
-    });
-
-    ['dragenter', 'dragover'].forEach(event => {
-        dropArea.addEventListener(event, () => dropArea.classList.add('highlight'));
-    });
-
-    ['dragleave', 'drop'].forEach(event => {
-        dropArea.addEventListener(event, () => dropArea.classList.remove('highlight'));
-    });
-
-    dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        input.files = e.dataTransfer.files;
-        input.dispatchEvent(new Event('change'));
-    });
-});
-</script>
-<style>
-.file-drop-area {
-    border: 2px dashed #dee2e6;
-    border-radius: 5px;
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s;
-}
-.file-drop-area.highlight {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.05);
-}
-.file-drop-area.active {
-    border-color: #198754;
-}
-.file-msg {
-    cursor: pointer;
-}
-.log-container {
-    max-height: 200px;
-    overflow-y: auto;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    padding: 10px;
-    margin-top: 10px;
-}
-
-.log-container .alert {
-    margin-bottom: 10px;
-}
-</style>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/comparar_prazos.js') }}"></script>
 {% endblock %}

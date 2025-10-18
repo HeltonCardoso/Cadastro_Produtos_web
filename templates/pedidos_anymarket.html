@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos - AnyMarket{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pedidos_anymarket.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="pedidos-container">
+    <!-- Header -->
+    <div class="pedidos-header">
+        <h1><i class="fas fa-shopping-cart me-2"></i>Gestão de Pedidos - AnyMarket</h1>
+    </div>
+
+    <!-- Conteúdo com scroll -->
+    <div class="pedidos-content">
+        <!-- Controles -->
+        <div class="controls-card">
+            <div class="token-section">
+                <div class="token-input">
+                    <label>Token de Acesso</label>
+                    <input type="text" id="tokenInput" placeholder="Cole seu GumgaToken aqui..." 
+                           value="MjU5MDYzNTUwLg==.rBQ4J2YTA5+gdf7MkHb5IEBemYg/ofJVCV0MwrJZ3gPPGlhatibrqk8xDmDTxqFgyQMIUp+kMkIlFwUlFPd5yQ==">
+                </div>
+                <button class="btn btn-primary" onclick="carregarPedidos(1)">
+                    <i class="fas fa-search"></i> Buscar Pedidos
+                </button>
+            </div>
+
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Todos os status</option>
+                        <option value="PENDING">Pendente</option>
+                        <option value="PAID_WAITING_SHIP">Pago - Aguardando Envio</option>
+                        <option value="INVOICED">Faturado</option>
+                        <option value="SHIPPED">Enviado</option>
+                        <option value="DELIVERED">Entregue</option>
+                        <option value="CONCLUDED">Concluído</option>
+                        <option value="CANCELED">Cancelado</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Marketplace</label>
+                    <select id="marketplaceFilter" class="filter-select">
+                        <option value="">Todos marketplaces</option>
+                        <option value="MERCADOLIVRE">Mercado Livre</option>
+                        <option value="SHOPEE">Shopee</option>
+                        <option value="AMAZON">Amazon</option>
+                        <option value="NUVEMSHOP">Nuvem Shop</option>
+                        <option value="VTEX">VTEX</option>
+                        <option value="TRAY">Tray</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>Data Início</label>
+                    <input type="date" id="dataInicio" class="date-input">
+                </div>
+                
+                <div class="filter-group">
+                    <label>Data Fim</label>
+                    <input type="date" id="dataFim" class="date-input">
+                </div>
+            </div>
+
+            <div class="actions-row">
+                <div>
+                    <button class="btn btn-outline" onclick="limparTela()">
+                        <i class="fas fa-eraser"></i> Limpar Filtros
+                    </button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary" onclick="carregarPedidos(1)">
+                        <i class="fas fa-sync"></i> Atualizar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens -->
+        <div id="loading" class="loading hidden"></div>
+        <div id="errorMessage" class="alert alert-error hidden"></div>
+        <div id="infoMessage" class="alert alert-success hidden"></div>
+        <div id="stats" class="alert alert-info hidden"></div>
+
+        <!-- Tabela de Pedidos -->
+        <div id="ordersContainer" class="orders-section hidden">
+            <div class="table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Marketplace</th>
+                            <th>Status</th>
+                            <th>Nº Marketplace</th>
+                            <th>Comprador</th>
+                            <th>Data Criação</th>
+                            <th>Itens</th>
+                            <th>Valor Total</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Pedidos serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Paginação -->
+            <div class="pagination">
+                <!-- Paginação será inserida aqui via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Estado Vazio -->
+        <div id="emptyState" class="empty-state">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Nenhum pedido carregado</h3>
+            <p>Configure os filtros e clique em "Buscar Pedidos" para começar</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes -->
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <div id="modalContent"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/pedidos_anymarket.js') }}"></script>
+{% endblock %}

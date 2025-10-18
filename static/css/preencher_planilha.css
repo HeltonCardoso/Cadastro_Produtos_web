@@ -1,0 +1,61 @@
+/* preencher_planilha.css - Estilos para preenchimento de planilha */
+
+.nav-tabs .nav-link {
+    font-weight: 500;
+    color: #6c757d;
+    border: none;
+    padding: 0.75rem 1.5rem;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    background-color: transparent;
+    border-bottom: 3px solid #0d6efd;
+}
+
+.nav-tabs .nav-link:hover {
+    border: none;
+    border-bottom: 3px solid #dee2e6;
+}
+
+.alert-success {
+    border-left: 4px solid #198754;
+}
+
+.btn-primary {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+}
+
+/* Histórico de processos */
+.card .card-body {
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.card .card-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.card .card-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.card .card-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.card .card-body::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.list-unstyled li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.list-unstyled li:last-child {
+    border-bottom: none;
+}

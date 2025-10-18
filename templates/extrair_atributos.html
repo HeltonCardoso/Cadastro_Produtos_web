@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Extrair Atributos{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/extrair_atributos.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle me-2"></i>
     Extração de atributos usando planilha de modelo Online ou Google Sheets.
 </div>
+
 <h2 class="mb-4">Extração Atributos HTML</h2>
-                {% if nome_arquivo_saida is not none %}
-                                    <div class="alert alert-success mt-3">
-                                        Processamento concluído com sucesso!
-                                        <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
-                                        class="btn btn-primary ml-3">
-                                        Baixar Arquivo Processado
-                                        </a>
-                                    </div>
-                {% endif %}
+
+{% if nome_arquivo_saida is not none %}
+<div class="alert alert-success mt-3">
+    Processamento concluído com sucesso!
+    <a href="{{ url_for('baixar_arquivo', filename=nome_arquivo_saida) }}" 
+       class="btn btn-primary ml-3">
+       Baixar Arquivo Processado
+    </a>
+</div>
+{% endif %}
 
 <!-- Abas para escolher o método -->
 <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
@@ -43,28 +49,11 @@
         </form>
     </div>
 
-    <!-- Tab Google Sheets - COMPLETAMENTE REFEITA -->
+    <!-- Tab Google Sheets -->
     <div class="tab-pane fade {% if aba_ativa == 'google' %}show active{% endif %}" id="google" role="tabpanel">
-        <!-- Modifique o formulário Google Sheets -->
-<form method="POST" id="googleForm">
-    <input type="hidden" name="action_type" id="action_type" value="">
-    
-   <!-- <div class="row">
-        <div class="col-md-8">
-            <div class="mb-3">
-                <label for="sheet_id" class="form-label">ID da Planilha Google:</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="sheet_id" name="sheet_id" 
-                        value="{{ sheet_id_input }}" required
-                        placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
-                    <button type="button" id="btnBuscarAbas" class="btn btn-outline-primary">
-                        <i class="fas fa-search"></i> Buscar Abas
-                    </button>
-                </div>
-                <small class="text-muted">Encontre no URL: .../spreadsheets/d/[ID_DA_PLANILHA]/edit</small>
-            </div>
-        </div>
-    </div>-->
+        <form method="POST" id="googleForm">
+            <input type="hidden" name="action_type" id="action_type" value="">
+            
             <div class="row">
                 <div class="col-md-8">
                     <div class="mb-3">
@@ -84,322 +73,118 @@
                     </div>
                 </div>
             </div>
-    {% if abas %}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="aba_nome" class="form-label">Selecione a Aba:</label>
-                <select class="form-select" id="aba_nome" name="aba_nome" required>
-                    <option value="">Selecione uma aba...</option>
-                    {% for aba in abas %}
-                    <option value="{{ aba.title }}" {% if aba.title == aba_selecionada %}selected{% endif %}>
-                        {{ aba.title }} ({{ aba.row_count }} linhas)
-                    </option>
-                    {% endfor %}
-                </select>
+
+            {% if abas %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="aba_nome" class="form-label">Selecione a Aba:</label>
+                        <select class="form-select" id="aba_nome" name="aba_nome" required>
+                            <option value="">Selecione uma aba...</option>
+                            {% for aba in abas %}
+                            <option value="{{ aba.title }}" {% if aba.title == aba_selecionada %}selected{% endif %}>
+                                {{ aba.title }} ({{ aba.row_count }} linhas)
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Ações:</label>
+                        <div class="btn-group w-100">
+                            <button type="button" id="btnVisualizar" class="btn btn-outline-info">
+                                <i class="fas fa-eye"></i> Visualizar
+                            </button>
+                            <button type="button" id="btnExtrair" class="btn btn-success">
+                                <i class="fas fa-play"></i> Extrair
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label class="form-label">Ações:</label>
-                <div class="btn-group w-100">
-                <button type="button" id="btnVisualizar" class="btn btn-outline-info">
-                    <i class="fas fa-eye"></i> Visualizar
-                </button>
-                <button type="button" id="btnExtrair" class="btn btn-success">
-                    <i class="fas fa-play"></i> Extrair
-                </button>
+            {% endif %}
+        </form>
+
+        <!-- Preview da planilha -->
+        {% if preview_data %}
+        <div class="mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Preview da Aba: <span class="text-muted">{{ preview_data.total_linhas }} linhas, {{ preview_data.total_colunas }} colunas</span></h5>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(-100)">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(100)">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-info" onclick="toggleFullscreen()">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
             </div>
+            
+            {% if preview_data.colunas and preview_data.dados %}
+            <div class="table-container-fixed" id="tableContainer">
+                <div class="table-header-fixed">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                {% for coluna in preview_data.colunas %}
+                                <th class="text-nowrap small p-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-truncate" title="{{ coluna }}">{{ coluna }}</span>
+                                        <small class="text-muted ms-1">#{{ loop.index }}</small>
+                                    </div>
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                
+                <div class="table-body-scroll">
+                    <table class="table table-sm table-bordered table-hover mb-0">
+                        <tbody>
+                            {% for linha in preview_data.dados %}
+                            <tr>
+                                {% for coluna in preview_data.colunas %}
+                                <td class="p-2">
+                                    <div class="cell-content text-truncate" title="{{ linha[coluna] if coluna in linha else '' }}">
+                                        {{ linha[coluna] if coluna in linha else '' }}
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-scrollbar-vertical">
+                    <div class="scrollbar-thumb"></div>
+                </div>
             </div>
+            
+            <div class="table-info mt-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Mostrando {{ preview_data.dados|length }} de {{ preview_data.total_linhas }} linhas |
+                        {{ preview_data.colunas|length }} colunas
+                    </small>
+                    <small class="text-muted">
+                        ↕️ Scroll vertical | ↔️ Scroll horizontal
+                    </small>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                Nenhum dado encontrado na aba selecionada ou formato não reconhecido.
+            </div>
+            {% endif %}
         </div>
-    </div>
-    {% endif %}
-</form>
-
-        <!-- No template extrair_atributos.html, na seção de preview -->
-{% if preview_data %}
-<div class="mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Preview da Aba: <span class="text-muted">{{ preview_data.total_linhas }} linhas, {{ preview_data.total_colunas }} colunas</span></h5>
-        <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(-100)">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <button type="button" class="btn btn-outline-secondary" onclick="scrollTableHorizontal(100)">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-            <button type="button" class="btn btn-outline-info" onclick="toggleFullscreen()">
-                <i class="fas fa-expand"></i>
-            </button>
-        </div>
-    </div>
-    
-    {% if preview_data.colunas and preview_data.dados %}
-    <div class="table-container-fixed" id="tableContainer">
-        <div class="table-header-fixed">
-            <table class="table table-sm table-bordered mb-0">
-                <thead>
-                    <tr>
-                        {% for coluna in preview_data.colunas %}
-                        <th class="text-nowrap small p-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-truncate" title="{{ coluna }}">{{ coluna }}</span>
-                                <small class="text-muted ms-1">#{{ loop.index }}</small>
-                            </div>
-                        </th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        
-        <div class="table-body-scroll">
-            <table class="table table-sm table-bordered table-hover mb-0">
-                <tbody>
-                    {% for linha in preview_data.dados %}
-                    <tr>
-                        {% for coluna in preview_data.colunas %}
-                        <td class="p-2">
-                            <div class="cell-content text-truncate" title="{{ linha[coluna] if coluna in linha else '' }}">
-                                {{ linha[coluna] if coluna in linha else '' }}
-                            </div>
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="table-scrollbar-vertical">
-            <div class="scrollbar-thumb"></div>
-        </div>
-    </div>
-    
-    <div class="table-info mt-2">
-        <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted">
-                Mostrando {{ preview_data.dados|length }} de {{ preview_data.total_linhas }} linhas |
-                {{ preview_data.colunas|length }} colunas
-            </small>
-            <small class="text-muted">
-                ↕️ Scroll vertical | ↔️ Scroll horizontal
-            </small>
-        </div>
-    </div>
-    {% else %}
-    <div class="alert alert-warning">
-        <i class="fas fa-exclamation-triangle"></i>
-        Nenhum dado encontrado na aba selecionada ou formato não reconhecido.
-    </div>
-    {% endif %}
-</div>
-
-<style>
-.table-container-fixed {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    background: white;
-    overflow: hidden;
-}
-
-.table-header-fixed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 17px; /* Compensa a barra de scroll vertical */
-    height: 45px;
-    overflow: hidden;
-    background: white;
-    z-index: 20;
-}
-
-.table-header-fixed table {
-    margin-bottom: 0;
-    width: auto;
-}
-
-.table-header-fixed th {
-    background: linear-gradient(180deg, #e9ecef 0%, #dee2e6 100%);
-    border-bottom: 2px solid #adb5bd;
-    min-width: 120px;
-}
-
-.table-body-scroll {
-    position: absolute;
-    top: 45px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-}
-
-.table-body-scroll table {
-    margin-bottom: 0;
-    width: auto;
-}
-
-.table-body-scroll td {
-    background: white;
-    transition: background-color 0.15s ease;
-    max-width: 200px;
-    min-width: 120px;
-}
-
-.table-body-scroll tr:hover td {
-    background-color: #f8f9fa !important;
-}
-
-.cell-content {
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Garante que o header e body tenham a mesma largura de colunas */
-.table-header-fixed table,
-.table-body-scroll table {
-    table-layout: fixed;
-}
-
-.table-header-fixed th,
-.table-body-scroll td {
-    width: 120px;
-    min-width: 120px;
-    max-width: 200px;
-}
-
-/* Scrollbar personalizada */
-.table-body-scroll::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-}
-
-.table-body-scroll::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 6px;
-}
-
-.table-body-scroll::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 6px;
-    border: 2px solid #f1f1f1;
-}
-
-.table-body-scroll::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Fullscreen mode */
-.table-container-fixed.fullscreen {
-    position: fixed;
-    top: 50px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
-    z-index: 1050;
-    background: white;
-    border-radius: 0.375rem;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}
-
-.table-container-fixed.fullscreen .table-header-fixed {
-    right: 17px;
-}
-</style>
-
-<script>
-function scrollTableHorizontal(distance) {
-    const tableBody = document.querySelector('.table-body-scroll');
-    tableBody.scrollBy({ left: distance, behavior: 'smooth' });
-    
-    // Sincroniza o header com o scroll horizontal
-    const tableHeader = document.querySelector('.table-header-fixed');
-    tableHeader.scrollLeft = tableBody.scrollLeft;
-}
-
-function toggleFullscreen() {
-    const container = document.getElementById('tableContainer');
-    const button = document.querySelector('[onclick="toggleFullscreen()"]');
-    const icon = button.querySelector('i');
-    
-    if (container.classList.contains('fullscreen')) {
-        container.classList.remove('fullscreen');
-        icon.classList.remove('fa-compress');
-        icon.classList.add('fa-expand');
-        button.innerHTML = '<i class="fas fa-expand"></i>';
-    } else {
-        container.classList.add('fullscreen');
-        icon.classList.remove('fa-expand');
-        icon.classList.add('fa-compress');
-        button.innerHTML = '<i class="fas fa-compress"></i>';
-    }
-}
-
-// Sincroniza o scroll horizontal entre header e body
-document.querySelector('.table-body-scroll').addEventListener('scroll', function() {
-    const tableHeader = document.querySelector('.table-header-fixed');
-    tableHeader.scrollLeft = this.scrollLeft;
-});
-
-// Navegação com teclado
-document.addEventListener('keydown', function(e) {
-    const tableBody = document.querySelector('.table-body-scroll');
-    if (tableBody && document.activeElement.closest('.table-container-fixed')) {
-        if (e.key === 'ArrowLeft') {
-            scrollTableHorizontal(-100);
-            e.preventDefault();
-        } else if (e.key === 'ArrowRight') {
-            scrollTableHorizontal(100);
-            e.preventDefault();
-        } else if (e.key === 'Escape') {
-            const container = document.getElementById('tableContainer');
-            if (container.classList.contains('fullscreen')) {
-                toggleFullscreen();
-            }
-        }
-    }
-});
-
-// Tooltip para células com conteúdo truncado
-document.addEventListener('DOMContentLoaded', function() {
-    const cells = document.querySelectorAll('.cell-content');
-    cells.forEach(cell => {
-        if (cell.scrollWidth > cell.offsetWidth) {
-            cell.setAttribute('data-bs-toggle', 'tooltip');
-        }
-    });
-    
-    // Inicializa tooltips do Bootstrap
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-
-// Ajusta automaticamente a largura das colunas
-function adjustColumnWidths() {
-    const headerCells = document.querySelectorAll('.table-header-fixed th');
-    const bodyCells = document.querySelectorAll('.table-body-scroll td');
-    
-    headerCells.forEach((headerCell, index) => {
-        const bodyCell = bodyCells[index];
-        if (bodyCell) {
-            const maxWidth = Math.max(headerCell.scrollWidth, bodyCell.scrollWidth);
-            headerCell.style.minWidth = maxWidth + 'px';
-            bodyCell.style.minWidth = maxWidth + 'px';
-        }
-    });
-}
-
-// Executa após o carregamento da tabela
-setTimeout(adjustColumnWidths, 100);
-</script>
-{% endif %}
+        {% endif %}
 
         <!-- Configuração Salva -->
         {% if config.sheet_id and config.aba_nome %}
@@ -414,159 +199,8 @@ setTimeout(adjustColumnWidths, 100);
         {% endif %}
     </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mantém a aba ativa após recarregar a página
-    const urlParams = new URLSearchParams(window.location.search);
-    const abaParam = urlParams.get('aba');
-    
-    if (abaParam === 'google') {
-        // Ativa a aba Google programaticamente
-        const googleTab = new bootstrap.Tab(document.getElementById('google-tab'));
-        googleTab.show();
-    }
 
-    // Modifique os event listeners para adicionar o parâmetro na URL
-    btnBuscarAbas.addEventListener('click', function() {
-        // ... código existente ...
-        // Adicione o parâmetro na URL
-        window.history.replaceState({}, '', '?aba=google');
-    });
-
-    btnVisualizar.addEventListener('click', function() {
-        // ... código existente ...
-        window.history.replaceState({}, '', '?aba=google');
-    });
-
-    btnExtrair.addEventListener('click', function() {
-        // ... código existente ...
-        window.history.replaceState({}, '', '?aba=google');
-    });
-});
-// Quando o formulário de upload for submetido, mantenha na aba upload
-document.querySelector('form[onsubmit="mostrarProcessando()"]').addEventListener('submit', function() {
-    window.history.replaceState({}, '', '?aba=upload');
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const btnBuscarAbas = document.getElementById('btnBuscarAbas');
-    const btnVisualizar = document.getElementById('btnVisualizar');
-    const btnExtrair = document.getElementById('btnExtrair');
-    const selectAba = document.getElementById('aba_nome');
-    const form = document.getElementById('googleForm');
-    const actionType = document.getElementById('action_type');
-
-    // Buscar Abas
-    btnBuscarAbas.addEventListener('click', function() {
-        const sheetId = document.getElementById('sheet_id').value.trim();
-        if (!sheetId) {
-            alert('Informe o ID da planilha primeiro');
-            return;
-        }
-        
-        actionType.value = 'listar_abas';
-        form.submit();
-    });
-
-    // Visualizar
-    btnVisualizar.addEventListener('click', function() {
-        if (!validarSelecaoAba()) return;
-        
-        actionType.value = 'preview_aba';
-        form.submit();
-    });
-
-    // Extrair
-    btnExtrair.addEventListener('click', function() {
-        if (!validarSelecaoAba()) return;
-        
-        // Mostra loading
-        btnExtrair.disabled = true;
-        btnExtrair.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
-        
-        actionType.value = 'conectar_google';
-        form.submit();
-    });
-
-    function validarSelecaoAba() {
-        const sheetId = document.getElementById('sheet_id').value.trim();
-        const aba = selectAba.value;
-        
-        if (!sheetId) {
-            alert('Informe o ID da planilha primeiro');
-            return false;
-        }
-        
-        if (!aba) {
-            alert('Selecione uma aba primeiro');
-            return false;
-        }
-        
-        return true;
-    }
-
-    // Buscar abas automaticamente ao digitar o ID
-    document.getElementById('sheet_id').addEventListener('blur', function() {
-        const sheetId = this.value.trim();
-        if (sheetId) {
-            buscarAbasViaAPI(sheetId);
-        }
-    });
-
-    function buscarAbasViaAPI(sheetId) {
-    // CORREÇÃO: Usa a nova API para abas visíveis
-    fetch(`/api/abas-google-sheets-visiveis?sheet_id=${encodeURIComponent(sheetId)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const select = document.getElementById('aba_nome');
-                select.innerHTML = '<option value="">Selecione uma aba...</option>';
-                
-                data.abas.forEach(aba => {
-                    const option = document.createElement('option');
-                    option.value = aba.title;
-                    option.textContent = `${aba.title} (${aba.row_count} linhas)`;
-                    select.appendChild(option);
-                });
-                
-                // Mostra mensagem suave
-                showToast(`${data.abas.length} abas visíveis encontradas`, 'success');
-            } else {
-                showToast('Erro: ' + data.error, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            showToast('Erro ao buscar abas', 'error');
-        });
-}
-
-    function showToast(message, type) {
-        // Implementação simples de toast notification
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type === 'error' ? 'danger' : 'success'} alert-dismissible fade show`;
-        toast.style.position = 'fixed';
-        toast.style.top = '20px';
-        toast.style.right = '20px';
-        toast.style.zIndex = '9999';
-        toast.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        document.body.appendChild(toast);
-        
-        // Remove automaticamente após 3 segundos
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, 3000);
-    }
-});
-</script>
-
-<!-- Restante do template (histórico, etc) -->
+<!-- Histórico de Processos -->
 <div class="card mt-4">
     <div class="card-header bg-info text-white">
         <h5 class="mb-0">Histórico de Processos</h5>
@@ -587,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
+<!-- Mensagens Flash -->
 <div id="mensagens-flash" class="mt-3" style="min-height: 120px;">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -598,4 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
         {% endif %}
     {% endwith %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/extrair_atributos.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 {% endblock %}

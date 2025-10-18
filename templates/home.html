@@ -1,6 +1,4 @@
-<!-- templates/home.html -->
 {% extends "base.html" %}
-
 {% block title %}Dashboard - Mpozenato{% endblock %}
 
 {% block content %}
@@ -95,95 +93,49 @@
         {% if ultima_planilha %}
           <div class="card-footer">
             <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha|urlencode) }}" 
-   class="btn btn-sm btn-outline-primary">
-   <i class="fas fa-download"></i> Baixar
-</a>
+               class="btn btn-sm btn-outline-primary">
+               <i class="fas fa-download"></i> Baixar
+            </a>
           </div>
-          {% endif %}
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
-<!-- Seção de Gráficos -->
+<!-- Seção de Ações Rápidas (opcional) -->
 <div class="row mt-4">
-  <div class="col-md-8">
-    <div class="card shadow">
-      <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Processamentos por Dia (Últimos 7 dias)</h5>
-      </div>
+  <div class="col-md-4 mb-3">
+    <div class="card text-center">
       <div class="card-body">
-        <canvas id="graficoProcessamentos" height="100"></canvas>
+        <i class="fas fa-filter fa-2x text-primary mb-2"></i>
+        <h5>Extrair Atributos</h5>
+        <p class="text-muted">Extraia atributos de planilhas</p>
+        <a href="{{ url_for('extrair_atributos') }}" class="btn btn-primary">Acessar</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <i class="fas fa-file-excel fa-2x text-success mb-2"></i>
+        <h5>Planilha Athus</h5>
+        <p class="text-muted">Preencha planilhas modelo</p>
+        <a href="{{ url_for('preencher_planilha') }}" class="btn btn-success">Acessar</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <i class="fas fa-store fa-2x text-warning mb-2"></i>
+        <h5>AnyMarket</h5>
+        <p class="text-muted">Gerencie fotos e produtos</p>
+        <a href="{{ url_for('consultar_anymarket') }}" class="btn btn-warning">Acessar</a>
       </div>
     </div>
   </div>
 </div>
-
-<!-- JavaScript para os gráficos -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const ctx1 = document.getElementById('graficoProcessamentos').getContext('2d');
-  new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: {{ datas_grafico|tojson|safe }},
-      datasets: [
-        {
-          label: 'Cadastro',
-          data: {{ valores_grafico.cadastro|tojson|safe }},
-          backgroundColor: 'rgba(54, 162, 235, 0.7)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Atributos',
-          data: {{ valores_grafico.atributos|tojson|safe }},
-          backgroundColor: 'rgba(255, 99, 132, 0.7)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
-        },
-        {
-          label: 'Prazos',
-          data: {{ valores_grafico.prazos|tojson|safe }},
-          backgroundColor: 'rgba(75, 192, 192, 0.7)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: 'Processamentos por Módulo'
-        }
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Data'
-          }
-        },
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Quantidade'
-          },
-          ticks: {
-            stepSize: 1
-          }
-        }
-      }
-    }
-  });
-});
-</script>
-
 {% endblock %}
