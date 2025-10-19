@@ -9,6 +9,82 @@
     flex-direction: column;
 }
 
+/* Busca Rápida */
+.quick-search {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+}
+
+.search-input input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.search-input input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    outline: none;
+}
+
+/* Configuração do Token */
+.token-config {
+    padding: 10px 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Melhorias na tabela */
+.orders-table th:nth-child(1) { width: 120px; }
+.orders-table th:nth-child(2) { width: 140px; }
+.orders-table th:nth-child(3) { width: 180px; }
+.orders-table th:nth-child(4) { width: 140px; }
+.orders-table th:nth-child(5) { width: 200px; }
+.orders-table th:nth-child(6) { width: 150px; }
+.orders-table th:nth-child(7) { width: 100px; }
+.orders-table th:nth-child(8) { width: 120px; }
+.orders-table th:nth-child(9) { width: 100px; }
+
 /* Header */
 .pedidos-header {
     background: white;

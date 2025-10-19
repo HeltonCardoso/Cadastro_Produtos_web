@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 from typing import Dict, Any
@@ -173,19 +174,64 @@ class AnyMarketAPI:
 # 🔹 Funções globais acessíveis para import no app.py
 # ======================================================
 
+# ✅ CÓDIGO SEGURO - SEM TOKEN HARCODED:
 def consultar_api_anymarket(product_id: str, token: str = None) -> Dict[str, Any]:
-    default_token = "259086916L259063550E1850844837445C175753283744500O259063550.I"
-    api = AnyMarketAPI(token or default_token)
+    if not token:
+        from flask import current_app
+        # Tenta obter do sistema seguro
+        try:
+            if hasattr(current_app, 'obter_token_anymarket_seguro'):
+                token = current_app.obter_token_anymarket_seguro()
+            else:
+                # Fallback para função standalone
+                token = obter_token_anymarket_seguro()
+        except:
+            raise ValueError("Token do AnyMarket não configurado. Configure em /configuracoes/tokens")
+    
+    api = AnyMarketAPI(token)
     return api.buscar_fotos_produto(product_id)
 
-
 def excluir_foto_anymarket(product_id: str, photo_id: str, token: str = None) -> Dict[str, Any]:
-    default_token = "259086916L259063550E1850844837445C175753283744500O259063550.I"
-    api = AnyMarketAPI(token or default_token)
+    if not token:
+        raise ValueError("Token do AnyMarket é obrigatório para exclusão")
+    
+    api = AnyMarketAPI(token)
     return api.excluir_foto(product_id, photo_id)
 
-
 def excluir_fotos_planilha_anymarket(caminho_planilha: str, token: str = None) -> Dict[str, Any]:
-    default_token = "259086916L259063550E1850844837445C175753283744500O259063550.I"
-    api = AnyMarketAPI(token or default_token)
+    if not token:
+        raise ValueError("Token do AnyMarket é obrigatório para exclusão em lote")
+    
+    api = AnyMarketAPI(token)
     return api.excluir_fotos_planilha(caminho_planilha)
+
+def obter_token_anymarket_seguro() -> str:
+    """
+    Obtém token do AnyMarket de forma segura do arquivo tokens_secure.json
+    Levanta exceção se não encontrar
+    """
+    try:
+        tokens_file = 'tokens_secure.json'
+        if not os.path.exists(tokens_file):
+            raise ValueError("Arquivo de tokens não encontrado. Configure o token primeiro.")
+        
+        with open(tokens_file, 'r', encoding='utf-8') as f:
+            tokens = json.load(f)
+        
+        # Primeiro tenta a estrutura nova: {"anymarket": {"token": ...}}
+        token_data = tokens.get('anymarket')
+        if token_data and token_data.get('token'):
+            return token_data['token']
+        
+        # Se não encontrar, procura em estrutura antiga com IDs aleatórios
+        for key, value in tokens.items():
+            if isinstance(value, dict) and value.get('tipo') == 'anymarket' and value.get('token'):
+                print(f"✅ Token encontrado na estrutura antiga (ID: {key})")
+                return value['token']
+        
+        raise ValueError("Token do AnyMarket não configurado no arquivo seguro.")
+        
+    except json.JSONDecodeError:
+        raise ValueError("Arquivo de tokens corrompido.")
+    except Exception as e:
+        raise ValueError(f"Erro ao obter token: {str(e)}")

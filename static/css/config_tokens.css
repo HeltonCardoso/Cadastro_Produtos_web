@@ -1,0 +1,54 @@
+.tokens-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.token-card {
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.service-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.status-label {
+    font-weight: 600;
+    min-width: 120px;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-unknown {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.quick-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.input-group .btn {
+    border-left: 0;
+}

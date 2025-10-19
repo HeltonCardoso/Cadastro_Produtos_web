@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Configurações - Tokens API{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/config_tokens.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tokens-container">
+    <h2 class="mb-4"><i class="fas fa-key"></i> Gerenciamento de Tokens API</h2>
+
+    <!-- Token AnyMarket -->
+    <div class="card token-card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> AnyMarket - Pedidos</h5>
+        </div>
+        <div class="card-body">
+            <form id="anymarketTokenForm">
+                <div class="mb-3">
+                    <label for="anymarket_token" class="form-label">Token de Acesso AnyMarket</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="anymarket_token" 
+                            placeholder="{{ '••••••••••••••••' if token_configurado else 'Cole seu GumgaToken aqui...' }}">
+                        <button type="button" class="btn btn-outline-secondary" onclick="toggleTokenVisibility('anymarket_token')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div id="tokenStatus" class="mt-1">
+                        {% if token_configurado %}
+                        <small class="text-success">
+                            <i class="fas fa-check-circle"></i> Token configurado
+                        </small>
+                        {% else %}
+                        <small class="text-muted">
+                            Token necessário para acessar a API de pedidos do AnyMarket
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="salvarToken('anymarket')">
+                        <i class="fas fa-save"></i> Salvar Token
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="testarToken('anymarket')">
+                        <i class="fas fa-test"></i> Testar Conexão
+                    </button>
+                </div>
+            </form>
+            
+            <div id="anymarketStatus" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Token Google Sheets -->
+    <div class="card token-card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-table"></i> Google Sheets</h5>
+        </div>
+        <div class="card-body">
+            <form id="googleSheetsForm">
+                <div class="mb-3">
+                    <label for="google_sheets_token" class="form-label">Credenciais do Google Sheets</label>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        As credenciais do Google Sheets são gerenciadas via arquivo <code>credentials.json</code>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="sheet_id" class="form-label">ID da Planilha Padrão</label>
+                    <input type="text" class="form-control" id="sheet_id" 
+                           value="{{ config.sheet_id }}" 
+                           placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+                    <small class="text-muted">Encontre no URL: .../spreadsheets/d/[ID]/edit</small>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success" onclick="salvarConfigGoogleSheets()">
+                        <i class="fas fa-save"></i> Salvar Configuração
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="testarGoogleSheets()">
+                        <i class="fas fa-test"></i> Testar Conexão
+                    </button>
+                </div>
+            </form>
+            
+            <div id="googleSheetsStatus" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Status dos Tokens -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fas fa-info-circle"></i> Status dos Serviços</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="service-status">
+                        <span class="status-label">AnyMarket:</span>
+                        <span id="anymarketServiceStatus" class="status-badge status-unknown">
+                            <i class="fas fa-question-circle"></i> Não testado
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="service-status">
+                        <span class="status-label">Google Sheets:</span>
+                        <span id="googleSheetsServiceStatus" class="status-badge status-unknown">
+                            <i class="fas fa-question-circle"></i> Não testado
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegação Rápida -->
+    <div class="quick-nav mt-4">
+        <a href="{{ url_for('pedidos_anymarket') }}" class="btn btn-outline-primary">
+            <i class="fas fa-shopping-cart"></i> Ir para Pedidos
+        </a>
+        <a href="{{ url_for('extrair_atributos') }}" class="btn btn-outline-success">
+            <i class="fas fa-table"></i> Ir para Google Sheets
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/config_tokens.js') }}"></script>
+{% endblock %}

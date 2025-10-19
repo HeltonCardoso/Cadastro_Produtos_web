@@ -62,8 +62,8 @@
     </div>
 
     <!-- Configurações -->
-    <a href="{{ url_for('configurar_google_sheets') }}" class="menu-item {% if active_page == 'config' %}active{% endif %}">
-      <i class="fas fa-cogs"></i> Configuração
+    <a class="nav-link" href="{{ url_for('configurar_tokens') }}">
+        <i class="fas fa-key"></i> Configurações API
     </a>
 
     <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item">
