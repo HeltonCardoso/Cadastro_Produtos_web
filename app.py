@@ -128,29 +128,62 @@ def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
     return render_template('pedidos_anymarket.html', active_page='pedidos', active_module='anymarket')
 
-@app.route('/api/tokens/obter')
+@app.route('/api/tokens/anymarket/obter')
 def api_obter_token():
-    """API para obter token do AnyMarket (apenas verifica existência)"""
+    """API para obter token do AnyMarket - VERSÃO TOLERANTE"""
     try:
         tokens_file = 'tokens_secure.json'
+        
+        # 🔹 CORREÇÃO: Se o arquivo não existe, retorna que não há token
         if not os.path.exists(tokens_file):
-            return jsonify({'success': False, 'error': 'Token não configurado'}), 404
+            return jsonify({
+                'success': False, 
+                'error': 'Token não configurado',
+                'arquivo_existe': False
+            }), 404
         
         with open(tokens_file, 'r', encoding='utf-8') as f:
             tokens = json.load(f)
         
+        # Tenta estrutura nova primeiro
         token_data = tokens.get('anymarket')
-        if not token_data or not token_data.get('token'):
-            return jsonify({'success': False, 'error': 'Token não encontrado'}), 404
+        if token_data and token_data.get('token'):
+            return jsonify({
+                'success': True,
+                'token': token_data['token'],
+                'criado_em': token_data.get('criado_em'),
+                'arquivo_existe': True
+            })
+        
+        # Tenta estrutura antiga com IDs aleatórios
+        for key, value in tokens.items():
+            if isinstance(value, dict) and value.get('tipo') == 'anymarket' and value.get('token'):
+                return jsonify({
+                    'success': True,
+                    'token': value['token'],
+                    'criado_em': value.get('criado_em'),
+                    'arquivo_existe': True,
+                    'estrutura_antiga': True
+                })
         
         return jsonify({
-            'success': True,
-            'token': token_data['token'],
-            'criado_em': token_data.get('criado_em')
-        })
+            'success': False, 
+            'error': 'Token não encontrado',
+            'arquivo_existe': True
+        }), 404
         
+    except json.JSONDecodeError:
+        return jsonify({
+            'success': False, 
+            'error': 'Arquivo de tokens corrompido',
+            'arquivo_existe': True
+        }), 500
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+        return jsonify({
+            'success': False, 
+            'error': str(e),
+            'arquivo_existe': os.path.exists('tokens_secure.json')
+        }), 500
 
 @app.route('/debug/token-status')
 def debug_token_status():
@@ -692,7 +725,7 @@ def obter_token_anymarket():
 
 @app.route('/api/tokens/anymarket/salvar', methods=['POST'])
 def salvar_token_anymarket():
-    """Salva token do AnyMarket no arquivo seguro"""
+    """Salva token do AnyMarket no arquivo seguro - VERSÃO QUE CRIA ARQUIVO"""
     try:
         data = request.get_json()
         token = data.get('token')
@@ -703,22 +736,43 @@ def salvar_token_anymarket():
         tokens_file = 'tokens_secure.json'
         tokens = {}
         
+        # 🔹 CORREÇÃO: Se o arquivo existe, carrega. Se não, cria estrutura vazia.
         if os.path.exists(tokens_file):
-            with open(tokens_file, 'r', encoding='utf-8') as f:
-                tokens = json.load(f)
+            try:
+                with open(tokens_file, 'r', encoding='utf-8') as f:
+                    tokens = json.load(f)
+            except json.JSONDecodeError:
+                # Se o arquivo estiver corrompido, recria
+                tokens = {}
+        else:
+            # Arquivo não existe - cria estrutura vazia
+            tokens = {}
+            print("📁 Arquivo tokens_secure.json não encontrado - criando novo...")
         
+        # Garante que a estrutura tenha o objeto anymarket
         tokens['anymarket'] = {
             'token': token,
             'criado_em': datetime.now().isoformat(),
             'ultimo_uso': datetime.now().isoformat()
         }
         
+        # 🔹 CORREÇÃO: Garante que o diretório existe
+        os.makedirs(os.path.dirname(tokens_file) or '.', exist_ok=True)
+        
+        # Salva o arquivo
         with open(tokens_file, 'w', encoding='utf-8') as f:
             json.dump(tokens, f, indent=2, ensure_ascii=False)
         
-        return jsonify({'success': True, 'message': 'Token salvo com segurança'})
+        print(f"✅ Token salvo com segurança em {tokens_file}")
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Token salvo com segurança',
+            'arquivo_criado': not os.path.exists(tokens_file)  # Indica se foi criado agora
+        })
         
     except Exception as e:
+        print(f"❌ Erro ao salvar token: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/tokens/anymarket/remover', methods=['POST'])

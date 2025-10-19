@@ -748,6 +748,240 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// =============================================
+// 📋 MODAL DE DETALHES DO PEDIDO
+// =============================================
+
+async function abrirDetalhesPedido(orderId) {
+    console.log(`📋 Abrindo detalhes do pedido: ${orderId}`);
+    
+    if (!currentToken) {
+        showMessage('Configure o token primeiro', 'error');
+        return;
+    }
+    
+    try {
+        showMessage('Carregando detalhes do pedido...', 'info');
+        
+        const response = await fetch(`/api/anymarket/pedidos/${orderId}`, {
+            headers: {
+                'Authorization': `Bearer ${currentToken}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            exibirDetalhesPedido(data.order);
+        } else {
+            throw new Error(data.error || 'Erro ao carregar detalhes');
+        }
+    } catch (error) {
+        console.error('❌ Erro ao carregar detalhes:', error);
+        showMessage('❌ Erro ao carregar detalhes: ' + error.message, 'error');
+    }
+}
+
+function exibirDetalhesPedido(order) {
+    const modalContent = document.getElementById('modalContent');
+    
+    if (!modalContent) {
+        console.error('❌ Elemento modalContent não encontrado');
+        return;
+    }
+    
+    // Formatar dados do pedido
+    const formattedOrder = {
+        ...order,
+        formattedTotal: parseFloat(order.totalAmount || order.total || 0).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }),
+        formattedFreight: parseFloat(order.freight || 0).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }),
+        formattedDate: formatDateTime(order.createdAt),
+        formattedPaymentDate: order.paymentDate ? formatDateTime(order.paymentDate) : 'N/A'
+    };
+    
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h2>📦 Pedido #${order.id}</h2>
+            <button class="close-modal" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Informações Básicas -->
+            <div class="order-section">
+                <h3>📋 Informações do Pedido</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Status:</label>
+                        <span class="status-badge status-${order.status}">${formatStatus(order.status)}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Marketplace:</label>
+                        <span>${formatMarketplace(order.marketPlace)}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Data de Criação:</label>
+                        <span>${formattedOrder.formattedDate}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Nº Marketplace:</label>
+                        <span>${order.marketPlaceNumber || 'N/A'}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Informações do Comprador -->
+            <div class="order-section">
+                <h3>👤 Dados do Comprador</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Nome:</label>
+                        <span>${order.buyer?.name || 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span>${order.buyer?.email || 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Telefone:</label>
+                        <span>${order.buyer?.phone ? formatPhone(order.buyer.phone) : 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Documento:</label>
+                        <span>${order.buyer?.document ? formatDocument(order.buyer.document) : 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Endereço:</label>
+                        <span>${formatEndereco(order.buyer)}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Itens do Pedido -->
+            <div class="order-section">
+                <h3>🛍️ Itens do Pedido (${order.items ? order.items.length : 0})</h3>
+                <div class="items-list">
+                    ${order.items && order.items.length > 0 ? order.items.map(item => `
+                        <div class="item-card">
+                            <div class="item-header">
+                                <strong>${item.sku?.partnerId || item.skuId || 'N/A'}</strong>
+                                <span class="item-price">R$ ${parseFloat(item.price || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="item-details">
+                                <span>Qtd: ${item.amount || 1}</span>
+                                <span>Total: R$ ${parseFloat(item.totalPrice || item.price || 0).toFixed(2)}</span>
+                            </div>
+                            ${item.title ? `<div class="item-title">${item.title}</div>` : ''}
+                        </div>
+                    `).join('') : '<p>Nenhum item encontrado</p>'}
+                </div>
+            </div>
+            
+            <!-- Valores -->
+            <div class="order-section">
+                <h3>💰 Valores</h3>
+                <div class="values-grid">
+                    <div class="value-item">
+                        <label>Subtotal:</label>
+                        <span>${formattedOrder.formattedTotal}</span>
+                    </div>
+                    <div class="value-item">
+                        <label>Frete:</label>
+                        <span>${formattedOrder.formattedFreight}</span>
+                    </div>
+                    <div class="value-item total">
+                        <label>Total:</label>
+                        <span>${formattedOrder.formattedTotal}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagamento -->
+            <div class="order-section">
+                <h3>💳 Pagamento</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Status:</label>
+                        <span class="status-badge status-${order.payment?.status || 'PENDING'}">
+                            ${formatPaymentStatus(order.payment?.status)}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <label>Método:</label>
+                        <span>${order.payment?.method || 'N/A'}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Data do Pagamento:</label>
+                        <span>${formattedOrder.formattedPaymentDate}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fecharModal()">Fechar</button>
+            <button class="btn btn-primary" onclick="imprimirPedido(${order.id})">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+            ${order.marketPlaceUrl ? `
+            <button class="btn btn-outline" onclick="window.open('${order.marketPlaceUrl}', '_blank')">
+                <i class="fas fa-external-link-alt"></i> Ver no Marketplace
+            </button>
+            ` : ''}
+        </div>
+    `;
+    
+    // Abrir modal
+    document.getElementById('orderModal').style.display = 'block';
+}
+
+function fecharModal() {
+    document.getElementById('orderModal').style.display = 'none';
+}
+
+// Função auxiliar para formatar endereço
+function formatEndereco(buyer) {
+    if (!buyer) return 'N/A';
+    
+    const parts = [];
+    if (buyer.street) parts.push(buyer.street);
+    if (buyer.number) parts.push(buyer.number);
+    if (buyer.complement) parts.push(buyer.complement);
+    if (buyer.district) parts.push(buyer.district);
+    if (buyer.city) parts.push(buyer.city);
+    if (buyer.state) parts.push(buyer.state);
+    if (buyer.zipCode) parts.push(`CEP: ${buyer.zipCode}`);
+    
+    return parts.length > 0 ? parts.join(', ') : 'N/A';
+}
+
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+    const orderModal = document.getElementById('orderModal');
+    const tokenModal = document.getElementById('tokenModal');
+    
+    if (event.target === orderModal) {
+        fecharModal();
+    }
+    if (event.target === tokenModal) {
+        fecharTokenModal();
+    }
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        fecharModal();
+        fecharTokenModal();
+    }
+});
 // Fechar modais ao clicar fora
 window.onclick = function(event) {
     const orderModal = document.getElementById('orderModal');
