@@ -4,7 +4,7 @@
 let currentToken = '';
 let allOrders = [];
 let currentPage = 1;
-const ordersPerPage = 20;
+const ordersPerPage = 50;
 
 // =============================================
 // 🔐 INICIALIZAÇÃO INTELIGENTE
@@ -227,9 +227,8 @@ async function limparToken() {
 // =============================================
 
 async function carregarPedidos(page = 1) {
-    console.log(`📦 Carregando página ${page}...`);
+    console.log(`📦 SOLICITANDO página ${page}...`);
     
-    // ✅ VERIFICAÇÃO - token deve estar configurado
     if (!currentToken) {
         showMessage('Configure o token primeiro', 'error');
         mostrarEstadoSemToken();
@@ -240,52 +239,59 @@ async function carregarPedidos(page = 1) {
     hideEmptyState();
     
     try {
+        // Coletar filtros
+        const dataInicio = document.getElementById('dataInicio')?.value || '';
+        const dataFim = document.getElementById('dataFim')?.value || '';
+        const status = document.getElementById('statusFilter')?.value || '';
+        const marketplace = document.getElementById('marketplaceFilter')?.value || '';
+        
         const params = new URLSearchParams({
-            page: page,
-            limit: 50,
-            dataInicio: document.getElementById('dataInicio').value || '',
-            dataFim: document.getElementById('dataFim').value || '',
-            status: document.getElementById('statusFilter').value || '',
-            marketplace: document.getElementById('marketplaceFilter').value || ''
+            page: page,  // ✅ Página solicitada
+            limit: 50
         });
-
-        const response = await fetch(`/api/anymarket/pedidos?${params}`, {
+        
+        // Adicionar filtros se preenchidos
+        if (status) params.append('status', status);
+        if (marketplace) params.append('marketplace', marketplace);
+        if (dataInicio) params.append('dataInicio', dataInicio);
+        if (dataFim) params.append('dataFim', dataFim);
+        
+        const apiUrl = `/api/anymarket/pedidos?${params}`;
+        console.log(`🔗 SOLICITANDO: Página ${page}`);
+        
+        const response = await fetch(apiUrl, {
             headers: {
                 'Authorization': `Bearer ${currentToken}`
             }
         });
 
+        const data = await response.json();
+        
+        console.log('📄 RESPOSTA:', {
+            paginaSolicitada: page,
+            paginaRetornada: data.pagination?.currentPage,
+            debug: data.debug
+        });
+        
         if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
+            throw new Error(data.error || `Erro HTTP ${response.status}`);
         }
 
-        const data = await response.json();
-
         if (data.success) {
-            currentPage = page;
+            // ✅ CORREÇÃO: A página atual é a que foi SOLICITADA
+            currentPage = page;  // ✅ Usar a página solicitada, não a retornada
+            
             exibirPedidos(data.orders);
             exibirEstatisticas(data.stats, data.filters);
             exibirPaginacao(data.pagination);
             
-            if (page === 1) {
-                showMessage(`✅ ${data.orders.length} pedidos carregados automaticamente`, 'success');
-            }
+            showMessage(`✅ Página ${page} carregada - ${data.orders.length} pedidos`, 'success');
         } else {
             throw new Error(data.error || 'Erro desconhecido na API');
         }
     } catch (error) {
-        console.error('Erro ao carregar pedidos:', error);
-        
-        if (error.message.includes('401') || error.message.includes('Token')) {
-            showMessage('❌ Token inválido ou expirado', 'error');
-            // Não limpar automaticamente - deixar usuário decidir
-        } else if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
-            showMessage('🌐 Erro de conexão. Verifique sua internet.', 'error');
-        } else {
-            showMessage('❌ Erro: ' + error.message, 'error');
-        }
-        
-        mostrarEstadoSemToken();
+        console.error('❌ Erro ao carregar pedidos:', error);
+        showMessage('❌ Erro: ' + error.message, 'error');
     } finally {
         showLoading(false);
     }
@@ -363,15 +369,12 @@ function exibirPedidos(orders) {
         <tr onclick="abrirDetalhesPedido(${order.id})" style="cursor: pointer;">
             <td>
                 <strong class="text-primary">${order.id}</strong>
-                ${order.marketPlaceNumber ? `<br><small class="text-muted">MP: ${order.marketPlaceNumber}</small>` : ''}
             </td>
             <td>
                 <span class="marketplace-badge">${formatMarketplace(order.marketPlace)}</span>
-                ${order.officialStoreName ? `<br><small class="text-muted">${order.officialStoreName}</small>` : ''}
             </td>
             <td>
                 <span class="status-badge status-${order.status}">${formatStatus(order.status)}</span>
-                ${order.marketPlaceStatus ? `<br><small class="text-muted">MP: ${order.marketPlaceStatus}</small>` : ''}
             </td>
             <td>${order.marketPlaceNumber || '-'}</td>
             <td>
@@ -407,32 +410,84 @@ function exibirPedidos(orders) {
 function exibirPaginacao(pagination) {
     const paginationContainer = document.querySelector('.pagination');
     
-    if (!pagination || pagination.totalPages <= 1) {
-        paginationContainer.innerHTML = '';
+    console.log('🔢 EXIBINDO PAGINAÇÃO FINAL:', pagination);
+    
+    if (!pagination || !pagination.totalPages || pagination.totalPages <= 1) {
+        paginationContainer.innerHTML = '<span class="page-info">Página 1 de 1</span>';
         return;
     }
 
     const { currentPage, totalPages, hasNext, hasPrev } = pagination;
     
+    console.log(`🎯 Estado: Página ${currentPage} de ${totalPages} | Anterior: ${hasPrev} | Próxima: ${hasNext}`);
+    
+    // ✅ CORREÇÃO FINAL: Usar template limpo com event listeners
     let paginationHTML = `
-        <button class="page-btn" ${!hasPrev ? 'disabled' : ''} onclick="carregarPedidos(1)">
-            <i class="fas fa-angle-double-left"></i> Primeira
-        </button>
-        <button class="page-btn" ${!hasPrev ? 'disabled' : ''} onclick="carregarPedidos(${currentPage - 1})">
-            <i class="fas fa-chevron-left"></i> Anterior
-        </button>
-        
-        <span class="page-info">Página ${currentPage} de ${totalPages}</span>
-        
-        <button class="page-btn" ${!hasNext ? 'disabled' : ''} onclick="carregarPedidos(${currentPage + 1})">
-            Próxima <i class="fas fa-chevron-right"></i>
-        </button>
-        <button class="page-btn" ${!hasNext ? 'disabled' : ''} onclick="carregarPedidos(${totalPages})">
-            Última <i class="fas fa-angle-double-right"></i>
-        </button>
+        <div class="pagination-controls">
     `;
     
+    // Botão Anterior
+    if (hasPrev) {
+        paginationHTML += `
+            <button class="page-btn active" id="prevPage">
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+        `;
+    } else {
+        paginationHTML += `
+            <button class="page-btn disabled" disabled>
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+        `;
+    }
+    
+    // Informação da Página
+    paginationHTML += `
+        <span class="page-info">
+            <strong>Página ${currentPage} de ${totalPages}</strong>
+            <br>
+            <small class="text-muted">${pagination.totalElements} pedidos no total</small>
+        </span>
+    `;
+    
+    // Botão Próxima
+    if (hasNext) {
+        paginationHTML += `
+            <button class="page-btn active" id="nextPage">
+                Próxima <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+    } else {
+        paginationHTML += `
+            <button class="page-btn disabled" disabled>
+                Próxima <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+    }
+    
+    paginationHTML += `</div>`;
+    
     paginationContainer.innerHTML = paginationHTML;
+    
+    // ✅ CORREÇÃO CRÍTICA: Adicionar event listeners DINÂMICOS
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+            console.log('⬅️ Botão ANTERIOR clicado - Indo para página', currentPage - 1);
+            carregarPedidos(currentPage - 1);
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+            console.log('➡️ Botão PRÓXIMA clicado - Indo para página', currentPage + 1);
+            carregarPedidos(currentPage + 1);
+        });
+    }
+    
+    console.log('✅ Paginação FINAL renderizada com event listeners');
 }
 
 function exibirEstatisticas(stats, filters) {
@@ -443,14 +498,6 @@ function exibirEstatisticas(stats, filters) {
             <div><strong>📊 Total:</strong> ${stats.totalGeral || stats.total} pedidos</div>
             <div><strong>💰 Valor Total:</strong> R$ ${(stats.valorTotal || 0).toFixed(2)}</div>
             ${filters.dataInicio ? `<div><strong>📅 Período:</strong> ${filters.dataInicio} à ${filters.dataFim}</div>` : ''}
-            <div style="margin-left: auto;">
-                <button class="btn btn-sm btn-outline-success" onclick="carregarTodosPedidos()">
-                    <i class="fas fa-download"></i> Carregar Todos
-                </button>
-                <button class="btn btn-sm btn-outline-info ms-2" onclick="testarTokenAtual()">
-                    <i class="fas fa-test"></i> Testar Token
-                </button>
-            </div>
         </div>
     `;
     

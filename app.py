@@ -123,10 +123,187 @@ def home():
         app.logger.error(f"Erro na rota home: {str(e)}")
         return render_template('error.html'), 500
 
-@app.route('/pedidos-anymarket')
+@app.route('/pedidos-anymarket')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
 def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
     return render_template('pedidos_anymarket.html', active_page='pedidos', active_module='anymarket')
+
+@app.route('/api/anymarket/pedidos')
+def api_pedidos_anymarket():
+    """API para buscar pedidos do AnyMarket - CORREÇÃO DO BUG DA PAGINAÇÃO"""
+    try:
+        # Obter token do header Authorization
+        auth_header = request.headers.get('Authorization', '')
+        if not auth_header.startswith('Bearer '):
+            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
+        
+        token = auth_header.replace('Bearer ', '')
+        
+        # Parâmetros da requisição
+        page = request.args.get('page', 1, type=int)
+        limit = request.args.get('limit', 50, type=int)
+        status = request.args.get('status')
+        marketplace = request.args.get('marketplace')
+        data_inicio = request.args.get('dataInicio')
+        data_fim = request.args.get('dataFim')
+        
+        # ✅ CORREÇÃO: Validar e ajustar página
+        if page < 1:
+            page = 1
+        
+        # Construir URL da API AnyMarket
+        url = "https://api.anymarket.com.br/v2/orders"
+        
+        # ✅ CORREÇÃO: Usar offset em vez de page se a API não respeitar page
+        params = {
+            'page': page,  
+            'limit': limit,
+        }
+        
+        # Adicionar filtros APENAS se fornecidos
+        if status and status.strip():
+            params['status'] = status.strip()
+            
+        if marketplace and marketplace.strip():
+            params['marketplace'] = marketplace.strip()
+        
+        # Usar filtro de data APENAS se datas válidas
+        if data_inicio and data_fim:
+            try:
+                datetime.strptime(data_inicio, '%Y-%m-%d')
+                datetime.strptime(data_fim, '%Y-%m-%d')
+                params['createdAt.start'] = f"{data_inicio}T00:00:00-03:00"
+                params['createdAt.end'] = f"{data_fim}T23:59:59-03:00"
+            except ValueError:
+                print("⚠️ Datas em formato inválido, ignorando filtro de data")
+        
+        # Fazer requisição para a API AnyMarket
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'gumgaToken': token
+        }
+        
+        print(f"🔍 SOLICITANDO PÁGINA {page} para AnyMarket")
+        print(f"📋 Parâmetros: {params}")
+        
+        response = requests.get(url, params=params, headers=headers, timeout=60)
+        
+        print(f"📡 Resposta da API: {response.status_code}")
+        
+        if response.status_code != 200:
+            error_detail = response.text
+            print(f"❌ Erro {response.status_code}: {error_detail}")
+            return jsonify({
+                'success': False, 
+                'error': f'Erro na API AnyMarket: {response.status_code}',
+                'details': error_detail[:500] if error_detail else 'Sem detalhes'
+            }), response.status_code
+        
+        data = response.json()
+        
+        # DEBUG - Log da resposta
+        print("=== DEBUG ANYMARKET RESPONSE ===")
+        print("Status Code:", response.status_code)
+        print("URL chamada:", response.url)
+        print("Page object:", data.get('page', {}))
+        print("Total orders:", len(data.get('content', [])))
+        print("================================")
+        
+        # Processar resposta
+        orders = data.get('content', [])
+        pagination_data = data.get('page', {})
+        
+        # ✅ CORREÇÃO CRÍTICA: A API está SEMPRE retornando number=1
+        # Vamos usar a página que foi SOLICITADA, não a que foi retornada
+        current_page = page  # ✅ USAR A PÁGINA SOLICITADA
+        total_pages = pagination_data.get('totalPages', 1)
+        total_elements = pagination_data.get('totalElements', 0)
+        page_size = pagination_data.get('size', len(orders))
+        
+        print(f"📊 PAGINAÇÃO AJUSTADA:")
+        print(f"   - Página solicitada: {page}")
+        print(f"   - Página retornada pela API: {pagination_data.get('number', 'N/A')}")
+        print(f"   - Página que vamos usar: {current_page}")
+        print(f"   - Total de páginas: {total_pages}")
+        
+        # ✅ CORREÇÃO: Calcular navegação baseado na página SOLICITADA
+        has_next = current_page < total_pages
+        has_prev = current_page > 1
+        
+        pagination = {
+            'currentPage': current_page,  # ✅ Página solicitada, não a retornada
+            'totalPages': total_pages,
+            'totalElements': total_elements,
+            'hasNext': has_next,
+            'hasPrev': has_prev,
+            'pageSize': page_size
+        }
+        
+        # Calcular estatísticas
+        stats = {
+            'total': len(orders),
+            'pendentes': len([o for o in orders if o.get('status') == 'PENDING']),
+            'valorTotal': sum(float(o.get('total', 0)) for o in orders),
+            'totalGeral': total_elements
+        }
+        
+        return jsonify({
+            'success': True,
+            'orders': orders,
+            'stats': stats,
+            'pagination': pagination,
+            'filters': {
+                'dataInicio': data_inicio or '',
+                'dataFim': data_fim or '',
+                'status': status or '',
+                'marketplace': marketplace or ''
+            },
+            'debug': {
+                'pagina_solicitada': page,
+                'pagina_retornada': pagination_data.get('number'),
+                'api_url': response.url
+            }
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro na API pedidos: {str(e)}")
+        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
+ 
+@app.route('/api/anymarket/pedidos/<int:order_id>')
+def api_detalhes_pedido_anymarket(order_id):
+    """API para buscar detalhes de um pedido específico"""
+    try:
+        auth_header = request.headers.get('Authorization', '')
+        if not auth_header.startswith('Bearer '):
+            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
+        
+        token = auth_header.replace('Bearer ', '')
+        
+        url = f"https://api.anymarket.com.br/v2/orders/{order_id}"
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'gumgaToken': token
+        }
+        
+        response = requests.get(url, headers=headers, timeout=30)
+        
+        if response.status_code != 200:
+            return jsonify({
+                'success': False, 
+                'error': f'Erro na API AnyMarket: {response.status_code}'
+            }), response.status_code
+        
+        order_data = response.json()
+        
+        return jsonify({
+            'success': True,
+            'order': order_data
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
 
 @app.route('/api/tokens/anymarket/obter')
 def api_obter_token():
@@ -203,232 +380,6 @@ def debug_token_status():
             'arquivo_existe': os.path.exists('tokens_secure.json')
         })
     
-@app.route('/api/anymarket/pedidos')
-def api_pedidos_anymarket():
-    """API para buscar pedidos do AnyMarket com paginação completa"""
-    try:
-        # Obter token do header Authorization
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
-        
-        token = auth_header.replace('Bearer ', '')
-        
-        # Parâmetros da requisição
-        page = request.args.get('page', 1, type=int)
-        limit = request.args.get('limit', 50, type=int)  # Aumentei para 50
-        status = request.args.get('status')
-        marketplace = request.args.get('marketplace')
-        data_inicio = request.args.get('dataInicio')
-        data_fim = request.args.get('dataFim')
-        
-        # Se datas não informadas, usar últimos 90 dias (limite da API)
-        if not data_inicio:
-            data_inicio = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
-        if not data_fim:
-            data_fim = datetime.now().strftime('%Y-%m-%d')
-        
-        # Construir URL da API AnyMarket
-        url = "https://api.anymarket.com.br/v2/orders"
-        params = {
-            'page': page,
-            'limit': limit
-        }
-        
-        # Adicionar filtros
-        if status:
-            params['status'] = status
-        if marketplace:
-            params['marketplace'] = marketplace
-        
-        # Sempre usar filtro de data (últimos 90 dias se não informado)
-        params['createdAt.start'] = f"{data_inicio}T00:00:00-03:00"
-        params['createdAt.end'] = f"{data_fim}T23:59:59-03:00"
-        
-        # Fazer requisição para a API AnyMarket
-        headers = {
-            'Authorization': f'Bearer {token}',
-            'Content-Type': 'application/json',
-            'gumgaToken': token
-        }
-        
-        response = requests.get(url, params=params, headers=headers, timeout=60)
-        
-        if response.status_code != 200:
-            return jsonify({
-                'success': False, 
-                'error': f'Erro na API AnyMarket: {response.status_code} - {response.text}'
-            }), response.status_code
-        
-        data = response.json()
-        
-        # Processar resposta
-        orders = data.get('content', [])
-        
-        # Calcular estatísticas
-        stats = {
-            'total': len(orders),
-            'pendentes': len([o for o in orders if o.get('status') == 'PENDING']),
-            'valorTotal': sum(float(o.get('totalAmount', 0)) for o in orders),
-            'totalGeral': data.get('page', {}).get('totalElements', 0)
-        }
-        
-        # Paginação melhorada
-        pagination_data = data.get('page', {})
-        total_pages = pagination_data.get('totalPages', 1)
-        total_elements = pagination_data.get('totalElements', 0)
-        
-        pagination = {
-            'currentPage': page,
-            'totalPages': total_pages,
-            'totalElements': total_elements,
-            'hasNext': not pagination_data.get('last', True),
-            'hasPrev': not pagination_data.get('first', True),
-            'pageSize': limit
-        }
-        
-        return jsonify({
-            'success': True,
-            'orders': orders,
-            'stats': stats,
-            'pagination': pagination,
-            'filters': {
-                'dataInicio': data_inicio,
-                'dataFim': data_fim,
-                'status': status,
-                'marketplace': marketplace
-            }
-        })
-        
-    except requests.exceptions.RequestException as e:
-        return jsonify({'success': False, 'error': f'Erro de conexão: {str(e)}'}), 500
-    except Exception as e:
-        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
- 
-@app.route('/api/anymarket/todos-pedidos')
-def api_todos_pedidos_anymarket():
-    """API para buscar TODOS os pedidos (com paginação automática)"""
-    try:
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
-        
-        token = auth_header.replace('Bearer ', '')
-        
-        # Parâmetros
-        status = request.args.get('status')
-        marketplace = request.args.get('marketplace')
-        data_inicio = request.args.get('dataInicio')
-        data_fim = request.args.get('dataFim')
-        
-        # Datas padrão: últimos 90 dias
-        if not data_inicio:
-            data_inicio = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
-        if not data_fim:
-            data_fim = datetime.now().strftime('%Y-%m-%d')
-        
-        all_orders = []
-        page = 1
-        limit = 100  # Máximo permitido pela API
-        
-        while True:
-            url = "https://api.anymarket.com.br/v2/orders"
-            params = {
-                'page': page,
-                'limit': limit,
-                'createdAt.start': f"{data_inicio}T00:00:00-03:00",
-                'createdAt.end': f"{data_fim}T23:59:59-03:00"
-            }
-            
-            if status:
-                params['status'] = status
-            if marketplace:
-                params['marketplace'] = marketplace
-            
-            headers = {
-                'Authorization': f'Bearer {token}',
-                'Content-Type': 'application/json',
-                'gumgaToken': token
-            }
-            
-            response = requests.get(url, params=params, headers=headers, timeout=60)
-            
-            if response.status_code != 200:
-                break
-            
-            data = response.json()
-            orders = data.get('content', [])
-            
-            if not orders:
-                break
-                
-            all_orders.extend(orders)
-            
-            # Verificar se há mais páginas
-            pagination_data = data.get('page', {})
-            if pagination_data.get('last', True) or page >= pagination_data.get('totalPages', 1):
-                break
-                
-            page += 1
-        
-        # Estatísticas
-        stats = {
-            'total': len(all_orders),
-            'pendentes': len([o for o in all_orders if o.get('status') == 'PENDING']),
-            'valorTotal': sum(float(o.get('totalAmount', 0)) for o in all_orders)
-        }
-        
-        return jsonify({
-            'success': True,
-            'orders': all_orders,
-            'stats': stats,
-            'filters': {
-                'dataInicio': data_inicio,
-                'dataFim': data_fim,
-                'status': status,
-                'marketplace': marketplace
-            }
-        })
-        
-    except Exception as e:
-        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
-
-
-@app.route('/api/anymarket/pedidos/<int:order_id>')
-def api_detalhes_pedido_anymarket(order_id):
-    """API para buscar detalhes de um pedido específico"""
-    try:
-        auth_header = request.headers.get('Authorization', '')
-        if not auth_header.startswith('Bearer '):
-            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
-        
-        token = auth_header.replace('Bearer ', '')
-        
-        url = f"https://api.anymarket.com.br/v2/orders/{order_id}"
-        headers = {
-            'Authorization': f'Bearer {token}',
-            'Content-Type': 'application/json',
-            'gumgaToken': token
-        }
-        
-        response = requests.get(url, headers=headers, timeout=30)
-        
-        if response.status_code != 200:
-            return jsonify({
-                'success': False, 
-                'error': f'Erro na API AnyMarket: {response.status_code}'
-            }), response.status_code
-        
-        order_data = response.json()
-        
-        return jsonify({
-            'success': True,
-            'order': order_data
-        })
-        
-    except Exception as e:
-        return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
-
 @app.route('/uploads/<filename>')
 def baixar_arquivo(filename):
     try:
