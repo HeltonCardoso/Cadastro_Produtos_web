@@ -1,11 +1,83 @@
-// consultar_anymarket.js - Versão corrigida
+// consultar_anymarket.js - Versão compatível com novo layout
 
 document.addEventListener('DOMContentLoaded', function() {
+    initializeFormHandlers();
     initializeSortableGallery();
     initializePhotoSelection();
     initializeEventHandlers();
     initializeSelectAll();
 });
+
+function initializeFormHandlers() {
+    // Botão consultar
+    const btnConsultar = document.getElementById('btnConsultar');
+    if (btnConsultar) {
+        btnConsultar.addEventListener('click', function() {
+            const productId = document.getElementById('product_id').value;
+            const apiToken = document.getElementById('api_token').value;
+            
+            if (!productId) {
+                showAlert('Por favor, informe o ID do produto', 'error');
+                return;
+            }
+            
+            // Preenche os campos ocultos do formulário
+            document.getElementById('hiddenProductId').value = productId;
+            document.getElementById('hiddenApiToken').value = apiToken;
+            
+            // Mostra loading
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Consultando...';
+            
+            // Submete o formulário
+            document.getElementById('consultarForm').submit();
+        });
+    }
+    
+    // Botão excluir lote
+    const btnExcluirLote = document.getElementById('btnExcluirLote');
+    if (btnExcluirLote) {
+        btnExcluirLote.addEventListener('click', function() {
+            const planilha = document.getElementById('planilha').files[0];
+            
+            if (!planilha) {
+                showAlert('Por favor, selecione uma planilha', 'error');
+                return;
+            }
+            
+            // Prepara o FormData
+            const formData = new FormData();
+            formData.append('action', 'excluir_lote');
+            formData.append('planilha', planilha);
+            
+            // Mostra loading
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processando...';
+            
+            // Envia via AJAX
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na resposta do servidor');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Recarrega a página para mostrar resultados
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                showAlert('Erro ao processar planilha: ' + error.message, 'error');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-trash me-2"></i>Excluir Fotos da Planilha';
+            });
+        });
+    }
+}
 
 function initializeSortableGallery() {
     const galeria = document.getElementById('galeriaFotos');
@@ -22,7 +94,7 @@ function initializeSortableGallery() {
 }
 
 function initializePhotoSelection() {
-    // Seleção ao clicar no card - CORRIGIDO
+    // Seleção ao clicar no card
     document.querySelectorAll('.card-foto').forEach(card => {
         card.addEventListener('click', function(e) {
             // Não ativar se clicou em um botão ou checkbox
@@ -42,7 +114,7 @@ function initializePhotoSelection() {
         });
     });
 
-    // Evento direto nos checkboxes - CORRIGIDO
+    // Evento direto nos checkboxes
     document.querySelectorAll('.foto-selecionada').forEach(checkbox => {
         checkbox.addEventListener('click', function(e) {
             e.stopPropagation(); // Impede que o evento chegue no card
@@ -79,7 +151,7 @@ function initializeSelectAll() {
 }
 
 function initializeEventHandlers() {
-    // Exclusão individual - CORRIGIDO
+    // Exclusão individual
     document.querySelectorAll('.btn-excluir-individual').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -98,7 +170,7 @@ function initializeEventHandlers() {
         });
     });
 
-    // Definir como principal - CORRIGIDO
+    // Definir como principal
     document.querySelectorAll('.btn-definir-principal').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -115,7 +187,7 @@ function initializeEventHandlers() {
         });
     });
 
-    // Exclusão em lote - CORRIGIDO
+    // Exclusão em lote
     const btnExcluirSelecionadas = document.getElementById('btnExcluirSelecionadas');
     if (btnExcluirSelecionadas) {
         btnExcluirSelecionadas.addEventListener('click', function(e) {
@@ -124,7 +196,7 @@ function initializeEventHandlers() {
             const selecionadas = document.querySelectorAll('.foto-selecionada:checked');
             
             if (selecionadas.length === 0) {
-                alert('Selecione pelo menos uma foto para excluir.');
+                showAlert('Selecione pelo menos uma foto para excluir.', 'error');
                 return;
             }
 
@@ -134,7 +206,7 @@ function initializeEventHandlers() {
         });
     }
 
-    // Salvar ordem - CORRIGIDO
+    // Salvar ordem
     const btnSalvarOrdem = document.getElementById('btnSalvarOrdem');
     if (btnSalvarOrdem) {
         btnSalvarOrdem.addEventListener('click', function(e) {
@@ -338,7 +410,43 @@ function excluirFotosEmLote(selecionadas) {
     });
 }
 
-// Toast notification
+// Sistema de Alertas no padrão da página de pedidos
+function showAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type}`;
+    alertDiv.style.marginBottom = '20px';
+    alertDiv.innerHTML = `
+        <i class="fas fa-${getAlertIcon(type)} me-2"></i>
+        ${message}
+    `;
+    
+    // Insere após o header
+    const content = document.querySelector('.pedidos-content');
+    if (content) {
+        content.insertBefore(alertDiv, content.firstChild);
+    } else {
+        document.body.insertBefore(alertDiv, document.body.firstChild);
+    }
+    
+    // Remove após 5 segundos
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
+}
+
+function getAlertIcon(type) {
+    const icons = {
+        'success': 'check-circle',
+        'error': 'exclamation-triangle',
+        'warning': 'exclamation-triangle',
+        'info': 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Toast notification - Versão atualizada
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `alert alert-${type} alert-dismissible fade show`;
@@ -346,15 +454,19 @@ function showToast(message, type = 'info') {
     toast.style.top = '20px';
     toast.style.right = '20px';
     toast.style.zIndex = '9999';
+    toast.style.minWidth = '300px';
+    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
     toast.innerHTML = `
+        <i class="fas fa-${getAlertIcon(type)} me-2"></i>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     document.body.appendChild(toast);
     
+    // Remove automaticamente após 4 segundos
     setTimeout(() => {
         if (toast.parentNode) {
             toast.parentNode.removeChild(toast);
         }
-    }, 3000);
+    }, 4000);
 }

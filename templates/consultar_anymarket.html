@@ -6,281 +6,283 @@
 {% endblock %}
 
 {% block content %}
-<div class="alert alert-info">
-    <i class="fas fa-info-circle me-2"></i>
-    Consulte fotos de produtos e gerencie exclusões individualmente ou em lote. 
-    <strong>Dica:</strong> Clique em qualquer card para selecionar, arraste para reordenar.
-</div>
+<div class="pedidos-container">
+    <!-- Header -->
+    <div class="pedidos-header">
+        <h1><i class="fas fa-images me-2"></i>Gerenciar Fotos - AnyMarket</h1>
+    </div>
 
-<h2 class="mb-4">Gerenciar Fotos AnyMarket</h2>
-
-<!-- Abas para diferentes funcionalidades -->
-<ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="consultar-tab" data-bs-toggle="tab" data-bs-target="#consultar" type="button" role="tab">
-            <i class="fas fa-search me-2"></i>Consultar Fotos
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir" type="button" role="tab">
-            <i class="fas fa-trash me-2"></i>Excluir em Lote
-        </button>
-    </li>
-</ul>
-
-<div class="tab-content" id="myTabContent">
-    <!-- Tab Consultar Fotos -->
-    <div class="tab-pane fade show active" id="consultar" role="tabpanel">
-        <!-- Formulário de consulta -->
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Consulta de Produto</h5>
-            </div>
-            <div class="card-body">
-                <form method="POST">
-                    <input type="hidden" name="action" value="consultar">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="product_id" class="form-label">ID do Produto:</label>
-                                <input type="text" class="form-control" id="product_id" name="product_id" 
-                                       value="{{ request.form.product_id if request.form and request.form.action == 'consultar' }}" 
-                                       placeholder="Ex: 347730499" required>
-                                <small class="text-muted">ID do produto no AnyMarket</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="api_token" class="form-label">Token API (opcional):</label>
-                                <input type="password" class="form-control" id="api_token" name="api_token" 
-                                       value="{{ request.form.api_token if request.form and request.form.action == 'consultar' }}" 
-                                       placeholder="Deixe em branco para usar o token padrão">
-                                <small class="text-muted">Token de autenticação do AnyMarket</small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" id="btnConsultar">
+    <!-- Conteúdo com scroll -->
+    <div class="pedidos-content">
+        <!-- Abas para diferentes funcionalidades -->
+        <div class="controls-card">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="consultar-tab" data-bs-toggle="tab" data-bs-target="#consultar" type="button" role="tab">
                         <i class="fas fa-search me-2"></i>Consultar Fotos
                     </button>
-                </form>
-            </div>
-        </div>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="excluir-tab" data-bs-toggle="tab" data-bs-target="#excluir" type="button" role="tab">
+                        <i class="fas fa-trash me-2"></i>Excluir em Lote
+                    </button>
+                </li>
+            </ul>
 
-        <!-- Resultados da consulta -->
-        {% if resultado and acao == 'consultar' %}
-        <div class="card mb-4">
-            <div class="card-header {% if resultado.sucesso %}bg-success{% else %}bg-danger{% endif %} text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fas fa-{% if resultado.sucesso %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
-                    Resultado da Consulta - Produto: {{ resultado.product_id }}
-                </h5>
-                {% if resultado.sucesso and resultado.dados %}
-                <div class="form-check form-check-inline m-0">
-                    <input class="form-check-input" type="checkbox" id="selecionarTodas">
-                    <label class="form-check-label text-white" for="selecionarTodas">
-                        Selecionar todas
-                    </label>
-                </div>
-                {% endif %}
-            </div>
-            <div class="card-body">
-                <!-- Resumo -->
-                <div class="row mb-4">
-                    <div class="col-md-3">
-                        <div class="card {% if resultado.sucesso %}border-success{% else %}border-danger{% endif %}">
-                            <div class="card-body text-center py-2">
-                                <h6 class="card-title mb-1">Status</h6>
-                                <span class="badge bg-{% if resultado.sucesso %}success{% else %}danger{% endif %}">
-                                    {{ "SUCESSO" if resultado.sucesso else "ERRO" }}
-                                </span>
-                            </div>
+            <div class="tab-content mt-4" id="myTabContent">
+                <!-- Tab Consultar Fotos -->
+                <div class="tab-pane fade show active" id="consultar" role="tabpanel">
+                    <!-- Formulário de consulta -->
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="product_id" class="form-label">ID do Produto:</label>
+                            <input type="text" class="form-control" id="product_id" name="product_id" 
+                                   value="{{ request.form.product_id if request.form and request.form.action == 'consultar' }}" 
+                                   placeholder="Ex: 347730499" required>
+                            <small class="text-muted">ID do produto no AnyMarket</small>
                         </div>
+                        
                     </div>
-                    <div class="col-md-3">
-                        <div class="card border-info">
-                            <div class="card-body text-center py-2">
-                                <h6 class="card-title mb-1">HTTP Status</h6>
-                                <span class="badge bg-info">{{ resultado.status_code }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-primary">
-                            <div class="card-body text-center py-2">
-                                <h6 class="card-title mb-1">Fotos</h6>
-                                <span class="badge bg-primary">{{ resultado.quantidade_fotos if resultado.quantidade_fotos else 0 }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card border-secondary">
-                            <div class="card-body text-center py-2">
-                                <h6 class="card-title mb-1">Consulta</h6>
-                                <small class="text-muted">
-                                    {% if resultado.timestamp %}
-                                        {{ resultado.timestamp[:16]|replace('T', ' ') }}
-                                    {% endif %}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Galeria de Fotos -->
-                {% if resultado.sucesso and resultado.dados %}
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="mb-0">
-                            <i class="fas fa-images me-2"></i>Galeria de Fotos ({{ resultado.quantidade_fotos }} fotos)
-                        </h6>
+                    <div class="actions-row">
                         <div>
-                            <small class="text-muted me-3">
-                                <i class="fas fa-mouse-pointer me-1"></i>Clique no card para selecionar
-                            </small>
-                            <small class="text-muted">
-                                <i class="fas fa-arrows-alt me-1"></i>Arraste para reordenar
-                            </small>
+                            <button type="submit" class="btn btn-primary" id="btnConsultar" form="consultarForm">
+                                <i class="fas fa-search me-2"></i>Consultar Fotos
+                            </button>
                         </div>
                     </div>
-                    
-                    <div class="galeria-fotos" id="galeriaFotos">
-                        {% for foto in resultado.dados %}
-                        <div class="card-foto {% if foto.main %}foto-principal{% endif %} {% if foto.selecionada %}selecionada{% endif %}" 
-                             data-foto-id="{{ foto.id }}" 
-                             data-product-id="{{ resultado.product_id }}"
-                             draggable="true">
-                            <div class="foto-checkbox">
-                                <input type="checkbox" class="foto-selecionada" 
-                                       data-product-id="{{ resultado.product_id }}" 
-                                       data-photo-id="{{ foto.id }}"
-                                       {% if foto.selecionada %}checked{% endif %}>
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="foto-indice">
-                                {{ loop.index }}
-                            </div>
-                            <div class="foto-container">
-                                {% if foto.original %}
-                                <img src="{{ foto.original }}" alt="Foto ID {{ foto.id }}" 
-                                     class="foto-imagem" loading="lazy"
-                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/cccccc/969696?text=Erro+ao+Carregar'">
-                                {% else %}
-                                <div class="foto-placeholder">
-                                    <i class="fas fa-image"></i>
-                                    <p>Imagem não disponível</p>
+
+                    <!-- Resultados da consulta -->
+                    {% if resultado and acao == 'consultar' %}
+                    <div class="results-section mt-4">
+                        <div class="card mb-4">
+                            <div class="card-header {% if resultado.sucesso %}bg-success{% else %}bg-danger{% endif %} text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-{% if resultado.sucesso %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                                    Resultado da Consulta - Produto: {{ resultado.product_id }}
+                                </h5>
+                                {% if resultado.sucesso and resultado.dados %}
+                                <div class="form-check form-check-inline m-0">
+                                    <input class="form-check-input" type="checkbox" id="selecionarTodas">
+                                    <label class="form-check-label text-white" for="selecionarTodas">
+                                        Selecionar todas
+                                    </label>
                                 </div>
                                 {% endif %}
                             </div>
-                            <div class="foto-info">
-                                <div class="foto-meta">
-                                    <span class="foto-id"><strong>ID:</strong> {{ foto.id if foto.id else 'N/A' }}</span>
-                                    <span class="foto-index"><strong>Posição:</strong> <span class="posicao-atual">{{ loop.index }}</span></span>
-                                    <span class="foto-principal-badge">
-                                        {% if foto.main %}
-                                        <span class="badge bg-success">Principal</span>
-                                        {% else %}
-                                        <span class="badge bg-secondary">Secundária</span>
-                                        {% endif %}
-                                    </span>
+                            <div class="card-body">
+                                <!-- Resumo -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="card {% if resultado.sucesso %}border-success{% else %}border-danger{% endif %}">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Status</h6>
+                                                <span class="badge bg-{% if resultado.sucesso %}success{% else %}danger{% endif %}">
+                                                    {{ "SUCESSO" if resultado.sucesso else "ERRO" }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">HTTP Status</h6>
+                                                <span class="badge bg-info">{{ resultado.status_code }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-primary">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Fotos</h6>
+                                                <span class="badge bg-primary">{{ resultado.quantidade_fotos if resultado.quantidade_fotos else 0 }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-secondary">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Consulta</h6>
+                                                <small class="text-muted">
+                                                    {% if resultado.timestamp %}
+                                                        {{ resultado.timestamp[:16]|replace('T', ' ') }}
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="foto-actions">
-                                    <button class="btn btn-sm btn-outline-danger btn-excluir-individual" 
-                                            data-product-id="{{ resultado.product_id }}" 
-                                            data-photo-id="{{ foto.id }}">
-                                        <i class="fas fa-trash"></i> Excluir
-                                    </button>
-                                    {% if not foto.main %}
-                                    <button class="btn btn-sm btn-outline-primary btn-definir-principal mt-1" 
-                                            data-product-id="{{ resultado.product_id }}" 
-                                            data-photo-id="{{ foto.id }}">
-                                        <i class="fas fa-star"></i> Tornar Principal
-                                    </button>
-                                    {% endif %}
+
+                                <!-- Galeria de Fotos -->
+                                {% if resultado.sucesso and resultado.dados %}
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-images me-2"></i>Galeria de Fotos ({{ resultado.quantidade_fotos }} fotos)
+                                        </h6>
+                                        <div>
+                                            <small class="text-muted me-3">
+                                                <i class="fas fa-mouse-pointer me-1"></i>Clique no card para selecionar
+                                            </small>
+                                            <small class="text-muted">
+                                                <i class="fas fa-arrows-alt me-1"></i>Arraste para reordenar
+                                            </small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="galeria-fotos" id="galeriaFotos">
+                                        {% for foto in resultado.dados %}
+                                        <div class="card-foto {% if foto.main %}foto-principal{% endif %} {% if foto.selecionada %}selecionada{% endif %}" 
+                                             data-foto-id="{{ foto.id }}" 
+                                             data-product-id="{{ resultado.product_id }}"
+                                             draggable="true">
+                                            <div class="foto-checkbox">
+                                                <input type="checkbox" class="foto-selecionada" 
+                                                       data-product-id="{{ resultado.product_id }}" 
+                                                       data-photo-id="{{ foto.id }}"
+                                                       {% if foto.selecionada %}checked{% endif %}>
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                            <div class="foto-indice">
+                                                {{ loop.index }}
+                                            </div>
+                                            <div class="foto-container">
+                                                {% if foto.original %}
+                                                <img src="{{ foto.original }}" alt="Foto ID {{ foto.id }}" 
+                                                     class="foto-imagem" loading="lazy"
+                                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/cccccc/969696?text=Erro+ao+Carregar'">
+                                                {% else %}
+                                                <div class="foto-placeholder">
+                                                    <i class="fas fa-image"></i>
+                                                    <p>Imagem não disponível</p>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="foto-info">
+                                                <div class="foto-meta">
+                                                    <span class="foto-id"><strong>ID:</strong> {{ foto.id if foto.id else 'N/A' }}</span>
+                                                    <span class="foto-index"><strong>Posição:</strong> <span class="posicao-atual">{{ loop.index }}</span></span>
+                                                    <span class="foto-principal-badge">
+                                                        {% if foto.main %}
+                                                        <span class="badge bg-success">Principal</span>
+                                                        {% else %}
+                                                        <span class="badge bg-secondary">Secundária</span>
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                                <div class="foto-actions">
+                                                    <button class="btn btn-sm btn-outline-danger btn-excluir-individual" 
+                                                            data-product-id="{{ resultado.product_id }}" 
+                                                            data-photo-id="{{ foto.id }}">
+                                                        <i class="fas fa-trash"></i> Excluir
+                                                    </button>
+                                                    {% if not foto.main %}
+                                                    <button class="btn btn-sm btn-outline-primary btn-definir-principal mt-1" 
+                                                            data-product-id="{{ resultado.product_id }}" 
+                                                            data-photo-id="{{ foto.id }}">
+                                                        <i class="fas fa-star"></i> Tornar Principal
+                                                    </button>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Ações em lote -->
+                                    <div class="mt-3 p-3 bg-light rounded" id="acoesLote" style="display: none;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Ações em Lote</h6>
+                                                <p class="mb-1"><span id="quantidadeSelecionadas">0</span> foto(s) selecionada(s)</p>
+                                            </div>
+                                            <div>
+                                                <button class="btn btn-danger me-2" id="btnExcluirSelecionadas">
+                                                    <i class="fas fa-trash me-1"></i>Excluir Selecionadas
+                                                </button>
+                                                <button class="btn btn-success" id="btnSalvarOrdem">
+                                                    <i class="fas fa-save me-1"></i>Salvar Ordem
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
-                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Tab Excluir em Lote -->
+                <div class="tab-pane fade" id="excluir" role="tabpanel">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="planilha" class="form-label">Planilha com IDs para Exclusão:</label>
+                            <input type="file" class="form-control" id="planilha" name="planilha" accept=".xlsx,.xls" required>
+                            <small class="text-muted">
+                                Planilha Excel com colunas "ID_PRODUTO" e "ID_IMG"
+                            </small>
+                        </div>
                     </div>
 
-                    <!-- Ações em lote -->
-                    <div class="mt-3 p-3 bg-light rounded" id="acoesLote" style="display: none;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">Ações em Lote</h6>
-                                <p class="mb-1"><span id="quantidadeSelecionadas">0</span> foto(s) selecionada(s)</p>
+                    <div class="actions-row">
+                        <div>
+                            <button type="submit" class="btn btn-warning" id="btnExcluirLote" form="excluirForm">
+                                <i class="fas fa-trash me-2"></i>Excluir Fotos da Planilha
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resultado da exclusão em lote -->
+                    {% if resultado and acao == 'excluir_lote' %}
+                    <div class="results-section mt-4">
+                        <div class="card {% if resultado.sucesso %}border-success{% else %}border-danger{% endif %}">
+                            <div class="card-header {% if resultado.sucesso %}bg-success{% else %}bg-danger{% endif %} text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-{% if resultado.sucesso %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                                    Resultado da Exclusão em Lote
+                                </h6>
                             </div>
-                            <div>
-                                <button class="btn btn-danger me-2" id="btnExcluirSelecionadas">
-                                    <i class="fas fa-trash me-1"></i>Excluir Selecionadas
-                                </button>
-                                <button class="btn btn-success" id="btnSalvarOrdem">
-                                    <i class="fas fa-save me-1"></i>Salvar Ordem
-                                </button>
+                            <div class="card-body">
+                                {% if resultado.sucesso %}
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-check me-2"></i>Processamento Concluído</h6>
+                                    <p><strong>Total processado:</strong> {{ resultado.total_processado }}</p>
+                                    <p><strong>Exclusões bem-sucedidas:</strong> {{ resultado.total_sucesso }}</p>
+                                    <p><strong>Erros:</strong> {{ resultado.total_erro }}</p>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-danger">
+                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Erro no Processamento</h6>
+                                    <p>{{ resultado.erro }}</p>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </div>
         </div>
-        {% endif %}
+
+        <!-- Formulários ocultos para submit -->
+        <form method="POST" id="consultarForm" style="display: none;">
+            <input type="hidden" name="action" value="consultar">
+            <input type="hidden" name="product_id" id="hiddenProductId">
+            <input type="hidden" name="api_token" id="hiddenApiToken">
+        </form>
+
+        <form method="POST" id="excluirForm" enctype="multipart/form-data" style="display: none;">
+            <input type="hidden" name="action" value="excluir_lote">
+        </form>
     </div>
+</div>
 
-    <!-- Tab Excluir em Lote -->
-    <div class="tab-pane fade" id="excluir" role="tabpanel">
-        <div class="card">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">
-                    <i class="fas fa-trash me-2"></i>Excluir Fotos em Lote
-                </h5>
-            </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="excluir_lote">
-                    <div class="mb-3">
-                        <label for="planilha" class="form-label">Planilha com IDs para Exclusão:</label>
-                        <input type="file" class="form-control" id="planilha" name="planilha" accept=".xlsx,.xls" required>
-                        <small class="text-muted">
-                            Planilha Excel com colunas "ID_PRODUTO" e "ID_IMG"
-                        </small>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-warning" id="btnExcluirLote">
-                        <i class="fas fa-trash me-2"></i>Excluir Fotos da Planilha
-                    </button>
-                </form>
-
-                <!-- Resultado da exclusão em lote -->
-                {% if resultado and acao == 'excluir_lote' %}
-                <div class="mt-4">
-                    <div class="card {% if resultado.sucesso %}border-success{% else %}border-danger{% endif %}">
-                        <div class="card-header {% if resultado.sucesso %}bg-success{% else %}bg-danger{% endif %} text-white">
-                            <h6 class="mb-0">
-                                <i class="fas fa-{% if resultado.sucesso %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
-                                Resultado da Exclusão em Lote
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            {% if resultado.sucesso %}
-                            <div class="alert alert-success">
-                                <h6><i class="fas fa-check me-2"></i>Processamento Concluído</h6>
-                                <p><strong>Total processado:</strong> {{ resultado.total_processado }}</p>
-                                <p><strong>Exclusões bem-sucedidas:</strong> {{ resultado.total_sucesso }}</p>
-                                <p><strong>Erros:</strong> {{ resultado.total_erro }}</p>
-                            </div>
-                            {% else %}
-                            <div class="alert alert-danger">
-                                <h6><i class="fas fa-exclamation-triangle me-2"></i>Erro no Processamento</h6>
-                                <p>{{ resultado.erro }}</p>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
+<!-- Modal de Detalhes -->
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <div id="modalContent"></div>
     </div>
 </div>
 {% endblock %}

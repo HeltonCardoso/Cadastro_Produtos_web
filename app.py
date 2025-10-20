@@ -106,6 +106,7 @@ def home():
         
         return render_template(
             'home.html',
+            active_page='home',
             total_processamentos=stats['total'],
             processos_sucesso=stats['sucessos_total'],
             processos_erro=stats['erros_total'],
@@ -445,6 +446,7 @@ def configurar_tokens():
     # ✅ CORREÇÃO: NÃO passe o token para o template
     return render_template(
         "config_tokens.html",
+        active_page='configuracao',
         config=config
         # ✅ REMOVA: anymarket_token=anymarket_token
     )
@@ -1441,6 +1443,7 @@ def configurar_google_sheets():
     
     return render_template(
         "config_google_sheets.html",
+        active_page='configuracao',
         config=config,
         abas=abas,
         mensagem=mensagem,

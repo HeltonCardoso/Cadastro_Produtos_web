@@ -1,112 +1,76 @@
-// Base.js - JavaScript principal da aplicação
-
+// Controle do Sidebar e Funcionalidades
 document.addEventListener('DOMContentLoaded', function() {
-    initializeDarkMode();
-    initializeMenu();
-    initializeAutoCloseAlerts();
-    initializeClock();
-});
+    // Elementos
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    const sidebarToggler = document.querySelector('.sidebar-toggler');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const darkModeBtn = document.getElementById('btn-dark-mode');
 
-// Modo Escuro
-function initializeDarkMode() {
-    const btnDarkMode = document.getElementById('btn-dark-mode');
-    const icon = btnDarkMode?.querySelector('i');
-    
-    if (!btnDarkMode || !icon) return;
+    // Toggle Sidebar Mobile
+    sidebarToggler.addEventListener('click', function() {
+        sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('mobile-open');
+        document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+    });
 
-    // Verifica preferência salva
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        enableDarkMode();
-    }
+    // Fechar sidebar ao clicar no overlay
+    overlay.addEventListener('click', function() {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('mobile-open');
+        document.body.style.overflow = '';
+    });
 
-    btnDarkMode.addEventListener('click', function() {
-        if (document.body.classList.contains('dark-mode')) {
-            disableDarkMode();
+    // Dark Mode Toggle
+    darkModeBtn.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Atualizar ícone
+        const icon = this.querySelector('i');
+        if (newTheme === 'dark') {
+            icon.className = 'fas fa-sun';
+            this.querySelector('.menu-text').textContent = 'Modo Claro';
         } else {
-            enableDarkMode();
+            icon.className = 'fas fa-moon';
+            this.querySelector('.menu-text').textContent = 'Modo Escuro';
         }
     });
 
-    function enableDarkMode() {
-        document.body.classList.add('dark-mode');
-        icon.classList.replace('fa-moon', 'fa-sun');
-        localStorage.setItem('darkMode', 'enabled');
+    // Carregar tema salvo
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Atualizar ícone do dark mode conforme tema salvo
+    if (savedTheme === 'dark') {
+        const icon = darkModeBtn.querySelector('i');
+        icon.className = 'fas fa-sun';
+        darkModeBtn.querySelector('.menu-text').textContent = 'Modo Claro';
     }
 
-    function disableDarkMode() {
-        document.body.classList.remove('dark-mode');
-        icon.classList.replace('fa-sun', 'fa-moon');
-        localStorage.setItem('darkMode', 'disabled');
-    }
-}
-
-// Menu Navigation
-function initializeMenu() {
-    // Toggle de clique
-    document.querySelectorAll('.menu-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.classList.toggle('open');
-            const submenu = btn.nextElementSibling;
-            if (submenu && submenu.classList.contains('submenu')) {
-                submenu.classList.toggle('show');
-            }
-        });
-    });
-
-    // Abre módulo ativo automaticamente
-    const openModule = document.querySelector('.menu-toggle.open');
-    if (openModule) {
-        const submenu = openModule.nextElementSibling;
-        if (submenu && submenu.classList.contains('submenu')) {
-            submenu.classList.add('show');
-        }
-    }
-}
-
-// Auto-close alerts
-function initializeAutoCloseAlerts() {
-    setTimeout(() => {
-        const alertas = document.querySelectorAll('.alert');
-        alertas.forEach(alerta => {
-            alerta.classList.remove('show');
-            alerta.classList.add('fade');
-            setTimeout(() => alerta.remove(), 500);
-        });
-    }, 90000);
-}
-
-// Clock
-function initializeClock() {
+    // Relógio
     function updateClock() {
         const now = new Date();
-        const time = now.toLocaleTimeString('pt-BR');
-        const date = now.toLocaleDateString('pt-BR');
-        const clockElement = document.getElementById('clock');
-        if (clockElement) {
-            clockElement.innerHTML = `${date} ${time}`;
-        }
+        const timeString = now.toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+        });
+        const dateString = now.toLocaleDateString('pt-BR');
+        document.getElementById('clock').textContent = `${dateString} ${timeString}`;
     }
+    
     setInterval(updateClock, 1000);
     updateClock();
-}
 
-// Utils
-function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `alert alert-${type} alert-dismissible fade show`;
-    toast.style.position = 'fixed';
-    toast.style.top = '20px';
-    toast.style.right = '20px';
-    toast.style.zIndex = '9999';
-    toast.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
+    // Fechar sidebar ao redimensionar para desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('mobile-open');
+            document.body.style.overflow = '';
         }
-    }, 3000);
-}
+    });
+});

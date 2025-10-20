@@ -1,140 +1,83 @@
-[22:21:42] Iniciando processamento em 17/10/2025 22:21:42
-[22:21:42] Carregando arquivo: Planilha_Online_Albatroz.xlsx
-[22:21:43] Processado: Guarda Roupa Casal 270cm 4 Portas Jacarandá Flex Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 270cm 4 Espelhos Jacarandá Flex Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 240cm Ripado 6 Portas Doble Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 240cm Ripado 6 Portas Doble Freijó/Titanium - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 240cm com Espelho Doble Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 240cm com Espelho Doble Freijó/Titanium - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 212cm 4 Portas Vivacce Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 212cm 4 Portas Vivacce Freijó/Titanium - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 212cm com Espelho Vivacce Off/Freijó - Albatroz
-[22:21:43] Processado: Guarda Roupa Casal 212cm com Espelho Vivacce Freijó/Titanium - Albatroz
-[22:21:43] Processado: Guarda Roupa Solteiro 120cm 3 Portas Ipê Cinamomo/Branco - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Cinamomo - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Off/Cinamomo - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Off/Freijó - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto 7 Gavetas 160cm Fontaine A02 Freijó/Titanium - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto com Painel TV 43 Pol Azaleia A02 Off/Cinamomo - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto com Painel TV 43 Pol Azaleia A02 Freijó/Off - Mpozenato
-[22:21:43] Processado: Cômoda Para Quarto 10 Gavetas 151cm Duetto Off/Freijó - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 2 Portas 125cm Verona Off/Cinamomo - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 2 Portas 125cm Verona Freijó/Titanium - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Off/Cinamomo - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Off/Freijó - Albatroz
-[22:21:43] Processado: Cômoda Para Quarto 6 Gavetas 90cm Vittoria Cinamomo/Salvia - Albatroz
-[22:21:43] Processado: Cômoda Sapateira 1 Porta 4 Gavetas 120cm Ipê Branco/Cinamomo - Albatroz
-[22:21:44] Processado: Penteadeira Escrivaninha com Espelho Bent A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Penteadeira Camarim Com Espelho Studio Beauty A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Cabeceira Casal Queen e King 2 Mesas Laterais Olinda Freijó - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Branco/Freijó - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Freijó/Off White - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Freijó/Titanium - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Branco/Freijó - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Freijó/Off White - Albatroz
-[22:21:44] Processado: Mesa de Cabeceira com Gavetas Kit 2 Sole Flex Freijó/Titanium - Albatroz
-[22:21:44] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 270cm 6 Portas Fascine A02 Off/Freijó - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Off/Freijó - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 240cm 2 Portas Aline Flex A02 Off/Sálvia - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 240cm 2 Portas Aline Flex A02 Off/Titanium - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 240cm com Espelho Aline Flex A02 Off/Sálvia - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 240cm com Espelho Aline Flex A02 Off/Titanium - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm 6 Portas Vinna A02 Off/Freijó - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 237cm com Espelho Vinna A02 Off/Freijó - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 201cm 11 Portas Thony A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 201cm 11 Portas Thony A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 200cm 6 Portas Viny A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 200cm 6 Portas Viny A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 200cm com Espelho Viny A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Casal 200cm com Espelho Viny A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm Rizatto Flex A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm Rizatto Flex A02 Off/Titanium - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro com Espelho Rizatto Flex A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro com Espelho Rizatto Flex A02 Off/Titanium - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Cinamomo/Off - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Branco - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Off/Freijó - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm 4 Portas Doble Freijó/Titanium - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Cinamomo/Off - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Branco - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Off/Freijó - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 160cm com Espelho Doble Freijó/Titanium - Albatroz
-[22:21:44] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Cinamomo/Sálvia - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 163cm Capelinha Artto A02 Off/Freijó - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony A02 Freijó/Titanium - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm 4 Portas Dony Flex A02 Branco - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Cinamomo - Mpozenato
-[22:21:44] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 103cm com Espelho Dony Flex A02 Branco - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm 6 Portas Dony A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 103cm Maite A02 Azul/Rosa/Titanium - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Branco - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Guarda Roupa Cômoda com Espelho 158cm Suiça A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Branco/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Off/Cinamomo - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Off/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 136cm Doble Flex Freijó/Titanium - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 1 Porta 125cm Ripada Duetto Off/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Branco - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 2 Portas 124cm Ester A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Branco/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 8 Gavetas 120cm Lynd A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Branco/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 120cm Tampo Vidro Lynd A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 109cm 1 Porta Belize Plus Off/Cinamomo - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 109cm 1 Porta Belize Plus Off/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 1 Porta 84cm Franci A02 Freijó/Titanium - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 1 Porta 84cm Franci Flex A02 Branco - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Branco/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Off/Cinamomo - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Off/Freijó - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto 4 Gavetas 70cm Sole Flex Freijó/Titanium - Albatroz
-[22:21:45] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Branco - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto Com Penteadeira Laris A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Branco/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Off/Cinamomo - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais A02 Off/Freijó - Mpozenato
-[22:21:45] Processado: Cômoda Para Quarto 5 Gavetas 56cm Thais Flex A02 Branco - Mpozenato
-[22:21:45] Processado: Mesa Escrivaninha 3 Gavetas Painel TV 40 Pol Doble Branco - Albatroz
-[22:21:45] Processado: Mesa Escrivaninha 3 Gavetas Painel TV 40 Pol Doble Off/Cinamomo - Albatroz
-[22:21:45] Processado: Painel TV 42 Pol Suspenso com Closet 108cm Mimo A02 Branco - Mpozenato
-[22:21:46] Processado: Painel TV 42 Pol Suspenso com Closet 108cm Mimo A02 Off/Cinamomo - Mpozenato
-[22:21:46] Processado: Penteadeira Camarim Escrivaninha com LED Sulla A02 Branco - Mpozenato
-[22:21:46] Processado: Penteadeira Camarim Escrivaninha com LED Sulla A02 Off/Cinamomo - Mpozenato
-[22:21:46] Processado: Penteadeira Escrivaninha com Espelho 129cm Mandi A02 Branco - Mpozenato
-[22:21:46] Processado: Penteadeira Escrivaninha com Espelho 129cm Mandi A02 Off/Cinamomo - Mpozenato
-[22:21:47] Processado: Penteadeira Camarim com LED 2 Portas Loli A02 Branco - Mpozenato
-[22:21:47] Processado: Penteadeira Camarim com LED 2 Portas Loli A02 Off/Cinamomo - Mpozenato
-[22:21:47] Arquivo gerado: Atributos_Extraidos_Albatroz_20251017_222147.xlsx
-[22:21:47] Processamento concluído - 136 itens em 5.15s
+[17:25:03] Iniciando processamento do Google Sheets em 20/10/2025 17:25:03
+[17:25:05] Erro na linha 1: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 2: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 3: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 4: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 5: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 6: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 7: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 8: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 9: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 10: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 11: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 12: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 13: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 14: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 15: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 16: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 17: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 18: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 19: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 20: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 21: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 22: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 23: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 24: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 25: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 26: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 27: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 28: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 29: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 30: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 31: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 32: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 33: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 34: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 35: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 36: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 37: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 38: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 39: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 40: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 41: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 42: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 43: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 44: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 45: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 46: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 47: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 48: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 49: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 50: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 51: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 52: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 53: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 54: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 55: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 56: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 57: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 58: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 59: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 60: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 61: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 62: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 63: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 64: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 65: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 66: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 67: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 68: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 69: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 70: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 71: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 72: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 73: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 74: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 75: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 76: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 77: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 78: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 79: 'NOMEE-COMMERCE'
+[17:25:05] Erro na linha 80: 'NOMEE-COMMERCE'
+[17:25:05] Arquivo gerado: Atributos_Extraidos_SemMarca_20251020_172505.xlsx
+[17:25:05] Processamento concluído - 80 itens em 1.68s
