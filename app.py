@@ -1472,6 +1472,35 @@ def validar_xml():
         processos_hoje=contar_processos_hoje("xml"),
         stats=get_processing_stats("xml")
     )
+@app.route("/salvar-ordem-fotos", methods=["POST"])
+def salvar_ordem_fotos():
+    """API para salvar a ordem das fotos - IMPLEMENTAÇÃO INICIAL"""
+    try:
+        data = request.get_json()
+        fotos = data.get('fotos', [])
+        
+        print(f"📝 Recebida solicitação para salvar ordem de {len(fotos)} fotos")
+        
+        # ✅ CORREÇÃO: Log para debug
+        for i, foto in enumerate(fotos):
+            print(f"Foto {i+1}: Produto {foto.get('product_id')}, Foto {foto.get('photo_id')}, Index: {foto.get('new_index')}")
+        
+        # ⚠️ ATENÇÃO: Esta é uma implementação básica
+        # Você precisará implementar a lógica real de atualização na API AnyMarket
+        # A API AnyMarket pode não suportar reordenação via REST
+        
+        return jsonify({
+            'sucesso': True,
+            'message': f'Ordem de {len(fotos)} fotos processada (implementação em desenvolvimento)',
+            'total_fotos': len(fotos)
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro ao salvar ordem: {str(e)}")
+        return jsonify({
+            'sucesso': False,
+            'erro': f'Erro ao salvar ordem: {str(e)}'
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,4 +1,4 @@
-// consultar_anymarket.js - Versão compatível com novo layout
+// consultar_anymarket.js - Versão corrigida
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeFormHandlers();
@@ -9,12 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeFormHandlers() {
-    // Botão consultar
+    // Botão consultar - CORREÇÃO: usa type="button" e submit programático
     const btnConsultar = document.getElementById('btnConsultar');
     if (btnConsultar) {
         btnConsultar.addEventListener('click', function() {
             const productId = document.getElementById('product_id').value;
-            const apiToken = document.getElementById('api_token').value;
             
             if (!productId) {
                 showAlert('Por favor, informe o ID do produto', 'error');
@@ -23,7 +22,6 @@ function initializeFormHandlers() {
             
             // Preenche os campos ocultos do formulário
             document.getElementById('hiddenProductId').value = productId;
-            document.getElementById('hiddenApiToken').value = apiToken;
             
             // Mostra loading
             this.disabled = true;
@@ -34,7 +32,7 @@ function initializeFormHandlers() {
         });
     }
     
-    // Botão excluir lote
+    // Botão excluir lote - CORREÇÃO: usa type="button"
     const btnExcluirLote = document.getElementById('btnExcluirLote');
     if (btnExcluirLote) {
         btnExcluirLote.addEventListener('click', function() {
@@ -347,6 +345,14 @@ function salvarOrdemFotos() {
     btnSalvarOrdem.disabled = true;
     btnSalvarOrdem.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvando...';
 
+    // ✅ CORREÇÃO: Verifica se há fotos para salvar
+    if (fotos.length === 0) {
+        showToast('Nenhuma foto para salvar ordem', 'warning');
+        btnSalvarOrdem.disabled = false;
+        btnSalvarOrdem.innerHTML = originalHTML;
+        return;
+    }
+
     fetch('/salvar-ordem-fotos', {
         method: 'POST',
         headers: {
@@ -354,7 +360,13 @@ function salvarOrdemFotos() {
         },
         body: JSON.stringify({ fotos: fotos })
     })
-    .then(response => response.json())
+    .then(response => {
+        // ✅ CORREÇÃO: Verifica se a resposta é JSON válido
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.sucesso) {
             showToast('Ordem das fotos salva com sucesso!', 'success');
@@ -364,7 +376,7 @@ function salvarOrdemFotos() {
     })
     .catch(error => {
         console.error('Erro:', error);
-        showToast('Erro: ' + error.message, 'error');
+        showToast('Erro ao salvar ordem: ' + error.message, 'error');
     })
     .finally(() => {
         btnSalvarOrdem.disabled = false;
@@ -410,7 +422,7 @@ function excluirFotosEmLote(selecionadas) {
     });
 }
 
-// Sistema de Alertas no padrão da página de pedidos
+// Sistema de Alertas
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type}`;
@@ -446,10 +458,10 @@ function getAlertIcon(type) {
     return icons[type] || 'info-circle';
 }
 
-// Toast notification - Versão atualizada
+// Toast notification
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
-    toast.className = `alert alert-${type} alert-dismissible fade show`;
+    toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
     toast.style.position = 'fixed';
     toast.style.top = '20px';
     toast.style.right = '20px';

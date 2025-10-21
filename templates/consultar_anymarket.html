@@ -41,12 +41,11 @@
                                    placeholder="Ex: 347730499" required>
                             <small class="text-muted">ID do produto no AnyMarket</small>
                         </div>
-                        
                     </div>
 
                     <div class="actions-row">
                         <div>
-                            <button type="submit" class="btn btn-primary" id="btnConsultar" form="consultarForm">
+                            <button type="button" class="btn btn-primary" id="btnConsultar">
                                 <i class="fas fa-search me-2"></i>Consultar Fotos
                             </button>
                         </div>
@@ -132,23 +131,22 @@
                                     
                                     <div class="galeria-fotos" id="galeriaFotos">
                                         {% for foto in resultado.dados %}
-                                        <div class="card-foto {% if foto.main %}foto-principal{% endif %} {% if foto.selecionada %}selecionada{% endif %}" 
+                                        <div class="card-foto {% if foto.main %}foto-principal{% endif %}" 
                                              data-foto-id="{{ foto.id }}" 
                                              data-product-id="{{ resultado.product_id }}"
                                              draggable="true">
                                             <div class="foto-checkbox">
                                                 <input type="checkbox" class="foto-selecionada" 
                                                        data-product-id="{{ resultado.product_id }}" 
-                                                       data-photo-id="{{ foto.id }}"
-                                                       {% if foto.selecionada %}checked{% endif %}>
+                                                       data-photo-id="{{ foto.id }}">
                                                 <i class="fas fa-check-circle"></i>
                                             </div>
                                             <div class="foto-indice">
                                                 {{ loop.index }}
                                             </div>
                                             <div class="foto-container">
-                                                {% if foto.original %}
-                                                <img src="{{ foto.original }}" alt="Foto ID {{ foto.id }}" 
+                                                {% if foto.url %}
+                                                <img src="{{ foto.url }}" alt="Foto ID {{ foto.id }}" 
                                                      class="foto-imagem" loading="lazy"
                                                      onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200/cccccc/969696?text=Erro+ao+Carregar'">
                                                 {% else %}
@@ -228,7 +226,7 @@
 
                     <div class="actions-row">
                         <div>
-                            <button type="submit" class="btn btn-warning" id="btnExcluirLote" form="excluirForm">
+                            <button type="button" class="btn btn-warning" id="btnExcluirLote">
                                 <i class="fas fa-trash me-2"></i>Excluir Fotos da Planilha
                             </button>
                         </div>
@@ -270,7 +268,6 @@
         <form method="POST" id="consultarForm" style="display: none;">
             <input type="hidden" name="action" value="consultar">
             <input type="hidden" name="product_id" id="hiddenProductId">
-            <input type="hidden" name="api_token" id="hiddenApiToken">
         </form>
 
         <form method="POST" id="excluirForm" enctype="multipart/form-data" style="display: none;">
@@ -278,17 +275,9 @@
         </form>
     </div>
 </div>
-
-<!-- Modal de Detalhes -->
-<div id="orderModal" class="modal">
-    <div class="modal-content">
-        <div id="modalContent"></div>
-    </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script src="{{ url_for('static', filename='js/consultar_anymarket.js') }}"></script>
-<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 {% endblock %}
