@@ -34,7 +34,7 @@
                 <button class="btn btn-primary" onclick="carregarPedidos(1)">
                     <i class="fas fa-search"></i> Buscar Pedidos
                 </button>
-                <button class="btn btn-outline" onclick="toggleTokenSection()">
+                <button class="btn btn-danger" onclick="toggleTokenSection()">
                     <i class="fas fa-cog"></i> Configurar Token
                 </button>
             </div>
@@ -69,41 +69,37 @@
                 
                 <div class="filter-group">
                     <label>Data Início</label>
-                    <input type="date" id="dataInicio" class="date-input" 
+                    <input type="date" id="createdAfter" class="date-input" 
                         value="${new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]}">
                 </div>
                 
                 <div class="filter-group">
                     <label>Data Fim</label>
-                    <input type="date" id="dataFim" class="date-input" 
+                    <input type="date" id="createdBefore" class="date-input" 
                         value="${new Date().toISOString().split('T')[0]}">
                 </div>
             </div>
 
             <div class="actions-row">
-                <div>
-                        <button class="btn btn-outline" onclick="limparFiltros()">
+                    <div>
+                        <button class="btn btn-danger" onclick="limparFiltros()">
                             <i class="fas fa-eraser"></i> Limpar Filtros
                         </button>
-                        <button class="btn btn-outline" onclick="exportarPedidos()">
+                        <button class="btn btn-success" onclick="exportarPedidos()">
                             <i class="fas fa-download"></i> Exportar
-                        </button>
-                    </div>
-                    <div>
-                        <button class="btn btn-success" onclick="carregarTodosPedidos()">
-                            <i class="fas fa-sync"></i> Carregar Todos
                         </button>
                         <button class="btn btn-primary" onclick="buscarComFiltros()">
                             <i class="fas fa-search"></i> Aplicar Filtros
                         </button>
                     </div>
-                </div>
+                    
+            </div>
         </div>
 
         <!-- Mensagens -->
         <div id="loading" class="loading hidden"></div>
         <div id="errorMessage" class="alert alert-error hidden"></div>
-        <div id="infoMessage" class="alert alert-success hidden"></div>
+        <!--<div id="infoMessage" class="alert alert-success hidden"></div>-->
         <div id="stats" class="alert alert-info hidden"></div>
 
         <!-- Tabela de Pedidos -->

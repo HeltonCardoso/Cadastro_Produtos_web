@@ -49,7 +49,7 @@ def executar_processamento(planilha_origem, planilha_destino):
     "EAN", "NOMEONCLICK", "NOMEE-COMMERCE", "TIPODEPRODUTO",
     "EMBALTURA", "EMBLARGURA", "EMBCOMPRIMENTO", "VOLUMES",
     "EANCOMPONENTES", "MARCA", "CUSTO", "DE", "POR", "FORNECEDOR",
-    "OUTROS", "FRETE", "NCM", "CODFORN", "CATEGORIA", "GRUPO",
+    "OUTROS","IPI", "FRETE", "NCM", "CODFORN", "CATEGORIA", "GRUPO",
     "COMPLEMENTO", "DISPONIBILIDADEWEB", "DESCRICAOHTML", "PESOBRUTO",
     "PESOLIQUIDO", "VOLPESOBRUTO", "VOLPESOLIQ", "VOLLARGURA",
     "VOLALTURA", "VOLCOMPRIMENTO", "CATEGORIAPRINCIPALTRAY",
@@ -98,6 +98,7 @@ def executar_processamento(planilha_origem, planilha_destino):
         preco_promo = row["POR"]
         fornecedor = row["FORNECEDOR"]
         outros = row["OUTROS"]
+        ipi = row["IPI"]
         frete = row["FRETE"]
         ncm = row["NCM"]
         cod_forn = row["CODFORN"]
@@ -116,7 +117,7 @@ def executar_processamento(planilha_origem, planilha_destino):
         vol_largura = row["VOLLARGURA"]
         vol_altura = row["VOLALTURA"]
         vol_comprimento = row["VOLCOMPRIMENTO"]
-        tipo_produto_valor = 0 if tipo_produto == "PRODUTO ACABADO" else 2
+        tipo_produto_valor = 0 if tipo_produto == "ACABADO" else 2
         nome_reduzido = nome_onclick[:25] if isinstance(nome_onclick, str) else ""
 
         marcas_cadastradas.add(marca)
@@ -156,7 +157,7 @@ def executar_processamento(planilha_origem, planilha_destino):
                 ])
 
         dados_sheets["PRECO"].append([
-            ean, fornecedor, custo, outros, "", frete, row["CUSTOTOTAL"], preco_venda, preco_promo, preco_promo,
+            ean, fornecedor, custo,ipi, "", frete, row["CUSTOTOTAL"], preco_venda, preco_promo, preco_promo,
             data_formatada, data_formatada_mais_20_anos, "", "F"
         ])
 

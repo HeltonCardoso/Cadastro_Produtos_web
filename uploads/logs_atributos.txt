@@ -1,83 +1,45 @@
-[17:25:03] Iniciando processamento do Google Sheets em 20/10/2025 17:25:03
-[17:25:05] Erro na linha 1: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 2: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 3: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 4: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 5: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 6: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 7: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 8: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 9: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 10: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 11: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 12: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 13: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 14: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 15: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 16: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 17: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 18: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 19: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 20: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 21: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 22: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 23: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 24: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 25: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 26: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 27: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 28: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 29: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 30: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 31: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 32: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 33: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 34: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 35: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 36: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 37: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 38: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 39: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 40: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 41: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 42: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 43: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 44: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 45: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 46: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 47: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 48: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 49: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 50: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 51: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 52: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 53: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 54: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 55: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 56: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 57: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 58: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 59: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 60: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 61: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 62: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 63: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 64: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 65: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 66: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 67: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 68: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 69: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 70: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 71: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 72: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 73: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 74: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 75: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 76: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 77: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 78: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 79: 'NOMEE-COMMERCE'
-[17:25:05] Erro na linha 80: 'NOMEE-COMMERCE'
-[17:25:05] Arquivo gerado: Atributos_Extraidos_SemMarca_20251020_172505.xlsx
-[17:25:05] Processamento concluído - 80 itens em 1.68s
+[11:27:12] Iniciando processamento do Google Sheets em 23/10/2025 11:27:12
+[11:27:13] Processado: Balcão de Cozinha Para Pia 120cm Sem Tampo Michigan Castanho - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 120cm Sem Tampo Michigan Cinza   - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Castanho   - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza      - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Cinza Claro - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Castanho - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Cinza   - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 180cm Sem Tampo Dallas Castanho   - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 180cm Sem Tampo Dallas Cinza      - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 160cm Com 4 Portas Nevada Castanho - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 160cm Com 4 Portas Nevada Cinza    - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Dakota Cinza Claro - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 180cm Nevada Com Nicho Castanho    - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 180cm Nevada Com Nicho Cinza       - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Marrocos Castanho - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Marrocos Cinza   - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 150cm Com 3 Portas Argélia Castanho - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 150cm Com 3 Portas Argélia Cinza   - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 160cm MDP Cinza Claro - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 150cm MDP Cinza Claro - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 100cm MDP Cinza Claro - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 180cm MDP Cinza Claro - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 160cm MDP Cinza - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 150cm MDP Cinza - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 100cm MDP Cinza - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 180cm MDP Cinza - Lumil
+[11:27:13] Processado: Tampo Para Balcão de Cozinha 120cm MDP Cinza - Lumil
+[11:27:13] Processado: Balcão de Cozinha 102cm Para Cooktop Georgia Cinza Claro    - Lumil
+[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Branco  - Lumil
+[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Preto   - Lumil
+[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Castanho - Lumil
+[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Cinza Claro - Lumil
+[11:27:13] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Cinza Claro    - Lumil
+[11:27:13] Processado: Balcão de Cozinha Com Tampo 120cm 3 Portas Arizona Cinza Claro - Lumil
+[11:27:13] Processado: Balcão de Cozinha Multiuso 80cm 2 Portas Hawai Cinza Claro  - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 80cm 2 Portas Califórnia Cinza Claro - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo Geladeira 70cm Texas Cinza Claro   - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo 100cm 2 Portas Indiana Cinza Claro - Lumil
+[11:27:13] Processado: Armário de Cozinha Aéreo Canto Reto Com Nicho Austin Cinza Claro - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Pia 100cm Sem Tampo Luziania Cinza Claro - Lumil
+[11:27:13] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Cinza Claro   - Lumil
+[11:27:13] Processado: Balcão de Cozinha Para Cooktop 80cm Flórida Cinza Claro     - Lumil
+[11:27:13] Arquivo gerado: Atributos_Extraidos_SemMarca_20251023_112713.xlsx
+[11:27:13] Processamento concluído - 42 itens em 1.66s

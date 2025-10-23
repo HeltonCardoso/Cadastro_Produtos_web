@@ -131,7 +131,7 @@ def pedidos_anymarket():
 
 @app.route('/api/anymarket/pedidos')
 def api_pedidos_anymarket():
-    """API para buscar pedidos do AnyMarket - CORREÇÃO DO BUG DA PAGINAÇÃO"""
+    """API para buscar pedidos do AnyMarket - CORREÇÃO DO FILTRO DE DATA"""
     try:
         # Obter token do header Authorization
         auth_header = request.headers.get('Authorization', '')
@@ -145,19 +145,21 @@ def api_pedidos_anymarket():
         limit = request.args.get('limit', 50, type=int)
         status = request.args.get('status')
         marketplace = request.args.get('marketplace')
-        data_inicio = request.args.get('dataInicio')
-        data_fim = request.args.get('dataFim')
+        data_inicio = request.args.get('createdAfter')  # ✅ Note: createAfter (sem 'd')
+        data_fim = request.args.get('createdBefore')
         
-        # ✅ CORREÇÃO: Validar e ajustar página
+        # ✅ VALIDAÇÃO DA PÁGINA
         if page < 1:
             page = 1
         
         # Construir URL da API AnyMarket
         url = "https://api.anymarket.com.br/v2/orders"
         
-        # ✅ CORREÇÃO: Usar offset em vez de page se a API não respeitar page
+        # ✅ CORREÇÃO: Usar offset em vez de page
+        offset = (page - 1) * limit
+        
         params = {
-            'page': page,  
+            'offset': offset,
             'limit': limit,
         }
         
@@ -168,15 +170,28 @@ def api_pedidos_anymarket():
         if marketplace and marketplace.strip():
             params['marketplace'] = marketplace.strip()
         
-        # Usar filtro de data APENAS se datas válidas
-        if data_inicio and data_fim:
+        # ✅ CORREÇÃO CRÍTICA: Processar datas INDEPENDENTEMENTE
+        if data_inicio and data_inicio.strip():
             try:
+                # Validar e formatar data início
                 datetime.strptime(data_inicio, '%Y-%m-%d')
+                params['createdAfter'] = f"{data_inicio}T00:00:00-03:00"
+                print(f"✅ Filtro data início: {data_inicio} -> {params['createdAfter']}")
+            except ValueError as e:
+                print(f"⚠️ Data início em formato inválido: {data_inicio}, erro: {e}")
+        else:
+            print("ℹ️ Data início não fornecida")
+        
+        if data_fim and data_fim.strip():
+            try:
+                # Validar e formatar data fim
                 datetime.strptime(data_fim, '%Y-%m-%d')
-                params['createdAt.start'] = f"{data_inicio}T00:00:00-03:00"
-                params['createdAt.end'] = f"{data_fim}T23:59:59-03:00"
-            except ValueError:
-                print("⚠️ Datas em formato inválido, ignorando filtro de data")
+                params['createdBefore'] = f"{data_fim}T23:59:59-03:00"
+                print(f"✅ Filtro data fim: {data_fim} -> {params['createdBefore']}")
+            except ValueError as e:
+                print(f"⚠️ Data fim em formato inválido: {data_fim}, erro: {e}")
+        else:
+            print("ℹ️ Data fim não fornecida")
         
         # Fazer requisição para a API AnyMarket
         headers = {
@@ -185,8 +200,8 @@ def api_pedidos_anymarket():
             'gumgaToken': token
         }
         
-        print(f"🔍 SOLICITANDO PÁGINA {page} para AnyMarket")
-        print(f"📋 Parâmetros: {params}")
+        print(f"🔍 SOLICITANDO PÁGINA {page} (offset: {offset}) para AnyMarket")
+        print(f"📋 Parâmetros FINAIS: {params}")
         
         response = requests.get(url, params=params, headers=headers, timeout=60)
         
@@ -203,37 +218,30 @@ def api_pedidos_anymarket():
         
         data = response.json()
         
-        # DEBUG - Log da resposta
-        print("=== DEBUG ANYMARKET RESPONSE ===")
-        print("Status Code:", response.status_code)
-        print("URL chamada:", response.url)
-        print("Page object:", data.get('page', {}))
-        print("Total orders:", len(data.get('content', [])))
-        print("================================")
-        
         # Processar resposta
         orders = data.get('content', [])
         pagination_data = data.get('page', {})
         
-        # ✅ CORREÇÃO CRÍTICA: A API está SEMPRE retornando number=1
-        # Vamos usar a página que foi SOLICITADA, não a que foi retornada
-        current_page = page  # ✅ USAR A PÁGINA SOLICITADA
-        total_pages = pagination_data.get('totalPages', 1)
+        # ✅ CORREÇÃO CRÍTICA: Calcular paginação corretamente
         total_elements = pagination_data.get('totalElements', 0)
-        page_size = pagination_data.get('size', len(orders))
+        page_size = pagination_data.get('size', limit)
         
-        print(f"📊 PAGINAÇÃO AJUSTADA:")
-        print(f"   - Página solicitada: {page}")
-        print(f"   - Página retornada pela API: {pagination_data.get('number', 'N/A')}")
-        print(f"   - Página que vamos usar: {current_page}")
+        # ✅ CÁLCULO CORRETO DA PAGINAÇÃO
+        total_pages = max(1, (total_elements + page_size - 1) // page_size)
+        current_page = page  # Usar a página solicitada
+        
+        print(f"📊 PAGINAÇÃO CALCULADA:")
+        print(f"   - Total elementos: {total_elements}")
+        print(f"   - Tamanho da página: {page_size}")
         print(f"   - Total de páginas: {total_pages}")
+        print(f"   - Página atual: {current_page}")
         
-        # ✅ CORREÇÃO: Calcular navegação baseado na página SOLICITADA
+        # ✅ CORREÇÃO: Calcular navegação baseado nos cálculos
         has_next = current_page < total_pages
         has_prev = current_page > 1
         
         pagination = {
-            'currentPage': current_page,  # ✅ Página solicitada, não a retornada
+            'currentPage': current_page,
             'totalPages': total_pages,
             'totalElements': total_elements,
             'hasNext': has_next,
@@ -255,15 +263,17 @@ def api_pedidos_anymarket():
             'stats': stats,
             'pagination': pagination,
             'filters': {
-                'dataInicio': data_inicio or '',
-                'dataFim': data_fim or '',
+                'createdAfter': data_inicio or '',
+                'createdBefore': data_fim or '',
                 'status': status or '',
                 'marketplace': marketplace or ''
             },
             'debug': {
                 'pagina_solicitada': page,
-                'pagina_retornada': pagination_data.get('number'),
-                'api_url': response.url
+                'offset_calculado': offset,
+                'total_pages_calculado': total_pages,
+                'api_url': response.url,
+                'parametros_enviados': params
             }
         })
         
@@ -1472,6 +1482,7 @@ def validar_xml():
         processos_hoje=contar_processos_hoje("xml"),
         stats=get_processing_stats("xml")
     )
+
 @app.route("/salvar-ordem-fotos", methods=["POST"])
 def salvar_ordem_fotos():
     """API para salvar a ordem das fotos - IMPLEMENTAÇÃO INICIAL"""

@@ -77,8 +77,8 @@ function configurarDatasPadrao() {
     const dataFim = new Date().toISOString().split('T')[0];
     const dataInicio = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     
-    document.getElementById('dataInicio').value = dataInicio;
-    document.getElementById('dataFim').value = dataFim;
+    document.getElementById('createdAfter').value = dataInicio;
+    document.getElementById('createdBefore').value = dataFim;
 }
 
 // =============================================
@@ -240,21 +240,21 @@ async function carregarPedidos(page = 1) {
     
     try {
         // Coletar filtros
-        const dataInicio = document.getElementById('dataInicio')?.value || '';
-        const dataFim = document.getElementById('dataFim')?.value || '';
+        const dataInicio = document.getElementById('createdAfter')?.value || '';
+        const dataFim = document.getElementById('createdBefore')?.value || '';
         const status = document.getElementById('statusFilter')?.value || '';
         const marketplace = document.getElementById('marketplaceFilter')?.value || '';
         
         const params = new URLSearchParams({
-            page: page,  // ✅ Página solicitada
+            page: page,
             limit: 50
         });
         
         // Adicionar filtros se preenchidos
         if (status) params.append('status', status);
         if (marketplace) params.append('marketplace', marketplace);
-        if (dataInicio) params.append('dataInicio', dataInicio);
-        if (dataFim) params.append('dataFim', dataFim);
+        if (dataInicio) params.append('createdAfter', dataInicio);
+        if (dataFim) params.append('createdBefore', dataFim);
         
         const apiUrl = `/api/anymarket/pedidos?${params}`;
         console.log(`🔗 SOLICITANDO: Página ${page}`);
@@ -267,9 +267,11 @@ async function carregarPedidos(page = 1) {
 
         const data = await response.json();
         
-        console.log('📄 RESPOSTA:', {
+        console.log('📄 RESPOSTA PAGINAÇÃO:', {
             paginaSolicitada: page,
-            paginaRetornada: data.pagination?.currentPage,
+            paginaAtual: data.pagination?.currentPage,
+            totalPaginas: data.pagination?.totalPages,
+            totalElementos: data.pagination?.totalElements,
             debug: data.debug
         });
         
@@ -278,20 +280,23 @@ async function carregarPedidos(page = 1) {
         }
 
         if (data.success) {
-            // ✅ CORREÇÃO: A página atual é a que foi SOLICITADA
-            currentPage = page;  // ✅ Usar a página solicitada, não a retornada
+            // ✅ ATUALIZAR PÁGINA ATUAL
+            currentPage = data.pagination.currentPage;
             
             exibirPedidos(data.orders);
             exibirEstatisticas(data.stats, data.filters);
             exibirPaginacao(data.pagination);
             
-            showMessage(`✅ Página ${page} carregada - ${data.orders.length} pedidos`, 'success');
+            showMessage(`✅ Página ${currentPage} de ${data.pagination.totalPages} carregada - ${data.orders.length} pedidos`, 'success');
         } else {
             throw new Error(data.error || 'Erro desconhecido na API');
         }
     } catch (error) {
         console.error('❌ Erro ao carregar pedidos:', error);
         showMessage('❌ Erro: ' + error.message, 'error');
+        
+        // Mostrar estado vazio em caso de erro
+        mostrarEstadoSemToken();
     } finally {
         showLoading(false);
     }
@@ -307,8 +312,8 @@ async function carregarTodosPedidos() {
     
     try {
         const params = new URLSearchParams({
-            dataInicio: document.getElementById('dataInicio').value || '',
-            dataFim: document.getElementById('dataFim').value || '',
+            dataInicio: document.getElementById('createdAfter').value || '',
+            dataFim: document.getElementById('createdBefore').value || '',
             status: document.getElementById('statusFilter').value || '',
             marketplace: document.getElementById('marketplaceFilter').value || ''
         });
@@ -383,8 +388,22 @@ function exibirPedidos(orders) {
                 ${order.buyer?.phone ? `<br><small class="text-muted">${formatPhone(order.buyer.phone)}</small>` : ''}
             </td>
             <td>
-                ${formatDate(order.createdAt)}
-                ${order.paymentDate ? `<br><small class="text-muted">Pgto: ${formatDate(order.paymentDate)}</small>` : ''}
+                <strong>${formatDate(order.createdAt)}</strong>
+                <br>
+                <small class="text-muted">${formatTime(order.createdAt)}</small>
+                ${order.paymentDate ? `
+                    <br>
+                    <small class="text-success">
+                        <i class="fas fa-money-bill-wave"></i> 
+                        Pago: ${formatDate(order.paymentDate)} ${formatTime(order.paymentDate)}
+                    </small>
+                ` : `
+                    <br>
+                    <small class="text-warning">
+                        <i class="fas fa-clock"></i> 
+                        Aguardando pgto
+                    </small>
+                `}
             </td>
             <td>
                 ${order.items ? order.items.length : 0} item(s)
@@ -407,21 +426,41 @@ function exibirPedidos(orders) {
     `).join('');
 }
 
+function formatTime(dateString) {
+    try {
+        const safeDate = safeToString(dateString);
+        if (safeDate === 'N/A') return 'N/A';
+        return new Date(safeDate).toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch {
+        return 'Horário inválido';
+    }
+}
+// ✅ FUNÇÃO DE PAGINAÇÃO CORRIGIDA
 function exibirPaginacao(pagination) {
     const paginationContainer = document.querySelector('.pagination');
     
-    console.log('🔢 EXIBINDO PAGINAÇÃO FINAL:', pagination);
+    console.log('🔢 EXIBINDO PAGINAÇÃO:', pagination);
     
     if (!pagination || !pagination.totalPages || pagination.totalPages <= 1) {
-        paginationContainer.innerHTML = '<span class="page-info">Página 1 de 1</span>';
+        paginationContainer.innerHTML = `
+            <div class="pagination-controls">
+                <span class="page-info">
+                    <strong>Página 1 de 1</strong>
+                    <br>
+                    <small class="text-muted">${pagination?.totalElements || 0} pedidos no total</small>
+                </span>
+            </div>
+        `;
         return;
     }
 
-    const { currentPage, totalPages, hasNext, hasPrev } = pagination;
+    const { currentPage, totalPages, hasNext, hasPrev, totalElements } = pagination;
     
-    console.log(`🎯 Estado: Página ${currentPage} de ${totalPages} | Anterior: ${hasPrev} | Próxima: ${hasNext}`);
+    console.log(`🎯 Estado Paginação: Página ${currentPage} de ${totalPages} | Anterior: ${hasPrev} | Próxima: ${hasNext}`);
     
-    // ✅ CORREÇÃO FINAL: Usar template limpo com event listeners
     let paginationHTML = `
         <div class="pagination-controls">
     `;
@@ -429,7 +468,7 @@ function exibirPaginacao(pagination) {
     // Botão Anterior
     if (hasPrev) {
         paginationHTML += `
-            <button class="page-btn active" id="prevPage">
+            <button class="page-btn active" onclick="carregarPedidos(${currentPage - 1})" id="prevPage">
                 <i class="fas fa-chevron-left"></i> Anterior
             </button>
         `;
@@ -446,14 +485,14 @@ function exibirPaginacao(pagination) {
         <span class="page-info">
             <strong>Página ${currentPage} de ${totalPages}</strong>
             <br>
-            <small class="text-muted">${pagination.totalElements} pedidos no total</small>
+            <small class="text-muted">${totalElements} pedidos no total</small>
         </span>
     `;
     
     // Botão Próxima
     if (hasNext) {
         paginationHTML += `
-            <button class="page-btn active" id="nextPage">
+            <button class="page-btn active" onclick="carregarPedidos(${currentPage + 1})" id="nextPage">
                 Próxima <i class="fas fa-chevron-right"></i>
             </button>
         `;
@@ -469,25 +508,7 @@ function exibirPaginacao(pagination) {
     
     paginationContainer.innerHTML = paginationHTML;
     
-    // ✅ CORREÇÃO CRÍTICA: Adicionar event listeners DINÂMICOS
-    const prevBtn = document.getElementById('prevPage');
-    const nextBtn = document.getElementById('nextPage');
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', function() {
-            console.log('⬅️ Botão ANTERIOR clicado - Indo para página', currentPage - 1);
-            carregarPedidos(currentPage - 1);
-        });
-    }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', function() {
-            console.log('➡️ Botão PRÓXIMA clicado - Indo para página', currentPage + 1);
-            carregarPedidos(currentPage + 1);
-        });
-    }
-    
-    console.log('✅ Paginação FINAL renderizada com event listeners');
+    console.log('✅ Paginação renderizada com sucesso');
 }
 
 function exibirEstatisticas(stats, filters) {
@@ -503,6 +524,20 @@ function exibirEstatisticas(stats, filters) {
     
     statsContainer.innerHTML = statsHTML;
     statsContainer.classList.remove('hidden');
+}
+
+// ✅ FUNÇÃO PARA CARREGAR PRÓXIMA PÁGINA
+function carregarProximaPagina() {
+    if (currentPage < totalPages) {
+        carregarPedidos(currentPage + 1);
+    }
+}
+
+// ✅ FUNÇÃO PARA CARREGAR PÁGINA ANTERIOR
+function carregarPaginaAnterior() {
+    if (currentPage > 1) {
+        carregarPedidos(currentPage - 1);
+    }
 }
 
 // =============================================
@@ -532,14 +567,14 @@ function formatStatus(status) {
     const safeStatus = safeToString(status);
     const statusMap = {
         'PENDING': 'Pendente',
-        'PAID_WAITING_SHIP': 'Pago - Aguardando Envio',
+        'PAID_WAITING_SHIP': 'Pago',
         'INVOICED': 'Faturado',
-        'SHIPPED': 'Enviado',
+        'SHIPPED': 'Enviadoo',
         'DELIVERED': 'Entregue',
         'CONCLUDED': 'Concluído',
         'CANCELED': 'Cancelado',
         'DELIVERY_ISSUE': 'Problema na Entrega',
-        'PAID_WAITING_DELIVERY': 'Pago - Aguardando Entrega'
+        'PAID_WAITING_DELIVERY': 'Enviado'
     };
     return statusMap[safeStatus] || safeStatus;
 }
@@ -722,8 +757,8 @@ function imprimirPedido(orderId) {
 }
 
 function limparFiltros() {
-    document.getElementById('dataInicio').value = '';
-    document.getElementById('dataFim').value = '';
+    document.getElementById('createdAfter').value = '';
+    document.getElementById('createdBefore').value = '';
     document.getElementById('statusFilter').value = '';
     document.getElementById('marketplaceFilter').value = '';
     
@@ -735,8 +770,8 @@ function limparTela() {
     document.getElementById('tokenInput').value = '';
     document.getElementById('statusFilter').value = '';
     document.getElementById('marketplaceFilter').value = '';
-    document.getElementById('dataInicio').value = '';
-    document.getElementById('dataFim').value = '';
+    document.getElementById('createdAfter').value = '';
+    document.getElementById('createdBefore').value = '';
     
     document.getElementById('ordersContainer').classList.add('hidden');
     document.getElementById('stats').classList.add('hidden');
@@ -836,15 +871,10 @@ async function abrirDetalhesPedido(orderId) {
 function exibirDetalhesPedido(order) {
     const modalContent = document.getElementById('modalContent');
     
-    if (!modalContent) {
-        console.error('❌ Elemento modalContent não encontrado');
-        return;
-    }
-    
-    // Formatar dados do pedido
+    // Formatar dados do pedido CORRETAMENTE
     const formattedOrder = {
         ...order,
-        formattedTotal: parseFloat(order.totalAmount || order.total || 0).toLocaleString('pt-BR', {
+        formattedTotal: parseFloat(order.total || 0).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL'
         }),
@@ -852,7 +882,13 @@ function exibirDetalhesPedido(order) {
             style: 'currency',
             currency: 'BRL'
         }),
+        // ✅ CORREÇÃO: Calcular total corretamente (produto + frete)
+        formattedTotalComFrete: parseFloat((parseFloat(order.total || 0) + parseFloat(order.freight || 0))).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }),
         formattedDate: formatDateTime(order.createdAt),
+        // ✅ CORREÇÃO: Usar paymentDate que existe no JSON
         formattedPaymentDate: order.paymentDate ? formatDateTime(order.paymentDate) : 'N/A'
     };
     
@@ -907,7 +943,7 @@ function exibirDetalhesPedido(order) {
                     </div>
                     <div class="info-item">
                         <label>Endereço:</label>
-                        <span>${formatEndereco(order.buyer)}</span>
+                        <span>${formatEndereco(order.shipping || order.anymarketAddress)}</span>
                     </div>
                 </div>
             </div>
@@ -919,14 +955,15 @@ function exibirDetalhesPedido(order) {
                     ${order.items && order.items.length > 0 ? order.items.map(item => `
                         <div class="item-card">
                             <div class="item-header">
-                                <strong>${item.sku?.partnerId || item.skuId || 'N/A'}</strong>
-                                <span class="item-price">R$ ${parseFloat(item.price || 0).toFixed(2)}</span>
+                                <strong>SKU:${item.sku?.partnerId || item.idInMarketPlace || 'N/A'}</strong>
+                                <span class="item-price">R$ ${parseFloat(item.unit || item.price || 0).toFixed(2)}</span>
                             </div>
                             <div class="item-details">
                                 <span>Qtd: ${item.amount || 1}</span>
-                                <span>Total: R$ ${parseFloat(item.totalPrice || item.price || 0).toFixed(2)}</span>
+                                <span>Total: R$ ${parseFloat(item.total || item.totalPrice || 0).toFixed(2)}</span>
                             </div>
-                            ${item.title ? `<div class="item-title">${item.title}</div>` : ''}
+                            ${item.product?.title || item.sku?.title ? `<div class="item-title">${item.product?.title || item.sku?.title || ''}</div>` : ''}
+                            ${item.sku?.ean ? `<div class="item-ean"><small>EAN: ${item.sku.ean}</small></div>` : ''}
                         </div>
                     `).join('') : '<p>Nenhum item encontrado</p>'}
                 </div>
@@ -946,7 +983,7 @@ function exibirDetalhesPedido(order) {
                     </div>
                     <div class="value-item total">
                         <label>Total:</label>
-                        <span>${formattedOrder.formattedTotal}</span>
+                        <span>${formattedOrder.formattedTotalComFrete}</span>
                     </div>
                 </div>
             </div>
@@ -956,18 +993,26 @@ function exibirDetalhesPedido(order) {
                 <h3>💳 Pagamento</h3>
                 <div class="info-grid">
                     <div class="info-item">
-                        <label>Status:</label>
-                        <span class="status-badge status-${order.payment?.status || 'PENDING'}">
-                            ${formatPaymentStatus(order.payment?.status)}
+                        <label>Status Pagamento:</label>
+                        <span class="status-badge status-${order.payments?.[0]?.status || 'PENDING'}">
+                            ${formatPaymentStatus(order.payments?.[0]?.status)}
                         </span>
                     </div>
                     <div class="info-item">
                         <label>Método:</label>
-                        <span>${order.payment?.method || 'N/A'}</span>
+                        <span>${order.payments?.[0]?.method || order.payments?.[0]?.paymentMethodNormalized || 'N/A'}</span>
                     </div>
                     <div class="info-item">
                         <label>Data do Pagamento:</label>
                         <span>${formattedOrder.formattedPaymentDate}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Parcelas:</label>
+                        <span>${order.payments?.[0]?.installments || 1}x</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Valor Pago:</label>
+                        <span>R$ ${parseFloat(order.payments?.[0]?.value || order.total || 0).toFixed(2)}</span>
                     </div>
                 </div>
             </div>
@@ -994,21 +1039,23 @@ function fecharModal() {
 }
 
 // Função auxiliar para formatar endereço
-function formatEndereco(buyer) {
-    if (!buyer) return 'N/A';
+function formatEndereco(addressData) {
+    if (!addressData) return 'N/A';
     
     const parts = [];
-    if (buyer.street) parts.push(buyer.street);
-    if (buyer.number) parts.push(buyer.number);
-    if (buyer.complement) parts.push(buyer.complement);
-    if (buyer.district) parts.push(buyer.district);
-    if (buyer.city) parts.push(buyer.city);
-    if (buyer.state) parts.push(buyer.state);
-    if (buyer.zipCode) parts.push(`CEP: ${buyer.zipCode}`);
+    
+    // ✅ CORREÇÃO: Usar os campos corretos do JSON
+    if (addressData.address || addressData.street) parts.push(addressData.address || addressData.street);
+    if (addressData.number) parts.push(addressData.number);
+    if (addressData.complement) parts.push(addressData.complement);
+    if (addressData.neighborhood) parts.push(addressData.neighborhood);
+    if (addressData.city) parts.push(addressData.city);
+    if (addressData.state) parts.push(addressData.state);
+    if (addressData.zipCode) parts.push(`CEP: ${addressData.zipCode}`);
+    if (addressData.receiverName) parts.push(`Recebedor: ${addressData.receiverName}`);
     
     return parts.length > 0 ? parts.join(', ') : 'N/A';
 }
-
 // Fechar modal ao clicar fora
 window.onclick = function(event) {
     const orderModal = document.getElementById('orderModal');
