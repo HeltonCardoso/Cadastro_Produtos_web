@@ -14,92 +14,102 @@
 
     <!-- Conteúdo com scroll -->
     <div class="pedidos-content">
-        <!-- Controles SIMPLIFICADOS -->
+        <!-- Controles COMPACTOS -->
         <div class="controls-card">
-            <!-- Token oculto com configuração -->
-            <div class="token-section" style="display: none;" id="tokenSection">
-                <div class="token-input">
-                    <label>Token de Acesso</label>
-                    <input type="password" id="tokenInput" placeholder="Cole seu GumgaToken aqui..." 
-                           value="">
-                </div>
-            </div>
-
-            <!-- Busca Rápida -->
-            <div class="quick-search">
+            <!-- Linha 1: Busca e Ações Principais -->
+            <div class="control-row">
                 <div class="search-input">
                     <input type="text" id="searchInput" placeholder="Buscar por ID, cliente, SKU..." 
                            onkeyup="filtrarPedidos(this.value)">
                 </div>
-                <button class="btn btn-primary" onclick="carregarPedidos(1)">
-                    <i class="fas fa-search"></i> Buscar Pedidos
-                </button>
-                <button class="btn btn-danger" onclick="toggleTokenSection()">
-                    <i class="fas fa-cog"></i> Configurar Token
-                </button>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="carregarPedidos(1)">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="toggleTokenSection()">
+                        <i class="fas fa-cog"></i> Token
+                    </button>
+                </div>
             </div>
 
-            <div class="filters-grid">
-                <div class="filter-group">
+            <!-- Linha 2: Filtros Básicos -->
+            <div class="control-row">
+                <div class="filter-group compact">
                     <label>Status</label>
                     <select id="statusFilter" class="filter-select">
-                        <option value="">Todos os status</option>
+                        <option value="">Todos</option>
                         <option value="PENDING">Pendente</option>
-                        <option value="PAID_WAITING_SHIP">Pago - Aguardando Envio</option>
+                        <option value="DELIVERY_ISSUE">Excessão Entrega</option>
+                        <option value="PAID_WAITING_SHIP">Pago</option>
                         <option value="INVOICED">Faturado</option>
-                        <option value="SHIPPED">Enviado</option>
-                        <option value="DELIVERED">Entregue</option>
-                        <option value="CONCLUDED">Concluído</option>
+                        <option value="PAID_WAITING_DELIVERY">Enviado</option>
+                        <option value="CONCLUDED">Concluido</option>
                         <option value="CANCELED">Cancelado</option>
                     </select>
                 </div>
                 
-                <div class="filter-group">
+                <div class="filter-group compact">
                     <label>Marketplace</label>
                     <select id="marketplaceFilter" class="filter-select">
-                        <option value="">Todos marketplaces</option>
+                        <option value="">Todos</option>
                         <option value="MERCADO_LIVRE">Mercado Livre</option>
                         <option value="SHOPEE">Shopee</option>
                         <option value="MAGAZINE_LUIZA">Magazine Luiza</option>
                         <option value="MADEIRA_MADEIRA">Madeira Madeira</option>
                         <option value="MOBLY">Mobly</option>
-                        <option value="LEROY_MERLIN">Leroy Merlin</option>
+                        <option value="LEROY_MERLIN">Leroy MerliN</option>
+                        <option value="WEB_CONTINENTAL_V2">Web Contintental</option>
                     </select>
                 </div>
                 
-                <div class="filter-group">
-                    <label>Data Início</label>
-                    <input type="date" id="createdAfter" class="date-input" 
-                        value="${new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]}">
+                <div class="filter-group compact">
+                    <label>De</label>
+                    <input type="date" id="createdAfter" class="date-input">
                 </div>
                 
-                <div class="filter-group">
-                    <label>Data Fim</label>
-                    <input type="date" id="createdBefore" class="date-input" 
-                        value="${new Date().toISOString().split('T')[0]}">
+                <div class="filter-group compact">
+                    <label>Até</label>
+                    <input type="date" id="createdBefore" class="date-input">
                 </div>
             </div>
 
-            <div class="actions-row">
-                    <div>
-                        <button class="btn btn-danger" onclick="limparFiltros()">
-                            <i class="fas fa-eraser"></i> Limpar Filtros
-                        </button>
-                        <button class="btn btn-success" onclick="exportarPedidos()">
-                            <i class="fas fa-download"></i> Exportar
-                        </button>
-                        <button class="btn btn-primary" onclick="buscarComFiltros()">
-                            <i class="fas fa-search"></i> Aplicar Filtros
-                        </button>
-                    </div>
-                    
+            <!-- Linha 3: Ordenação e Ações -->
+            <div class="control-row">
+                <div class="filter-group compact">
+                    <label>Ordenar por</label>
+                    <select id="sortField" class="filter-select">
+                        <option value="createdAt">Data</option>
+                        <option value="paymentDate">Pagamento</option>
+                        <option value="total">Valor</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group compact">
+                    <label>Ordem</label>
+                    <select id="sortDirection" class="filter-select">
+                        <option value="DESC">↓ Recentes</option>
+                        <option value="ASC">↑ Antigos</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-outline-primary compact-btn" onclick="aplicarOrdenacao()">
+                    <i class="fas fa-sort"></i> Aplicar Filtro
+                </button>
+
+                <div class="action-buttons">
+                    <button class="btn btn-outline-danger compact-btn" onclick="limparFiltros()">
+                        <i class="fas fa-eraser"></i> Limpar
+                    </button>
+                    <button class="btn btn-success compact-btn" onclick="exportarPedidos()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Mensagens -->
-        <div id="loading" class="loading hidden"></div>
+        <!--<div id="loading" class="loading hidden"></div> -->
         <div id="errorMessage" class="alert alert-error hidden"></div>
-        <!--<div id="infoMessage" class="alert alert-success hidden"></div>-->
         <div id="stats" class="alert alert-info hidden"></div>
 
         <!-- Tabela de Pedidos -->
@@ -108,14 +118,14 @@
                 <table class="orders-table">
                     <thead>
                         <tr>
-                            <th>ID Pedido</th>
+                            <th>ID</th>
                             <th>Marketplace</th>
                             <th>Status</th>
-                            <th>Nº Marketplace</th>
+                            <th>Nº</th>
                             <th>Comprador</th>
-                            <th>Data Criação</th>
+                            <th>Data</th>
                             <th>Itens</th>
-                            <th>Valor Total</th>
+                            <th>Valor</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -123,6 +133,14 @@
                         <!-- Pedidos serão inseridos aqui via JavaScript -->
                     </tbody>
                 </table>
+                <div id="tableLoading" class="table-loading hidden">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p>Carregando pedidos...</p>
+            </div>
+        </div>
             </div>
             
             <!-- Paginação -->
@@ -135,22 +153,21 @@
         <div id="emptyState" class="empty-state">
             <i class="fas fa-shopping-cart"></i>
             <h3>Nenhum pedido carregado</h3>
-            <p>Configure os filtros e clique em "Buscar Pedidos" para começar</p>
+            <p>Configure os filtros e clique em "Buscar" para começar</p>
             <button class="btn btn-primary mt-3" onclick="toggleTokenSection()">
-                <i class="fas fa-cog"></i> Configurar Token Primeiro
+                <i class="fas fa-cog"></i> Configurar Token
             </button>
         </div>
     </div>
 </div>
 
-<!-- Modal de Detalhes -->
+<!-- Modais (manter igual) -->
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <div id="modalContent"></div>
     </div>
 </div>
 
-<!-- Modal de Configuração do Token -->
 <div id="tokenModal" class="modal">
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header">

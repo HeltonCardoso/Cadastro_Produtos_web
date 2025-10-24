@@ -5,6 +5,9 @@ let currentToken = '';
 let allOrders = [];
 let currentPage = 1;
 const ordersPerPage = 50;
+// ✅ NOVAS VARIÁVEIS PARA ORDENAÇÃO
+let currentSortField = 'createdAt';
+let currentSortDirection = 'DESC';
 
 // =============================================
 // 🔐 INICIALIZAÇÃO INTELIGENTE
@@ -245,9 +248,20 @@ async function carregarPedidos(page = 1) {
         const status = document.getElementById('statusFilter')?.value || '';
         const marketplace = document.getElementById('marketplaceFilter')?.value || '';
         
+        // ✅ NOVO: Coletar parâmetros de ordenação
+        const sortField = document.getElementById('sortField')?.value || 'createdAt';
+        const sortDirection = document.getElementById('sortDirection')?.value || 'DESC';
+        
+        // Atualizar variáveis globais
+        currentSortField = sortField;
+        currentSortDirection = sortDirection;
+        
         const params = new URLSearchParams({
             page: page,
-            limit: 50
+            limit: 50,
+            // ✅ NOVO: Adicionar parâmetros de ordenação
+            sort: sortField,
+            sortDirection: sortDirection
         });
         
         // Adicionar filtros se preenchidos
@@ -257,7 +271,7 @@ async function carregarPedidos(page = 1) {
         if (dataFim) params.append('createdBefore', dataFim);
         
         const apiUrl = `/api/anymarket/pedidos?${params}`;
-        console.log(`🔗 SOLICITANDO: Página ${page}`);
+        console.log(`🔗 SOLICITANDO: Página ${page} | Ordenação: ${sortField} ${sortDirection}`);
         
         const response = await fetch(apiUrl, {
             headers: {
@@ -272,6 +286,7 @@ async function carregarPedidos(page = 1) {
             paginaAtual: data.pagination?.currentPage,
             totalPaginas: data.pagination?.totalPages,
             totalElementos: data.pagination?.totalElements,
+            ordenacao: `${sortField} ${sortDirection}`,
             debug: data.debug
         });
         
@@ -286,8 +301,9 @@ async function carregarPedidos(page = 1) {
             exibirPedidos(data.orders);
             exibirEstatisticas(data.stats, data.filters);
             exibirPaginacao(data.pagination);
+            atualizarIndicadorOrdenacao(); // ✅ NOVO: Atualizar indicador visual
             
-            showMessage(`✅ Página ${currentPage} de ${data.pagination.totalPages} carregada - ${data.orders.length} pedidos`, 'success');
+            showMessage(`✅ Página ${currentPage} de ${data.pagination.totalPages} carregada - ${data.orders.length} pedidos (Ordenado por: ${getSortFieldLabel(sortField)} ${sortDirection === 'ASC' ? 'Crescente' : 'Decrescente'})`, 'success');
         } else {
             throw new Error(data.error || 'Erro desconhecido na API');
         }
@@ -299,6 +315,64 @@ async function carregarPedidos(page = 1) {
         mostrarEstadoSemToken();
     } finally {
         showLoading(false);
+    }
+}
+
+// ✅ NOVA FUNÇÃO: Aplicar ordenação
+function aplicarOrdenacao() {
+    console.log('🔄 Aplicando ordenação...');
+    carregarPedidos(1); // Sempre voltar para a página 1 ao reordenar
+}
+
+// ✅ NOVA FUNÇÃO: Atualizar indicador visual de ordenação
+function atualizarIndicadorOrdenacao() {
+    const sortFieldSelect = document.getElementById('sortField');
+    const sortDirectionSelect = document.getElementById('sortDirection');
+    
+    if (sortFieldSelect && sortDirectionSelect) {
+        // Remover indicadores anteriores
+        const options = sortFieldSelect.querySelectorAll('option');
+        options.forEach(opt => {
+            opt.textContent = opt.textContent.replace(' ↑', '').replace(' ↓', '');
+        });
+        
+        // Adicionar indicador atual
+        const currentOption = sortFieldSelect.querySelector(`option[value="${currentSortField}"]`);
+        if (currentOption) {
+            const indicator = currentSortDirection === 'ASC' ? ' ↑' : ' ↓';
+            currentOption.textContent += indicator;
+        }
+    }
+}
+
+// ✅ NOVA FUNÇÃO: Obter label amigável para o campo de ordenação
+function getSortFieldLabel(field) {
+    const labels = {
+        'createdAt': 'Data Criação',
+        'paymentDate': 'Data Pagamento',
+        'total': 'Valor Total',
+        'marketPlaceNumber': 'Nº Marketplace',
+        'status': 'Status'
+    };
+    return labels[field] || field;
+}
+
+// ✅ NOVA FUNÇÃO: Ordenação rápida por clique no cabeçalho (opcional)
+function ordenarPorCampo(field) {
+    const sortFieldSelect = document.getElementById('sortField');
+    const sortDirectionSelect = document.getElementById('sortDirection');
+    
+    if (sortFieldSelect && sortDirectionSelect) {
+        // Se já está ordenando por este campo, inverte a direção
+        if (currentSortField === field) {
+            sortDirectionSelect.value = currentSortDirection === 'ASC' ? 'DESC' : 'ASC';
+        } else {
+            // Se é um campo diferente, muda o campo e mantém DESC como padrão
+            sortFieldSelect.value = field;
+            sortDirectionSelect.value = 'DESC';
+        }
+        
+        aplicarOrdenacao();
     }
 }
 
@@ -394,8 +468,7 @@ function exibirPedidos(orders) {
                 ${order.paymentDate ? `
                     <br>
                     <small class="text-success">
-                        <i class="fas fa-money-bill-wave"></i> 
-                        Pago: ${formatDate(order.paymentDate)} ${formatTime(order.paymentDate)}
+                        Pago: ${formatDate(order.paymentDate)} ${formatTime(order.paymentDate)}:h
                     </small>
                 ` : `
                     <br>
@@ -412,6 +485,7 @@ function exibirPedidos(orders) {
             <td>
                 <strong class="text-success">R$ ${parseFloat(order.total || 0).toFixed(2)}</strong>
                 ${order.freight ? `<br><small class="text-muted">Frete: R$ ${parseFloat(order.freight).toFixed(2)}</small>` : ''}
+                ${order.discount ? `<br><small class="text-danger">Desc: -R$ ${parseFloat(order.discount).toFixed(2)}</small>` : ''}
             </td>
             <td>
                 <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); abrirDetalhesPedido(${order.id})">
@@ -548,19 +622,44 @@ function carregarPaginaAnterior() {
 function formatMarketplace(marketplace) {
     const safeMarketplace = safeToString(marketplace);
     const marketplaces = {
-        'MERCADO_LIVRE': 'Mercado Livre',
-        'MERCADOLIVRE': 'Mercado Livre',
-        'SHOPEE': 'Shopee',
-        'AMAZON': 'Amazon',
-        'NUVEMSHOP': 'Nuvem Shop',
-        'VTEX': 'VTEX',
-        'TRAY': 'Tray',
-        'MAGAZINE_LUIZA': 'Magazine Luiza',
-        'MOBLY': 'Mobly',
-        'MADEIRA_MADEIRA': 'Madeira Madeira',
-        'LEROY_MERLIN': 'Leroy Merlin'
+        'MERCADO_LIVRE': {
+            image: '/static/img/mercadolivre.png',
+            name: 'Mercado Livre'
+        },
+        
+        'SHOPEE': {
+            image: '/static/img/shoppe.png',
+            name: 'Shopee'
+        },
+        'MAGAZINE_LUIZA': {
+            image: '/static/img/magalu.jpeg',
+            name: 'Magalu'
+        },
+        'MOBLY': {
+            image: '/static/img/mobly.png',
+            name: 'Mobly'
+        },
+        'MADEIRA_MADEIRA': {
+            image: '/static/img/madeiramadeira.png',
+            name: 'Madeira Madeira'
+        },
+        'LEROY_MERLIN': {
+            image: '/static/img/leroy.png',
+            name: 'Leroy Merlin'
+        },
     };
-    return marketplaces[safeMarketplace] || safeMarketplace;
+    const marketplaceData = marketplaces[safeMarketplace];
+    if (marketplaceData) {
+        return `
+            <img src="${marketplaceData.image}" 
+                 alt="${marketplaceData.name}"
+                 title="${marketplaceData.name}"
+                 class="marketplace-logo">
+        `;
+    }
+    
+    // Fallback para ícone se imagem não existir
+    return `<i class="fas fa-store text-muted" title="${safeMarketplace}"></i>`;
 }
 
 function formatStatus(status) {
@@ -583,9 +682,16 @@ function formatPaymentStatus(status) {
     const safeStatus = safeToString(status);
     const statusMap = {
         'APPROVED': 'Aprovado',
+        'APROVED': 'Aprovado', // ❗ Possível typo na API
         'PENDING': 'Pendente',
         'DECLINED': 'Recusado',
-        'CANCELED': 'Cancelado'
+        'CANCELED': 'Cancelado',
+        'CANCELLED': 'Cancelado', // ❗ Possível variação
+        'Aprovado': 'Aprovado', // ❗ Já em português
+        'Pendente': 'Pendente', // ❗ Já em português
+        'Cancelado': 'Cancelado', // ❗ Já em português
+        'Paid': 'Pago', // ❗ Outra possível variação
+        'Refused': 'Recusado' // ❗ Outra possível variação
     };
     return statusMap[safeStatus] || safeStatus;
 }
@@ -871,9 +977,8 @@ async function abrirDetalhesPedido(orderId) {
 function exibirDetalhesPedido(order) {
     const modalContent = document.getElementById('modalContent');
     
-    // Formatar dados do pedido CORRETAMENTE
+    // ✅ CORREÇÃO: Criar formattedOrder CORRETAMENTE
     const formattedOrder = {
-        ...order,
         formattedTotal: parseFloat(order.total || 0).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL'
@@ -882,14 +987,22 @@ function exibirDetalhesPedido(order) {
             style: 'currency',
             currency: 'BRL'
         }),
-        // ✅ CORREÇÃO: Calcular total corretamente (produto + frete)
-        formattedTotalComFrete: parseFloat((parseFloat(order.total || 0) + parseFloat(order.freight || 0))).toLocaleString('pt-BR', {
+        formattedDiscount: parseFloat(order.discount || 0).toLocaleString('pt-BR', {
             style: 'currency',
             currency: 'BRL'
         }),
+        // ✅ CORREÇÃO DAS DATAS
         formattedDate: formatDateTime(order.createdAt),
-        // ✅ CORREÇÃO: Usar paymentDate que existe no JSON
-        formattedPaymentDate: order.paymentDate ? formatDateTime(order.paymentDate) : 'N/A'
+        formattedPaymentDate: order.paymentDate ? formatDateTime(order.paymentDate) : 'N/A',
+        // ✅ CORREÇÃO DO CÁLCULO DO TOTAL
+        formattedTotalComFrete: parseFloat(
+            (parseFloat(order.total || 0) + 
+             parseFloat(order.freight || 0) - 
+             parseFloat(order.discount || 0))
+        ).toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        })
     };
     
     modalContent.innerHTML = `
@@ -912,7 +1025,7 @@ function exibirDetalhesPedido(order) {
                     </div>
                     <div class="info-item">
                         <label>Data de Criação:</label>
-                        <span>${formattedOrder.formattedDate}</span>
+                        <span>${formattedOrder.formattedDate}</span> <!-- ✅ AGORA FUNCIONA -->
                     </div>
                     <div class="info-item">
                         <label>Nº Marketplace:</label>
@@ -977,6 +1090,12 @@ function exibirDetalhesPedido(order) {
                         <label>Subtotal:</label>
                         <span>${formattedOrder.formattedTotal}</span>
                     </div>
+                    ${order.discount ? `
+                    <div class="value-item discount">
+                        <label>Desconto:</label>
+                        <span class="text-danger">-R$ ${parseFloat(order.discount).toFixed(2)}</span>
+                    </div>
+                    ` : ''}
                     <div class="value-item">
                         <label>Frete:</label>
                         <span>${formattedOrder.formattedFreight}</span>
@@ -1004,7 +1123,7 @@ function exibirDetalhesPedido(order) {
                     </div>
                     <div class="info-item">
                         <label>Data do Pagamento:</label>
-                        <span>${formattedOrder.formattedPaymentDate}</span>
+                        <span>${formattedOrder.formattedPaymentDate}</span> <!-- ✅ AGORA FUNCIONA -->
                     </div>
                     <div class="info-item">
                         <label>Parcelas:</label>

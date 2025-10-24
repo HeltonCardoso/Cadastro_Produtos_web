@@ -148,10 +148,14 @@ def api_pedidos_anymarket():
         data_inicio = request.args.get('createdAfter')  # ✅ Note: createAfter (sem 'd')
         data_fim = request.args.get('createdBefore')
         
+        
         # ✅ VALIDAÇÃO DA PÁGINA
         if page < 1:
             page = 1
         
+        sort_field = request.args.get('sort', 'createdAt')
+        sort_direction = request.args.get('sortDirection', 'DESC')
+
         # Construir URL da API AnyMarket
         url = "https://api.anymarket.com.br/v2/orders"
         
@@ -163,6 +167,10 @@ def api_pedidos_anymarket():
             'limit': limit,
         }
         
+        if sort_field and sort_direction:
+            params['sort'] = sort_field
+            params['sortDirection'] = sort_direction
+
         # Adicionar filtros APENAS se fornecidos
         if status and status.strip():
             params['status'] = status.strip()
@@ -266,14 +274,16 @@ def api_pedidos_anymarket():
                 'createdAfter': data_inicio or '',
                 'createdBefore': data_fim or '',
                 'status': status or '',
-                'marketplace': marketplace or ''
+                'marketplace': marketplace or '',
+                'sort': sort_field,
+                'sortDirection': sort_direction
             },
             'debug': {
                 'pagina_solicitada': page,
                 'offset_calculado': offset,
                 'total_pages_calculado': total_pages,
                 'api_url': response.url,
-                'parametros_enviados': params
+                'ordenacao': f'{sort_field} {sort_direction}'
             }
         })
         
