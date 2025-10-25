@@ -73,13 +73,19 @@
             <div class="menu-icon">
               <i class="fas fa-search"></i>
             </div>
-            <span class="menu-text">Consultar Fotos</span>
+            <span class="menu-text">Fotos</span>
           </a>
           <a href="{{ url_for('pedidos_anymarket') }}" class="menu-item {% if active_page == 'pedidos' %}active{% endif %}">
             <div class="menu-icon">
               <i class="fas fa-shopping-cart"></i>
             </div>
-            <span class="menu-text">Consulta Pedidos</span>
+            <span class="menu-text">Pedidos</span>
+          </a>
+          <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
+            <div class="menu-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <span class="menu-text">Produtos</span>
           </a>
         </div>
 

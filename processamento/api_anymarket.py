@@ -7,6 +7,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+
 class AnyMarketAPI:
     """Classe para interagir com a API do AnyMarket - VERSÃO CORRIGIDA"""
     
@@ -299,6 +300,107 @@ def testar_nova_api(product_id="347730803"):
     except Exception as e:
         print(f"❌ Erro no teste: {str(e)}")
         return None
+# ======================================================
+# 🔹 Funções Para exibir produtos
+# ======================================================
+
+def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
+    """Busca produto por SKU - VERSÃO CORRIGIDA COM PARÂMETRO CERTO"""
+    try:
+        if not token:
+            token = obter_token_anymarket_seguro()
+        
+        headers = {
+            "Content-Type": "application/json",
+            "gumgaToken": token
+        }
+        
+        # URL com o parâmetro CORRETO: sku=
+        url = "https://api.anymarket.com.br/v2/products"
+        params = {
+            'sku': sku  # ✅ PARÂMETRO CORRETO!
+        }
+        
+        print(f"🔍 Buscando produto com SKU: {sku}")
+        print(f"🌐 URL: {url}?sku={sku}")
+        
+        response = requests.get(url, headers=headers, params=params, timeout=30)
+        
+        print(f"📡 Status HTTP: {response.status_code}")
+        
+        if response.status_code == 200:
+            dados = response.json()
+            produtos = dados.get('content', [])
+            
+            print(f"📦 Produtos encontrados: {len(produtos)}")
+            
+            if produtos:
+                produto = produtos[0]  # Pega o primeiro produto
+                print(f"✅ PRODUTO ENCONTRADO: {produto.get('title', 'Sem título')}")
+                
+                # Encontra o SKU específico nos SKUs do produto
+                for sku_info in produto.get('skus', []):
+                    if sku_info.get('partnerId') == sku:
+                        print(f"🎯 SKU ESPECÍFICO ENCONTRADO: {sku}")
+                        return {
+                            'sucesso': True,
+                            'produto': produto,
+                            'sku_encontrado': sku_info,
+                            'tipo_busca': 'sku_direto'
+                        }
+                
+                # Se não encontrou o SKU específico, retorna o primeiro produto mesmo
+                if produto.get('skus'):
+                    print(f"⚠️  SKU não encontrado, mas produto sim. Usando primeiro SKU: {produto['skus'][0].get('partnerId')}")
+                    return {
+                        'sucesso': True,
+                        'produto': produto,
+                        'sku_encontrado': produto['skus'][0],
+                        'tipo_busca': 'sku_direto_produto_encontrado'
+                    }
+            
+            return {
+                'sucesso': False,
+                'erro': f'Nenhum produto encontrado com SKU "{sku}"',
+                'status_code': 200,
+                'produtos_encontrados': len(produtos)
+            }
+            
+        else:
+            erro_msg = f'Erro HTTP {response.status_code}'
+            print(f"❌ {erro_msg}")
+            return {
+                'sucesso': False,
+                'erro': erro_msg,
+                'status_code': response.status_code,
+                'detalhes': response.text[:500] if response.text else 'Sem detalhes'
+            }
+            
+    except Exception as e:
+        print(f"💥 Erro: {str(e)}")
+        return {
+            'sucesso': False,
+            'erro': f'Erro ao buscar produto: {str(e)}'
+        }
+    
+def buscar_produtos_com_filtros(self, filtros: Dict = None, limite: int = 50) -> Dict[str, Any]:
+        """Busca produtos com filtros específicos"""
+        url = f"{self.base_url}/products"
+        params = {
+            'limit': limite,
+            'offset': 0
+        }
+        
+        if filtros:
+            params.update(filtros)
+        
+        return self._fazer_requisicao('GET', url, params=params)
+    
+def buscar_produto_por_id(self, product_id: str) -> Dict[str, Any]:
+        """Busca produto por ID específico"""
+        url = f"{self.base_url}/products/{product_id}"
+        return self._fazer_requisicao('GET', url)
+
 
 # Teste rápido se executado diretamente
 if __name__ == "__main__":

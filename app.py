@@ -1269,7 +1269,6 @@ def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
             print(f"Erro ao obter dados da aba: {str(e)}")
         raise Exception(f"Erro ao obter dados da aba: {str(e)}")
 
-
 @app.route("/api/abas-google-sheets")
 def api_abas_google_sheets():
     """API para listar abas de uma planilha - AGORA APENAS VISÍVEIS"""
@@ -1523,5 +1522,79 @@ def salvar_ordem_fotos():
             'erro': f'Erro ao salvar ordem: {str(e)}'
         }), 500
 
+@app.route('/consultar-produto')
+def consultar_produto():
+    """Página para consultar produtos por SKU"""
+    return render_template(
+        'consultar_produto.html',
+        active_page='consultar_produto',
+        active_module='anymarket'
+    )
+
+@app.route('/api/anymarket/produtos/buscar-sku', methods=['POST'])
+def api_buscar_produto_sku():
+    """API para buscar produto por SKU - ROTA NOVA"""
+    try:
+        # ✅ USA APENAS A FUNÇÃO NOVA, SEM MEXER NO EXISTENTE
+        from processamento.api_anymarket import buscar_produto_por_sku
+        
+        data = request.get_json()
+        sku = data.get('sku', '').strip()
+        
+        if not sku:
+            return jsonify({'sucesso': False, 'erro': 'SKU é obrigatório'}), 400
+        
+        # Chama a função nova
+        resultado = buscar_produto_por_sku(sku)
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar produto por SKU: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/anymarket/produtos/<product_id>')
+def api_buscar_produto_id(product_id):
+    """API para buscar produto por ID"""
+    try:
+        from processamento.api_anymarket import obter_cliente_anymarket
+        
+        client = obter_cliente_anymarket()
+        resultado = client.buscar_produto_por_id(product_id)
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar produto por ID: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/anymarket/produtos')
+def api_listar_produtos():
+    """API para listar produtos com paginação"""
+    try:
+        from processamento.api_anymarket import obter_cliente_anymarket
+        
+        pagina = request.args.get('page', 1, type=int)
+        limite = request.args.get('limit', 50, type=int)
+        filtro = request.args.get('filtro', '')
+        
+        client = obter_cliente_anymarket()
+        
+        params = {
+            'limit': limite,
+            'offset': (pagina - 1) * limite
+        }
+        
+        if filtro:
+            params['title'] = filtro
+        
+        resultado = client.buscar_produtos_com_filtros(params)
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        print(f"❌ Erro ao listar produtos: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
 if __name__ == "__main__":
     app.run(debug=True)
