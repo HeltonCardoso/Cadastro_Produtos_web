@@ -1,6 +1,3 @@
-// pedidos_anymarket.js - Versão SEGURA sem localStorage
-// Sistema de gestão de pedidos AnyMarket - Token sempre manual
-
 let currentToken = '';
 let allOrders = [];
 let currentPage = 1;
@@ -82,6 +79,146 @@ function configurarDatasPadrao() {
     
     document.getElementById('createdAfter').value = dataInicio;
     document.getElementById('createdBefore').value = dataFim;
+}
+
+// ✅ NOVA FUNÇÃO: Exportar pedidos para Excel
+async function exportarPedidos() {
+    console.log('📤 Iniciando exportação para Excel...');
+    
+    if (!currentToken) {
+        showMessage('Configure o token primeiro', 'error');
+        return;
+    }
+
+    // Mostrar indicador de processamento
+    const exportBtn = document.querySelector('[onclick="exportarPedidos()"]');
+    const originalText = exportBtn.innerHTML;
+    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exportando...';
+    exportBtn.disabled = true;
+
+    try {
+        // Coletar todos os filtros atuais
+        const dataInicio = document.getElementById('createdAfter')?.value || '';
+        const dataFim = document.getElementById('createdBefore')?.value || '';
+        const status = document.getElementById('statusFilter')?.value || '';
+        const marketplace = document.getElementById('marketplaceFilter')?.value || '';
+        const numeroPedido = document.getElementById('numeroPedidoFilter')?.value || '';
+
+        const params = new URLSearchParams({
+            dataInicio: dataInicio,
+            dataFim: dataFim,
+            status: status,
+            marketplace: marketplace,
+            numeroPedido: numeroPedido
+        });
+
+        const response = await fetch(`/api/anymarket/exportar-excel?${params}`, {
+            headers: {
+                'Authorization': `Bearer ${currentToken}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro HTTP ${response.status}`);
+        }
+
+        // Criar blob e download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        // Nome do arquivo com data
+        const dataAtual = new Date().toISOString().split('T')[0];
+        a.download = `pedidos_anymarket_${dataAtual}.xlsx`;
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
+        showMessage('✅ Planilha exportada com sucesso!', 'success');
+
+    } catch (error) {
+        console.error('❌ Erro na exportação:', error);
+        showMessage('❌ Erro ao exportar: ' + error.message, 'error');
+    } finally {
+        // Restaurar botão
+        exportBtn.innerHTML = originalText;
+        exportBtn.disabled = false;
+    }
+}
+
+// ✅ NOVA FUNÇÃO: Atualização automática
+let autoRefreshInterval = null;
+let lastUpdateTime = null;
+
+function iniciarAtualizacaoAutomatica() {
+    // Parar atualização anterior se existir
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+
+    // Atualizar a cada 2 minutos (120000 ms)
+    autoRefreshInterval = setInterval(async () => {
+        if (currentToken && document.getElementById('ordersContainer') && 
+            !document.getElementById('ordersContainer').classList.contains('hidden')) {
+            
+            console.log('🔄 Atualização automática de pedidos...');
+            
+            // Mostrar indicador sutil de atualização
+            const footer = document.getElementById('autoRefreshFooter');
+            if (footer) {
+                footer.innerHTML = `
+                    <div class="auto-refresh-indicator updating">
+                        <i class="fas fa-sync-alt fa-spin"></i>
+                        Atualizando...
+                    </div>
+                `;
+            }
+            
+            await carregarPedidos(currentPage);
+        }
+    }, 120000); // 2 minutos
+
+    console.log('🔄 Atualização automática iniciada (2 minutos)');
+}
+
+function atualizarIndicadorAtualizacao() {
+    lastUpdateTime = new Date();
+    const footer = document.getElementById('autoRefreshFooter');
+    if (footer) {
+        footer.innerHTML = `
+            <div class="auto-refresh-indicator">
+                <i class="fas fa-sync-alt"></i>
+                Última atualização: ${lastUpdateTime.toLocaleTimeString()}
+                <span class="refresh-badge">Auto</span>
+            </div>
+        `;
+    }
+}
+
+function mostrarIndicadorProcessamento(mostrar) {
+    let indicator = document.getElementById('processingIndicator');
+    
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.id = 'processingIndicator';
+        indicator.className = 'processing-indicator hidden';
+        document.body.appendChild(indicator);
+    }
+
+    if (mostrar) {
+        indicator.innerHTML = `
+            <div class="processing-content">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Processando planilha...</span>
+            </div>
+        `;
+        indicator.classList.remove('hidden');
+    } else {
+        indicator.classList.add('hidden');
+    }
 }
 
 // =============================================
@@ -241,25 +378,29 @@ async function carregarPedidos(page = 1) {
     showLoading(true);
     hideEmptyState();
     
+    // Mostrar indicador de processamento na tabela
+    const tableLoading = document.getElementById('tableLoading');
+    if (tableLoading) {
+        tableLoading.classList.remove('hidden');
+    }
+
     try {
-        // Coletar filtros
+        // Coletar filtros (INCLUI NÚMERO PEDIDO)
         const dataInicio = document.getElementById('createdAfter')?.value || '';
         const dataFim = document.getElementById('createdBefore')?.value || '';
         const status = document.getElementById('statusFilter')?.value || '';
         const marketplace = document.getElementById('marketplaceFilter')?.value || '';
+        const numeroPedido = document.getElementById('numeroPedidoFilter')?.value || '';
         
-        // ✅ NOVO: Coletar parâmetros de ordenação
         const sortField = document.getElementById('sortField')?.value || 'createdAt';
         const sortDirection = document.getElementById('sortDirection')?.value || 'DESC';
         
-        // Atualizar variáveis globais
         currentSortField = sortField;
         currentSortDirection = sortDirection;
         
         const params = new URLSearchParams({
             page: page,
             limit: 50,
-            // ✅ NOVO: Adicionar parâmetros de ordenação
             sort: sortField,
             sortDirection: sortDirection
         });
@@ -269,9 +410,10 @@ async function carregarPedidos(page = 1) {
         if (marketplace) params.append('marketplace', marketplace);
         if (dataInicio) params.append('createdAfter', dataInicio);
         if (dataFim) params.append('createdBefore', dataFim);
+        if (numeroPedido) params.append('marketPlaceNumber', numeroPedido); // ✅ NOVO FILTRO
         
         const apiUrl = `/api/anymarket/pedidos?${params}`;
-        console.log(`🔗 SOLICITANDO: Página ${page} | Ordenação: ${sortField} ${sortDirection}`);
+        console.log(`🔗 SOLICITANDO: Página ${page} | Filtros: ${params.toString()}`);
         
         const response = await fetch(apiUrl, {
             headers: {
@@ -301,7 +443,15 @@ async function carregarPedidos(page = 1) {
             exibirPedidos(data.orders);
             exibirEstatisticas(data.stats, data.filters);
             exibirPaginacao(data.pagination);
-            atualizarIndicadorOrdenacao(); // ✅ NOVO: Atualizar indicador visual
+            atualizarIndicadorOrdenacao();
+            
+            // ✅ INICIAR ATUALIZAÇÃO AUTOMÁTICA APÓS PRIMEIRO CARREGAMENTO
+            if (!autoRefreshInterval) {
+                iniciarAtualizacaoAutomatica();
+            }
+            
+            // ✅ ATUALIZAR INDICADOR DE ÚLTIMA ATUALIZAÇÃO
+            atualizarIndicadorAtualizacao();
             
             showMessage(`✅ Página ${currentPage} de ${data.pagination.totalPages} carregada - ${data.orders.length} pedidos (Ordenado por: ${getSortFieldLabel(sortField)} ${sortDirection === 'ASC' ? 'Crescente' : 'Decrescente'})`, 'success');
         } else {
@@ -315,6 +465,11 @@ async function carregarPedidos(page = 1) {
         mostrarEstadoSemToken();
     } finally {
         showLoading(false);
+        // Esconder indicador da tabela
+        const tableLoading = document.getElementById('tableLoading');
+        if (tableLoading) {
+            tableLoading.classList.add('hidden');
+        }
     }
 }
 
@@ -416,6 +571,7 @@ async function carregarTodosPedidos() {
     }
 }
 
+// ✅ MODIFICAR: Função buscarComFiltros para incluir novo filtro
 function buscarComFiltros() {
     if (!currentToken) {
         showMessage('Configure o token primeiro', 'error');
@@ -915,6 +1071,24 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
+// ✅ ADICIONAR: Event listener para Enter no filtro de número do pedido
+document.addEventListener('DOMContentLoaded', function() {
+    const numeroPedidoFilter = document.getElementById('numeroPedidoFilter');
+    if (numeroPedidoFilter) {
+        numeroPedidoFilter.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarComFiltros();
+            }
+        });
+    }
+    
+    // Iniciar atualização automática após carregamento inicial
+    setTimeout(() => {
+        if (currentToken) {
+            iniciarAtualizacaoAutomatica();
+        }
+    }, 5000);
+});
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Enter no input do token

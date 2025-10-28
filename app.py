@@ -1,7 +1,8 @@
+from io import BytesIO
 import sys
 from pathlib import Path
 import uuid
-from flask import Flask, abort, current_app, json, make_response, render_template, request, send_from_directory, redirect, url_for, flash, jsonify
+from flask import Flask, abort, current_app, json, make_response, render_template, request, send_file, send_from_directory, redirect, url_for, flash, jsonify
 from gspread import service_account
 import gspread
 import requests
@@ -1531,6 +1532,149 @@ def consultar_produto():
         active_module='anymarket'
     )
 
+@app.route('/api/anymarket/exportar-excel')
+def api_exportar_excel():
+    """API para exportar pedidos para Excel - COM TODOS OS FILTROS"""
+    try:
+        auth_header = request.headers.get('Authorization', '')
+        if not auth_header.startswith('Bearer '):
+            return jsonify({'success': False, 'error': 'Token de autenticação não fornecido'}), 401
+        
+        token = auth_header.replace('Bearer ', '')
+        
+        # Coletar todos os filtros
+        data_inicio = request.args.get('dataInicio')
+        data_fim = request.args.get('dataFim')
+        status = request.args.get('status')
+        marketplace = request.args.get('marketplace')
+        numero_pedido = request.args.get('numeroPedido')  # ✅ NOVO FILTRO
+        
+        # Buscar TODOS os pedidos com os filtros
+        all_orders = []
+        page = 1
+        limit = 100  # Máximo por página
+        
+        while True:
+            # Construir parâmetros igual à API normal
+            params = {
+                'offset': (page - 1) * limit,
+                'limit': limit,
+            }
+            
+            if status and status.strip():
+                params['status'] = status.strip()
+                
+            if marketplace and marketplace.strip():
+                params['marketplace'] = marketplace.strip()
+            
+            if data_inicio and data_inicio.strip():
+                try:
+                    datetime.strptime(data_inicio, '%Y-%m-%d')
+                    params['createdAfter'] = f"{data_inicio}T00:00:00-03:00"
+                except ValueError:
+                    pass
+            
+            if data_fim and data_fim.strip():
+                try:
+                    datetime.strptime(data_fim, '%Y-%m-%d')
+                    params['createdBefore'] = f"{data_fim}T23:59:59-03:00"
+                except ValueError:
+                    pass
+            
+            # ✅ FILTRO POR NÚMERO DO PEDIDO
+            if numero_pedido and numero_pedido.strip():
+                params['marketPlaceNumber'] = numero_pedido.strip()
+            
+            # Fazer requisição
+            headers = {
+                'Authorization': f'Bearer {token}',
+                'Content-Type': 'application/json',
+                'gumgaToken': token
+            }
+            
+            response = requests.get(
+                "https://api.anymarket.com.br/v2/orders", 
+                params=params, 
+                headers=headers, 
+                timeout=60
+            )
+            
+            if response.status_code != 200:
+                break
+                
+            data = response.json()
+            orders = data.get('content', [])
+            
+            if not orders:
+                break
+                
+            all_orders.extend(orders)
+            
+            # Verificar se há mais páginas
+            pagination = data.get('page', {})
+            if len(orders) < limit:
+                break
+                
+            page += 1
+        
+        # Criar DataFrame para exportação
+        df_data = []
+        for order in all_orders:
+            df_data.append({
+                'ID': order.get('id'),
+                'Marketplace': order.get('marketPlace'),
+                'Status': order.get('status'),
+                'Nº Marketplace': order.get('marketPlaceNumber'),
+                'Comprador': order.get('buyer', {}).get('name'),
+                'Email': order.get('buyer', {}).get('email'),
+                'Telefone': order.get('buyer', {}).get('phone'),
+                'Data Criação': order.get('createdAt'),
+                'Data Pagamento': order.get('paymentDate'),
+                'Quantidade Itens': len(order.get('items', [])),
+                'Valor Total': order.get('total'),
+                'Frete': order.get('freight'),
+                'Desconto': order.get('discount'),
+                'Cidade': order.get('buyer', {}).get('city'),
+                'Estado': order.get('buyer', {}).get('state')
+            })
+        
+        df = pd.DataFrame(df_data)
+        
+        # Criar arquivo Excel em memória
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Pedidos', index=False)
+            
+            # Formatar a planilha
+            worksheet = writer.sheets['Pedidos']
+            
+            # Ajustar largura das colunas
+            for column in worksheet.columns:
+                max_length = 0
+                column_letter = column[0].column_letter
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = min(max_length + 2, 50)
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+        
+        output.seek(0)
+        
+        # Retornar arquivo
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=f'pedidos_anymarket_{datetime.now().strftime("%Y%m%d_%H%M")}.xlsx'
+        )
+        
+    except Exception as e:
+        print(f"❌ Erro na exportação Excel: {str(e)}")
+        return jsonify({'success': False, 'error': f'Erro na exportação: {str(e)}'}), 500
+    
 @app.route('/api/anymarket/produtos/buscar-sku', methods=['POST'])
 def api_buscar_produto_sku():
     """API para buscar produto por SKU - ROTA NOVA"""
