@@ -7,11 +7,11 @@
 
 {% block content %}
 <div class="pedidos-container">
-    <!-- Header -->
+    <!-- Header 
     <div class="pedidos-header">
         <h1><i class="fas fa-shopping-cart me-2"></i>Gestão de Pedidos - AnyMarket</h1>
     </div>
-
+-->
     <!-- Conteúdo com scroll -->
     <div class="pedidos-content">
         <!-- Controles COMPACTOS -->
@@ -29,6 +29,7 @@
                     <button class="btn btn-outline-secondary" onclick="toggleTokenSection()">
                         <i class="fas fa-cog"></i> Token
                     </button>
+                    
                 </div>
             </div>
 
@@ -57,7 +58,7 @@
                         <option value="MAGAZINE_LUIZA">Magazine Luiza</option>
                         <option value="MADEIRA_MADEIRA">Madeira Madeira</option>
                         <option value="MOBLY">Mobly</option>
-                        <option value="LEROY_MERLIN">Leroy MerliN</option>
+                        <option value="LEROY_MERLIN">Leroy Merlin</option>
                         <option value="WEB_CONTINENTAL_V2">Web Contintental</option>
                     </select>
                 </div>
@@ -101,16 +102,15 @@
                         <i class="fas fa-eraser"></i> Limpar
                     </button>
                     <button class="btn btn-success compact-btn" onclick="exportarPedidos()">
-                        <i class="fas fa-download"></i> Exportar
+                        <i class="fas fa-download"></i> Exportar .xlsx
                     </button>
                 </div>
             </div>
         </div>
-
         <!-- Mensagens -->
         <!--<div id="loading" class="loading hidden"></div> -->
         <div id="errorMessage" class="alert alert-error hidden"></div>
-        <div id="stats" class="alert alert-info hidden"></div>
+       <!----> <div id="stats" class="alert alert-info hidden"></div>
 
         <!-- Tabela de Pedidos -->
         <div id="ordersContainer" class="orders-section hidden">

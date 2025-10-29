@@ -128,7 +128,11 @@ def home():
 @app.route('/pedidos-anymarket')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
 def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
-    return render_template('pedidos_anymarket.html', active_page='pedidos', active_module='anymarket')
+    return render_template('pedidos_anymarket.html',
+                            active_page='pedidos',
+                            active_module='anymarket',
+                            page_title='Pedidos - Anymarket'
+                            )
 
 @app.route('/api/anymarket/pedidos')
 def api_pedidos_anymarket():
@@ -468,7 +472,8 @@ def configurar_tokens():
     return render_template(
         "config_tokens.html",
         active_page='configuracao',
-        config=config
+        config=config,
+        page_title='Configuração de Tokens'
         # ✅ REMOVA: anymarket_token=anymarket_token
     )
 
@@ -670,7 +675,8 @@ def consultar_anymarket():
         acao=acao,
         historico_processos=obter_historico_processos("anymarket"),
         processos_hoje=contar_processos_hoje("anymarket"),
-        stats=get_processing_stats("anymarket")
+        stats=get_processing_stats("anymarket"),
+        page_title='Consulta Fotos'
     )
 
 @app.route('/api/tokens/anymarket/obter', methods=['GET'])
@@ -894,7 +900,9 @@ def preencher_planilha():
                     abas=abas,
                     sheet_id_input=sheet_id,
                     aba_selecionada=None,
-                    aba_ativa="google"
+                    aba_ativa="google",
+                    page_title='Cadastro Produto'
+                    
                 )
 
             # ====================================
@@ -927,7 +935,8 @@ def preencher_planilha():
                     sheet_id_input=sheet_id,
                     aba_selecionada=aba_nome,
                     aba_ativa="google",
-                    preview_data=preview_data
+                    preview_data=preview_data,
+                    page_title='Cadastro Produto'
                 )
 
             # ====================================
@@ -1048,7 +1057,8 @@ def preencher_planilha():
         sheet_id_input=sheet_id_input,
         aba_selecionada=aba_selecionada,
         aba_ativa=aba_ativa,
-        preview_data=preview_data
+        preview_data=preview_data,
+        page_title='Cadastro Produto'
     )
 
 @app.route("/extrair-atributos", methods=["GET", "POST"])
@@ -1211,7 +1221,8 @@ def extrair_atributos():
         preview_data=preview_data,
         sheet_id_input=sheet_id_input,
         aba_selecionada=aba_selecionada,
-        aba_ativa=aba_ativa
+        aba_ativa=aba_ativa,
+        page_title='Extração de Atributos'
     )
 
 def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
@@ -1383,7 +1394,8 @@ def mostrar_tela_comparacao():
         active_module='cadastro',
         historico_processos=obter_historico_processos("prazos"),
         processos_hoje=contar_processos_hoje("prazos"),
-        stats=get_processing_stats("prazos")  # Agora aceita o parâmetro
+        stats=get_processing_stats("prazos"),
+        page_title='Comparação de Prazos'  # Agora aceita o parâmetro
     )
 
 def contar_processos_hoje(modulo="cadastro"):
@@ -1468,7 +1480,8 @@ def configurar_google_sheets():
         abas=abas,
         mensagem=mensagem,
         tipo_mensagem=tipo_mensagem,
-        erro=erro
+        erro=erro,
+        page_title='Extração de Atributos'
     )
 
 @app.route("/validar-xml", methods=["GET", "POST"])
@@ -1491,6 +1504,7 @@ def validar_xml():
         historico_processos=obter_historico_processos("xml"),
         processos_hoje=contar_processos_hoje("xml"),
         stats=get_processing_stats("xml")
+        
     )
 
 @app.route("/salvar-ordem-fotos", methods=["POST"])
@@ -1529,7 +1543,8 @@ def consultar_produto():
     return render_template(
         'consultar_produto.html',
         active_page='consultar_produto',
-        active_module='anymarket'
+        active_module='anymarket',
+        page_title='Produtos'
     )
 
 @app.route('/api/anymarket/exportar-excel')

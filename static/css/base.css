@@ -178,9 +178,11 @@ body {
 
 /* Footer do Sidebar */
 .sidebar-footer {
-  padding: 1rem 1.5rem;
+  padding: 0.3rem 0.8rem;
   border-top: 1px solid var(--border-color);
   background: rgba(0, 0, 0, 0.02);
+  font-size: 0.9rem; /* opcional: reduz fonte */
+  line-height: 1.1;  /* deixa tudo mais compacto */
 }
 
 .btn-dark-mode {
