@@ -12,6 +12,7 @@ import re
 import unicodedata
 from processamento.google_sheets import ler_planilha_google
 
+PLANILHA_MODELO_FIXA = "Template_Produtos_Mpozenato_Cadastro_.xlsx"  # Nome do arquivo modelo fixo
 
 warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed")
 
@@ -30,10 +31,19 @@ def reaplicar_validacoes(worksheet, validacoes):
     for dv in validacoes:
         worksheet.add_data_validation(dv)
 
-def executar_processamento(planilha_origem, planilha_destino):
+def executar_processamento(planilha_origem, planilha_destino=None):
 
     inicio = datetime.now()
     produtos_processados = []
+
+     # 🔹 SE planilha_destino NÃO FOR FORNECIDA, USA O MODELO FIXO
+    if planilha_destino is None:
+        # Busca o modelo fixo na pasta do sistema
+        modelo_path = Path(__file__).parent.parent / "modelos" / PLANILHA_MODELO_FIXA
+        if not modelo_path.exists():
+            raise Exception(f"Modelo ATHUS fixo não encontrado em: {modelo_path}")
+        planilha_destino = str(modelo_path)
+        print(f"✅ Usando modelo fixo: {planilha_destino}")
 
     # 🔹 Se for Google Sheets
     if isinstance(planilha_origem, dict):

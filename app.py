@@ -902,7 +902,6 @@ def preencher_planilha():
                     aba_selecionada=None,
                     aba_ativa="google",
                     page_title='Cadastro Produto'
-                    
                 )
 
             # ====================================
@@ -940,7 +939,7 @@ def preencher_planilha():
                 )
 
             # ====================================
-            # 🔹 PROCESSAR (GOOGLE SHEETS)
+            # 🔹 PROCESSAR (GOOGLE SHEETS) - AGORA SEM ARQUIVO DESTINO
             # ====================================
             elif action_type == "conectar_google":
                 sheet_id = request.form.get('sheet_id', '').strip()
@@ -953,21 +952,11 @@ def preencher_planilha():
                 salvar_configuracao_google_sheets(sheet_id, aba_nome)
                 config = carregar_configuracao_google_sheets()
 
-                # precisa do template destino
-                destino = request.files.get("arquivo_destino")
-                if not destino or destino.filename == "":
-                    flash("Envie também o arquivo de destino (template)", "danger")
-                    return redirect(url_for("preencher_planilha", aba="google"))
-
-                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                nome_destino = secure_filename(destino.filename)
-                caminho_destino = os.path.join(app.config['UPLOAD_FOLDER'], nome_destino)
-                destino.save(caminho_destino)
-
-                # Processa
+                # 🔹 AGORA USA O MODELO FIXO - NÃO PRECISA DE UPLOAD
+                # Processa usando apenas o Google Sheets como origem
                 arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = executar_processamento(
-                    {"sheet_id": sheet_id, "aba": aba_nome},
-                    caminho_destino
+                    {"sheet_id": sheet_id, "aba": aba_nome}
+                    # 🔹 Não passa planilha_destino - usa o modelo fixo
                 )
 
                 nome_arquivo_saida = os.path.basename(arquivo_saida)
@@ -984,35 +973,32 @@ def preencher_planilha():
                 aba_ativa = "google"
 
             # ====================================
-            # 🔹 PROCESSAR (UPLOAD LOCAL)
+            # 🔹 PROCESSAR (UPLOAD LOCAL) - AGORA APENAS ARQUIVO ORIGEM
             # ====================================
-            elif 'arquivo_origem' in request.files and 'arquivo_destino' in request.files:
+            elif 'arquivo_origem' in request.files:
                 origem = request.files["arquivo_origem"]
-                destino = request.files["arquivo_destino"]
 
-                if origem.filename == '' or destino.filename == '':
-                    flash("Nenhum arquivo selecionado", "danger")
+                if origem.filename == '':
+                    flash("Nenhum arquivo de origem selecionado", "danger")
                     registrar_processo(
                         modulo="cadastro",
                         qtd_itens=0,
                         tempo_execucao=0,
                         status="erro",
-                        erro_mensagem="Nenhum arquivo selecionado"
+                        erro_mensagem="Nenhum arquivo de origem selecionado"
                     )
                     return redirect(url_for("preencher_planilha", aba="upload"))
 
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
                 nome_origem = secure_filename(origem.filename)
-                nome_destino = secure_filename(destino.filename)
                 caminho_origem = os.path.join(app.config['UPLOAD_FOLDER'], nome_origem)
-                caminho_destino = os.path.join(app.config['UPLOAD_FOLDER'], nome_destino)
-
                 origem.save(caminho_origem)
-                destino.save(caminho_destino)
 
+                # 🔹 AGORA USA O MODELO FIXO - NÃO PRECISA DE ARQUIVO DESTINO
                 arquivo_saida, qtd_produtos, tempo_segundos, produtos_processados = executar_processamento(
-                    caminho_origem, caminho_destino
+                    caminho_origem
+                    # 🔹 Não passa planilha_destino - usa o modelo fixo
                 )
 
                 nome_arquivo_saida = os.path.basename(arquivo_saida)
@@ -1025,7 +1011,7 @@ def preencher_planilha():
                 )
                 registrar_itens_processados("cadastro", produtos_processados)
 
-                flash("Planilha preenchida com sucesso!", "success")
+                flash("Planilha preenchida com sucesso usando modelo fixo!", "success")
                 aba_ativa = "upload"
 
         except Exception as e:
