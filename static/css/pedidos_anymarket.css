@@ -1066,3 +1066,153 @@ label {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* Badges específicos por marketplace */
+.ml-badge {
+    background: #ffe600;
+    color: #2d3277;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.crossdock-badge {
+    background: #ff6b6b;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.mm-badge {
+    background: #00a859;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.crossdocking-info {
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+.item-shipping {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #17a2b8;
+}
+
+/* Badges específicos para tipos de envio ML */
+.me1-badge {
+    background: #ffc107;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    border: 1px solid #ffab00;
+}
+
+.me2-badge {
+    background: #17a2b8;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    border: 1px solid #138496;
+}
+
+.full-badge {
+    background: #28a745;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    border: 1px solid #1e7e34;
+}
+
+.unknown-badge {
+    background: #6c757d;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+    border: 1px solid #545b62;
+}
+
+/* Badges das contas */
+.poz-badge {
+    background: #6f42c1;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 6px;
+    font-size: 8px;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+.mpoz-badge {
+    background: #e83e8c;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 6px;
+    font-size: 8px;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+.mm-badge {
+    background: #00a859;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* Badges de envio na coluna de transporte */
+.envio-badge {
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: bold;
+    display: inline-block;
+    cursor: help;
+}
+
+.envio-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+.envio-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+.envio-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.envio-dark { background: #d6d8d9; color: #1b1e21; border: 1px solid #c6c8ca; }
+
+/* Prazo de cross docking */
+.crossdock-prazo {
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.crossdock-prazo.success { background: #d4edda; color: #155724; }
+.crossdock-prazo.warning { background: #fff3cd; color: #856404; }
+.crossdock-prazo.danger { background: #f8d7da; color: #721c24; }
