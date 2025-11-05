@@ -714,7 +714,7 @@ function buscarComFiltros() {
 // =============================================
 // 🎯 EXIBIÇÃO DE DADOS (MANTIDO IGUAL)
 // =============================================
-// ✅ ADICIONAR: Função getMarketplaceStatusInfo que está faltando
+
 function getMarketplaceStatusInfo(order) {
     const isMercadoLivre = order.marketPlace === 'MERCADO_LIVRE';
     const isMadeiraMadeira = order.marketPlace === 'MADEIRA_MADEIRA';
@@ -763,13 +763,12 @@ function exibirPedidos(orders) {
             </td>
             <td>
                 <span class="status-badge status-${order.status}">${formatStatus(order.status)}</span>
-                ${getMarketplaceStatusInfo(order)}
+               
             </td>
             <td>${order.marketPlaceNumber || '-'}</td>
             <td>
-                <strong>${order.buyer?.name || 'N/A'}</strong>
-                ${order.shipping?.city ? `<br><small class="text-muted">${order.shipping.city}/${order.shipping.state}</small>` : ''}
-                ${order.buyer?.phone ? `<br><small class="text-muted">${formatPhone(order.buyer.phone)}</small>` : ''}
+                <strong>${order.buyer?.name || 'N/A'}</strong> 
+                
             </td>
             <td>
                 <strong>${formatDate(order.createdAt)}</strong>
@@ -789,7 +788,6 @@ function exibirPedidos(orders) {
             <td>
                 <strong class="text-success">R$ ${parseFloat(order.total || 0).toFixed(2)}</strong>
                 ${order.freight ? `<br><small class="text-muted">Frete: R$ ${parseFloat(order.freight).toFixed(2)}</small>` : ''}
-                ${getPaymentInfo(order)}
             </td>
             <td>
                 ${getShippingInfo(order)}
@@ -875,21 +873,17 @@ function getShippingInfo(order) {
         let html = '';
         
         // Badge do tipo de envio
-        if (infoEnvio.tipo !== 'DESCONHECIDO') {
-            html += `<small class="envio-badge envio-${infoEnvio.cor}" title="${infoEnvio.descricao} - ${infoEnvio.detalhes}">
-                ${infoEnvio.icone} ${infoEnvio.tipo}
-            </small>`;
-        }
+       // if (infoEnvio.tipo !== 'DESCONHECIDO') {
+         //   html += `<small class="envio-badge envio-${infoEnvio.cor}" title="${infoEnvio.descricao} - ${infoEnvio.detalhes}">
+           //     ${infoEnvio.icone} ${infoEnvio.tipo}
+           // </small>`;
+       // }
         
         // Serviço específico (muito importante para Pozelar)
         if (infoEnvio.servico && infoEnvio.servico !== 'N/A') {
             html += `<br><small class="text-muted" title="Serviço de envio">${infoEnvio.servico}</small>`;
         }
         
-        // Transportadora
-        if (infoEnvio.transportadora && infoEnvio.transportadora !== 'N/A') {
-            html += `<br><small class="tracking-info"><i class="fas fa-truck"></i> ${infoEnvio.transportadora}</small>`;
-        }
         
         // Prazo de cross docking (CRÍTICO para ME2)
         if (infoEnvio.tipo === 'ME2' && infoEnvio.prazoCrossDocking) {
