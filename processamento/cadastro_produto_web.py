@@ -36,42 +36,47 @@ def executar_processamento(planilha_origem, planilha_destino=None):
     inicio = datetime.now()
     produtos_processados = []
 
-     # 🔹 SE planilha_destino NÃO FOR FORNECIDA, USA O MODELO FIXO
+    # 🔹 SE planilha_destino NÃO FOR FORNECIDA, USA O MODELO FIXO
     if planilha_destino is None:
-        # Busca o modelo fixo na pasta do sistema
         modelo_path = Path(__file__).parent.parent / "modelos" / PLANILHA_MODELO_FIXA
         if not modelo_path.exists():
             raise Exception(f"Modelo ATHUS fixo não encontrado em: {modelo_path}")
         planilha_destino = str(modelo_path)
         print(f"✅ Usando modelo fixo: {planilha_destino}")
 
-    # 🔹 Se for Google Sheets
+    # 🔹 Lê planilha
     if isinstance(planilha_origem, dict):
         sheet_id = planilha_origem['sheet_id']
         aba_nome = planilha_origem['aba']
         df = ler_planilha_google(sheet_id, aba_nome)
     else:
         df = pd.read_excel(planilha_origem)
-    # Lista para armazenar os produtos processados
-    produtos_processados = []
+
+    # 🔹 Remove linhas completamente vazias
+    df = df.dropna(how="all")
+
+    # 🔹 Remove repetições de cabeçalhos no meio da planilha
+    df = df[~df.apply(
+        lambda row: all(str(row[c]).strip().upper() == c.upper() for c in df.columns if c in row),
+        axis=1
+    )]
 
     colunas_esperadas = [
-    "EAN", "NOMEONCLICK", "NOMEE-COMMERCE", "TIPODEPRODUTO",
-    "EMBALTURA", "EMBLARGURA", "EMBCOMPRIMENTO", "VOLUMES",
-    "EANCOMPONENTES", "MARCA", "CUSTO", "DE", "POR", "FORNECEDOR",
-    "OUTROS","IPI", "FRETE", "NCM", "CODFORN", "CATEGORIA", "GRUPO",
-    "COMPLEMENTO", "DISPONIBILIDADEWEB", "DESCRICAOHTML", "PESOBRUTO",
-    "PESOLIQUIDO", "VOLPESOBRUTO", "VOLPESOLIQ", "VOLLARGURA",
-    "VOLALTURA", "VOLCOMPRIMENTO", "CATEGORIAPRINCIPALTRAY",
-    "CATEGORIAPRINCIPALCORP", "NIVELADICIONAL1CORP", "CUSTOTOTAL"
-]
-    
+        "EAN", "NOMEONCLICK", "NOMEE-COMMERCE", "TIPODEPRODUTO",
+        "EMBALTURA", "EMBLARGURA", "EMBCOMPRIMENTO", "VOLUMES",
+        "EANCOMPONENTES", "MARCA", "CUSTO", "DE", "POR", "FORNECEDOR",
+        "OUTROS","IPI", "FRETE", "NCM", "CODFORN", "CATEGORIA", "GRUPO",
+        "COMPLEMENTO", "DISPONIBILIDADEWEB", "DESCRICAOHTML", "PESOBRUTO",
+        "PESOLIQUIDO", "VOLPESOBRUTO", "VOLPESOLIQ", "VOLLARGURA",
+        "VOLALTURA", "VOLCOMPRIMENTO", "CATEGORIAPRINCIPALTRAY",
+        "CATEGORIAPRINCIPALCORP", "NIVELADICIONAL1CORP", "CUSTOTOTAL"
+    ]
+
     colunas_faltando = [col for col in colunas_esperadas if col not in df.columns]
     if colunas_faltando:
         raise Exception(f"Planilha Online faltando as seguintes colunas: {', '.join(colunas_faltando)}")
 
-    logs = [] #lista para armazenar os logs
-
+    logs = []
     dados_sheets = {
         "PRODUTO": [],
         "PRECO": [],
@@ -91,16 +96,27 @@ def executar_processamento(planilha_origem, planilha_destino=None):
     data_mais_20_anos = data_atual.replace(year=data_atual.year + 30)
     data_formatada_mais_20_anos = data_mais_20_anos.strftime("%d/%m/%Y")
 
+    # 🔹 Remove linhas onde EAN, MARCA, ou outras colunas tenham o nome da coluna (ex: "EAN", "MARCA", "VOLUMES")
+    df = df[~df.apply(lambda row: any(
+        str(row[c]).strip().upper() == c.upper() for c in df.columns if pd.notna(row[c])
+    ), axis=1)]
+    
     for idx, row in df.iterrows():
         ean = str(row["EAN"]).strip()
         nome_onclick = row["NOMEONCLICK"]
         nome_ecommerce = row["NOMEE-COMMERCE"]
         logs.append(f"[{datetime.now().strftime('%H:%M:%S')}] Anuncio Criado: {ean} - {nome_ecommerce}")
-        tipo_produto = row["TIPODEPRODUTO"].strip().upper()
+        tipo_produto = str(row["TIPODEPRODUTO"]).strip().upper() if pd.notna(row["TIPODEPRODUTO"]) else ""
         altura = row["EMBALTURA"]
         largura = row["EMBLARGURA"]
         comprimento = row["EMBCOMPRIMENTO"]
-        volumes = int(row["VOLUMES"]) if pd.notna(row["VOLUMES"]) else 1
+
+        # 🔹 Corrige o erro de conversão de "VOLUMES"
+        try:
+            volumes = int(float(row["VOLUMES"])) if pd.notna(row["VOLUMES"]) else 1
+        except Exception:
+            volumes = 1
+
         componentes = row["EANCOMPONENTES"]
         marca = row["MARCA"]
         custo = row["CUSTO"]
@@ -112,10 +128,9 @@ def executar_processamento(planilha_origem, planilha_destino=None):
         frete = row["FRETE"]
         ncm = row["NCM"]
         cod_forn = row["CODFORN"]
-       
         categoria = row["CATEGORIA"]
         grupo = row["GRUPO"]
-        
+
         marca_web = nome_ecommerce.split("-")[-1].strip() if isinstance(nome_ecommerce, str) and "-" in nome_ecommerce else ""
         complemento = row["COMPLEMENTO"]
         disponibilidade_web = row["DISPONIBILIDADEWEB"]
@@ -141,18 +156,14 @@ def executar_processamento(planilha_origem, planilha_destino=None):
         ])
 
         if tipo_produto == "KIT" and pd.notna(componentes):
-            # Conta a quantidade de cada componente no campo EANCOMPONENTES
             componentes_list = str(componentes).split("/")
             componentes_contados = {}
-            
             for comp in componentes_list:
                 comp_ean = comp.strip()
                 componentes_contados[comp_ean] = componentes_contados.get(comp_ean, 0) + 1
-            
-            # Adiciona cada componente com sua quantidade correta
             for comp_ean, quantidade in componentes_contados.items():
                 nome_componente = produto_dict.get(comp_ean, "Desconhecido")
-                dados_sheets["KIT"].append([ean, comp_ean, nome_componente, str(quantidade), "", "0"])  
+                dados_sheets["KIT"].append([ean, comp_ean, nome_componente, str(quantidade), "", "0"])
 
         for i in range(volumes):
             if volumes == 1:
@@ -167,7 +178,7 @@ def executar_processamento(planilha_origem, planilha_destino=None):
                 ])
 
         dados_sheets["PRECO"].append([
-            ean, fornecedor, custo,ipi, "", frete, row["CUSTOTOTAL"], preco_venda, preco_promo, preco_promo,
+            ean, fornecedor, custo, ipi, "", frete, row["CUSTOTOTAL"], preco_venda, preco_promo, preco_promo,
             data_formatada, data_formatada_mais_20_anos, "", "F"
         ])
 
@@ -175,6 +186,7 @@ def executar_processamento(planilha_origem, planilha_destino=None):
             ean, "", "", "", row["CATEGORIAPRINCIPALTRAY"], "", "", "", "T", "F", "", "", "",
             row["CATEGORIAPRINCIPALCORP"], row["NIVELADICIONAL1CORP"], "", "", "T", "T"
         ])
+
         produtos_processados.append({
             'ean': ean,
             'nome': nome_ecommerce,
@@ -209,26 +221,26 @@ def executar_processamento(planilha_origem, planilha_destino=None):
                 cell.value = "'"
                 cell.fill = None
 
-    marca_unica = next(iter(marcas_cadastradas)) if marcas_cadastradas else "saida"
+    marcas_validas = [m for m in marcas_cadastradas if isinstance(m, str) and m.strip() and m.strip().upper() != "MARCA"]
 
-    # Por esta:
+    marca_unica = next(iter(marcas_validas)) if marcas_validas else "saida"
     marca_sanitizada = sanitize_filename(marca_unica)
     novo_nome = f"Template_Produtos_Mpozenato_Cadastro_{marca_sanitizada}.xlsx"
     caminho_saida = os.path.join("uploads", novo_nome)
 
     wb.save(caminho_saida)
 
+    # 🔁 Reabre para reaplicar validações da aba "Tipo Importacao"
     wb = load_workbook(caminho_saida)
     ws_tipo_importacao = wb["Tipo Importacao"]
     reaplicar_validacoes(ws_tipo_importacao, validacoes_tipo_importacao)
     wb.save(caminho_saida)
-    
+
     fim = datetime.now()
     duracao = (fim - inicio).total_seconds()
-
     qtd_produtos = len(df)
-    
-    # Acima do return caminho_saida
+
+    # Salva log
     with open('uploads/logs_processamento.txt', 'w', encoding='utf-8') as f:
         for linha in logs:
             f.write(linha + '\n')

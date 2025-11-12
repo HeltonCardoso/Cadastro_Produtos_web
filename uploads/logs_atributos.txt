@@ -1,45 +1,68 @@
-[11:27:12] Iniciando processamento do Google Sheets em 23/10/2025 11:27:12
-[11:27:13] Processado: Balcão de Cozinha Para Pia 120cm Sem Tampo Michigan Castanho - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 120cm Sem Tampo Michigan Cinza   - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Castanho   - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza      - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Cinza Claro - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Castanho - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 160cm Sem Tampo Arkansas Cinza   - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 180cm Sem Tampo Dallas Castanho   - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 180cm Sem Tampo Dallas Cinza      - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 160cm Com 4 Portas Nevada Castanho - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 160cm Com 4 Portas Nevada Cinza    - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Dakota Cinza Claro - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 180cm Nevada Com Nicho Castanho    - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 180cm Nevada Com Nicho Cinza       - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Marrocos Castanho - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 150cm Sem Tampo Marrocos Cinza   - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 150cm Com 3 Portas Argélia Castanho - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 150cm Com 3 Portas Argélia Cinza   - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 160cm MDP Cinza Claro - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 150cm MDP Cinza Claro - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 100cm MDP Cinza Claro - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 180cm MDP Cinza Claro - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 160cm MDP Cinza - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 150cm MDP Cinza - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 100cm MDP Cinza - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 180cm MDP Cinza - Lumil
-[11:27:13] Processado: Tampo Para Balcão de Cozinha 120cm MDP Cinza - Lumil
-[11:27:13] Processado: Balcão de Cozinha 102cm Para Cooktop Georgia Cinza Claro    - Lumil
-[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Branco  - Lumil
-[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Preto   - Lumil
-[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Castanho - Lumil
-[11:27:13] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Cinza Claro - Lumil
-[11:27:13] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Cinza Claro    - Lumil
-[11:27:13] Processado: Balcão de Cozinha Com Tampo 120cm 3 Portas Arizona Cinza Claro - Lumil
-[11:27:13] Processado: Balcão de Cozinha Multiuso 80cm 2 Portas Hawai Cinza Claro  - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 80cm 2 Portas Califórnia Cinza Claro - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo Geladeira 70cm Texas Cinza Claro   - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo 100cm 2 Portas Indiana Cinza Claro - Lumil
-[11:27:13] Processado: Armário de Cozinha Aéreo Canto Reto Com Nicho Austin Cinza Claro - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Pia 100cm Sem Tampo Luziania Cinza Claro - Lumil
-[11:27:13] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Cinza Claro   - Lumil
-[11:27:13] Processado: Balcão de Cozinha Para Cooktop 80cm Flórida Cinza Claro     - Lumil
-[11:27:13] Arquivo gerado: Atributos_Extraidos_SemMarca_20251023_112713.xlsx
-[11:27:13] Processamento concluído - 42 itens em 1.66s
+[16:05:08] Iniciando processamento do Google Sheets em 12/11/2025 16:05:08
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 100cm Luziania Cinza Claro - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 100cm Luziania Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 120cm Michigan Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 120cm Michigan Cinza   - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Dakota Cinza Claro - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Dakota Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Marrocos Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Marrocos Cinza   - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza   - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza Claro - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 180cm Dallas Castanho  - Lumil
+[16:05:09] Processado: Balcão de Cozinha Para Pia Com Tampo 180cm Dallas Cinza     - Lumil
+[16:05:09] Processado: NOME E-COMMERCE
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 100cm Luziania Cinza Claro   - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 120cm Michigan Castanho      - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 120cm Michigan Cinza         - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 150cm Dakota Cinza Claro     - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 150cm Marrocos Castanho      - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 150cm Marrocos Cinza         - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Castanho      - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Cinza         - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Cinza Claro   - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 180cm Dallas Castanho        - Lumil
+[16:05:09] Processado: Balcão de Cozinha Com Pia Inox 180cm Dallas Cinza           - Lumil
+[16:05:09] Processado: NOME E-COMMERCE
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 150cm Dakota Cinza Claro  - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 150cm Marrocos Castanho   - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 150cm Marrocos Cinza      - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 100cm Luziania Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 180cm Dallas Castanho     - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 180cm Dallas Cinza        - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Castanho   - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Cinza      - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 120cm Michigan Castanho   - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Para Pia 120cm Michigan Cinza      - Lumil
+[16:05:09] Processado: NOME E-COMMERCE
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 150cm Dakota Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 150cm Dakota Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 150cm Marrocos Castanho  - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 150cm Marrocos Cinza     - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 100cm Luziania Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 100cm Luziania Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 180cm Dallas Castanho    - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 180cm Dallas Cinza       - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Castanho  - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza     - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza Claro/Castanho - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 120cm Michigan Castanho  - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Tampo 120cm Michigan Cinza     - Lumil
+[16:05:09] Processado: NOME E-COMMERCE
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 150cm Dakota Cinza Claro   - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 150cm Marrocos Castanho    - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 150cm Marrocos Cinza      - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 100cm Luziania Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 180cm Dallas Castanho      - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 180cm Dallas Cinza         - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Castanho    - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Cinza       - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Cinza Claro - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 120cm Michigan Castanho    - Lumil
+[16:05:09] Processado: Armário Cozinha e Balcão Com Pia 120cm Michigan Cinza       - Lumil
+[16:05:09] Arquivo gerado: Atributos_Extraidos_SemMarca_20251112_160509.xlsx
+[16:05:09] Processamento concluído - 65 itens em 1.83s

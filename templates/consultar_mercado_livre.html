@@ -1,0 +1,254 @@
+<!-- templates/consultar_mercado_livre.html -->
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/consultar_mercado_livre.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="mercado-livre-container">
+    
+    <!-- Header -->
+    <div class="mercado-livre-header">
+        <h1><i class="fas fa-store me-3"></i>Consulta Mercado Livre</h1>
+        <p class="opacity-75">Busque e analise anúncios por código MLB</p>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- SEÇÃO DE AUTENTICAÇÃO (PASSO 5) -->
+    <!-- ========================================= -->
+    <div class="card card-autenticacao mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="card-title mb-1">
+                        <i class="fas fa-key me-2"></i>Mercado Livre
+                    </h5>
+                    <p class="card-text mb-0" id="statusAutenticacao">
+                        {% if esta_autenticado %}
+                            <span class="badge bg-success">Autenticado</span>
+                        {% else %}
+                            <span class="badge bg-danger">Não autenticado</span>
+                        {% endif %}
+                    </p>
+                    <small class="text-muted" id="statusConfiguracao">Verificando configuração...</small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <!-- Botão Configurar -->
+                    <button type="button" class="btn btn-outline-secondary btn-sm me-2" 
+                            data-bs-toggle="modal" data-bs-target="#modalConfiguracao">
+                        <i class="fas fa-cog me-1"></i>Configurar
+                    </button>
+                    
+                    <!-- Botão Autenticar/Desautenticar -->
+                    {% if not esta_autenticado %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAutenticacao">
+                        <i class="fas fa-sign-in-alt me-2"></i>Autenticar
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-outline-danger" id="btnDesautenticar">
+                        <i class="fas fa-sign-out-alt me-2"></i>Sair
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MODAL DE CONFIGURAÇÃO (PASSO 4) -->
+    <!-- ========================================= -->
+    <div class="modal fade" id="modalConfiguracao" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configurar Mercado Livre</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="clientId" class="form-label">Client ID</label>
+                        <input type="text" class="form-control" id="clientId" 
+                               placeholder="Seu Client ID do Mercado Livre">
+                    </div>
+                    <div class="mb-3">
+                        <label for="clientSecret" class="form-label">Client Secret</label>
+                        <input type="password" class="form-control" id="clientSecret" 
+                               placeholder="Seu Client Secret do Mercado Livre">
+                    </div>
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fas fa-info-circle me-2"></i>
+                            Obtenha estas credenciais em 
+                            <a href="https://developers.mercadolibre.com.br/devcenter" target="_blank">
+                                Mercado Livre Developers
+                            </a>
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnSalvarConfiguracao">
+                        <i class="fas fa-save me-2"></i>Salvar Configuração
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MODAL DE AUTENTICAÇÃO -->
+    <!-- ========================================= -->
+    <div class="modal fade" id="modalAutenticacao" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Autenticar no Mercado Livre</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="accessToken" class="form-label">Access Token</label>
+                        <input type="text" class="form-control" id="accessToken" 
+                               placeholder="Cole aqui o access_token">
+                    </div>
+                    <div class="mb-3">
+                        <label for="refreshToken" class="form-label">Refresh Token</label>
+                        <input type="text" class="form-control" id="refreshToken" 
+                               placeholder="Cole aqui o refresh_token">
+                    </div>
+                    <div class="alert alert-info">
+                        <small>
+                            <i class="fas fa-info-circle me-2"></i>
+                            Para obter os tokens, você precisa criar um app no 
+                            <a href="https://developers.mercadolibre.com.br/devcenter" target="_blank">
+                                Mercado Livre Developers
+                            </a>
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnConfirmarAutenticacao">
+                        <i class="fas fa-check me-2"></i>Autenticar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Busca -->
+    <div class="card card-busca">
+        <div class="card-body">
+            <form id="formBuscarMLB">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label for="mlbs" class="form-label fs-5 fw-semibold">
+                            <i class="fas fa-barcode me-2"></i>Códigos MLB
+                        </label>
+                        <textarea class="form-control" id="mlbs" rows="4" 
+                                  placeholder="Digite os códigos MLB (um por linha ou separados por vírgula)&#10;Exemplo:&#10;MLB1234567890&#10;MLB9876543210&#10;MLB5555555555"
+                                  style="font-family: monospace; font-size: 1rem;"></textarea>
+                        <div class="form-text">
+                            Você pode colar múltiplos MLBs separados por linha, vírgula ou espaço
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg" id="btnBuscarMLB">
+                                <i class="fas fa-search me-2"></i>Buscar MLBs
+                            </button>
+                            
+                            <button type="button" class="btn btn-outline-primary btn-lg" id="btnAnalisarEnvio">
+                                <i class="fas fa-shipping-fast me-2"></i>Análise ME1/ME2
+                            </button>
+                            
+                            <button type="button" class="btn btn-outline-secondary btn-lg" id="btnLimpar">
+                                <i class="fas fa-broom me-2"></i>Limpar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Opções de Busca Avançada -->
+    <div class="card card-avancado">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-cogs me-2"></i>Opções de Busca
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tipo de Busca</label>
+                    <select class="form-select" id="tipoBusca">
+                        <option value="mlbs">Por MLBs específicos</option>
+                        <option value="meus_anuncios">Meus anúncios ativos</option>
+                        <option value="arquivo">Carregar de arquivo</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Modo de Envio</label>
+                    <select class="form-select" id="filtroEnvio">
+                        <option value="todos">Todos (ME1 e ME2)</option>
+                        <option value="me2">Apenas ME2</option>
+                        <option value="me1">Apenas ME1</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Manufacturing Time</label>
+                    <select class="form-select" id="filtroManufacturing">
+                        <option value="todos">Com e sem manufacturing</option>
+                        <option value="com">Apenas com manufacturing</option>
+                        <option value="sem">Apenas sem manufacturing</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload de Arquivo (oculto por padrão) -->
+    <div class="card card-upload" id="cardUpload" style="display: none;">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label for="arquivoMLB" class="form-label">Selecionar arquivo com MLBs</label>
+                    <input type="file" class="form-control" id="arquivoMLB" accept=".txt,.csv,.xlsx,.xls">
+                    <div class="form-text">
+                        Arquivos suportados: TXT, CSV, Excel. Um MLB por linha.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-outline-primary w-100" id="btnProcessarArquivo">
+                        <i class="fas fa-file-upload me-2"></i>Processar Arquivo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingMLB" class="loading-container" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3 fs-5">Buscando informações dos anúncios...</p>
+    </div>
+
+    <!-- Estatísticas -->
+    <div id="estatisticas" class="estatisticas-container" style="display: none;"></div>
+
+    <!-- Resultados -->
+    <div id="resultadoMLB" style="display: none;"></div>
+
+    <!-- Mensagem de erro -->
+    <div id="mensagemErro" style="display: none;"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/consultar_mercado_livre.js') }}"></script>
+{% endblock %}

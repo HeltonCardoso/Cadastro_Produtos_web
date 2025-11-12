@@ -18,6 +18,9 @@ from processamento.api_anymarket import consultar_api_anymarket
 from processamento.api_anymarket import obter_token_anymarket_seguro
 from processamento.comparar_prazos import processar_comparacao
 from processamento.google_sheets import ler_planilha_google
+from token_manager_secure import ml_token_manager
+from mercadolivre_api_secure import ml_api_secure
+
 from log_utils import (
     registrar_processo,
     registrar_itens_processados,
@@ -296,6 +299,225 @@ def api_pedidos_anymarket():
         print(f"❌ Erro na API pedidos: {str(e)}")
         return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
  
+# ========================================
+# ROTAS MERCADO LIVRE (MLB)
+# ========================================
+
+@app.route('/consultar-mercado-livre')
+def consultar_mercado_livre():
+    """Página principal para consulta de MLBs"""
+    esta_autenticado = ml_token_manager.is_authenticated()
+    
+    return render_template(
+        'consultar_mercado_livre.html',
+        active_page='consultar_mercado_livre',
+        active_module='mercadolivre',
+        page_title='Consulta Mercado Livre',
+        esta_autenticado=esta_autenticado
+    )
+
+@app.route('/api/mercadolivre/configurar', methods=['POST'])
+def api_configurar_mercadolivre():
+    """API para configurar Client ID e Secret"""
+    try:
+        data = request.get_json()
+        client_id = data.get('client_id')
+        client_secret = data.get('client_secret')
+        
+        if not client_id or not client_secret:
+            return jsonify({'sucesso': False, 'erro': 'Client ID e Client Secret são obrigatórios'}), 400
+        
+        ml_token_manager.set_config(client_id, client_secret)
+        
+        return jsonify({
+            'sucesso': True, 
+            'mensagem': 'Configuração salva com sucesso!'
+        })
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/autenticar', methods=['POST'])
+def api_autenticar_mercadolivre():
+    """API para autenticar no Mercado Livre"""
+    try:
+        data = request.get_json()
+        access_token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
+        
+        if not access_token or not refresh_token:
+            return jsonify({'sucesso': False, 'erro': 'Access token e refresh token são obrigatórios'}), 400
+        
+        # Salva os tokens
+        token_data = {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'expires_in': 21600  # 6 horas
+        }
+        
+        if ml_token_manager.save_tokens(token_data):
+            # Testa a conexão
+            if ml_api_secure.testar_conexao():
+                return jsonify({
+                    'sucesso': True, 
+                    'mensagem': 'Autenticação realizada com sucesso!'
+                })
+            else:
+                return jsonify({
+                    'sucesso': False, 
+                    'erro': 'Tokens inválidos ou sem permissão'
+                })
+        else:
+            return jsonify({
+                'sucesso': False, 
+                'erro': 'Erro ao salvar tokens'
+            })
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/status')
+def api_status_mercadolivre():
+    """API para verificar status da autenticação"""
+    try:
+        esta_autenticado = ml_token_manager.is_authenticated()
+        conexao_ativa = False
+        
+        if esta_autenticado:
+            conexao_ativa = ml_api_secure.testar_conexao()
+        
+        return jsonify({
+            'sucesso': True,
+            'autenticado': esta_autenticado,
+            'conexao_ativa': conexao_ativa
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/buscar-mlb', methods=['POST'])
+def api_buscar_mlb():
+    """API para buscar anúncios por MLB"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+        
+        data = request.get_json()
+        mlbs = data.get('mlbs', [])
+        tipo_busca = data.get('tipo_busca', 'mlbs')
+        
+        if tipo_busca == 'mlbs' and not mlbs:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum MLB fornecido'}), 400
+        
+        # Limpar e validar MLBs
+        mlbs_validos = []
+        for mlb in mlbs:
+            mlb_limpo = mlb.strip().upper()
+            if mlb_limpo.startswith('MLB'):
+                mlbs_validos.append(mlb_limpo)
+            else:
+                # Tentar adicionar MLB se não tiver
+                if mlb_limpo.replace('MLB', '').isalnum():
+                    mlb_formatado = f"MLB{mlb_limpo.replace('MLB', '')}"
+                    mlbs_validos.append(mlb_formatado)
+        
+        if tipo_busca == 'mlbs' and not mlbs_validos:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum MLB válido encontrado'}), 400
+        
+        # Buscar dados
+        if tipo_busca == 'mlbs':
+            resultado = ml_api_secure.buscar_anuncios_mlbs(mlbs_validos)
+        elif tipo_busca == 'meus_anuncios':
+            resultado = ml_api_secure.buscar_meus_anuncios()
+        else:
+            return jsonify({'sucesso': False, 'erro': 'Tipo de busca não suportado'}), 400
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar MLBs: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/analisar-envio-manufacturing', methods=['POST'])
+def api_analisar_envio_manufacturing():
+    """API para análise específica de envio e manufacturing time"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+        
+        data = request.get_json()
+        mlbs = data.get('mlbs', [])
+        tipo_busca = data.get('tipo_busca', 'mlbs')
+        
+        # Buscar dados
+        if tipo_busca == 'mlbs':
+            resultado_busca = ml_api_secure.buscar_anuncios_mlbs(mlbs)
+        elif tipo_busca == 'meus_anuncios':
+            resultado_busca = ml_api_secure.buscar_meus_anuncios()
+        else:
+            return jsonify({'sucesso': False, 'erro': 'Tipo de busca não suportado'}), 400
+        
+        if not resultado_busca['sucesso']:
+            return jsonify(resultado_busca)
+        
+        resultados = resultado_busca['resultados']
+        resultados_validos = [r for r in resultados if 'error' not in r]
+        
+        # Estatísticas
+        total_me2 = sum(1 for r in resultados_validos if r.get('shipping_mode') == 'me2')
+        total_me1 = sum(1 for r in resultados_validos if r.get('shipping_mode') == 'me1')
+        com_manufacturing = sum(1 for r in resultados_validos if r.get('manufacturing_time') not in [0, '0', 'N/A', None, ''])
+        
+        return jsonify({
+            'sucesso': True,
+            'estatisticas': {
+                'total_analisado': len(resultados_validos),
+                'me2': total_me2,
+                'me1': total_me1,
+                'com_manufacturing': com_manufacturing,
+                'sem_manufacturing': len(resultados_validos) - com_manufacturing
+            },
+            'resultados': resultados,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro na análise: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/desautenticar', methods=['POST'])
+def api_desautenticar_mercadolivre():
+    """API para remover autenticação"""
+    try:
+        if ml_token_manager.remove_tokens():
+            return jsonify({
+                'sucesso': True,
+                'mensagem': 'Desautenticado com sucesso'
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Erro ao remover tokens'
+            })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/configuracao')
+def api_configuracao_mercadolivre():
+    """API para obter configuração atual (sem dados sensíveis)"""
+    try:
+        configurado = ml_token_manager.client_id is not None and ml_token_manager.client_secret is not None
+        
+        return jsonify({
+            'sucesso': True,
+            'configurado': configurado
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+
 @app.route('/api/anymarket/pedidos/<int:order_id>')
 def api_detalhes_pedido_anymarket(order_id):
     """API para buscar detalhes de um pedido específico"""

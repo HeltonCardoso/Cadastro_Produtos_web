@@ -87,6 +87,13 @@
             </div>
             <span class="menu-text">Produtos</span>
           </a>
+          <!-- No menu AnyMarket, adicione: -->
+          <a href="{{ url_for('consultar_mercado_livre') }}" class="menu-item {% if active_page == 'consultar_mercado_livre' %}active{% endif %}">
+              <div class="menu-icon">
+                  <i class="fas fa-store me-2"></i>
+              </div>
+              <span class="menu-text">Mercado Livre</span>
+          </a>
         </div>
 
         <!-- Configurações e Outros -->
