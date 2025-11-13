@@ -33,14 +33,12 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-
+*.json.backup
 # Credenciais sensíveis
 credentials.json
 config/google_sheets_config.json
 tokens_secure.json
-
-# Tokens seguros
-tokens_secure.json
+tokens_antigos_backup_*.json
 
 # Tokens antigos (se quiser migrar)
 tokens.json

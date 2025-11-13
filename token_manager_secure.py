@@ -13,7 +13,7 @@ class MercadoLivreTokenManager:
         self.load_config()
     
     def load_config(self):
-        """Carrega configuração do arquivo seguro"""
+        """Carrega configuração do arquivo seguro - COM FALLBACK PARA DADOS ANTIGOS"""
         try:
             if os.path.exists(self.tokens_file):
                 with open(self.tokens_file, 'r', encoding='utf-8') as f:
@@ -32,8 +32,17 @@ class MercadoLivreTokenManager:
                     self.client_id = ml_config.get('client_id')
                     self.client_secret = ml_config.get('client_secret')
                     
+            # 🔄 FALLBACK: Se não encontrou configuração, usa dados antigos
+            if not self.client_id or not self.client_secret:
+                print("⚠️  Usando Client ID/Secret do sistema antigo como fallback")
+                self.client_id = "922777025648012"
+                self.client_secret = "CRm4VwwTgPuPICJAPAymadxPQzIdR7e7"
+                    
         except Exception as e:
             print(f"❌ Erro ao carregar configuração: {str(e)}")
+            # Fallback para dados antigos
+            self.client_id = "922777025648012"
+            self.client_secret = "CRm4VwwTgPuPICJAPAymadxPQzIdR7e7"
     
     def save_tokens(self, token_data):
         """Salva tokens de forma segura no arquivo"""
@@ -75,6 +84,7 @@ class MercadoLivreTokenManager:
         """Carrega tokens do arquivo seguro"""
         try:
             if not os.path.exists(self.tokens_file):
+                print("❌ Arquivo de tokens seguro não encontrado")
                 return None
             
             with open(self.tokens_file, 'r', encoding='utf-8') as f:
@@ -89,14 +99,41 @@ class MercadoLivreTokenManager:
                         ml_tokens = value
                         break
             
-            return ml_tokens if ml_tokens else None
-            
+            if ml_tokens:
+                print("✅ Tokens carregados do arquivo seguro")
+                return ml_tokens
+            else:
+                print("❌ Nenhum token do Mercado Livre encontrado")
+                return None
+                
         except Exception as e:
             print(f"❌ Erro ao carregar tokens: {str(e)}")
             return None
+
+    def testar_token_api(self, token):
+        """Testa se o token funciona na API do Mercado Livre"""
+        try:
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.get(
+                'https://api.mercadolibre.com/users/me',
+                headers=headers,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                user_data = response.json()
+                print(f"✅ Token OK - Usuário: {user_data.get('nickname')}")
+                return True
+            else:
+                print(f"❌ Token inválido - Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Erro ao testar token: {str(e)}")
+            return False
     
     def get_valid_token(self):
-        """Obtém token válido (renova se necessário)"""
+        """Obtém token válido (renova se necessário) - VERSÃO CORRIGIDA"""
         try:
             token_data = self.load_tokens()
             if not token_data:
@@ -105,27 +142,27 @@ class MercadoLivreTokenManager:
             
             access_token = token_data.get('access_token')
             refresh_token = token_data.get('refresh_token')
-            created_at = token_data.get('created_at')
-            expires_in = token_data.get('expires_in', 21600)  # Default 6 horas
             
             if not access_token or not refresh_token:
                 print("❌ Tokens incompletos")
                 return None
             
-            # Verifica se o token expirou
-            if created_at:
-                created_time = datetime.fromisoformat(created_at)
-                expires_time = created_time.timestamp() + expires_in
-                current_time = datetime.now().timestamp()
-                
-                # Renova se faltar menos de 5 minutos para expirar
-                if current_time >= (expires_time - 300):
-                    print("🔁 Token expirado ou próximo de expirar, renovando...")
-                    return self.refresh_token(refresh_token)
+            # 🔥 CORREÇÃO CRÍTICA: Testar o token na API antes de usar
+            token_funciona = self.testar_token_api(access_token)
             
-            print("✅ Token válido")
+            if not token_funciona:
+                print("🔁 Token não funciona na API, tentando renovar...")
+                new_token = self.refresh_token(refresh_token)
+                if new_token:
+                    return new_token
+                else:
+                    print("❌ Não foi possível renovar o token")
+                    return None
+            
+            # Se chegou aqui, o token funciona
+            print("✅ Token válido e funcionando na API")
             return access_token
-            
+                
         except Exception as e:
             print(f"❌ Erro ao obter token válido: {str(e)}")
             return None
@@ -136,6 +173,8 @@ class MercadoLivreTokenManager:
             if not self.client_id or not self.client_secret:
                 print("❌ Client ID ou Client Secret não configurados")
                 return None
+            
+            print(f"🔄 Renovando token com Client ID: {self.client_id[:10]}...")
             
             response = requests.post(
                 'https://api.mercadolibre.com/oauth/token',
@@ -150,9 +189,12 @@ class MercadoLivreTokenManager:
             
             if response.status_code == 200:
                 token_data = response.json()
-                self.save_tokens(token_data)
-                print("✅ Token renovado com sucesso")
-                return token_data['access_token']
+                if self.save_tokens(token_data):
+                    print("✅ Token renovado com sucesso")
+                    return token_data['access_token']
+                else:
+                    print("❌ Token renovado mas erro ao salvar")
+                    return token_data['access_token']  # Retorna mesmo assim
             else:
                 print(f"❌ Erro ao renovar token: {response.status_code} - {response.text}")
                 return None
@@ -198,6 +240,20 @@ class MercadoLivreTokenManager:
         except Exception as e:
             print(f"❌ Erro ao remover tokens: {str(e)}")
             return False
+
+    def get_token_info(self):
+        """Retorna informações sobre o token atual (para debug)"""
+        token_data = self.load_tokens()
+        if not token_data:
+            return None
+        
+        return {
+            'client_id': self.client_id,
+            'has_access_token': bool(token_data.get('access_token')),
+            'has_refresh_token': bool(token_data.get('refresh_token')),
+            'created_at': token_data.get('created_at'),
+            'migrado_em': token_data.get('migrado_em', 'Não')
+        }
 
 # Instância global
 ml_token_manager = MercadoLivreTokenManager()

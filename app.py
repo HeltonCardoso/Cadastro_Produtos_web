@@ -14,43 +14,19 @@ import pandas as pd
 from werkzeug.utils import secure_filename
 from processamento.cadastro_produto_web import executar_processamento
 from processamento.extrair_atributos import extrair_atributos_processamento
-from processamento.api_anymarket import consultar_api_anymarket
 from processamento.api_anymarket import obter_token_anymarket_seguro
 from processamento.comparar_prazos import processar_comparacao
 from processamento.google_sheets import ler_planilha_google
 from token_manager_secure import ml_token_manager
 from mercadolivre_api_secure import ml_api_secure
-
-from log_utils import (
-    registrar_processo,
-    registrar_itens_processados,
-    obter_historico_processos,
-    contar_processos_hoje
-)
-from processamento.api_anymarket import (
-    consultar_api_anymarket, 
-    excluir_foto_anymarket, 
-    excluir_fotos_planilha_anymarket
-)
 from utils.stats_utils import get_processing_stats, obter_dados_grafico_7dias
 import logging
 from logging.handlers import RotatingFileHandler
+from log_utils import (registrar_processo,registrar_itens_processados,obter_historico_processos,contar_processos_hoje)
+from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_anymarket, excluir_fotos_planilha_anymarket)
+from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 
-# Adicione a raiz do projeto ao path do Python
 sys.path.append(str(Path(__file__).parent))
-
-# Agora importe o google_sheets_utils
-from google_sheets_utils import (
-    carregar_configuracao_google_sheets, 
-    salvar_configuracao_google_sheets,
-    listar_abas_google_sheets,
-    testar_conexao_google_sheets
-)
-from processamento.api_anymarket import (
-    consultar_api_anymarket, 
-    excluir_foto_anymarket, 
-    excluir_fotos_planilha_anymarket,
-)
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
@@ -91,16 +67,6 @@ def obter_ultima_planilha():
     except Exception as e:
         app.logger.error(f"Erro em obter_ultima_planilha: {str(e)}")
         return None, None
-
-@app.route("/testar-google")
-def testar_google():
-    try:
-        from processamento.extrair_atributos import ler_planilha_google
-        # Use uma planilha de teste pública do Google
-        df = ler_planilha_google("1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms", "kitsparana")
-        return f"Funcionou! Primeiros dados: {df.head().to_html()}"
-    except Exception as e:
-        return f"ERRO: {str(e)}"
     
 @app.route('/')
 def home():
@@ -336,6 +302,40 @@ def api_configurar_mercadolivre():
             
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+
+@app.route('/api/mercadolivre/forcar-renovacao', methods=['POST'])
+def api_forcar_renovacao():
+    """Força a renovação do token"""
+    try:
+        token_data = ml_token_manager.load_tokens()
+        if not token_data or not token_data.get('refresh_token'):
+            return jsonify({'sucesso': False, 'erro': 'Nenhum refresh token disponível'}), 400
+        
+        print("🔄 Forçando renovação do token...")
+        novo_token = ml_token_manager.refresh_token(token_data['refresh_token'])
+        
+        if novo_token:
+            # Testa o novo token
+            if ml_token_manager.testar_token_api(novo_token):
+                return jsonify({
+                    'sucesso': True, 
+                    'mensagem': 'Token renovado com sucesso!'
+                })
+            else:
+                return jsonify({
+                    'sucesso': False, 
+                    'erro': 'Token renovado mas não funciona na API'
+                })
+        else:
+            return jsonify({
+                'sucesso': False, 
+                'erro': 'Falha na renovação do token. É necessário nova autenticação.'
+            })
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
 
 @app.route('/api/mercadolivre/autenticar', methods=['POST'])
 def api_autenticar_mercadolivre():
@@ -610,23 +610,6 @@ def api_obter_token():
             'arquivo_existe': os.path.exists('tokens_secure.json')
         }), 500
 
-@app.route('/debug/token-status')
-def debug_token_status():
-    """Rota para debug do token"""
-    try:
-        token = obter_token_anymarket_seguro()
-        return jsonify({
-            'success': True,
-            'token_encontrado': True,
-            'token_preview': f"{token[:10]}...{token[-5:]}" if token else None,
-            'arquivo_existe': os.path.exists('tokens_secure.json')
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e),
-            'arquivo_existe': os.path.exists('tokens_secure.json')
-        })
     
 @app.route('/uploads/<filename>')
 def baixar_arquivo(filename):
@@ -659,32 +642,6 @@ def baixar_arquivo(filename):
     except Exception as e:
         app.logger.error(f"Erro ao baixar {filename}: {str(e)}")
         abort(500)
-
-def contar_status_processos(log_file):
-    """Conta processos por status em todo o arquivo de log"""
-    sucesso = erro = 0
-    if os.path.exists(log_file):
-        with open(log_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                if 'status: sucesso' in line.lower():
-                    sucesso += 1
-                elif 'status: erro' in line.lower():
-                    erro += 1
-    return sucesso, erro
-
-def contar_processos_hoje_por_status(log_file):
-    """Conta processos por status apenas no dia atual"""
-    hoje = datetime.now().strftime('%Y-%m-%d')
-    sucesso = erro = 0
-    if os.path.exists(log_file):
-        with open(log_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                if hoje in line:
-                    if 'status: sucesso' in line.lower():
-                        sucesso += 1
-                    elif 'status: erro' in line.lower():
-                        erro += 1
-    return sucesso, erro
 
 @app.route('/configuracoes/tokens')
 def configurar_tokens():
@@ -788,28 +745,6 @@ def testar_token_anymarket():
             'error': f'Erro ao testar token: {str(e)}'
         }), 500
         
-def contar_processos_por_dia(date):
-    log_file = 'logs/processos/cadastro.log'
-    count = 0
-    if os.path.exists(log_file):
-        with open(log_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                if date in line:
-                    count += 1
-    return count
-
-def registrar_produtos(produtos_processados):
-    """Registra os produtos processados em arquivo separado"""
-    data_dir = datetime.now().strftime("%Y-%m-%d")
-    hora_dir = datetime.now().strftime("%H-%M-%S")
-    log_dir = f"logs/produtos/{data_dir}/{hora_dir}"
-    os.makedirs(log_dir, exist_ok=True)
-    
-    log_file = f"{log_dir}/execucao_{str(uuid.uuid4())[:8]}.log"
-    with open(log_file, "w", encoding="utf-8") as f:
-        for produto in produtos_processados:
-            f.write(f"{produto['nome']} - {produto['ean']} - {produto['status']}\n")
-    return log_file
 
 @app.route("/consultar-anymarket", methods=["GET", "POST"])
 def consultar_anymarket():
@@ -1070,19 +1005,6 @@ def excluir_fotos_lote_route():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
    
-@app.route("/testar-endpoints-anymarket")
-def testar_endpoints_anymarket_route():
-    """Rota para testar quais endpoints são suportados"""
-    product_id = request.args.get('product_id', '347730532')
-    photo_id = request.args.get('photo_id', '')
-    
-    if not photo_id:
-        return jsonify({'erro': 'ID da foto é necessário'}), 400
-    
-    from processamento.api_anymarket import testar_endpoints_anymarket
-    resultado = testar_endpoints_anymarket(product_id, photo_id)
-    
-    return jsonify(resultado)
 
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
