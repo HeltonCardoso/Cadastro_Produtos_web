@@ -49,6 +49,10 @@ class MercadoLivreAPISecure:
             encontrados = 0
             nao_encontrados = 0
             
+            # DEBUG: Mostrar JSON completo do primeiro MLB
+            if mlbs:
+                self.debug_json_completo(mlbs[0])
+            
             # A API do ML permite buscar até 20 itens por vez
             for i in range(0, len(mlbs), 20):
                 lote = mlbs[i:i + 20]
@@ -149,6 +153,61 @@ class MercadoLivreAPISecure:
                 'status': 'error'
             }
     
+    def debug_json_completo(self, mlb):
+        """Debug: Mostra o JSON completo retornado pela API para um MLB"""
+        try:
+            headers = self._get_headers()
+            
+            print(f"\n🔍 DEBUG - Buscando MLB: {mlb}")
+            print("=" * 60)
+            
+            # Faz a requisição para um item específico
+            response = requests.get(
+                f"{self.base_url}/items/{mlb}",
+                headers=headers,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                json_completo = response.json()
+                
+                print("✅ JSON COMPLETO DA API:")
+                print(json.dumps(json_completo, indent=2, ensure_ascii=False))
+                
+                # Análise da estrutura shipping
+                print("\n📦 ANALISE DA ESTRUTURA SHIPPING:")
+                if 'shipping' in json_completo:
+                    shipping = json_completo['shipping']
+                    print(f"Chaves disponíveis no shipping: {list(shipping.keys())}")
+                    for key, value in shipping.items():
+                        print(f"  {key}: {value}")
+                else:
+                    print("  ❌ 'shipping' não encontrado no JSON")
+                
+                # Análise dos sale_terms
+                print("\n📋 ANALISE DOS SALE_TERMS:")
+                if 'sale_terms' in json_completo:
+                    sale_terms = json_completo['sale_terms']
+                    print(f"Total de sale_terms: {len(sale_terms)}")
+                    for term in sale_terms:
+                        print(f"  ID: {term.get('id')}, Name: {term.get('name')}, Value: {term.get('value_name')}")
+                else:
+                    print("  ❌ 'sale_terms' não encontrado no JSON")
+                    
+                # Mostra todas as chaves principais do JSON
+                print("\n🔑 CHAVES PRINCIPAIS DO JSON:")
+                for key in json_completo.keys():
+                    print(f"  - {key}")
+                    
+            else:
+                print(f"❌ Erro HTTP: {response.status_code}")
+                print(f"Resposta: {response.text}")
+                
+            print("=" * 60)
+            
+        except Exception as e:
+            print(f"❌ Erro no debug: {str(e)}")
+
     def buscar_meus_anuncios(self, status='active', limit=50):
         """Busca anúncios do usuário autenticado"""
         try:

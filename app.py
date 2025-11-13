@@ -2,7 +2,7 @@ from io import BytesIO
 import sys
 from pathlib import Path
 import uuid
-from fastapi import responses
+#from fastapi import responses
 from flask import Flask, abort, current_app, json, make_response, render_template, request, send_file, send_from_directory, redirect, url_for, flash, jsonify
 from gspread import service_account
 import gspread
@@ -94,7 +94,23 @@ def home():
     except Exception as e:
         app.logger.error(f"Erro na rota home: {str(e)}")
         return render_template('error.html'), 500
-
+    
+@app.route('/api/mercadolivre/debug-mlb/<mlb>')
+def debug_mlb(mlb):
+    """Rota simples para debug de um MLB específico"""
+    try:
+        from mercadolivre_api_secure import ml_api_secure
+        ml_api_secure.debug_json_completo(mlb)
+        return jsonify({
+            'sucesso': True,
+            'mensagem': f'Debug do MLB {mlb} realizado - verifique o console do servidor'
+        })
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        })
+    
 @app.route('/pedidos-anymarket')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
 def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
