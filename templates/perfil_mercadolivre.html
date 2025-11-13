@@ -1,0 +1,353 @@
+<!-- templates/perfil_mercadolivre.html -->
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+.dashboard-card {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #3498db;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-card.vendas {
+    border-left-color: #2ecc71;
+}
+
+.dashboard-card.anuncios {
+    border-left-color: #e74c3c;
+}
+
+.dashboard-card.faturamento {
+    border-left-color: #9b59b6;
+}
+
+.metric-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 0.2rem;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.metric-subtext {
+    font-size: 0.8rem;
+    color: #95a5a6;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.level-badge {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #8c6b1f;
+    font-weight: 700;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.status-badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.venda-item {
+    border-left: 3px solid #2ecc71;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.venda-item:hover {
+    background: #e8f5e8;
+    transform: translateX(5px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin: 0 auto;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    
+    <!-- Header -->
+    <div class="profile-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-2">
+                    <i class="fas fa-user-tie me-3"></i>Minha Conta Mercado Livre
+                </h1>
+                <p class="lead mb-0 opacity-90">Resumo da sua conta e desempenho</p>
+            </div>
+            <div class="col-md-4 text-end">
+                {% if esta_autenticado %}
+                    <span class="status-badge bg-success bg-opacity-20 text-white border border-success">
+                        <i class="fas fa-check-circle me-2"></i>Conta Conectada
+                    </span>
+                {% else %}
+                    <span class="status-badge bg-danger bg-opacity-20 text-white border border-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Não Autenticado
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if not esta_autenticado %}
+        <!-- Mensagem de não autenticado -->
+        <div class="alert alert-warning text-center py-4">
+            <div class="py-3">
+                <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+                <h4 class="alert-heading">Autenticação Necessária</h4>
+                <p class="mb-3">Conecte sua conta do Mercado Livre para acessar os dados do dashboard.</p>
+                <a href="{{ url_for('consultar_mercado_livre') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Conectar Conta
+                </a>
+            </div>
+        </div>
+    {% elif dados_perfil.erro %}
+        <!-- Erro ao carregar dados -->
+        <div class="alert alert-danger text-center py-4">
+            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+            <h4>Erro ao Carregar Dados</h4>
+            <p class="mb-0">{{ dados_perfil.erro }}</p>
+        </div>
+    {% else %}
+        {% set usuario = dados_perfil.dados_usuario %}
+        {% set metricas = dados_perfil.metricas %}
+        {% set nivel = dados_perfil.nivel_conta %}
+
+        <!-- Informações da Conta -->
+        <div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-id-card me-2"></i>Informações da Conta
+        </h5>
+        {% if dados_perfil.nivel_conta and dados_perfil.nivel_conta != "Não identificado" %}
+            <span class="level-badge">
+                <i class="fas fa-trophy me-2"></i>
+                {% if dados_perfil.nivel_conta == "5_green" %}
+                    Líder
+                {% elif dados_perfil.nivel_conta == "4_light_green" %}
+                    Platinum
+                {% elif dados_perfil.nivel_conta == "3_yellow" %}
+                    Ouro
+                {% elif dados_perfil.nivel_conta == "2_orange" %}
+                    Prata
+                {% elif dados_perfil.nivel_conta == "1_red" %}
+                    Bronze
+                {% else %}
+                    {{ dados_perfil.nivel_conta|title }}
+                {% endif %}
+            </span>
+        {% else %}
+            <span class="level-badge" style="background: linear-gradient(135deg, #95a5a6, #bdc3c7);">
+                <i class="fas fa-user me-2"></i>Nível em Análise
+            </span>
+        {% endif %}
+    </div>>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <div class="user-avatar">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h5 class="mt-3 mb-1">{{ usuario.nickname }}</h5>
+                        <small class="text-muted">@{{ usuario.nickname }}</small>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong><i class="fas fa-fingerprint me-2 text-primary"></i>ID da Conta:</strong><br>
+                                   <code>{{ usuario.id }}</code></p>
+                                <p><strong><i class="fas fa-envelope me-2 text-primary"></i>Email:</strong><br>
+                                   {{ usuario.email or 'Não informado' }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong><i class="fas fa-flag me-2 text-primary"></i>Localização:</strong><br>
+                                   <span class="badge bg-info">{{ usuario.country_id }}</span> - {{ usuario.site_id }}</p>
+                                <p><strong><i class="fas fa-user-tag me-2 text-primary"></i>Tipo de Conta:</strong><br>
+                                   <span class="badge bg-secondary">{{ usuario.user_type or 'Individual' }}</span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong><i class="fas fa-calendar me-2 text-primary"></i>Membro desde:</strong><br>
+                                   {{ usuario.registration_date[:10] if usuario.registration_date else 'N/A' }}</p>
+                                <p><strong><i class="fas fa-shield-alt me-2 text-primary"></i>Status:</strong><br>
+                                   <span class="badge bg-success">{{ usuario.status or 'Ativa' }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Métricas Principais -->
+        <div class="stats-grid">
+            <!-- Vendas -->
+            <div class="card dashboard-card vendas">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="metric-number">{{ metricas.total_vendas_30_dias }}</div>
+                            <div class="metric-label">Vendas (30 dias)</div>
+                            <div class="metric-subtext">
+                                <i class="fas fa-chart-line me-1"></i> {{ metricas.vendas_por_dia }} venda/dia
+                            </div>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-shopping-cart fa-2x text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Faturamento -->
+            <div class="card dashboard-card faturamento">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="metric-number">R$ {{ "%.0f"|format(metricas.valor_total_vendas) }}</div>
+                            <div class="metric-label">Faturamento Total</div>
+                            <div class="metric-subtext">
+                                <i class="fas fa-ticket-alt me-1"></i> 
+                                R$ {{ "%.2f"|format(metricas.ticket_medio) }} ticket médio
+                            </div>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-money-bill-wave fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anúncios -->
+            <div class="card dashboard-card anuncios">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="metric-number">{{ metricas.anuncios_ativos }}</div>
+                            <div class="metric-label">Anúncios Ativos</div>
+                            <div class="metric-subtext">
+                                <i class="fas fa-tag me-1"></i> Publicados no site
+                            </div>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-tags fa-2x text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Últimas Vendas -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>Últimas Vendas
+                        </h5>
+                        <span class="badge bg-light text-dark">
+                            {{ metricas.total_vendas_30_dias }} vendas (30 dias)
+                            {% if metricas.total_vendas_30_dias >= 50 %}
+                                <br><small>+50 vendas encontradas</small>
+                            {% endif %}
+                        </span
+                    </div>
+                    <div class="card-body">
+                        {% if dados_perfil.ultimas_vendas %}
+                            {% for venda in dados_perfil.ultimas_vendas %}
+                                <div class="venda-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-2">
+                                            <strong>#{{ venda.id }}...</strong>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <small class="text-muted">Comprador:</small>
+                                            <br>
+                                            <strong>{{ venda.comprador }}</strong>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <small class="text-muted">Data:</small>
+                                            <br>
+                                            {{ venda.data[:10] if venda.data else 'N/A' }}
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <small class="text-muted">Itens:</small>
+                                            <br>
+                                            <span class="badge bg-info">{{ venda.itens }}</span>
+                                        </div>
+                                        <div class="col-md-2 text-center">
+                                            <small class="text-muted">Status:</small>
+                                            <br>
+                                            <span class="badge bg-success">{{ venda.status or 'Concluída' }}</span>
+                                        </div>
+                                        <div class="col-md-1 text-end">
+                                            <strong class="text-success">R$ {{ "%.2f"|format(venda.total) }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">Nenhuma venda encontrada nos últimos 30 dias</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timestamp -->
+        <div class="text-center mt-4">
+            <small class="text-muted">
+                <i class="fas fa-sync-alt me-1"></i>
+                Atualizado em: {{ dados_perfil.timestamp[:16]|replace('T', ' ') }}
+            </small>
+        </div>
+
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -94,6 +94,13 @@
               </div>
               <span class="menu-text">Mercado Livre</span>
           </a>
+
+          <li class="nav-item">
+              <a class="nav-link {% if active_page == 'perfil_mercado_livre' %}active{% endif %}" 
+                href="{{ url_for('perfil_mercado_livre') }}">
+                  <i class="fas fa-user-circle me-2"></i>Meu Perfil
+              </a>
+          </li>
         </div>
 
         <!-- Configurações e Outros -->

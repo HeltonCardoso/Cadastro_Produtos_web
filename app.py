@@ -2,6 +2,7 @@ from io import BytesIO
 import sys
 from pathlib import Path
 import uuid
+from fastapi import responses
 from flask import Flask, abort, current_app, json, make_response, render_template, request, send_file, send_from_directory, redirect, url_for, flash, jsonify
 from gspread import service_account
 import gspread
@@ -1884,6 +1885,171 @@ def api_listar_produtos():
     except Exception as e:
         print(f"❌ Erro ao listar produtos: {str(e)}")
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+@app.route('/perfil-mercado-livre')
+def perfil_mercado_livre():
+    """Dashboard com dados do perfil do Mercado Livre"""
+    esta_autenticado = ml_token_manager.is_authenticated()
+    
+    dados_perfil = None
+    if esta_autenticado:
+        dados_perfil = obter_dados_completos_perfil()
+    
+    return render_template(
+        'perfil_mercadolivre.html',
+        active_page='perfil_mercado_livre',
+        active_module='mercadolivre',
+        page_title='Dashboard - Mercado Livre',
+        esta_autenticado=esta_autenticado,
+        dados_perfil=dados_perfil
+    )
+
+def obter_dados_completos_perfil():
+    """Obtém dados básicos do perfil - VERSÃO CORRIGIDA"""
+    try:
+        token = ml_token_manager.get_valid_token()
+        if not token:
+            return {'erro': 'Token não disponível'}
+        
+        headers = {'Authorization': f'Bearer {token}'}
+        base_url = "https://api.mercadolibre.com"
+        
+        # Dados básicos do usuário
+        response_user = requests.get(f"{base_url}/users/me", headers=headers, timeout=10)
+        if response_user.status_code != 200:
+            return {'erro': 'Erro ao buscar dados do usuário'}
+        
+        user_data = response_user.json()
+        user_id = user_data['id']
+        print(f"👤 Usuário: {user_data.get('nickname')} (ID: {user_id})")
+        
+        # Buscar seller_reputation para nível da conta - MAIS CONFIÁVEL
+        nivel_conta = "Não identificado"
+        try:
+            response_reputation = requests.get(
+                f"{base_url}/users/{user_id}/seller_reputation",
+                headers=headers,
+                timeout=10
+            )
+            if response_reputation.status_code == 200:
+                reputation_data = response_reputation.json()
+                print(f"📊 Seller reputation: {reputation_data}")
+                
+                # Extrair nível de diferentes campos possíveis
+                if 'level_id' in reputation_data:
+                    nivel_conta = reputation_data['level_id']
+                elif 'seller_level' in reputation_data:
+                    nivel_conta = reputation_data['seller_level']
+                elif 'power_seller_status' in reputation_data:
+                    nivel_conta = reputation_data['power_seller_status']
+                    
+                print(f"✅ Nível da conta: {nivel_conta}")
+            else:
+                print(f"❌ Erro seller_reputation: {response_reputation.status_code}")
+        except Exception as e:
+            print(f"❌ Erro nível: {e}")
+        
+        # Buscar vendas com PAGINAÇÃO para pegar mais de 50
+        data_30_dias_atras = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%S.000-03:00')
+        
+        todas_vendas = []
+        offset = 0
+        limit = 50
+        
+        while True:
+            params_vendas = {
+                'seller': user_id,
+                'order.date_created.from': data_30_dias_atras,
+                'sort': 'date_desc',
+                'limit': limit,
+                'offset': offset
+            }
+            
+            response_vendas = requests.get(
+                f"{base_url}/orders/search", 
+                headers=headers, 
+                params=params_vendas, 
+                timeout=20
+            )
+            
+            if response_vendas.status_code != 200:
+                print(f"❌ Erro vendas (offset {offset}): {response_vendas.status_code}")
+                break
+            
+            vendas_data = response_vendas.json()
+            vendas_lote = vendas_data.get('results', [])
+            
+            if not vendas_lote:
+                break
+                
+            todas_vendas.extend(vendas_lote)
+            print(f"✅ Lote {offset//limit + 1}: {len(vendas_lote)} vendas")
+            
+            # Se veio menos que o limite, é a última página
+            if len(vendas_lote) < limit:
+                break
+                
+            offset += limit
+            
+            # Limitar a 200 vendas máximo para não sobrecarregar
+            if offset >= 200:
+                break
+        
+        print(f"📈 Total de vendas encontradas: {len(todas_vendas)}")
+        
+        # Buscar anúncios ativos
+        anuncios_ativos = 0
+        try:
+            response_anuncios = requests.get(
+                f"{base_url}/users/{user_id}/items/search?status=active&limit=50",
+                headers=headers,
+                timeout=10
+            )
+            if response_anuncios.status_code == 200:
+                anuncios_data = response_anuncios.json()
+                anuncios_ativos = len(anuncios_data.get('results', []))
+                print(f"✅ Anúncios ativos: {anuncios_ativos}")
+        except Exception as e:
+            print(f"❌ Erro anúncios: {e}")
+        
+        # Calcular métricas básicas
+        total_vendas = len(todas_vendas)
+        valor_total_vendas = sum(float(order.get('total_amount', order.get('total', 0))) for order in todas_vendas)
+        
+        # Processar últimas vendas
+        ultimas_vendas_detalhadas = []
+        for venda in todas_vendas[:10]:  # Apenas 10 últimas para mostrar
+            total_venda = venda.get('total_amount') or venda.get('total') or 0
+            
+            ultimas_vendas_detalhadas.append({
+                'id': venda.get('id', 'N/A'),
+                'data': venda.get('date_created', 'N/A'),
+                'status': venda.get('status', 'N/A'),
+                'total': float(total_venda),
+                'itens': len(venda.get('order_items', [])),
+                'comprador': venda.get('buyer', {}).get('nickname', 'N/A')
+            })
+        
+        return {
+            'dados_usuario': user_data,
+            'nivel_conta': nivel_conta,
+            'metricas': {
+                'total_vendas_30_dias': total_vendas,
+                'valor_total_vendas': valor_total_vendas,
+                'ticket_medio': valor_total_vendas / total_vendas if total_vendas > 0 else 0,
+                'anuncios_ativos': anuncios_ativos,
+                'vendas_por_dia': round(total_vendas / 30, 2) if total_vendas > 0 else 0,
+                'total_vendas_encontradas': total_vendas  # Para mostrar no template
+            },
+            'ultimas_vendas': ultimas_vendas_detalhadas,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar dados: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {'erro': f'Erro interno: {str(e)}'}
     
 if __name__ == "__main__":
     app.run(debug=True)
