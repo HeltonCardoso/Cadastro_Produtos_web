@@ -107,37 +107,100 @@ class MercadoLivreAPISecure:
             }
     
     def _processar_anuncio(self, item):
-        """Processa os dados de um anúncio"""
+        """Processa os dados de um anúncio incluindo tipo, catálogo e variações"""
         try:
             # Extrai informações de shipping
             shipping = item.get('shipping', {})
             shipping_mode = shipping.get('mode', 'N/A')
             
-            # Extrai manufacturing time dos sale_terms
+            # Frete grátis - campo confirmado no JSON
+            frete_gratis = shipping.get('free_shipping', False)
+            frete_gratis_texto = 'Sim' if frete_gratis else 'Não'
+            
+            # Manufacturing time - procura nos sale_terms
             manufacturing_time = 'N/A'
             for term in item.get('sale_terms', []):
                 if term.get('id') == 'MANUFACTURING_TIME':
                     manufacturing_time = term.get('value_name', 'N/A')
                     break
             
-            # Se não encontrou nos sale_terms, tenta no campo direto
+            # Se não encontrou, tenta campo direto
             if manufacturing_time == 'N/A':
                 manufacturing_time = item.get('manufacturing_time', 'N/A')
             
+            # SKU do vendedor - campo confirmado no JSON
+            meu_sku = item.get('seller_custom_field', 'N/A')
+            
+            # =========================================
+            # NOVOS CAMPOS: CATÁLOGO, VARIAÇÕES E TIPO
+            # =========================================
+            
+            # 1. Verifica se é produto do catálogo
+            catalog_product_id = item.get('catalog_product_id')
+            eh_catalogo = 'Sim' if catalog_product_id else 'Não'
+            
+            # 2. Verifica se tem variações
+            variations = item.get('variations', [])
+            tem_variacoes = 'Sim' if variations and len(variations) > 0 else 'Não'
+            quantidade_variacoes = len(variations)
+            
+            # 3. Identifica o tipo de anúncio (listing_type_id)
+            listing_type_id = item.get('listing_type_id', 'N/A')
+            tipo_anuncio = self._mapear_tipo_anuncio(listing_type_id)
+            
+            # 4. Verifica se é Premium/Gold/Classic
+            tipo_premium = self._identificar_tipo_premium(listing_type_id, item.get('tags', []))
+            
+            # 5. Processa dados das variações
+            variacoes_detalhes = []
+            if variations:
+                for variacao in variations:
+                    # Extrai os atributos da variação
+                    atributos = []
+                    for attr in variacao.get('attribute_combinations', []):
+                        atributos.append({
+                            'name': attr.get('name', ''),
+                            'value_name': attr.get('value_name', '')
+                        })
+                    
+                    variacao_info = {
+                        'id': variacao.get('id', 'N/A'),
+                        'attribute_combinations': atributos,
+                        'price': variacao.get('price', 0),
+                        'available_quantity': variacao.get('available_quantity', 0),
+                        'sold_quantity': variacao.get('sold_quantity', 0),
+                        'picture_ids': variacao.get('picture_ids', [])
+                    }
+                    variacoes_detalhes.append(variacao_info)
+            
             return {
+                # ORDEM SOLICITADA ORIGINAL
+                'meu_sku': meu_sku,
                 'id': item.get('id', 'N/A'),
                 'title': item.get('title', 'N/A'),
                 'price': item.get('price', 0),
-                'currency_id': item.get('currency_id', 'BRL'),
-                'status': item.get('status', 'N/A'),
-                'condition': item.get('condition', 'N/A'),
                 'available_quantity': item.get('available_quantity', 0),
-                'sold_quantity': item.get('sold_quantity', 0),
-                'listing_type_id': item.get('listing_type_id', 'N/A'),
                 'shipping_mode': shipping_mode,
+                'manufacturing_time': manufacturing_time,
+                'status': item.get('status', 'N/A'),
+                'frete_gratis': frete_gratis_texto,
+                
+                # NOVOS CAMPOS ADICIONAIS
+                'eh_catalogo': eh_catalogo,
+                'tem_variacoes': tem_variacoes,
+                'quantidade_variacoes': quantidade_variacoes,
+                'variacoes_detalhes': variacoes_detalhes,  # DETALHES DAS VARIAÇÕES
+                'tipo_anuncio': tipo_anuncio,
+                'tipo_premium': tipo_premium,
+                'listing_type_id': listing_type_id,
+                'catalog_product_id': catalog_product_id,
+                
+                # Campos adicionais para compatibilidade
+                'currency_id': item.get('currency_id', 'BRL'),
+                'condition': item.get('condition', 'N/A'),
+                'sold_quantity': item.get('sold_quantity', 0),
                 'shipping_free_shipping': shipping.get('free_shipping', False),
                 'shipping_local_pick_up': shipping.get('local_pick_up', False),
-                'manufacturing_time': manufacturing_time,
                 'permalink': item.get('permalink', 'N/A'),
                 'thumbnail': item.get('thumbnail', 'N/A'),
                 'seller_id': item.get('seller_id', 'N/A'),
@@ -147,12 +210,57 @@ class MercadoLivreAPISecure:
             }
             
         except Exception as e:
+            print(f"❌ Erro no processamento do item {item.get('id', 'N/A')}: {str(e)}")
             return {
                 'id': item.get('id', 'N/A'),
                 'error': f'Erro no processamento: {str(e)}',
                 'status': 'error'
             }
-    
+
+    def _mapear_tipo_anuncio(self, listing_type_id):
+        """Mapeia o listing_type_id para um nome mais amigável"""
+        mapeamento = {
+            'gold_special': 'Gold Special',
+            'gold_pro': 'Gold Pro', 
+            'gold_premium': 'Gold Premium',
+            'gold': 'Gold',
+            'silver': 'Silver',
+            'bronze': 'Bronze',
+            'free': 'Gratuito',
+            'classic': 'Clássico',
+            'premium': 'Premium',
+            'blue': 'Blue',
+            'orange': 'Orange'
+        }
+        return mapeamento.get(listing_type_id, listing_type_id)
+
+    def _identificar_tipo_premium(self, listing_type_id, tags):
+        """Identifica se é Premium, Gold ou Classic baseado no listing_type_id e tags"""
+        listing_lower = listing_type_id.lower()
+        
+        # Verifica pelo listing_type_id primeiro
+        if 'premium' in listing_lower:
+            return 'Premium'
+        elif 'gold' in listing_lower:
+            return 'Gold'
+        elif 'classic' in listing_lower or 'clássico' in listing_lower:
+            return 'Classic'
+        elif 'silver' in listing_lower:
+            return 'Silver'
+        elif 'bronze' in listing_lower:
+            return 'Bronze'
+        
+        # Verifica pelas tags
+        tags_str = ' '.join(tags).lower()
+        if 'premium' in tags_str:
+            return 'Premium'
+        elif 'gold' in tags_str:
+            return 'Gold'
+        elif 'classic' in tags_str or 'clássico' in tags_str:
+            return 'Classic'
+        
+        return 'Standard'
+
     def debug_json_completo(self, mlb):
         """Debug: Mostra o JSON completo retornado pela API para um MLB"""
         try:
