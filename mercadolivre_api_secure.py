@@ -163,16 +163,25 @@ class MercadoLivreAPISecure:
                             'value_name': attr.get('value_name', '')
                         })
                     
+                    # Manufacturing time da variação
+                    manufacturing_time_variacao = 'N/A'
+                    for term in variacao.get('sale_terms', []):
+                        if term.get('id') == 'MANUFACTURING_TIME':
+                            manufacturing_time_variacao = term.get('value_name', 'N/A')
+                            break
+                    
                     variacao_info = {
                         'id': variacao.get('id', 'N/A'),
                         'attribute_combinations': atributos,
                         'price': variacao.get('price', 0),
                         'available_quantity': variacao.get('available_quantity', 0),
                         'sold_quantity': variacao.get('sold_quantity', 0),
-                        'picture_ids': variacao.get('picture_ids', [])
+                        'picture_ids': variacao.get('picture_ids', []),
+                        'manufacturing_time': manufacturing_time_variacao,  # NOVO CAMPO
+                        'seller_custom_field': variacao.get('seller_custom_field', 'N/A')  # SKU da variação
                     }
                     variacoes_detalhes.append(variacao_info)
-            
+
             return {
                 # ORDEM SOLICITADA ORIGINAL
                 'meu_sku': meu_sku,
@@ -189,7 +198,7 @@ class MercadoLivreAPISecure:
                 'eh_catalogo': eh_catalogo,
                 'tem_variacoes': tem_variacoes,
                 'quantidade_variacoes': quantidade_variacoes,
-                'variacoes_detalhes': variacoes_detalhes,  # DETALHES DAS VARIAÇÕES
+                'variacoes_detalhes': variacoes_detalhes,  # AGORA COM PRAZOS
                 'tipo_anuncio': tipo_anuncio,
                 'tipo_premium': tipo_premium,
                 'listing_type_id': listing_type_id,

@@ -25,6 +25,9 @@
                 <button class="btn btn-outline-secondary" onclick="limparCampos()">
                     <i class="fas fa-broom"></i> Limpar
                 </button>
+                <button class="btn btn-success" onclick="exportarParaExcel()" id="btnExportar" style="display: none;">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </button>
             </div>
         </div>
 
@@ -225,6 +228,8 @@
                                 <th>Preço</th>
                                 <th>Estoque</th>
                                 <th>Vendidos</th>
+                                <th>Prazo</th> <!-- NOVA COLUNA -->
+                                <th>SKU</th> <!-- NOVA COLUNA -->
                             </tr>
                         </thead>
                         <tbody id="corpoTabelaVariacoes"></tbody>

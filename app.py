@@ -1920,6 +1920,126 @@ def perfil_mercado_livre():
         dados_perfil=dados_perfil
     )
 
+@app.route('/api/mercadolivre/exportar-excel', methods=['POST'])
+def api_exportar_mlb_excel():
+    """API para exportar resultados de MLB para Excel - ESTRUTURA MELHORADA"""
+    try:
+        from openpyxl.styles import PatternFill
+        
+        data = request.get_json()
+        dados_exportacao = data.get('dados', [])
+        
+        if not dados_exportacao:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum dado para exportar'}), 400
+        
+        # Criar DataFrame
+        df = pd.DataFrame(dados_exportacao)
+        
+        # Reordenar colunas para melhor visualização
+        colunas_ordenadas = [
+            'MLB Principal', 'MLB Variação', 'Tipo', 'SKU', 'Título', 'Preço', 
+            'Estoque', 'Prazo Fabricação', 'Modo Envio', 'Frete Grátis', 'Status',
+            'Catálogo', 'Variações', 'Quantidade Variações', 'Tipo Anúncio', 'Tipo Premium',
+            'Condição', 'Vendidos', 'Categoria', 'ID Catálogo', 'Data Criação', 'Link',
+            'Atributos Variação', 'Erro'
+        ]
+        
+        # Manter apenas as colunas que existem nos dados
+        colunas_finais = [col for col in colunas_ordenadas if col in df.columns]
+        
+        # Reordenar o DataFrame
+        df = df[colunas_finais]
+        
+        # Criar arquivo Excel em memória
+        output = BytesIO()
+        
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            # Planilha principal com todos os dados
+            df.to_excel(writer, sheet_name='Resultados MLB', index=False)
+            
+            # Planilha resumida com estatísticas
+            estatisticas_data = {
+                'Métrica': [
+                    'Total de Anúncios Principais',
+                    'Total de Variações',
+                    'Total Geral',
+                    'Encontrados',
+                    'Não Encontrados',
+                    'Data da Exportação'
+                ],
+                'Valor': [
+                    data.get('total_principais', 0),
+                    data.get('total_variações', 0),
+                    data.get('total_geral', 0),
+                    data.get('total_encontrado', 0),
+                    data.get('total_nao_encontrado', 0),
+                    datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+                ]
+            }
+            df_estatisticas = pd.DataFrame(estatisticas_data)
+            df_estatisticas.to_excel(writer, sheet_name='Estatísticas', index=False)
+            
+            # Formatar planilha principal
+            worksheet = writer.sheets['Resultados MLB']
+            
+            # Destacar variações com cor diferente
+            if data.get('total_variações', 0) > 0:
+                light_blue_fill = PatternFill(start_color='E6F3FF', end_color='E6F3FF', fill_type='solid')
+                light_yellow_fill = PatternFill(start_color='FFF2CC', end_color='FFF2CC', fill_type='solid')
+                
+                for row_idx in range(2, len(dados_exportacao) + 2):
+                    tipo_cell = worksheet[f'C{row_idx}']  # Coluna Tipo
+                    if tipo_cell.value == 'Variação':
+                        # Aplicar cor azul clara para variações
+                        for col_idx in range(1, worksheet.max_column + 1):
+                            cell = worksheet.cell(row=row_idx, column=col_idx)
+                            cell.fill = light_blue_fill
+                    elif tipo_cell.value == 'Principal':
+                        # Aplicar cor amarela clara para principais
+                        for col_idx in range(1, worksheet.max_column + 1):
+                            cell = worksheet.cell(row=row_idx, column=col_idx)
+                            cell.fill = light_yellow_fill
+            
+            # Ajustar largura das colunas automaticamente
+            for column in worksheet.columns:
+                max_length = 0
+                column_letter = column[0].column_letter
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = min(max_length + 2, 35)  # Limite de 35 para não ficar muito largo
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+            
+            # Formatar planilha de estatísticas
+            worksheet_stats = writer.sheets['Estatísticas']
+            for column in worksheet_stats.columns:
+                column_letter = column[0].column_letter
+                worksheet_stats.column_dimensions[column_letter].width = 30
+            
+            # Adicionar filtros na planilha principal
+            worksheet.auto_filter.ref = worksheet.dimensions
+        
+        output.seek(0)
+        
+        # Nome do arquivo com timestamp
+        nome_arquivo = f"consulta_mlb_estruturada_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=nome_arquivo
+        )
+        
+    except Exception as e:
+        print(f"❌ Erro na exportação Excel MLB: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'sucesso': False, 'erro': f'Erro na exportação: {str(e)}'}), 500
+
 def obter_dados_completos_perfil():
     """Obtém dados básicos do perfil - VERSÃO CORRIGIDA"""
     try:
