@@ -41,6 +41,89 @@ class MercadoLivreAPISecure:
             print(f"❌ Erro ao testar conexão: {str(e)}")
             return False
     
+    def atualizar_manufacturing_time(self, mlb_id, manufacturing_time_days):
+        """Atualiza o manufacturing time de um anúncio"""
+        try:
+            headers = self._get_headers()
+            
+            # Prepara os dados de atualização
+            update_data = {
+                "sale_terms": [
+                    {
+                        "id": "MANUFACTURING_TIME",
+                        "value_name": f"{manufacturing_time_days} dias"
+                    }
+                ]
+            }
+            
+            print(f"🔄 Atualizando MLB {mlb_id} - Manufacturing Time: {manufacturing_time_days} dias")
+            
+            response = requests.put(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                json=update_data,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                print(f"✅ Manufacturing Time atualizado com sucesso para {manufacturing_time_days} dias")
+                return {
+                    'sucesso': True,
+                    'mensagem': f'Manufacturing Time atualizado para {manufacturing_time_days} dias'
+                }
+            else:
+                error_msg = f"Erro HTTP {response.status_code}"
+                print(f"❌ {error_msg}")
+                return {
+                    'sucesso': False,
+                    'erro': error_msg
+                }
+                
+        except Exception as e:
+            print(f"❌ Erro ao atualizar manufacturing time: {str(e)}")
+            return {
+                'sucesso': False,
+                'erro': str(e)
+            }
+    
+    def atualizar_multiplos_manufacturing(self, atualizacoes):
+        """Atualiza manufacturing time para múltiplos anúncios"""
+        try:
+            resultados = []
+            
+            for atualizacao in atualizacoes:
+                mlb_id = atualizacao.get('mlb')
+                dias = atualizacao.get('dias')
+                
+                if not mlb_id or not dias:
+                    resultados.append({
+                        'mlb': mlb_id,
+                        'sucesso': False,
+                        'erro': 'MLB ou dias não fornecidos'
+                    })
+                    continue
+                
+                # Atualiza individualmente
+                resultado = self.atualizar_manufacturing_time(mlb_id, dias)
+                resultado['mlb'] = mlb_id
+                resultados.append(resultado)
+                
+                # Delay para evitar rate limit
+                time.sleep(0.5)
+            
+            return {
+                'sucesso': True,
+                'resultados': resultados,
+                'total_atualizado': len([r for r in resultados if r.get('sucesso')]),
+                'total_erros': len([r for r in resultados if not r.get('sucesso')])
+            }
+            
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e)
+            }
+    
     def buscar_anuncios_mlbs(self, mlbs):
         """Busca informações de múltiplos anúncios por MLB"""
         try:

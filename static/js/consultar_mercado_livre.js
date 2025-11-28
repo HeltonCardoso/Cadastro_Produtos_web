@@ -265,6 +265,9 @@ function mostrarResultados(resultados) {
                         <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); abrirDetalhes('${item.id}')" title="Ver detalhes">
                             <i class="fas fa-eye"></i>
                         </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="event.stopPropagation(); abrirModalManufacturing('${item.id}')" title="Editar prazo">
+                            <i class="fas fa-edit"></i>
+                        </button>
                         ${item.tem_variacoes === 'Sim' ? `
                             <button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation(); abrirDetalhes('${item.id}')" title="Tem ${item.quantidade_variacoes} variações">
                                 <i class="fas fa-layer-group"></i>
@@ -529,6 +532,359 @@ function processarAnaliseEnvio(data) {
     ultimosResultados = data.resultados || [];
     mostrarResultados(ultimosResultados);
 }
+
+// =========================================
+// FUNÇÕES DE ATUALIZAÇÃO DE MANUFACTURING
+// =========================================
+
+let mlbSelecionado = null;
+
+function abrirModalManufacturing(mlbId) {
+    mlbSelecionado = mlbId;
+    document.getElementById('manufacturingMlb').value = mlbId;
+    document.getElementById('modalManufacturing').style.display = 'block';
+}
+
+function fecharManufacturingModal() {
+    document.getElementById('modalManufacturing').style.display = 'none';
+    mlbSelecionado = null;
+}
+
+function confirmarAtualizacaoManufacturing() {
+    const dias = document.getElementById('manufacturingDias').value;
+    
+    if (!mlbSelecionado || !dias) {
+        mostrarMensagem('Selecione um MLB e um prazo', 'error');
+        return;
+    }
+    
+    if (!confirm(`Deseja atualizar o prazo do MLB ${mlbSelecionado} para ${dias} dias?`)) {
+        return;
+    }
+    
+    // Mostrar loading
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Atualizando...';
+    btn.disabled = true;
+    
+    fetch('/api/mercadolivre/atualizar-manufacturing', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            mlb: mlbSelecionado,
+            dias: parseInt(dias)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem(data.mensagem || 'Prazo atualizado com sucesso!', 'success');
+            fecharManufacturingModal();
+            
+            // Atualiza a linha na tabela se estiver visível
+            atualizarLinhaTabela(mlbSelecionado, dias);
+        } else {
+            mostrarMensagem('Erro na atualização: ' + data.erro, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        mostrarMensagem('Erro na atualização: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Restaurar botão
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+function atualizarLinhaTabela(mlbId, novosDias) {
+    // Encontra a linha na tabela e atualiza o badge
+    const linhas = document.querySelectorAll('#ordersTableBody tr');
+    linhas.forEach(linha => {
+        const mlbCell = linha.querySelector('td:nth-child(2) strong');
+        if (mlbCell && mlbCell.textContent === mlbId) {
+            const prazoCell = linha.querySelector('td:nth-child(7)');
+            if (prazoCell) {
+                if (novosDias === '0') {
+                    prazoCell.innerHTML = '<span class="badge bg-warning">Sem prazo</span>';
+                } else {
+                    prazoCell.innerHTML = `<span class="badge bg-info">${novosDias} dias</span>`;
+                }
+            }
+        }
+    });
+}
+
+// =========================================
+// SISTEMA DE PROGRESSO DE ATUALIZAÇÃO
+// =========================================
+
+let processoAtualizacao = {
+    ativo: false,
+    total: 0,
+    processados: 0,
+    sucesso: 0,
+    erros: 0,
+    inicio: null,
+    atualizacoes: [],
+    cancelar: false
+};
+
+function atualizarManufacturingEmMassa() {
+    const mlbsText = document.getElementById('mlbs').value.trim();
+    
+    if (!mlbsText) {
+        mostrarMensagem('Digite os códigos MLB para atualização em massa', 'error');
+        return;
+    }
+    
+    const mlbs = mlbsText.split(/[\n,]+/).map(mlb => mlb.trim()).filter(mlb => mlb);
+    const dias = prompt('Digite o número de dias para todos os MLBs:');
+    
+    if (!dias || isNaN(dias)) {
+        mostrarMensagem('Digite um número válido de dias', 'error');
+        return;
+    }
+    
+    if (!confirm(`Deseja atualizar ${mlbs.length} MLBs para ${dias} dias?`)) {
+        return;
+    }
+    
+    // Prepara as atualizações
+    const atualizacoes = mlbs.map(mlb => ({
+        mlb: mlb.toUpperCase().startsWith('MLB') ? mlb.toUpperCase() : 'MLB' + mlb,
+        dias: parseInt(dias)
+    }));
+    
+    // MOSTRA O MODAL PRIMEIRO
+    abrirModalProgresso(atualizacoes);
+}
+
+function abrirModalProgresso(atualizacoes) {
+    // Prepara a interface
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = '0% (0/' + atualizacoes.length + ')';
+    document.getElementById('progressSucesso').textContent = '0';
+    document.getElementById('progressErros').textContent = '0';
+    document.getElementById('progressRestantes').textContent = atualizacoes.length;
+    document.getElementById('activityLog').innerHTML = '';
+    document.getElementById('btnCancelar').style.display = 'block';
+    document.getElementById('btnConcluir').style.display = 'none';
+    document.getElementById('currentMlb').textContent = '-';
+    document.getElementById('currentStatus').textContent = 'Aguardando...';
+    document.getElementById('currentStatus').className = 'status-badge status-processing';
+    
+    // Abre o modal
+    document.getElementById('modalProgresso').style.display = 'block';
+    
+    // Inicia o processamento APÓS o modal estar visível
+    setTimeout(() => {
+        iniciarProcessoAtualizacao(atualizacoes);
+    }, 100);
+}
+
+function iniciarProcessoAtualizacao(atualizacoes) {
+    processoAtualizacao = {
+        ativo: true,
+        total: atualizacoes.length,
+        processados: 0,
+        sucesso: 0,
+        erros: 0,
+        inicio: new Date(),
+        atualizacoes: atualizacoes,
+        cancelar: false
+    };
+    
+    // Inicia o processamento
+    processarProximaAtualizacao();
+}
+
+function iniciarProcessoAtualizacao(atualizacoes) {
+    processoAtualizacao = {
+        ativo: true,
+        total: atualizacoes.length,
+        processados: 0,
+        sucesso: 0,
+        erros: 0,
+        inicio: new Date(),
+        atualizacoes: atualizacoes,
+        cancelar: false
+    };
+    
+    // Prepara a interface
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = '0% (0/' + atualizacoes.length + ')';
+    document.getElementById('progressSucesso').textContent = '0';
+    document.getElementById('progressErros').textContent = '0';
+    document.getElementById('progressRestantes').textContent = atualizacoes.length;
+    document.getElementById('activityLog').innerHTML = '';
+    document.getElementById('btnCancelar').style.display = 'block';
+    document.getElementById('btnConcluir').style.display = 'none';
+    
+    // Abre o modal
+    document.getElementById('modalProgresso').style.display = 'block';
+    
+    // Inicia o processamento
+    processarProximaAtualizacao();
+}
+
+function fecharModalProgresso() {
+    document.getElementById('modalProgresso').style.display = 'none';
+    processoAtualizacao.ativo = false;
+    
+    // Se o processo foi concluído com sucesso, recarrega os dados
+    if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
+        setTimeout(() => buscarMLBs(), 1000);
+    }
+}
+
+async function processarProximaAtualizacao() {
+    if (!processoAtualizacao.ativo || processoAtualizacao.cancelar) {
+        finalizarProcesso();
+        return;
+    }
+    
+    if (processoAtualizacao.processados >= processoAtualizacao.total) {
+        finalizarProcesso();
+        return;
+    }
+    
+    const atualizacao = processoAtualizacao.atualizacoes[processoAtualizacao.processados];
+    
+    // Atualiza interface com MLB atual
+    document.getElementById('currentMlb').textContent = atualizacao.mlb;
+    document.getElementById('currentStatus').textContent = 'Processando...';
+    document.getElementById('currentStatus').className = 'status-badge status-processing';
+    
+    try {
+        // Faz a requisição
+        const response = await fetch('/api/mercadolivre/atualizar-manufacturing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mlb: atualizacao.mlb,
+                dias: atualizacao.dias
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Atualiza estatísticas
+        processoAtualizacao.processados++;
+        
+        if (data.sucesso) {
+            processoAtualizacao.sucesso++;
+            adicionarLog(`✅ ${atualizacao.mlb} - ${atualizacao.dias} dias`, 'log-success');
+            document.getElementById('currentStatus').textContent = 'Sucesso';
+            document.getElementById('currentStatus').className = 'status-badge status-success';
+        } else {
+            processoAtualizacao.erros++;
+            adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${data.erro}`, 'log-error');
+            document.getElementById('currentStatus').textContent = 'Erro';
+            document.getElementById('currentStatus').className = 'status-badge status-error';
+        }
+        
+        // Atualiza barra de progresso
+        atualizarBarraProgresso();
+        
+        // Processa próximo após pequeno delay (evita rate limit)
+        setTimeout(processarProximaAtualizacao, 500);
+        
+    } catch (error) {
+        processoAtualizacao.processados++;
+        processoAtualizacao.erros++;
+        adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${error.message}`, 'log-error');
+        atualizarBarraProgresso();
+        setTimeout(processarProximaAtualizacao, 500);
+    }
+}
+
+function atualizarBarraProgresso() {
+    const percentual = (processoAtualizacao.processados / processoAtualizacao.total) * 100;
+    const progresso = Math.round(percentual);
+    
+    // Atualiza barra
+    document.getElementById('progressFill').style.width = percentual + '%';
+    document.getElementById('progressText').textContent = 
+        `${progresso}% (${processoAtualizacao.processados}/${processoAtualizacao.total})`;
+    
+    // Atualiza estatísticas
+    document.getElementById('progressSucesso').textContent = processoAtualizacao.sucesso;
+    document.getElementById('progressErros').textContent = processoAtualizacao.erros;
+    document.getElementById('progressRestantes').textContent = processoAtualizacao.total - processoAtualizacao.processados;
+    
+    // Calcula velocidade
+    const tempoDecorrido = (new Date() - processoAtualizacao.inicio) / 1000;
+    const velocidade = tempoDecorrido > 0 ? (processoAtualizacao.processados / tempoDecorrido).toFixed(1) : 0;
+    document.getElementById('progressSpeed').textContent = `${velocidade} MLB/s`;
+    
+    // Atualiza visual da barra
+    const progressBar = document.getElementById('modalProgresso').querySelector('.progress-bar');
+    progressBar.classList.remove('progress-complete', 'progress-error');
+    
+    if (processoAtualizacao.erros > 0 && processoAtualizacao.processados === processoAtualizacao.total) {
+        progressBar.classList.add('progress-error');
+    } else if (processoAtualizacao.processados === processoAtualizacao.total) {
+        progressBar.classList.add('progress-complete');
+    }
+}
+
+function adicionarLog(mensagem, classe) {
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry ${classe}`;
+    logEntry.textContent = mensagem;
+    
+    const logContainer = document.getElementById('activityLog');
+    logContainer.appendChild(logEntry);
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function cancelarAtualizacao() {
+    if (confirm('Deseja cancelar a atualização?')) {
+        processoAtualizacao.cancelar = true;
+        processoAtualizacao.ativo = false;
+        adicionarLog('⏹️ Atualização cancelada pelo usuário', 'log-warning');
+        document.getElementById('btnCancelar').style.display = 'none';
+        document.getElementById('btnConcluir').style.display = 'block';
+    }
+}
+
+function finalizarProcesso() {
+    processoAtualizacao.ativo = false;
+    
+    document.getElementById('btnCancelar').style.display = 'none';
+    document.getElementById('btnConcluir').style.display = 'block';
+    
+    // Mensagem final
+    if (processoAtualizacao.cancelar) {
+        adicionarLog('📊 Processo interrompido', 'log-warning');
+    } else {
+        adicionarLog(`🎯 Processo concluído: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`, 'log-info');
+        
+        // Mostra mensagem de resumo
+        setTimeout(() => {
+            mostrarMensagem(
+                `Atualização concluída: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`,
+                processoAtualizacao.erros === 0 ? 'success' : 'warning'
+            );
+        }, 500);
+    }
+}
+
+function fecharModalProgresso() {
+    document.getElementById('modalProgresso').style.display = 'none';
+    
+    // Se o processo foi concluído com sucesso, recarrega os dados
+    if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
+        setTimeout(() => buscarMLBs(), 1000);
+    }
+}
+
+
 
 // =========================================
 // FUNÇÕES DE MODAL DE DETALHES

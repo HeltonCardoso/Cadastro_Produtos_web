@@ -22,6 +22,12 @@
                 <button class="btn btn-primary" onclick="buscarMLBs()">
                     <i class="fas fa-search"></i> Buscar
                 </button>
+                <button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
+                    <i class="fas fa-shipping-fast"></i> Análise
+                </button>
+                <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
+                    <i class="fas fa-clock"></i> Atualizar Prazo
+                </button>
                 <button class="btn btn-outline-secondary" onclick="limparCampos()">
                     <i class="fas fa-broom"></i> Limpar
                 </button>
@@ -250,6 +256,116 @@
     </div>
 </div>
 
+<!-- ========================================= -->
+<!-- MODAL DE ATUALIZAÇÃO DE MANUFACTURING -->
+<!-- ========================================= -->
+<div id="modalManufacturing" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-clock"></i> Atualizar Prazo</h2>
+            <button class="close-modal" onclick="fecharManufacturingModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>MLB</label>
+                <input type="text" id="manufacturingMlb" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label>Prazo de Disponibilidade (dias)</label>
+                <select id="manufacturingDias" class="form-control">
+                    <option value="1">1 dia</option>
+                    <option value="2">2 dias</option>
+                    <option value="3">3 dias</option>
+                    <option value="5">5 dias</option>
+                    <option value="7">7 dias</option>
+                    <option value="10">10 dias</option>
+                    <option value="15">15 dias</option>
+                    <option value="20">20 dias</option>
+                    <option value="25">25 dias</option>
+                    <option value="30">30 dias</option>
+                    <option value="0">Remover prazo</option>
+                </select>
+            </div>
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                O prazo será exibido como "Prazo de disponibilidade: X dias" no anúncio.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fecharManufacturingModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="confirmarAtualizacaoManufacturing()">
+                <i class="fas fa-save"></i> Atualizar Prazo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- MODAL DE PROGRESSO DE ATUALIZAÇÃO -->
+<!-- ========================================= -->
+<div id="modalProgresso" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-sync-alt fa-spin"></i> Atualizando MLBs</h2>
+            <button class="close-modal" onclick="fecharModalProgresso()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="progress-container">
+                <!-- Barra de Progresso -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                
+                <!-- Informações de Progresso -->
+                <div class="progress-info">
+                    <div class="progress-stats">
+                        <span id="progressText">0% (0/0)</span>
+                        <span id="progressSpeed" class="progress-speed"></span>
+                    </div>
+                    
+                    <!-- Detalhes do Processamento -->
+                    <div class="progress-details">
+                        <div class="detail-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <span>Sucesso: </span>
+                            <strong id="progressSucesso">0</strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-times-circle text-danger"></i>
+                            <span>Erros: </span>
+                            <strong id="progressErros">0</strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock text-warning"></i>
+                            <span>Restantes: </span>
+                            <strong id="progressRestantes">0</strong>
+                        </div>
+                    </div>
+                    
+                    <!-- MLB Atual sendo Processado -->
+                    <div class="current-processing">
+                        <small>Processando: </small>
+                        <code id="currentMlb">-</code>
+                        <span id="currentStatus" class="status-badge status-processing">Aguardando...</span>
+                    </div>
+                    
+                    <!-- Log de Atividades -->
+                    <div class="activity-log" id="activityLog">
+                        <!-- Logs serão adicionados aqui -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cancelarAtualizacao()" id="btnCancelar">
+                <i class="fas fa-stop"></i> Cancelar
+            </button>
+            <button class="btn btn-success" onclick="fecharModalProgresso()" id="btnConcluir" style="display: none;">
+                <i class="fas fa-check"></i> Concluir
+            </button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

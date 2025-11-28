@@ -94,7 +94,36 @@ def home():
     except Exception as e:
         app.logger.error(f"Erro na rota home: {str(e)}")
         return render_template('error.html'), 500
-    
+
+@app.route('/api/mercadolivre/atualizar-manufacturing', methods=['POST'])
+def atualizar_manufacturing():
+    """Rota para atualizar manufacturing time"""
+    try:
+        data = request.get_json()
+        mlb = data.get('mlb')
+        dias = data.get('dias')
+        atualizacoes = data.get('atualizacoes')  # Para múltiplos
+        
+        if atualizacoes:
+            # Atualização em massa
+            resultado = ml_api_secure.atualizar_multiplos_manufacturing(atualizacoes)
+        elif mlb and dias:
+            # Atualização única
+            resultado = ml_api_secure.atualizar_manufacturing_time(mlb, dias)
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Parâmetros insuficientes. Forneça mlb/dias ou atualizacoes'
+            })
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        })
+
 @app.route('/api/mercadolivre/debug-mlb/<mlb>')
 def debug_mlb(mlb):
     """Rota simples para debug de um MLB específico"""
