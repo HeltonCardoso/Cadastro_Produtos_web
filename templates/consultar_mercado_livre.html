@@ -26,7 +26,10 @@
                     <i class="fas fa-shipping-fast"></i> Análise
                 </button>
                 <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
-                    <i class="fas fa-clock"></i> Atualizar Prazo
+                    <i class="fas fa-clock"></i> Atualizar Lote
+                </button>
+                <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
+                    <i class="fas fa-file-excel"></i> Via Planilha
                 </button>
                 <button class="btn btn-outline-secondary" onclick="limparCampos()">
                     <i class="fas fa-broom"></i> Limpar
@@ -35,7 +38,6 @@
                     <i class="fas fa-file-excel"></i> Exportar Excel
                 </button>
             </div>
-        </div>
 
         <!-- Linha 2: Filtros Básicos -->
         <div class="control-row">
@@ -366,8 +368,79 @@
         </div>
     </div>
 </div>
+
+<!-- ========================================= -->
+<!-- MODAL DE UPLOAD DE PLANILHA -->
+<!-- ========================================= -->
+<div id="modalPlanilha" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-file-excel"></i> Atualizar via Planilha</h2>
+            <button class="close-modal" onclick="fecharModalPlanilha()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="upload-section">
+                <div class="form-group">
+                    <label>Selecionar arquivo Excel/CSV</label>
+                    <input type="file" id="fileUpload" accept=".xlsx,.xls,.csv" class="form-control">
+                    <small class="text-muted">Formatos suportados: Excel (.xlsx, .xls) e CSV (.csv)</small>
+                </div>
+                
+                <div class="template-section">
+                    <h4><i class="fas fa-download"></i> Baixar Modelo</h4>
+                    <p>Use este modelo para preparar sua planilha:</p>
+                    <button class="btn btn-outline-primary" onclick="baixarModeloPlanilha()">
+                        <i class="fas fa-download"></i> Baixar Modelo Excel
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <h4><i class="fas fa-info-circle"></i> Instruções:</h4>
+                    <ul>
+                        <li>A planilha deve ter as colunas <strong>MLB</strong> e <strong>DIAS</strong></li>
+                        <li><strong>MLB</strong>: Código do anúncio (ex: MLB1234567890)</li>
+                        <li><strong>DIAS</strong>: Prazo em dias (ex: 5, 10, 15)</li>
+                        <li>Use 0 em DIAS para remover o prazo</li>
+                        <li><strong>Sem limites</strong> - Processamos qualquer quantidade de MLBs</li>
+                        <li>Para grandes volumes (>500), o processo pode levar alguns minutos</li>
+                    </ul>
+                </div>
+                
+                <!-- Pré-visualização da Planilha -->
+                <div id="previewSection" style="display: none;">
+                    <h4><i class="fas fa-table"></i> Pré-visualização</h4>
+                    <div class="table-preview">
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th>MLB</th>
+                                    <th>DIAS</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewTableBody">
+                                <!-- Dados da planilha serão mostrados aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="preview-stats">
+                        <strong>Total: <span id="previewTotal">0</span> MLBs encontrados</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fecharModalPlanilha()">Cancelar</button>
+            <button class="btn btn-primary" onclick="processarPlanilha()" id="btnProcessarPlanilha" disabled>
+                <i class="fas fa-play"></i> Iniciar Atualização
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/consultar_mercado_livre.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 {% endblock %}

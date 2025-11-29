@@ -619,6 +619,54 @@ function atualizarLinhaTabela(mlbId, novosDias) {
     });
 }
 
+function processarPlanilha() {
+    console.log('Clicou em Iniciar Atualização. Dados:', dadosPlanilha);
+    
+    if (!dadosPlanilha || dadosPlanilha.length === 0) {
+        mostrarMensagem('Nenhum dado para processar', 'error');
+        return;
+    }
+    
+    const mlbsValidos = dadosPlanilha.filter(item => validarMLB(item.mlb));
+    
+    if (mlbsValidos.length === 0) {
+        mostrarMensagem('Nenhum MLB válido para processar', 'error');
+        return;
+    }
+    
+    if (!confirm(`Deseja atualizar ${mlbsValidos.length} MLBs conforme a planilha?`)) {
+        return;
+    }
+    
+    console.log('Iniciando processamento de', mlbsValidos.length, 'MLBs');
+    fecharModalPlanilha();
+    
+    // Preparar as atualizações apenas com MLBs válidos
+    const atualizacoes = mlbsValidos.map(item => ({
+        mlb: item.mlb.toUpperCase().startsWith('MLB') ? item.mlb.toUpperCase() : 'MLB' + item.mlb,
+        dias: item.dias
+    }));
+    
+    console.log('Atualizações preparadas:', atualizacoes);
+    
+    // Usar o mesmo sistema de progresso que já temos
+    abrirModalProgresso(atualizacoes);
+}
+
+// Função auxiliar para validar MLB
+function validarMLB(mlb) {
+    if (!mlb) return false;
+    
+    const mlbStr = mlb.toString().toUpperCase().trim();
+    
+    // Aceita: MLB1234567890 ou apenas 1234567890
+    const isValid = mlbStr.startsWith('MLB') || /^\d+$/.test(mlbStr);
+    
+    console.log('Validando MLB:', mlbStr, 'Resultado:', isValid);
+    return isValid;
+}
+
+
 // =========================================
 // SISTEMA DE PROGRESSO DE ATUALIZAÇÃO
 // =========================================
@@ -755,10 +803,12 @@ async function processarProximaAtualizacao() {
     
     const atualizacao = processoAtualizacao.atualizacoes[processoAtualizacao.processados];
     
-    // Atualiza interface com MLB atual
-    document.getElementById('currentMlb').textContent = atualizacao.mlb;
-    document.getElementById('currentStatus').textContent = 'Processando...';
-    document.getElementById('currentStatus').className = 'status-badge status-processing';
+    // Atualiza interface com MLB atual (com throttling para performance)
+    if (processoAtualizacao.processados % 10 === 0 || processoAtualizacao.processados < 10) {
+        document.getElementById('currentMlb').textContent = atualizacao.mlb;
+        document.getElementById('currentStatus').textContent = 'Processando...';
+        document.getElementById('currentStatus').className = 'status-badge status-processing';
+    }
     
     try {
         // Faz a requisição
@@ -778,30 +828,295 @@ async function processarProximaAtualizacao() {
         
         if (data.sucesso) {
             processoAtualizacao.sucesso++;
-            adicionarLog(`✅ ${atualizacao.mlb} - ${atualizacao.dias} dias`, 'log-success');
-            document.getElementById('currentStatus').textContent = 'Sucesso';
-            document.getElementById('currentStatus').className = 'status-badge status-success';
+            // Só mostra log a cada 10 itens ou para erros (performance)
+            if (processoAtualizacao.processados % 10 === 0 || processoAtualizacao.processados <= 10) {
+                adicionarLog(`✅ ${atualizacao.mlb} - ${atualizacao.dias} dias`, 'log-success');
+            }
         } else {
             processoAtualizacao.erros++;
+            // Sempre mostra erros no log
             adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${data.erro}`, 'log-error');
-            document.getElementById('currentStatus').textContent = 'Erro';
-            document.getElementById('currentStatus').className = 'status-badge status-error';
         }
         
-        // Atualiza barra de progresso
-        atualizarBarraProgresso();
+        // Atualiza barra de progresso (com throttling)
+        if (processoAtualizacao.processados % 5 === 0 || processoAtualizacao.processados === processoAtualizacao.total) {
+            atualizarBarraProgresso();
+        }
         
-        // Processa próximo após pequeno delay (evita rate limit)
-        setTimeout(processarProximaAtualizacao, 500);
+        // Delay adaptativo baseado no volume
+        const delay = processoAtualizacao.total > 100 ? 300 : 500; // Mais rápido para grandes volumes
+        setTimeout(processarProximaAtualizacao, delay);
         
     } catch (error) {
         processoAtualizacao.processados++;
         processoAtualizacao.erros++;
         adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${error.message}`, 'log-error');
-        atualizarBarraProgresso();
-        setTimeout(processarProximaAtualizacao, 500);
+        
+        // Atualiza barra mesmo em caso de erro
+        if (processoAtualizacao.processados % 5 === 0) {
+            atualizarBarraProgresso();
+        }
+        
+        const delay = processoAtualizacao.total > 100 ? 300 : 500;
+        setTimeout(processarProximaAtualizacao, delay);
     }
 }
+
+// Função para processar em lotes (opcional - ainda mais eficiente)
+function processarEmLotes(atualizacoes, tamanhoLote = 20) {
+    const lotes = [];
+    for (let i = 0; i < atualizacoes.length; i += tamanhoLote) {
+        lotes.push(atualizacoes.slice(i, i + tamanhoLote));
+    }
+    return lotes;
+}
+
+function baixarModeloPlanilha() {
+    console.log('Baixando modelo...');
+    
+    try {
+        // Criar workbook
+        const workbook = XLSX.utils.book_new();
+        
+        // Dados do modelo
+        const dados = [
+            ['MLB', 'DIAS', 'OBSERVAÇÃO'],
+            ['MLB1234567890', '5', '← Prazo de 5 dias'],
+            ['MLB9876543210', '10', '← Prazo de 10 dias'],
+            ['MLB5555555555', '0', '← Remove o prazo (0 dias)'],
+            ['', '', ''],
+            ['INSTRUÇÕES:', '', ''],
+            ['• MLB: Código do anúncio no Mercado Livre', '', ''],
+            ['• DIAS: Prazo de fabricação em dias (0 para remover)', '', ''],
+            ['• Mantenha o cabeçalho MLB, DIAS', '', ''],
+            ['• Pode usar apenas números no MLB (ex: 1234567890)', '', '']
+        ];
+        
+        // Criar worksheet
+        const worksheet = XLSX.utils.aoa_to_sheet(dados);
+        
+        // Ajustar largura das colunas
+        worksheet['!cols'] = [
+            { wch: 15 }, // MLB
+            { wch: 8 },  // DIAS
+            { wch: 30 }  // OBSERVAÇÃO
+        ];
+        
+        // Adicionar worksheet ao workbook
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Modelo');
+        
+        // Gerar arquivo e fazer download
+        XLSX.writeFile(workbook, 'modelo_atualizacao_prazo.xlsx');
+        
+        console.log('✅ Modelo baixado com sucesso');
+        
+    } catch (error) {
+        console.error('❌ Erro ao baixar modelo:', error);
+        mostrarMensagem('Erro ao baixar modelo: ' + error.message, 'error');
+        
+        // Fallback para CSV se XLSX falhar
+        baixarModeloCSV();
+    }
+}
+
+function baixarModeloCSV() {
+    const modelo = [
+        'MLB,DIAS',
+        'MLB1234567890,5',
+        'MLB9876543210,10', 
+        'MLB5555555555,0'
+    ].join('\n');
+    
+    const blob = new Blob([modelo], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'modelo_atualizacao_prazo.csv';
+    link.click();
+    
+    URL.revokeObjectURL(url);
+}
+
+function abrirModalPlanilha() {
+    console.log('Abrindo modal de planilha...'); // Para debug
+    
+    // Resetar o estado do modal
+    document.getElementById('fileUpload').value = '';
+    document.getElementById('previewSection').style.display = 'none';
+    document.getElementById('btnProcessarPlanilha').disabled = true;
+    document.getElementById('previewTableBody').innerHTML = '';
+    document.getElementById('previewTotal').textContent = '0';
+    dadosPlanilha = [];
+    
+    // Mostrar o modal
+    document.getElementById('modalPlanilha').style.display = 'block';
+}
+
+function fecharModalPlanilha() {
+    document.getElementById('modalPlanilha').style.display = 'none';
+}
+
+// Inicializar o evento de upload quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Inicializando eventos de planilha...');
+    
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            console.log('Arquivo selecionado:', e.target.files[0]?.name);
+            processarArquivoUpload(e.target.files[0]);
+        });
+    } else {
+        console.error('Elemento fileUpload não encontrado!');
+    }
+});
+
+function processarArquivoUpload(file) {
+    if (!file) {
+        console.log('Nenhum arquivo selecionado');
+        return;
+    }
+
+    const extensao = file.name.split('.').pop().toLowerCase();
+    console.log('Processando arquivo:', file.name, 'Extensão:', extensao);
+    
+    if (!['xlsx', 'xls', 'csv'].includes(extensao)) {
+        mostrarMensagem('Formato de arquivo não suportado. Use Excel (.xlsx, .xls) ou CSV.', 'error');
+        return;
+    }
+
+    mostrarMensagem('Processando planilha...', 'info');
+
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            console.log('Arquivo lido, processando...');
+            
+            if (extensao === 'csv') {
+                processarCSV(e.target.result);
+            } else {
+                processarExcel(e.target.result);
+            }
+        } catch (error) {
+            console.error('Erro ao processar arquivo:', error);
+            mostrarMensagem('Erro ao processar arquivo: ' + error.message, 'error');
+        }
+    };
+    
+    reader.onerror = function(error) {
+        console.error('Erro na leitura do arquivo:', error);
+        mostrarMensagem('Erro ao ler arquivo', 'error');
+    };
+    
+    if (extensao === 'csv') {
+        reader.readAsText(file);
+    } else {
+        reader.readAsArrayBuffer(file);
+    }
+}
+
+function processarExcel(data) {
+    console.log('Processando Excel...');
+    
+    try {
+        const workbook = XLSX.read(data, { type: 'array' });
+        const primeiraPlanilha = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(primeiraPlanilha);
+        
+        console.log('Dados brutos do Excel:', jsonData);
+        
+        const dados = jsonData.map(linha => {
+            // Tentar diferentes nomes de coluna
+            const mlb = (linha.MLB || linha.mlb || linha['Código'] || linha.codigo || linha.MLB?.toString() || '').toString().toUpperCase().trim();
+            const dias = parseInt(linha.DIAS || linha.dias || linha.Dias || linha.PRAZO || linha.prazo || linha.Prazo || 0);
+            
+            return { mlb, dias };
+        }).filter(item => item.mlb && item.mlb !== 'MLB' && !isNaN(item.dias));
+        
+        console.log('Dados filtrados:', dados);
+        exibirPreviaPlanilha(dados);
+        
+    } catch (error) {
+        console.error('Erro ao processar Excel:', error);
+        mostrarMensagem('Erro ao processar Excel: ' + error.message, 'error');
+    }
+}
+
+function exibirPreviaPlanilha(dados) {
+    console.log('Exibindo prévia com', dados.length, 'itens');
+    
+    dadosPlanilha = dados.filter(item => item.mlb && !isNaN(item.dias));
+    
+    console.log('Dados válidos:', dadosPlanilha);
+    
+    if (dadosPlanilha.length === 0) {
+        mostrarMensagem('Nenhum dado válido encontrado na planilha. Verifique as colunas MLB e DIAS.', 'error');
+        return;
+    }
+    
+    const tbody = document.getElementById('previewTableBody');
+    tbody.innerHTML = '';
+    
+    dadosPlanilha.forEach((item, index) => {
+        const isValid = validarMLB(item.mlb);
+        const linha = `
+            <tr class="${isValid ? 'preview-valid' : 'preview-invalid'}">
+                <td>${item.mlb}</td>
+                <td>${item.dias} dias</td>
+                <td>${isValid ? '✅ Válido' : '❌ Formato inválido'}</td>
+            </tr>
+        `;
+        tbody.innerHTML += linha;
+    });
+    
+    document.getElementById('previewTotal').textContent = dadosPlanilha.length;
+    document.getElementById('previewSection').style.display = 'block';
+    document.getElementById('btnProcessarPlanilha').disabled = false;
+    
+    mostrarMensagem(`✅ ${dadosPlanilha.length} MLBs válidos encontrados na planilha`, 'success');
+    console.log('Prévia exibida, botão habilitado');
+}
+
+function processarCSV(csvText) {
+    console.log('Processando CSV...');
+    
+    const linhas = csvText.split('\n').filter(linha => linha.trim());
+    const dados = [];
+    
+    // Encontrar índices das colunas
+    const cabecalho = linhas[0].split(',').map(col => col.trim().toUpperCase().replace(/"/g, ''));
+    const idxMLB = cabecalho.indexOf('MLB');
+    const idxDIAS = cabecalho.indexOf('DIAS');
+    
+    console.log('Cabeçalho encontrado:', cabecalho);
+    console.log('Índice MLB:', idxMLB, 'Índice DIAS:', idxDIAS);
+    
+    if (idxMLB === -1 || idxDIAS === -1) {
+        mostrarMensagem('Colunas MLB e DIAS não encontradas no arquivo', 'error');
+        return;
+    }
+    
+    // Processar linhas de dados
+    for (let i = 1; i < linhas.length; i++) {
+        const colunas = linhas[i].split(',').map(col => col.trim().replace(/"/g, ''));
+        
+        if (colunas.length > Math.max(idxMLB, idxDIAS)) {
+            const mlb = colunas[idxMLB];
+            const dias = parseInt(colunas[idxDIAS]);
+            
+            if (mlb && !isNaN(dias)) {
+                dados.push({ mlb, dias });
+                console.log('MLB encontrado:', mlb, 'Dias:', dias);
+            }
+        }
+    }
+    
+    console.log('Total de dados processados:', dados.length);
+    exibirPreviaPlanilha(dados);
+}
+
 
 function atualizarBarraProgresso() {
     const percentual = (processoAtualizacao.processados / processoAtualizacao.total) * 100;
@@ -817,10 +1132,19 @@ function atualizarBarraProgresso() {
     document.getElementById('progressErros').textContent = processoAtualizacao.erros;
     document.getElementById('progressRestantes').textContent = processoAtualizacao.total - processoAtualizacao.processados;
     
-    // Calcula velocidade
+    // Calcula velocidade e tempo restante
     const tempoDecorrido = (new Date() - processoAtualizacao.inicio) / 1000;
     const velocidade = tempoDecorrido > 0 ? (processoAtualizacao.processados / tempoDecorrido).toFixed(1) : 0;
-    document.getElementById('progressSpeed').textContent = `${velocidade} MLB/s`;
+    const tempoRestante = velocidade > 0 ? Math.round((processoAtualizacao.total - processoAtualizacao.processados) / velocidade) : 0;
+    
+    let infoVelocidade = `${velocidade} MLB/s`;
+    if (tempoRestante > 0) {
+        const minutos = Math.floor(tempoRestante / 60);
+        const segundos = tempoRestante % 60;
+        infoVelocidade += ` • ⏱️ ${minutos}:${segundos.toString().padStart(2, '0')}`;
+    }
+    
+    document.getElementById('progressSpeed').textContent = infoVelocidade;
     
     // Atualiza visual da barra
     const progressBar = document.getElementById('modalProgresso').querySelector('.progress-bar');
