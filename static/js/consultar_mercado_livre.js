@@ -1,7 +1,10 @@
-// static/js/consultar_mercado_livre.js - VERSÃO ATUALIZADA
+// static/js/consultar_mercado_livre.js - VERSÃO COMPLETA ATUALIZADA
 
 // Variáveis globais
 let ultimosResultados = [];
+let dadosPlanilha = [];
+let filtrosAtivos = {};
+let isLoading = false;
 
 // =========================================
 // FUNÇÕES DE CONFIGURAÇÃO E AUTENTICAÇÃO
@@ -109,7 +112,7 @@ function desautenticarMercadoLivre() {
 }
 
 // =========================================
-// FUNÇÕES DE BUSCA (ATUALIZADAS)
+// FUNÇÕES DE BUSCA
 // =========================================
 
 function buscarMLBs() {
@@ -140,9 +143,9 @@ function buscarMLBs() {
         });
     }
     
-    // Mostrar loading
+    // Mostrar loading CORRETAMENTE
     mostrarLoading(true);
-    limparResultados();
+    limparResultados(true); // Passa true para manter o container visível
     
     // Fazer requisição
     fetch('/api/mercadolivre/buscar-mlb', {
@@ -168,9 +171,10 @@ function buscarMLBs() {
     .catch(error => {
         console.error('Erro na busca:', error);
         mostrarErro('Erro ao buscar MLBs: ' + error.message);
+        mostrarLoading(false); // Esconde loading em caso de erro
     })
     .finally(() => {
-        mostrarLoading(false);
+        // O loading será escondido dentro de mostrarResultados
     });
 }
 
@@ -194,23 +198,44 @@ function processarResultadoBusca(data) {
     // Mostrar estatísticas
     mostrarEstatisticas(data);
     
-    // Mostrar resultados
-    mostrarResultados(ultimosResultados);
+    // Aplicar filtros se houver
+    if (Object.keys(filtrosAtivos).length > 0) {
+        aplicarFiltros();
+    } else {
+        // Mostrar resultados sem filtros
+        mostrarResultados(ultimosResultados);
+    }
 }
 
 function mostrarEstatisticas(data) {
     const statsDiv = document.getElementById('stats');
     
-    let html = `
-        <i class="fas fa-chart-bar"></i>
-        <strong>Estatísticas:</strong>
-        ${data.total_encontrado || 0} encontrados • 
-        ${data.total_nao_encontrado || 0} não encontrados • 
-        ${data.resultados ? data.resultados.length : 0} processados • 
-        ${new Date(data.timestamp).toLocaleTimeString()}
-    `;
+    let totalEncontrado = data.total_encontrado || 0;
+    let totalNaoEncontrado = data.total_nao_encontrado || 0;
+    let totalProcessados = data.resultados ? data.resultados.length : 0;
     
-    statsDiv.innerHTML = html;
+    // Ajusta para mostrar filtrados se aplicável
+    if (Object.keys(filtrosAtivos).length > 0 && ultimosResultados.length > 0) {
+        const resultadosFiltrados = aplicarFiltrosEmMemoria(ultimosResultados);
+        statsDiv.innerHTML = `
+            <i class="fas fa-chart-bar"></i>
+            <strong>Estatísticas:</strong>
+            ${resultadosFiltrados.length} de ${totalEncontrado} encontrados (filtrados) • 
+            ${totalNaoEncontrado} não encontrados • 
+            ${totalProcessados} processados • 
+            ${new Date(data.timestamp).toLocaleTimeString()}
+        `;
+    } else {
+        statsDiv.innerHTML = `
+            <i class="fas fa-chart-bar"></i>
+            <strong>Estatísticas:</strong>
+            ${totalEncontrado} encontrados • 
+            ${totalNaoEncontrado} não encontrados • 
+            ${totalProcessados} processados • 
+            ${new Date(data.timestamp).toLocaleTimeString()}
+        `;
+    }
+    
     statsDiv.classList.remove('hidden');
 }
 
@@ -218,19 +243,29 @@ function mostrarResultados(resultados) {
     const ordersContainer = document.getElementById('ordersContainer');
     const emptyState = document.getElementById('emptyState');
     const tableBody = document.getElementById('ordersTableBody');
+    const tableLoading = document.getElementById('tableLoading');
     
     if (!resultados || resultados.length === 0) {
+        // Esconde loading e container, mostra estado vazio
+        mostrarLoading(false);
         ordersContainer.classList.add('hidden');
         emptyState.classList.remove('hidden');
         return;
     }
     
-    // Oculta estado vazio e mostra container
-    emptyState.classList.add('hidden');
+    // Garante que o container está visível e o loading escondido
     ordersContainer.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    
+    // Esconde o loading
+    if (tableLoading) {
+        tableLoading.classList.add('hidden');
+    }
     
     // Limpa tabela
-    tableBody.innerHTML = '';
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
     
     // Preenche resultados
     resultados.forEach(item => {
@@ -338,12 +373,42 @@ function analisarEnvioManufacturing() {
     });
 }
 
-// =========================================
-// FUNÇÃO DE EXPORTAR PARA EXCEL
-// =========================================
+function processarAnaliseEnvio(data) {
+    if (!data.sucesso) {
+        mostrarErro(data.erro || 'Erro desconhecido na análise');
+        return;
+    }
+    
+    const statsDiv = document.getElementById('stats');
+    const estatisticas = data.estatisticas;
+    
+    // Salva os resultados
+    ultimosResultados = data.resultados || [];
+    
+    let html = `
+        <i class="fas fa-shipping-fast"></i>
+        <strong>Análise de Envio:</strong>
+        ${estatisticas.total_analisado} analisados • 
+        ${estatisticas.me2} ME2 • 
+        ${estatisticas.me1} ME1 • 
+        ${estatisticas.com_manufacturing} com manufacturing • 
+        ${estatisticas.sem_manufacturing} sem manufacturing
+    `;
+    
+    statsDiv.innerHTML = html;
+    statsDiv.classList.remove('hidden');
+    
+    // Aplicar filtros se houver
+    if (Object.keys(filtrosAtivos).length > 0) {
+        aplicarFiltros();
+    } else {
+        // Mostrar resultados sem filtros
+        mostrarResultados(ultimosResultados);
+    }
+}
 
 // =========================================
-// FUNÇÃO DE EXPORTAR PARA EXCEL - ESTRUTURA MELHORADA
+// FUNÇÃO DE EXPORTAR PARA EXCEL
 // =========================================
 
 function exportarParaExcel() {
@@ -354,10 +419,22 @@ function exportarParaExcel() {
 
     mostrarLoading(true);
 
-    // Preparar dados para exportação
+    // Preparar dados para exportação (com filtros aplicados)
+    let resultadosParaExportar = ultimosResultados;
+    
+    // Se há filtros ativos, aplica-os na exportação
+    if (Object.keys(filtrosAtivos).length > 0) {
+        resultadosParaExportar = aplicarFiltrosEmMemoria(ultimosResultados);
+        if (resultadosParaExportar.length === 0) {
+            mostrarMensagem('Nenhum resultado após aplicar os filtros', 'error');
+            mostrarLoading(false);
+            return;
+        }
+    }
+
     const dadosExportacao = [];
     
-    ultimosResultados.forEach(item => {
+    resultadosParaExportar.forEach(item => {
         if (item.error || item.status === 'error') {
             dadosExportacao.push({
                 'MLB Principal': item.id || 'N/A',
@@ -451,8 +528,8 @@ function exportarParaExcel() {
     });
 
     // Calcular estatísticas
-    const totalItens = ultimosResultados.length;
-    const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
+    const totalItens = resultadosParaExportar.length;
+    const totalEncontrado = resultadosParaExportar.filter(item => !item.error && item.status !== 'error').length;
     const totalNaoEncontrado = totalItens - totalEncontrado;
     const totalPrincipais = dadosExportacao.filter(item => item.Tipo === 'Principal').length;
     const totalVariacoes = dadosExportacao.filter(item => item.Tipo === 'Variação').length;
@@ -485,7 +562,15 @@ function exportarParaExcel() {
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `consulta_mlb_${new Date().toISOString().slice(0, 10)}_${new Date().getHours()}${new Date().getMinutes()}.xlsx`;
+        
+        // Nome do arquivo com filtros se aplicável
+        let nomeArquivo = 'consulta_mlb';
+        if (Object.keys(filtrosAtivos).length > 0) {
+            nomeArquivo += '_filtrado';
+        }
+        nomeArquivo += `_${new Date().toISOString().slice(0, 10)}_${new Date().getHours()}${new Date().getMinutes()}.xlsx`;
+        
+        a.download = nomeArquivo;
         
         document.body.appendChild(a);
         a.click();
@@ -503,34 +588,6 @@ function exportarParaExcel() {
     .finally(() => {
         mostrarLoading(false);
     });
-}
-
-
-function processarAnaliseEnvio(data) {
-    if (!data.sucesso) {
-        mostrarErro(data.erro || 'Erro desconhecido na análise');
-        return;
-    }
-    
-    const statsDiv = document.getElementById('stats');
-    const estatisticas = data.estatisticas;
-    
-    let html = `
-        <i class="fas fa-shipping-fast"></i>
-        <strong>Análise de Envio:</strong>
-        ${estatisticas.total_analisado} analisados • 
-        ${estatisticas.me2} ME2 • 
-        ${estatisticas.me1} ME1 • 
-        ${estatisticas.com_manufacturing} com manufacturing • 
-        ${estatisticas.sem_manufacturing} sem manufacturing
-    `;
-    
-    statsDiv.innerHTML = html;
-    statsDiv.classList.remove('hidden');
-    
-    // Mostrar resultados
-    ultimosResultados = data.resultados || [];
-    mostrarResultados(ultimosResultados);
 }
 
 // =========================================
@@ -619,53 +676,182 @@ function atualizarLinhaTabela(mlbId, novosDias) {
     });
 }
 
-function processarPlanilha() {
-    console.log('Clicou em Iniciar Atualização. Dados:', dadosPlanilha);
+// =========================================
+// FUNÇÕES PARA GERENCIAMENTO DE FILTROS
+// =========================================
+
+function toggleFilters() {
+    const filtersHeader = document.getElementById('filtersHeader');
+    const toggleBtnIcon = document.querySelector('.toggle-filters-btn i');
+    const toggleBtnText = document.querySelector('.toggle-filters-btn span');
     
-    if (!dadosPlanilha || dadosPlanilha.length === 0) {
-        mostrarMensagem('Nenhum dado para processar', 'error');
+    if (!filtersHeader || !toggleBtnIcon || !toggleBtnText) {
+        console.error('Elementos do toggle não encontrados');
         return;
     }
     
-    const mlbsValidos = dadosPlanilha.filter(item => validarMLB(item.mlb));
-    
-    if (mlbsValidos.length === 0) {
-        mostrarMensagem('Nenhum MLB válido para processar', 'error');
-        return;
+    if (filtersHeader.classList.contains('collapsed')) {
+        // Expande os filtros
+        filtersHeader.classList.remove('collapsed');
+        toggleBtnIcon.className = 'fas fa-chevron-up';
+        toggleBtnText.textContent = 'Recolher';
+    } else {
+        // Recolhe os filtros
+        filtersHeader.classList.add('collapsed');
+        toggleBtnIcon.className = 'fas fa-chevron-down';
+        toggleBtnText.textContent = 'Expandir';
     }
-    
-    if (!confirm(`Deseja atualizar ${mlbsValidos.length} MLBs conforme a planilha?`)) {
-        return;
-    }
-    
-    console.log('Iniciando processamento de', mlbsValidos.length, 'MLBs');
-    fecharModalPlanilha();
-    
-    // Preparar as atualizações apenas com MLBs válidos
-    const atualizacoes = mlbsValidos.map(item => ({
-        mlb: item.mlb.toUpperCase().startsWith('MLB') ? item.mlb.toUpperCase() : 'MLB' + item.mlb,
-        dias: item.dias
-    }));
-    
-    console.log('Atualizações preparadas:', atualizacoes);
-    
-    // Usar o mesmo sistema de progresso que já temos
-    abrirModalProgresso(atualizacoes);
 }
 
-// Função auxiliar para validar MLB
-function validarMLB(mlb) {
-    if (!mlb) return false;
+function atualizarFiltroAtivo(tipo, valor) {
+    if (valor === 'todos') {
+        delete filtrosAtivos[tipo];
+    } else {
+        filtrosAtivos[tipo] = valor;
+    }
     
-    const mlbStr = mlb.toString().toUpperCase().trim();
-    
-    // Aceita: MLB1234567890 ou apenas 1234567890
-    const isValid = mlbStr.startsWith('MLB') || /^\d+$/.test(mlbStr);
-    
-    console.log('Validando MLB:', mlbStr, 'Resultado:', isValid);
-    return isValid;
+    atualizarBadgesFiltrosAtivos();
 }
 
+function atualizarBadgesFiltrosAtivos() {
+    const container = document.getElementById('activeFilters');
+    container.innerHTML = '';
+    
+    const entries = Object.entries(filtrosAtivos);
+    
+    if (entries.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    container.style.display = 'flex';
+    
+    entries.forEach(([tipo, valor]) => {
+        let label = '';
+        let displayValor = valor;
+        
+        switch(tipo) {
+            case 'tipoBusca':
+                label = 'Busca:';
+                displayValor = valor === 'mlbs' ? 'Por MLB' : 'Meus anúncios';
+                break;
+            case 'envio':
+                label = 'Envio:';
+                displayValor = valor === 'me2' ? 'Apenas ME2' : 'Apenas ME1';
+                break;
+            case 'manufacturing':
+                label = 'Manufacturing:';
+                displayValor = valor === 'com' ? 'Com prazo' : 'Sem prazo';
+                break;
+            case 'status':
+                label = 'Status:';
+                displayValor = valor.charAt(0).toUpperCase() + valor.slice(1);
+                break;
+        }
+        
+        const badge = document.createElement('div');
+        badge.className = 'filter-badge';
+        badge.innerHTML = `
+            <span>${label} ${displayValor}</span>
+            <button class="remove-filter" onclick="removerFiltro('${tipo}')">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        container.appendChild(badge);
+    });
+}
+
+function removerFiltro(tipo) {
+    delete filtrosAtivos[tipo];
+    
+    // Reseta o select correspondente
+    const selectId = {
+        'tipoBusca': 'tipoBusca',
+        'envio': 'filtroEnvio',
+        'manufacturing': 'filtroManufacturing',
+        'status': 'filtroStatus'
+    }[tipo];
+    
+    if (selectId) {
+        document.getElementById(selectId).value = 'todos';
+    }
+    
+    atualizarBadgesFiltrosAtivos();
+    aplicarFiltros();
+}
+
+function aplicarFiltros() {
+    if (Object.keys(filtrosAtivos).length === 0) {
+        // Se não há filtros, mostra todos os resultados
+        mostrarResultados(ultimosResultados);
+        
+        // Atualiza estatísticas para mostrar total
+        if (ultimosResultados.length > 0) {
+            const statsDiv = document.getElementById('stats');
+            if (statsDiv && !statsDiv.classList.contains('hidden')) {
+                const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
+                statsDiv.innerHTML = statsDiv.innerHTML.replace(/(\d+) de \d+ encontrados \(filtrados\)/, `${totalEncontrado} encontrados`);
+            }
+        }
+        return;
+    }
+    
+    const resultadosFiltrados = aplicarFiltrosEmMemoria(ultimosResultados);
+    
+    mostrarResultados(resultadosFiltrados);
+    
+    // Atualiza estatísticas
+    const statsDiv = document.getElementById('stats');
+    if (statsDiv && !statsDiv.classList.contains('hidden')) {
+        const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
+        const totalFiltrado = resultadosFiltrados.filter(item => !item.error && item.status !== 'error').length;
+        
+        // Substitui apenas a parte dos "encontrados" mantendo o resto
+        const html = statsDiv.innerHTML;
+        if (html.includes('encontrados')) {
+            statsDiv.innerHTML = html.replace(
+                /(\d+) encontrados/,
+                `${totalFiltrado} de ${totalEncontrado} encontrados (filtrados)`
+            );
+        }
+    }
+}
+
+function aplicarFiltrosEmMemoria(resultados) {
+    if (Object.keys(filtrosAtivos).length === 0) {
+        return resultados;
+    }
+    
+    return resultados.filter(item => {
+        // Pula itens com erro
+        if (item.error || item.status === 'error') return false;
+        
+        // Aplica cada filtro
+        for (const [tipo, valor] of Object.entries(filtrosAtivos)) {
+            switch(tipo) {
+                case 'envio':
+                    if (valor === 'me2' && item.shipping_mode !== 'me2') return false;
+                    if (valor === 'me1' && item.shipping_mode !== 'me1') return false;
+                    break;
+                    
+                case 'manufacturing':
+                    if (valor === 'com' && (!item.manufacturing_time || item.manufacturing_time === 'N/A' || item.manufacturing_time === 0)) return false;
+                    if (valor === 'sem' && item.manufacturing_time && item.manufacturing_time !== 'N/A' && item.manufacturing_time !== 0) return false;
+                    break;
+                    
+                case 'status':
+                    if (valor !== 'todos' && item.status !== valor) return false;
+                    break;
+                    
+                case 'tipoBusca':
+                    // Este filtro é aplicado na busca, não no resultado
+                    break;
+            }
+        }
+        
+        return true;
+    });
+}
 
 // =========================================
 // SISTEMA DE PROGRESSO DE ATUALIZAÇÃO
@@ -751,21 +937,6 @@ function iniciarProcessoAtualizacao(atualizacoes) {
     processarProximaAtualizacao();
 }
 
-
-function fecharModalProgresso() {
-    document.getElementById('modalProgresso').style.display = 'none';
-    processoAtualizacao.ativo = false;
-    
-    // Se o processo foi concluído com sucesso, recarrega os dados
-    if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
-        setTimeout(() => buscarMLBs(), 1000);
-    }
-}
-
-// =========================================
-// SISTEMA DE PROGRESSO - MODO DETALHADO
-// =========================================
-
 async function processarProximaAtualizacao() {
     if (!processoAtualizacao.ativo || processoAtualizacao.cancelar) {
         finalizarProcesso();
@@ -835,14 +1006,102 @@ async function processarProximaAtualizacao() {
     }
 }
 
-// Função para processar em lotes (opcional - ainda mais eficiente)
-function processarEmLotes(atualizacoes, tamanhoLote = 20) {
-    const lotes = [];
-    for (let i = 0; i < atualizacoes.length; i += tamanhoLote) {
-        lotes.push(atualizacoes.slice(i, i + tamanhoLote));
+function atualizarBarraProgresso() {
+    const percentual = (processoAtualizacao.processados / processoAtualizacao.total) * 100;
+    const progresso = Math.round(percentual);
+    
+    // Atualiza barra visual
+    document.getElementById('progressFill').style.width = percentual + '%';
+    document.getElementById('progressText').textContent = 
+        `${progresso}% (${processoAtualizacao.processados}/${processoAtualizacao.total})`;
+    
+    // Atualiza estatísticas em tempo real
+    document.getElementById('progressSucesso').textContent = processoAtualizacao.sucesso;
+    document.getElementById('progressErros').textContent = processoAtualizacao.erros;
+    document.getElementById('progressRestantes').textContent = processoAtualizacao.total - processoAtualizacao.processados;
+    
+    // Calcula velocidade e tempo restante
+    const tempoDecorrido = (new Date() - processoAtualizacao.inicio) / 1000;
+    const velocidade = tempoDecorrido > 0 ? (processoAtualizacao.processados / tempoDecorrido).toFixed(1) : 0;
+    const tempoRestante = velocidade > 0 ? Math.round((processoAtualizacao.total - processoAtualizacao.processados) / velocidade) : 0;
+    
+    let infoVelocidade = `${velocidade} MLB/s`;
+    if (tempoRestante > 0) {
+        const minutos = Math.floor(tempoRestante / 60);
+        const segundos = tempoRestante % 60;
+        infoVelocidade += ` • ⏱️ ${minutos}:${segundos.toString().padStart(2, '0')}`;
     }
-    return lotes;
+    
+    document.getElementById('progressSpeed').textContent = infoVelocidade;
+    
+    // Atualiza visual da barra conforme o estado
+    const progressBar = document.getElementById('modalProgresso').querySelector('.progress-bar');
+    progressBar.classList.remove('progress-complete', 'progress-error');
+    
+    if (processoAtualizacao.erros > 0 && processoAtualizacao.processados === processoAtualizacao.total) {
+        progressBar.classList.add('progress-error');
+    } else if (processoAtualizacao.processados === processoAtualizacao.total) {
+        progressBar.classList.add('progress-complete');
+    }
 }
+
+function adicionarLog(mensagem, classe) {
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry ${classe}`;
+    logEntry.textContent = mensagem;
+    
+    const logContainer = document.getElementById('activityLog');
+    logContainer.appendChild(logEntry);
+    
+    // Auto-scroll para o final
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function cancelarAtualizacao() {
+    if (confirm('Deseja cancelar a atualização?')) {
+        processoAtualizacao.cancelar = true;
+        processoAtualizacao.ativo = false;
+        adicionarLog('⏹️ Atualização cancelada pelo usuário', 'log-warning');
+        document.getElementById('btnCancelar').style.display = 'none';
+        document.getElementById('btnConcluir').style.display = 'block';
+    }
+}
+
+function finalizarProcesso() {
+    processoAtualizacao.ativo = false;
+    
+    document.getElementById('btnCancelar').style.display = 'none';
+    document.getElementById('btnConcluir').style.display = 'block';
+    
+    // Mensagem final no log
+    if (processoAtualizacao.cancelar) {
+        adicionarLog('📊 Processo interrompido pelo usuário', 'log-warning');
+    } else {
+        adicionarLog(`🎯 Processo concluído: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`, 'log-info');
+        
+        // Mostra mensagem de resumo
+        setTimeout(() => {
+            mostrarMensagem(
+                `Atualização concluída: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`,
+                processoAtualizacao.erros === 0 ? 'success' : 'warning'
+            );
+        }, 500);
+    }
+}
+
+function fecharModalProgresso() {
+    document.getElementById('modalProgresso').style.display = 'none';
+    processoAtualizacao.ativo = false;
+    
+    // Se o processo foi concluído com sucesso, recarrega os dados
+    if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
+        setTimeout(() => buscarMLBs(), 1000);
+    }
+}
+
+// =========================================
+// FUNÇÕES DE PLANILHA
+// =========================================
 
 function baixarModeloPlanilha() {
     console.log('Baixando modelo...');
@@ -912,7 +1171,7 @@ function baixarModeloCSV() {
 }
 
 function abrirModalPlanilha() {
-    console.log('Abrindo modal de planilha...'); // Para debug
+    console.log('Abrindo modal de planilha...');
     
     // Resetar o estado do modal
     document.getElementById('fileUpload').value = '';
@@ -929,21 +1188,6 @@ function abrirModalPlanilha() {
 function fecharModalPlanilha() {
     document.getElementById('modalPlanilha').style.display = 'none';
 }
-
-// Inicializar o evento de upload quando a página carregar
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inicializando eventos de planilha...');
-    
-    const fileUpload = document.getElementById('fileUpload');
-    if (fileUpload) {
-        fileUpload.addEventListener('change', function(e) {
-            console.log('Arquivo selecionado:', e.target.files[0]?.name);
-            processarArquivoUpload(e.target.files[0]);
-        });
-    } else {
-        console.error('Elemento fileUpload não encontrado!');
-    }
-});
 
 function processarArquivoUpload(file) {
     if (!file) {
@@ -1017,41 +1261,6 @@ function processarExcel(data) {
     }
 }
 
-function exibirPreviaPlanilha(dados) {
-    console.log('Exibindo prévia com', dados.length, 'itens');
-    
-    dadosPlanilha = dados.filter(item => item.mlb && !isNaN(item.dias));
-    
-    console.log('Dados válidos:', dadosPlanilha);
-    
-    if (dadosPlanilha.length === 0) {
-        mostrarMensagem('Nenhum dado válido encontrado na planilha. Verifique as colunas MLB e DIAS.', 'error');
-        return;
-    }
-    
-    const tbody = document.getElementById('previewTableBody');
-    tbody.innerHTML = '';
-    
-    dadosPlanilha.forEach((item, index) => {
-        const isValid = validarMLB(item.mlb);
-        const linha = `
-            <tr class="${isValid ? 'preview-valid' : 'preview-invalid'}">
-                <td>${item.mlb}</td>
-                <td>${item.dias} dias</td>
-                <td>${isValid ? '✅ Válido' : '❌ Formato inválido'}</td>
-            </tr>
-        `;
-        tbody.innerHTML += linha;
-    });
-    
-    document.getElementById('previewTotal').textContent = dadosPlanilha.length;
-    document.getElementById('previewSection').style.display = 'block';
-    document.getElementById('btnProcessarPlanilha').disabled = false;
-    
-    mostrarMensagem(`✅ ${dadosPlanilha.length} MLBs válidos encontrados na planilha`, 'success');
-    console.log('Prévia exibida, botão habilitado');
-}
-
 function processarCSV(csvText) {
     console.log('Processando CSV...');
     
@@ -1090,110 +1299,86 @@ function processarCSV(csvText) {
     exibirPreviaPlanilha(dados);
 }
 
-
-function atualizarBarraProgresso() {
-    const percentual = (processoAtualizacao.processados / processoAtualizacao.total) * 100;
-    const progresso = Math.round(percentual);
+function exibirPreviaPlanilha(dados) {
+    console.log('Exibindo prévia com', dados.length, 'itens');
     
-    // Atualiza barra visual
-    document.getElementById('progressFill').style.width = percentual + '%';
-    document.getElementById('progressText').textContent = 
-        `${progresso}% (${processoAtualizacao.processados}/${processoAtualizacao.total})`;
+    dadosPlanilha = dados.filter(item => item.mlb && !isNaN(item.dias));
     
-    // Atualiza estatísticas em tempo real
-    document.getElementById('progressSucesso').textContent = processoAtualizacao.sucesso;
-    document.getElementById('progressErros').textContent = processoAtualizacao.erros;
-    document.getElementById('progressRestantes').textContent = processoAtualizacao.total - processoAtualizacao.processados;
+    console.log('Dados válidos:', dadosPlanilha);
     
-    // Calcula velocidade e tempo restante
-    const tempoDecorrido = (new Date() - processoAtualizacao.inicio) / 1000;
-    const velocidade = tempoDecorrido > 0 ? (processoAtualizacao.processados / tempoDecorrido).toFixed(1) : 0;
-    const tempoRestante = velocidade > 0 ? Math.round((processoAtualizacao.total - processoAtualizacao.processados) / velocidade) : 0;
-    
-    let infoVelocidade = `${velocidade} MLB/s`;
-    if (tempoRestante > 0) {
-        const minutos = Math.floor(tempoRestante / 60);
-        const segundos = tempoRestante % 60;
-        infoVelocidade += ` • ⏱️ ${minutos}:${segundos.toString().padStart(2, '0')}`;
+    if (dadosPlanilha.length === 0) {
+        mostrarMensagem('Nenhum dado válido encontrado na planilha. Verifique as colunas MLB e DIAS.', 'error');
+        return;
     }
     
-    document.getElementById('progressSpeed').textContent = infoVelocidade;
+    const tbody = document.getElementById('previewTableBody');
+    tbody.innerHTML = '';
     
-    // Atualiza visual da barra conforme o estado
-    const progressBar = document.getElementById('modalProgresso').querySelector('.progress-bar');
-    progressBar.classList.remove('progress-complete', 'progress-error');
+    dadosPlanilha.forEach((item, index) => {
+        const isValid = validarMLB(item.mlb);
+        const linha = `
+            <tr class="${isValid ? 'preview-valid' : 'preview-invalid'}">
+                <td>${item.mlb}</td>
+                <td>${item.dias} dias</td>
+                <td>${isValid ? '✅ Válido' : '❌ Formato inválido'}</td>
+            </tr>
+        `;
+        tbody.innerHTML += linha;
+    });
     
-    if (processoAtualizacao.erros > 0 && processoAtualizacao.processados === processoAtualizacao.total) {
-        progressBar.classList.add('progress-error');
-    } else if (processoAtualizacao.processados === processoAtualizacao.total) {
-        progressBar.classList.add('progress-complete');
+    document.getElementById('previewTotal').textContent = dadosPlanilha.length;
+    document.getElementById('previewSection').style.display = 'block';
+    document.getElementById('btnProcessarPlanilha').disabled = false;
+    
+    mostrarMensagem(`✅ ${dadosPlanilha.length} MLBs válidos encontrados na planilha`, 'success');
+    console.log('Prévia exibida, botão habilitado');
+}
+
+function validarMLB(mlb) {
+    if (!mlb) return false;
+    
+    const mlbStr = mlb.toString().toUpperCase().trim();
+    
+    // Aceita: MLB1234567890 ou apenas 1234567890
+    const isValid = mlbStr.startsWith('MLB') || /^\d+$/.test(mlbStr);
+    
+    console.log('Validando MLB:', mlbStr, 'Resultado:', isValid);
+    return isValid;
+}
+
+function processarPlanilha() {
+    console.log('Clicou em Iniciar Atualização. Dados:', dadosPlanilha);
+    
+    if (!dadosPlanilha || dadosPlanilha.length === 0) {
+        mostrarMensagem('Nenhum dado para processar', 'error');
+        return;
     }
-}
-
-function adicionarLog(mensagem, classe) {
-    const logEntry = document.createElement('div');
-    logEntry.className = `log-entry ${classe}`;
-    logEntry.textContent = mensagem;
     
-    const logContainer = document.getElementById('activityLog');
-    logContainer.appendChild(logEntry);
+    const mlbsValidos = dadosPlanilha.filter(item => validarMLB(item.mlb));
     
-    // Auto-scroll para o final
-    logContainer.scrollTop = logContainer.scrollHeight;
-}
-
-function adicionarLog(mensagem, classe) {
-    const logEntry = document.createElement('div');
-    logEntry.className = `log-entry ${classe}`;
-    logEntry.textContent = mensagem;
-    
-    const logContainer = document.getElementById('activityLog');
-    logContainer.appendChild(logEntry);
-    logContainer.scrollTop = logContainer.scrollHeight;
-}
-
-function cancelarAtualizacao() {
-    if (confirm('Deseja cancelar a atualização?')) {
-        processoAtualizacao.cancelar = true;
-        processoAtualizacao.ativo = false;
-        adicionarLog('⏹️ Atualização cancelada pelo usuário', 'log-warning');
-        document.getElementById('btnCancelar').style.display = 'none';
-        document.getElementById('btnConcluir').style.display = 'block';
+    if (mlbsValidos.length === 0) {
+        mostrarMensagem('Nenhum MLB válido para processar', 'error');
+        return;
     }
-}
-
-function finalizarProcesso() {
-    processoAtualizacao.ativo = false;
     
-    document.getElementById('btnCancelar').style.display = 'none';
-    document.getElementById('btnConcluir').style.display = 'block';
-    
-    // Mensagem final no log
-    if (processoAtualizacao.cancelar) {
-        adicionarLog('📊 Processo interrompido pelo usuário', 'log-warning');
-    } else {
-        adicionarLog(`🎯 Processo concluído: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`, 'log-info');
-        
-        // Mostra mensagem de resumo
-        setTimeout(() => {
-            mostrarMensagem(
-                `Atualização concluída: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`,
-                processoAtualizacao.erros === 0 ? 'success' : 'warning'
-            );
-        }, 500);
+    if (!confirm(`Deseja atualizar ${mlbsValidos.length} MLBs conforme a planilha?`)) {
+        return;
     }
-}
-
-function fecharModalProgresso() {
-    document.getElementById('modalProgresso').style.display = 'none';
-    processoAtualizacao.ativo = false;
     
-    // Se o processo foi concluído com sucesso, recarrega os dados
-    if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
-        setTimeout(() => buscarMLBs(), 1000);
-    }
+    console.log('Iniciando processamento de', mlbsValidos.length, 'MLBs');
+    fecharModalPlanilha();
+    
+    // Preparar as atualizações apenas com MLBs válidos
+    const atualizacoes = mlbsValidos.map(item => ({
+        mlb: item.mlb.toUpperCase().startsWith('MLB') ? item.mlb.toUpperCase() : 'MLB' + item.mlb,
+        dias: item.dias
+    }));
+    
+    console.log('Atualizações preparadas:', atualizacoes);
+    
+    // Usar o mesmo sistema de progresso que já temos
+    abrirModalProgresso(atualizacoes);
 }
-
 
 // =========================================
 // FUNÇÕES DE MODAL DE DETALHES
@@ -1272,29 +1457,293 @@ function abrirDetalhes(mlbId) {
 // FUNÇÕES AUXILIARES DE UI
 // =========================================
 
+// Modifique a função mostrarLoading:
 function mostrarLoading(mostrar) {
+    isLoading = mostrar;
     const tableLoading = document.getElementById('tableLoading');
     const ordersContainer = document.getElementById('ordersContainer');
+    const emptyState = document.getElementById('emptyState');
     
     if (mostrar) {
-        tableLoading.classList.remove('hidden');
+        // Mostra o container de resultados e o loading
         ordersContainer.classList.remove('hidden');
-        document.getElementById('emptyState').classList.add('hidden');
+        tableLoading.classList.remove('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
     } else {
+        // Esconde apenas o loading, mantém o container visível
         tableLoading.classList.add('hidden');
     }
 }
 
-function limparResultados() {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado - inicializando');
+    
+    // Garante que o loading está escondido
+    const tableLoading = document.getElementById('tableLoading');
+    if (tableLoading) {
+        tableLoading.classList.add('hidden');
+    }
+    
+    // Garante que o estado vazio está visível
+    const emptyState = document.getElementById('emptyState');
+    const ordersContainer = document.getElementById('ordersContainer');
+    
+    if (emptyState && ordersContainer) {
+        emptyState.classList.remove('hidden');
+        ordersContainer.classList.add('hidden');
+    }
+    
+    // Inicializa os filtros expandidos
+    const filtersHeader = document.getElementById('filtersHeader');
+    if (filtersHeader) {
+        filtersHeader.classList.remove('collapsed');
+        
+        // Configura o botão toggle
+        const toggleBtn = document.querySelector('.toggle-filters-btn');
+        if (toggleBtn) {
+            toggleBtn.onclick = toggleFilters;
+        }
+    }
+    
+    // Configura o botão de aplicar filtros
+    const aplicarFiltrosBtn = document.querySelector('[onclick="aplicarFiltros()"]');
+    if (aplicarFiltrosBtn) {
+        aplicarFiltrosBtn.onclick = aplicarFiltros;
+    }
+    
+    // Event listeners para filtros
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const tipo = this.id;
+            const valor = this.value;
+            atualizarFiltroAtivo(tipo, valor);
+        });
+    });
+    
+    // Enter no campo de busca
+    const mlbsInput = document.getElementById('mlbs');
+    if (mlbsInput) {
+        mlbsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarMLBs();
+            }
+        });
+    }
+    
+    // Configuração do upload de arquivo
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            if (e.target.files[0]) {
+                processarArquivoUpload(e.target.files[0]);
+            }
+        });
+    }
+    
+    // Inicializa badges de filtros
+    atualizarBadgesFiltrosAtivos();
+    
+    // Verifica configuração
+    verificarConfiguracao();
+    
+    console.log('Inicialização completa');
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado - inicializando');
+    
+    // 1. Configuração inicial de visibilidade
+    const tableLoading = document.getElementById('tableLoading');
+    const emptyState = document.getElementById('emptyState');
+    const ordersContainer = document.getElementById('ordersContainer');
+    
+    if (tableLoading) tableLoading.classList.add('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (ordersContainer) ordersContainer.classList.add('hidden');
+    
+    // 2. Inicializa toggle button
+    inicializarToggleButton();
+    
+    // 3. Configura eventos
+    const mlbsInput = document.getElementById('mlbs');
+    if (mlbsInput) {
+        mlbsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarMLBs();
+            }
+        });
+    }
+    
+    // 4. Configura selects de filtro
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const tipo = this.id;
+            const valor = this.value;
+            atualizarFiltroAtivo(tipo, valor);
+        });
+    });
+    
+    // 5. Configura botão de aplicar filtros
+    const aplicarBtn = document.querySelector('[onclick*="aplicarFiltros"]');
+    if (aplicarBtn) {
+        aplicarBtn.addEventListener('click', aplicarFiltros);
+    }
+    
+    // 6. Outras inicializações
+    atualizarBadgesFiltrosAtivos();
+    verificarConfiguracao();
+    
+    console.log('Inicialização completa');
+});
+
+// Modifique o DOMContentLoaded para garantir que o loading não aparece no início:
+document.addEventListener('DOMContentLoaded', function() {
+    // Garante que o loading esteja oculto no início
+    mostrarLoading(false);
+    
+    // Verifica se há estado vazio para mostrar
+    const emptyState = document.getElementById('emptyState');
+    const ordersContainer = document.getElementById('ordersContainer');
+    
+    if (emptyState && !emptyState.classList.contains('hidden')) {
+        ordersContainer.classList.add('hidden');
+    }
+    
+    // Restante do seu código...
+    document.getElementById('mlbs').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            buscarMLBs();
+        }
+    });
+    
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                aplicarFiltros();
+            }
+        });
+    });
+    
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            processarArquivoUpload(e.target.files[0]);
+        });
+    }
+    
+    atualizarBadgesFiltrosAtivos();
+    verificarConfiguracao();
+    
+    const filtersHeader = document.getElementById('filtersHeader');
+    if (filtersHeader) {
+        filtersHeader.classList.remove('collapsed');
+    }
+});
+
+function inicializarToggleButton() {
+    const toggleBtn = document.getElementById('toggleFiltersBtn');
+    const filtersHeader = document.getElementById('filtersHeader');
+    
+    if (!toggleBtn || !filtersHeader) {
+        console.warn('Elementos do toggle não encontrados');
+        return;
+    }
+    
+    // Remove qualquer evento existente
+    toggleBtn.replaceWith(toggleBtn.cloneNode(true));
+    const newToggleBtn = document.getElementById('toggleFiltersBtn');
+    
+    // Adiciona novo evento
+    newToggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (filtersHeader.classList.contains('collapsed')) {
+            // Expande
+            filtersHeader.classList.remove('collapsed');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (icon) icon.className = 'fas fa-chevron-up';
+            if (text) text.textContent = 'Recolher';
+        } else {
+            // Recolhe
+            filtersHeader.classList.add('collapsed');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            if (icon) icon.className = 'fas fa-chevron-down';
+            if (text) text.textContent = 'Expandir';
+        }
+    });
+    
+    console.log('Toggle button inicializado');
+}
+function limparResultados(mantemContainer = false) {
     const statsDiv = document.getElementById('stats');
     const ordersContainer = document.getElementById('ordersContainer');
     const emptyState = document.getElementById('emptyState');
     const btnExportar = document.getElementById('btnExportar');
+    const activeFilters = document.getElementById('activeFilters');
+    const tableBody = document.getElementById('ordersTableBody');
     
-    statsDiv.classList.add('hidden');
-    ordersContainer.classList.add('hidden');
-    emptyState.classList.remove('hidden');
-    btnExportar.style.display = 'none'; // Oculta botão de exportação
+    // Limpa a tabela
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
+    
+    // Esconde estatísticas
+    if (statsDiv) {
+        statsDiv.classList.add('hidden');
+    }
+    
+    // Esconde botão de exportação
+    if (btnExportar) {
+        btnExportar.style.display = 'none';
+    }
+    
+    // Esconde badges de filtros
+    if (activeFilters) {
+        activeFilters.style.display = 'none';
+    }
+    
+    // Controla a visibilidade do container e estado vazio
+    if (!mantemContainer) {
+        if (ordersContainer) {
+            ordersContainer.classList.add('hidden');
+        }
+        if (emptyState) {
+            emptyState.classList.remove('hidden');
+        }
+    } else {
+        // Mantém container visível mas esconde estado vazio
+        if (ordersContainer) {
+            ordersContainer.classList.remove('hidden');
+        }
+        if (emptyState) {
+            emptyState.classList.add('hidden');
+        }
+    }
+    
+    // Limpa filtros ativos
+    filtrosAtivos = {};
+    
+    // Reseta os selects apenas se não estamos mantendo o container
+    if (!mantemContainer) {
+        const tipoBusca = document.getElementById('tipoBusca');
+        const filtroEnvio = document.getElementById('filtroEnvio');
+        const filtroManufacturing = document.getElementById('filtroManufacturing');
+        const filtroStatus = document.getElementById('filtroStatus');
+        
+        if (tipoBusca) tipoBusca.value = 'mlbs';
+        if (filtroEnvio) filtroEnvio.value = 'todos';
+        if (filtroManufacturing) filtroManufacturing.value = 'todos';
+        if (filtroStatus) filtroStatus.value = 'todos';
+    }
+    
     ultimosResultados = [];
 }
 
@@ -1345,16 +1794,33 @@ function fecharDetalhesModal() {
     document.getElementById('modalDetalhesMLB').style.display = 'none';
 }
 
+function fecharManufacturingModal() {
+    document.getElementById('modalManufacturing').style.display = 'none';
+    mlbSelecionado = null;
+}
+
 // Fechar modais ao clicar fora
 window.onclick = function(event) {
     const configModal = document.getElementById('configModal');
     const detalhesModal = document.getElementById('modalDetalhesMLB');
+    const manufacturingModal = document.getElementById('modalManufacturing');
+    const progressModal = document.getElementById('modalProgresso');
+    const planilhaModal = document.getElementById('modalPlanilha');
     
     if (event.target === configModal) {
         configModal.style.display = 'none';
     }
     if (event.target === detalhesModal) {
         detalhesModal.style.display = 'none';
+    }
+    if (event.target === manufacturingModal) {
+        manufacturingModal.style.display = 'none';
+    }
+    if (event.target === progressModal) {
+        progressModal.style.display = 'none';
+    }
+    if (event.target === planilhaModal) {
+        planilhaModal.style.display = 'none';
     }
 }
 
@@ -1371,6 +1837,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Tecla Enter nos selects de filtro
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                aplicarFiltros();
+            }
+        });
+    });
+    
+    // Evento para o upload de arquivo
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            console.log('Arquivo selecionado:', e.target.files[0]?.name);
+            processarArquivoUpload(e.target.files[0]);
+        });
+    }
+    
+    // Inicializa filtros
+    atualizarBadgesFiltrosAtivos();
+    
     // Verificar configuração ao carregar a página
     verificarConfiguracao();
+    
+    // Inicializa com filtros expandidos
+    const filtersHeader = document.getElementById('filtersHeader');
+    if (filtersHeader) {
+        filtersHeader.classList.remove('collapsed');
+    }
 });

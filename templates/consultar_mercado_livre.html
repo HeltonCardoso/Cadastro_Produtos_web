@@ -9,85 +9,110 @@
 <div class="mercado-livre-container">
     
     <!-- ========================================= -->
-    <!-- CARD DE CONTROLES COMPACTOS (estilo AnyMarket) -->
+    <!-- BARRA DE BUSCA RÁPIDA -->
     <!-- ========================================= -->
-    <div class="controls-card">
-        <!-- Linha 1: Busca e Status -->
-        <div class="control-row">
-            <div class="search-input">
-                <input type="text" id="mlbs" placeholder="Digite os códigos MLB (separados por vírgula ou linha)" 
-                       style="font-family: monospace;">
-            </div>
-            <div class="action-buttons">
+    <div class="quick-search-bar">
+        <div class="search-input-group">
+            <input type="text" id="mlbs" placeholder="Digite os códigos MLB (separados por vírgula ou linha)" 
+                   style="font-family: monospace;">
+            <div class="search-buttons">
                 <button class="btn btn-primary" onclick="buscarMLBs()">
                     <i class="fas fa-search"></i> Buscar
                 </button>
                 <button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
                     <i class="fas fa-shipping-fast"></i> Análise
                 </button>
-                <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
-                    <i class="fas fa-clock"></i> Atualizar Lote
-                </button>
-                <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
-                    <i class="fas fa-file-excel"></i> Via Planilha
-                </button>
-                <button class="btn btn-outline-secondary" onclick="limparCampos()">
-                    <i class="fas fa-broom"></i> Limpar
-                </button>
                 <button class="btn btn-success" onclick="exportarParaExcel()" id="btnExportar" style="display: none;">
-                    <i class="fas fa-file-excel"></i> Exportar Excel
+                    <i class="fas fa-file-excel"></i> Exportar
                 </button>
             </div>
-
-        <!-- Linha 2: Filtros Básicos -->
-        <div class="control-row">
-            <div class="filter-group compact">
+        </div>
+        
+        <!-- Filtros Ativos -->
+        <div class="active-filters" id="activeFilters" style="display: none;">
+            <!-- Filtros ativos aparecerão aqui -->
+        </div>
+    </div>
+    
+    <!-- ========================================= -->
+    <!-- HEADER DE FILTROS COMPACTOS -->
+    <!-- ========================================= -->
+    <div class="filters-header" id="filtersHeader">
+        <div class="filters-grid">
+            <!-- Linha 1: Filtros principais -->
+            <div class="filter-group">
                 <label>Tipo de Busca</label>
-                <select class="filter-select" id="tipoBusca">
+                <select class="filter-select" id="tipoBusca" onchange="atualizarFiltroAtivo('tipoBusca', this.value)">
                     <option value="mlbs">Por MLBs</option>
                     <option value="meus_anuncios">Meus anúncios</option>
                 </select>
             </div>
             
-            <div class="filter-group compact">
+            <div class="filter-group">
                 <label>Modo de Envio</label>
-                <select class="filter-select" id="filtroEnvio">
+                <select class="filter-select" id="filtroEnvio" onchange="atualizarFiltroAtivo('envio', this.value)">
                     <option value="todos">Todos</option>
                     <option value="me2">Apenas ME2</option>
                     <option value="me1">Apenas ME1</option>
                 </select>
             </div>
             
-            <div class="filter-group compact">
+            <div class="filter-group">
                 <label>Manufacturing</label>
-                <select class="filter-select" id="filtroManufacturing">
+                <select class="filter-select" id="filtroManufacturing" onchange="atualizarFiltroAtivo('manufacturing', this.value)">
                     <option value="todos">Todos</option>
                     <option value="com">Com prazo</option>
                     <option value="sem">Sem prazo</option>
                 </select>
             </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
-                    <i class="fas fa-shipping-fast"></i> Análise ME1/ME2
-                </button>
+            
+            <div class="filter-group">
+                <label>Status</label>
+                <select class="filter-select" id="filtroStatus" onchange="atualizarFiltroAtivo('status', this.value)">
+                    <option value="todos">Todos</option>
+                    <option value="active">Ativo</option>
+                    <option value="paused">Pausado</option>
+                    <option value="closed">Fechado</option>
+                </select>
             </div>
+            
+            <!-- Linha 2: Botões de ação -->
+            <div class="filter-actions">
+            <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
+                <i class="fas fa-clock"></i> Atualizar Lote
+            </button>
+            <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
+                <i class="fas fa-file-excel"></i> Via Planilha
+            </button>
+            <button class="btn btn-outline-secondary" onclick="limparCampos()">
+                <i class="fas fa-broom"></i> Limpar
+            </button>
+            <button class="btn btn-outline-warning" onclick="aplicarFiltros()">
+                <i class="fas fa-filter"></i> Aplicar Filtros
+            </button>
+            
+            <!-- Botão toggle CORRETO -->
+            <button class="toggle-filters-btn" id="toggleFiltersBtn">
+                <i class="fas fa-chevron-up"></i>
+                <span>Recolher</span>
+            </button>
+        </div>
         </div>
     </div>
-
+    
     <!-- ========================================= -->
-    <!-- SEÇÃO DE RESULTADOS -->
+    <!-- SEÇÃO DE RESULTADOS (mantida igual) -->
     <!-- ========================================= -->
-    <div id="ordersContainer" class="orders-section hidden">
-        <!-- Loading da Tabela -->
-        <div id="tableLoading" class="table-loading hidden">
-            <div class="loading-spinner">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
-                </div>
-                <p>Buscando informações dos anúncios...</p>
+    <div id="ordersContainer" class="orders-section hidden"> <!-- Começa hidden -->
+    <!-- Loading da Tabela - Começa hidden -->
+    <div id="tableLoading" class="table-loading hidden">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
             </div>
+            <p>Buscando informações dos anúncios...</p>
         </div>
+    </div>
 
         <!-- Tabela de Resultados -->
         <div class="table-container">
