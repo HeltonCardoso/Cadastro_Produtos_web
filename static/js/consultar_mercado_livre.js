@@ -751,34 +751,6 @@ function iniciarProcessoAtualizacao(atualizacoes) {
     processarProximaAtualizacao();
 }
 
-function iniciarProcessoAtualizacao(atualizacoes) {
-    processoAtualizacao = {
-        ativo: true,
-        total: atualizacoes.length,
-        processados: 0,
-        sucesso: 0,
-        erros: 0,
-        inicio: new Date(),
-        atualizacoes: atualizacoes,
-        cancelar: false
-    };
-    
-    // Prepara a interface
-    document.getElementById('progressFill').style.width = '0%';
-    document.getElementById('progressText').textContent = '0% (0/' + atualizacoes.length + ')';
-    document.getElementById('progressSucesso').textContent = '0';
-    document.getElementById('progressErros').textContent = '0';
-    document.getElementById('progressRestantes').textContent = atualizacoes.length;
-    document.getElementById('activityLog').innerHTML = '';
-    document.getElementById('btnCancelar').style.display = 'block';
-    document.getElementById('btnConcluir').style.display = 'none';
-    
-    // Abre o modal
-    document.getElementById('modalProgresso').style.display = 'block';
-    
-    // Inicia o processamento
-    processarProximaAtualizacao();
-}
 
 function fecharModalProgresso() {
     document.getElementById('modalProgresso').style.display = 'none';
@@ -789,6 +761,10 @@ function fecharModalProgresso() {
         setTimeout(() => buscarMLBs(), 1000);
     }
 }
+
+// =========================================
+// SISTEMA DE PROGRESSO - MODO DETALHADO
+// =========================================
 
 async function processarProximaAtualizacao() {
     if (!processoAtualizacao.ativo || processoAtualizacao.cancelar) {
@@ -803,15 +779,13 @@ async function processarProximaAtualizacao() {
     
     const atualizacao = processoAtualizacao.atualizacoes[processoAtualizacao.processados];
     
-    // Atualiza interface com MLB atual (com throttling para performance)
-    if (processoAtualizacao.processados % 10 === 0 || processoAtualizacao.processados < 10) {
-        document.getElementById('currentMlb').textContent = atualizacao.mlb;
-        document.getElementById('currentStatus').textContent = 'Processando...';
-        document.getElementById('currentStatus').className = 'status-badge status-processing';
-    }
+    // SEMPRE mostrar MLB atual sendo processado
+    document.getElementById('currentMlb').textContent = atualizacao.mlb;
+    document.getElementById('currentStatus').textContent = 'Processando...';
+    document.getElementById('currentStatus').className = 'status-badge status-processing';
     
     try {
-        // Faz a requisição
+        // Faz a requisição para a API
         const response = await fetch('/api/mercadolivre/atualizar-manufacturing', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -828,37 +802,36 @@ async function processarProximaAtualizacao() {
         
         if (data.sucesso) {
             processoAtualizacao.sucesso++;
-            // Só mostra log a cada 10 itens ou para erros (performance)
-            if (processoAtualizacao.processados % 10 === 0 || processoAtualizacao.processados <= 10) {
-                adicionarLog(`✅ ${atualizacao.mlb} - ${atualizacao.dias} dias`, 'log-success');
-            }
+            // SEMPRE mostrar log de sucesso
+            adicionarLog(`✅ ${atualizacao.mlb} - ${atualizacao.dias} dias`, 'log-success');
+            document.getElementById('currentStatus').textContent = 'Sucesso';
+            document.getElementById('currentStatus').className = 'status-badge status-success';
         } else {
             processoAtualizacao.erros++;
-            // Sempre mostra erros no log
+            // SEMPRE mostrar log de erro
             adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${data.erro}`, 'log-error');
+            document.getElementById('currentStatus').textContent = 'Erro';
+            document.getElementById('currentStatus').className = 'status-badge status-error';
         }
         
-        // Atualiza barra de progresso (com throttling)
-        if (processoAtualizacao.processados % 5 === 0 || processoAtualizacao.processados === processoAtualizacao.total) {
-            atualizarBarraProgresso();
-        }
+        // SEMPRE atualizar barra de progresso
+        atualizarBarraProgresso();
         
-        // Delay adaptativo baseado no volume
-        const delay = processoAtualizacao.total > 100 ? 300 : 500; // Mais rápido para grandes volumes
-        setTimeout(processarProximaAtualizacao, delay);
+        // Pequeno delay para evitar rate limit (0.5 segundos)
+        setTimeout(processarProximaAtualizacao, 500);
         
     } catch (error) {
         processoAtualizacao.processados++;
         processoAtualizacao.erros++;
+        // SEMPRE mostrar log de erro de conexão
         adicionarLog(`❌ ${atualizacao.mlb} - Erro: ${error.message}`, 'log-error');
+        document.getElementById('currentStatus').textContent = 'Erro';
+        document.getElementById('currentStatus').className = 'status-badge status-error';
         
-        // Atualiza barra mesmo em caso de erro
-        if (processoAtualizacao.processados % 5 === 0) {
-            atualizarBarraProgresso();
-        }
+        // SEMPRE atualizar barra mesmo em caso de erro
+        atualizarBarraProgresso();
         
-        const delay = processoAtualizacao.total > 100 ? 300 : 500;
-        setTimeout(processarProximaAtualizacao, delay);
+        setTimeout(processarProximaAtualizacao, 500);
     }
 }
 
@@ -1122,12 +1095,12 @@ function atualizarBarraProgresso() {
     const percentual = (processoAtualizacao.processados / processoAtualizacao.total) * 100;
     const progresso = Math.round(percentual);
     
-    // Atualiza barra
+    // Atualiza barra visual
     document.getElementById('progressFill').style.width = percentual + '%';
     document.getElementById('progressText').textContent = 
         `${progresso}% (${processoAtualizacao.processados}/${processoAtualizacao.total})`;
     
-    // Atualiza estatísticas
+    // Atualiza estatísticas em tempo real
     document.getElementById('progressSucesso').textContent = processoAtualizacao.sucesso;
     document.getElementById('progressErros').textContent = processoAtualizacao.erros;
     document.getElementById('progressRestantes').textContent = processoAtualizacao.total - processoAtualizacao.processados;
@@ -1146,7 +1119,7 @@ function atualizarBarraProgresso() {
     
     document.getElementById('progressSpeed').textContent = infoVelocidade;
     
-    // Atualiza visual da barra
+    // Atualiza visual da barra conforme o estado
     const progressBar = document.getElementById('modalProgresso').querySelector('.progress-bar');
     progressBar.classList.remove('progress-complete', 'progress-error');
     
@@ -1155,6 +1128,18 @@ function atualizarBarraProgresso() {
     } else if (processoAtualizacao.processados === processoAtualizacao.total) {
         progressBar.classList.add('progress-complete');
     }
+}
+
+function adicionarLog(mensagem, classe) {
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry ${classe}`;
+    logEntry.textContent = mensagem;
+    
+    const logContainer = document.getElementById('activityLog');
+    logContainer.appendChild(logEntry);
+    
+    // Auto-scroll para o final
+    logContainer.scrollTop = logContainer.scrollHeight;
 }
 
 function adicionarLog(mensagem, classe) {
@@ -1183,9 +1168,9 @@ function finalizarProcesso() {
     document.getElementById('btnCancelar').style.display = 'none';
     document.getElementById('btnConcluir').style.display = 'block';
     
-    // Mensagem final
+    // Mensagem final no log
     if (processoAtualizacao.cancelar) {
-        adicionarLog('📊 Processo interrompido', 'log-warning');
+        adicionarLog('📊 Processo interrompido pelo usuário', 'log-warning');
     } else {
         adicionarLog(`🎯 Processo concluído: ${processoAtualizacao.sucesso} sucesso, ${processoAtualizacao.erros} erros`, 'log-info');
         
@@ -1201,13 +1186,13 @@ function finalizarProcesso() {
 
 function fecharModalProgresso() {
     document.getElementById('modalProgresso').style.display = 'none';
+    processoAtualizacao.ativo = false;
     
     // Se o processo foi concluído com sucesso, recarrega os dados
     if (processoAtualizacao.sucesso > 0 && ultimosResultados.length > 0) {
         setTimeout(() => buscarMLBs(), 1000);
     }
 }
-
 
 
 // =========================================
