@@ -64,6 +64,23 @@
     border-bottom: 1px solid #dee2e6;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     margin: 0;
+    position: relative;
+}
+
+/* Área que vai recolher/expandir */
+.filters-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* Estado recolhido */
+.filters-header.collapsed .filters-content {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .filters-grid {
@@ -108,11 +125,10 @@
     display: flex;
     gap: 8px;
     align-items: center;
-    grid-column: 1 / -1;
-    margin-top: 8px;
-    flex-wrap: wrap;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
 }
-
 /* Botão de expandir/colapsar filtros */
 .toggle-filters-btn {
     background: #f8f9fa;
@@ -126,25 +142,31 @@
     align-items: center;
     gap: 6px;
     margin-left: auto;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    z-index: 100;
+    position: relative;
+    user-select: none;
 }
+
+.filters-header .filters-grid {
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+}
+
 
 .toggle-filters-btn:hover {
     background: #e9ecef;
     border-color: #adb5bd;
 }
 
-/* Estado colapsado dos filtros */
-.filters-header.collapsed .filters-grid {
-    display: none;
-}
-
 .filters-header.collapsed .filter-actions {
-    justify-content: flex-end;
+    border-top: none;
     margin-top: 0;
+    padding-top: 0;
 }
 
 .filters-header.collapsed .toggle-filters-btn {
+    margin-left: auto;
     margin-left: 0;
 }
 
@@ -1020,11 +1042,6 @@
         align-items: stretch;
     }
     
-    .toggle-filters-btn {
-        margin-left: 0;
-        justify-content: center;
-    }
-    
     .modal-content {
         width: 95%;
         margin: 20px auto;
@@ -1145,21 +1162,13 @@
 /* CORREÇÕES PARA O TOGGLE DE FILTROS */
 /* ========================================= */
 
-/* Garante que o toggle button funciona */
-.toggle-filters-btn {
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.3s ease;
-}
-
 .toggle-filters-btn:active {
     transform: translateY(1px);
 }
 
-/* Garante que os filtros são visíveis por padrão */
 .filters-header:not(.collapsed) .filters-grid {
-    display: grid !important;
-    animation: fadeInDown 0.3s ease;
+    max-height: 500px;
+    opacity: 1;
 }
 
 @keyframes fadeInDown {
@@ -1182,21 +1191,23 @@
 }
 
 .filters-header.collapsed .filters-grid {
-    max-height: 0;
+    max-height: 0 !important;
     opacity: 0;
-    margin: 0;
-    padding: 0;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden;
 }
 
-/* Botão do toggle mais visível */
 .toggle-filters-btn i {
     transition: transform 0.3s ease;
 }
 
 .filters-header.collapsed .toggle-filters-btn i {
-    transform: rotate(0deg);
+    transform: rotate(180deg);
 }
 
 .filters-header:not(.collapsed) .toggle-filters-btn i {
-    transform: rotate(180deg);
+    transform: rotate(0deg);
 }

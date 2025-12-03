@@ -19,9 +19,9 @@
                 <button class="btn btn-primary" onclick="buscarMLBs()">
                     <i class="fas fa-search"></i> Buscar
                 </button>
-                <button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
+                <!--<button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
                     <i class="fas fa-shipping-fast"></i> Análise
-                </button>
+                </button> -->
                 <button class="btn btn-success" onclick="exportarParaExcel()" id="btnExportar" style="display: none;">
                     <i class="fas fa-file-excel"></i> Exportar
                 </button>
@@ -37,68 +37,71 @@
     <!-- ========================================= -->
     <!-- HEADER DE FILTROS COMPACTOS -->
     <!-- ========================================= -->
-    <div class="filters-header" id="filtersHeader">
-        <div class="filters-grid">
-            <!-- Linha 1: Filtros principais -->
-            <div class="filter-group">
-                <label>Tipo de Busca</label>
-                <select class="filter-select" id="tipoBusca" onchange="atualizarFiltroAtivo('tipoBusca', this.value)">
-                    <option value="mlbs">Por MLBs</option>
-                    <option value="meus_anuncios">Meus anúncios</option>
-                </select>
+            <div class="filters-header" id="filtersHeader">
+            <!-- ÁREA QUE RECOLHE/EXPANDE -->
+            <div class="filters-content" id="filtersContent">
+                <div class="filters-grid">
+                    <!-- Linha 1: Filtros principais -->
+                    <div class="filter-group">
+                        <label>TIPO DE BUSCA</label>
+                        <select class="filter-select" id="tipoBusca">
+                            <option value="mlbs">MLB</option>
+                            <option value="meus_anuncios">SKU</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>TIPO DE ENVIO</label>
+                        <select class="filter-select" id="filtroEnvio">
+                            <option value="todos">Todos</option>
+                            <option value="me2">ME2</option>
+                            <option value="me1">ME1</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>DISPONIBILIDADE</label>
+                        <select class="filter-select" id="filtroManufacturing">
+                            <option value="todos">Todos</option>
+                            <option value="com">Com prazo</option>
+                            <option value="sem">Sem prazo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>SITUAÇÃO</label>
+                        <select class="filter-select" id="filtroStatus">
+                            <option value="todos">Todos</option>
+                            <option value="active">Ativo</option>
+                            <option value="paused">Pausado</option>
+                            <option value="closed">Fechado</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             
-            <div class="filter-group">
-                <label>Modo de Envio</label>
-                <select class="filter-select" id="filtroEnvio" onchange="atualizarFiltroAtivo('envio', this.value)">
-                    <option value="todos">Todos</option>
-                    <option value="me2">Apenas ME2</option>
-                    <option value="me1">Apenas ME1</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label>Manufacturing</label>
-                <select class="filter-select" id="filtroManufacturing" onchange="atualizarFiltroAtivo('manufacturing', this.value)">
-                    <option value="todos">Todos</option>
-                    <option value="com">Com prazo</option>
-                    <option value="sem">Sem prazo</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label>Status</label>
-                <select class="filter-select" id="filtroStatus" onchange="atualizarFiltroAtivo('status', this.value)">
-                    <option value="todos">Todos</option>
-                    <option value="active">Ativo</option>
-                    <option value="paused">Pausado</option>
-                    <option value="closed">Fechado</option>
-                </select>
-            </div>
-            
-            <!-- Linha 2: Botões de ação -->
+            <!-- LINHA DE AÇÕES (NÃO RECOLHE) -->
             <div class="filter-actions">
-            <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
-                <i class="fas fa-clock"></i> Atualizar Lote
-            </button>
-            <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
-                <i class="fas fa-file-excel"></i> Via Planilha
-            </button>
-            <button class="btn btn-outline-secondary" onclick="limparCampos()">
-                <i class="fas fa-broom"></i> Limpar
-            </button>
-            <button class="btn btn-outline-warning" onclick="aplicarFiltros()">
-                <i class="fas fa-filter"></i> Aplicar Filtros
-            </button>
-            
-            <!-- Botão toggle CORRETO -->
-            <button class="toggle-filters-btn" id="toggleFiltersBtn">
-                <i class="fas fa-chevron-up"></i>
-                <span>Recolher</span>
-            </button>
+                <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
+                    <i class="fas fa-clock"></i> Atualizar Lote
+                </button>
+                <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
+                    <i class="fas fa-file-excel"></i> Via Planilha
+                </button>
+                <button class="btn btn-outline-secondary" onclick="limparCampos()">
+                    <i class="fas fa-broom"></i> Limpar
+                </button>
+                <button class="btn btn-outline-warning" onclick="aplicarFiltros()">
+                    <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                
+                <!-- BOTÃO TOGGLE (SEMPRE VISÍVEL) -->
+                <button class="toggle-filters-btn" id="toggleFiltersBtn">
+                    <i class="fas fa-chevron-up"></i>
+                    <span id="toggleText">Recolher Filtros</span>
+                </button>
+            </div>
         </div>
-        </div>
-    </div>
     
     <!-- ========================================= -->
     <!-- SEÇÃO DE RESULTADOS (mantida igual) -->

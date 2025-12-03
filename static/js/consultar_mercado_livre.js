@@ -1,10 +1,23 @@
-// static/js/consultar_mercado_livre.js - VERSÃO COMPLETA ATUALIZADA
+// static/js/consultar_mercado_livre.js - VERSÃO COMPLETA E CORRIGIDA
 
-// Variáveis globais
+// =========================================
+// VARIÁVEIS GLOBAIS
+// =========================================
 let ultimosResultados = [];
 let dadosPlanilha = [];
 let filtrosAtivos = {};
 let isLoading = false;
+let mlbSelecionado = null;
+let processoAtualizacao = {
+    ativo: false,
+    total: 0,
+    processados: 0,
+    sucesso: 0,
+    erros: 0,
+    inicio: null,
+    atualizacoes: [],
+    cancelar: false
+};
 
 // =========================================
 // FUNÇÕES DE CONFIGURAÇÃO E AUTENTICAÇÃO
@@ -172,9 +185,6 @@ function buscarMLBs() {
         console.error('Erro na busca:', error);
         mostrarErro('Erro ao buscar MLBs: ' + error.message);
         mostrarLoading(false); // Esconde loading em caso de erro
-    })
-    .finally(() => {
-        // O loading será escondido dentro de mostrarResultados
     });
 }
 
@@ -239,6 +249,38 @@ function mostrarEstatisticas(data) {
     statsDiv.classList.remove('hidden');
 }
 
+function limparFiltros() {
+    console.log('Limpando todos os filtros');
+    
+    // Limpa filtros ativos
+    filtrosAtivos = {};
+    
+    // Reseta todos os selects
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.value = 'todos';
+    });
+    
+    // Atualiza badges
+    atualizarBadgesFiltrosAtivos();
+    
+    // Mostra todos os resultados se houver
+    if (ultimosResultados.length > 0) {
+        mostrarResultados(ultimosResultados);
+        
+        // Atualiza estatísticas
+        const statsDiv = document.getElementById('stats');
+        if (statsDiv && !statsDiv.classList.contains('hidden')) {
+            const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
+            statsDiv.innerHTML = statsDiv.innerHTML.replace(
+                /(\d+) de \d+ encontrados \(filtrados\)/,
+                `${totalEncontrado} encontrados`
+            );
+        }
+    }
+    
+    mostrarMensagem('Filtros limpos', 'success');
+}
+
 function mostrarResultados(resultados) {
     const ordersContainer = document.getElementById('ordersContainer');
     const emptyState = document.getElementById('emptyState');
@@ -250,6 +292,18 @@ function mostrarResultados(resultados) {
         mostrarLoading(false);
         ordersContainer.classList.add('hidden');
         emptyState.classList.remove('hidden');
+        
+        // Mensagem específica para quando há filtros ativos
+        if (Object.keys(filtrosAtivos).length > 0) {
+            emptyState.innerHTML = `
+                <i class="fas fa-filter"></i>
+                <h3>Nenhum resultado encontrado com os filtros aplicados</h3>
+                <p>Nenhum anúncio corresponde aos critérios de filtro selecionados.</p>
+                <button class="btn btn-outline-secondary mt-3" onclick="limparFiltros()">
+                    <i class="fas fa-times"></i> Limpar Filtros
+                </button>
+            `;
+        }
         return;
     }
     
@@ -594,8 +648,6 @@ function exportarParaExcel() {
 // FUNÇÕES DE ATUALIZAÇÃO DE MANUFACTURING
 // =========================================
 
-let mlbSelecionado = null;
-
 function abrirModalManufacturing(mlbId) {
     mlbSelecionado = mlbId;
     document.getElementById('manufacturingMlb').value = mlbId;
@@ -679,42 +731,87 @@ function atualizarLinhaTabela(mlbId, novosDias) {
 // =========================================
 // FUNÇÕES PARA GERENCIAMENTO DE FILTROS
 // =========================================
+function inicializarFiltros() {
+    console.log('Inicializando filtros...');
+    
+    // Configura eventos para todos os selects de filtro
+    const filtros = ['tipoBusca', 'filtroEnvio', 'filtroManufacturing', 'filtroStatus'];
+    
+    filtros.forEach(filtroId => {
+        const select = document.getElementById(filtroId);
+        if (select) {
+            // Remove event listeners antigos
+            const newSelect = select.cloneNode(true);
+            select.parentNode.replaceChild(newSelect, select);
+            
+            // Adiciona novo event listener
+            document.getElementById(filtroId).addEventListener('change', function() {
+                const valor = this.value;
+                const tipo = this.id;
+                
+                console.log(`Filtro alterado: ${tipo} = ${valor}`);
+                atualizarFiltroAtivo(tipo, valor);
+                
+                // Aplica os filtros imediatamente
+                if (ultimosResultados.length > 0) {
+                    aplicarFiltros();
+                }
+            });
+        }
+    });
+    
+    console.log('Filtros inicializados:', filtros);
+}
+
 
 function toggleFilters() {
     const filtersHeader = document.getElementById('filtersHeader');
-    const toggleBtnIcon = document.querySelector('.toggle-filters-btn i');
-    const toggleBtnText = document.querySelector('.toggle-filters-btn span');
+    const toggleBtn = document.getElementById('toggleFiltersBtn');
     
-    if (!filtersHeader || !toggleBtnIcon || !toggleBtnText) {
+    if (!filtersHeader || !toggleBtn) {
         console.error('Elementos do toggle não encontrados');
         return;
     }
     
-    if (filtersHeader.classList.contains('collapsed')) {
-        // Expande os filtros
+    // Alterna entre recolhido e expandido
+    const isCollapsed = filtersHeader.classList.contains('collapsed');
+    const icon = toggleBtn.querySelector('i');
+    const text = toggleBtn.querySelector('span');
+    
+    if (isCollapsed) {
+        // EXPANDE os filtros
         filtersHeader.classList.remove('collapsed');
-        toggleBtnIcon.className = 'fas fa-chevron-up';
-        toggleBtnText.textContent = 'Recolher';
+        if (icon) icon.className = 'fas fa-chevron-up';
+        if (text) text.textContent = 'Recolher Filtros';
     } else {
-        // Recolhe os filtros
+        // RECOLHE os filtros
         filtersHeader.classList.add('collapsed');
-        toggleBtnIcon.className = 'fas fa-chevron-down';
-        toggleBtnText.textContent = 'Expandir';
+        if (icon) icon.className = 'fas fa-chevron-down';
+        if (text) text.textContent = 'Expandir Filtros';
     }
+    
+    console.log('Filtros ' + (isCollapsed ? 'expandidos' : 'recolhidos'));
 }
 
 function atualizarFiltroAtivo(tipo, valor) {
-    if (valor === 'todos') {
+    console.log(`Atualizando filtro: ${tipo} = ${valor}`);
+    
+    if (valor === 'todos' || valor === '') {
+        // Remove o filtro se for "todos" ou vazio
         delete filtrosAtivos[tipo];
     } else {
+        // Adiciona/atualiza o filtro
         filtrosAtivos[tipo] = valor;
     }
     
+    console.log('Filtros ativos:', filtrosAtivos);
     atualizarBadgesFiltrosAtivos();
 }
 
 function atualizarBadgesFiltrosAtivos() {
     const container = document.getElementById('activeFilters');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     const entries = Object.entries(filtrosAtivos);
@@ -762,41 +859,57 @@ function atualizarBadgesFiltrosAtivos() {
 }
 
 function removerFiltro(tipo) {
+    console.log(`Removendo filtro: ${tipo}`);
+    
     delete filtrosAtivos[tipo];
     
     // Reseta o select correspondente
     const selectId = {
         'tipoBusca': 'tipoBusca',
-        'envio': 'filtroEnvio',
-        'manufacturing': 'filtroManufacturing',
-        'status': 'filtroStatus'
+        'filtroEnvio': 'filtroEnvio',
+        'filtroManufacturing': 'filtroManufacturing',
+        'filtroStatus': 'filtroStatus'
     }[tipo];
     
     if (selectId) {
-        document.getElementById(selectId).value = 'todos';
+        const select = document.getElementById(selectId);
+        if (select) {
+            select.value = 'todos';
+        }
     }
     
     atualizarBadgesFiltrosAtivos();
-    aplicarFiltros();
+    
+    // Reaplica filtros se houver resultados
+    if (ultimosResultados.length > 0) {
+        aplicarFiltros();
+    }
 }
 
 function aplicarFiltros() {
+    console.log('Aplicando filtros...', filtrosAtivos);
+    
     if (Object.keys(filtrosAtivos).length === 0) {
         // Se não há filtros, mostra todos os resultados
+        console.log('Nenhum filtro ativo, mostrando todos os resultados');
         mostrarResultados(ultimosResultados);
         
-        // Atualiza estatísticas para mostrar total
+        // Atualiza estatísticas
         if (ultimosResultados.length > 0) {
             const statsDiv = document.getElementById('stats');
             if (statsDiv && !statsDiv.classList.contains('hidden')) {
                 const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
-                statsDiv.innerHTML = statsDiv.innerHTML.replace(/(\d+) de \d+ encontrados \(filtrados\)/, `${totalEncontrado} encontrados`);
+                statsDiv.innerHTML = statsDiv.innerHTML.replace(
+                    /(\d+) de \d+ encontrados \(filtrados\)/,
+                    `${totalEncontrado} encontrados`
+                );
             }
         }
         return;
     }
     
     const resultadosFiltrados = aplicarFiltrosEmMemoria(ultimosResultados);
+    console.log(`Resultados após filtro: ${resultadosFiltrados.length} de ${ultimosResultados.length}`);
     
     mostrarResultados(resultadosFiltrados);
     
@@ -806,46 +919,80 @@ function aplicarFiltros() {
         const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
         const totalFiltrado = resultadosFiltrados.filter(item => !item.error && item.status !== 'error').length;
         
-        // Substitui apenas a parte dos "encontrados" mantendo o resto
-        const html = statsDiv.innerHTML;
-        if (html.includes('encontrados')) {
-            statsDiv.innerHTML = html.replace(
-                /(\d+) encontrados/,
-                `${totalFiltrado} de ${totalEncontrado} encontrados (filtrados)`
-            );
-        }
+        // Atualiza o texto das estatísticas
+        const htmlAtual = statsDiv.innerHTML;
+        const novaHtml = htmlAtual.replace(
+            /(\d+) (encontrados|de \d+ encontrados)/,
+            `${totalFiltrado} de ${totalEncontrado} encontrados (filtrados)`
+        );
+        statsDiv.innerHTML = novaHtml;
     }
 }
 
 function aplicarFiltrosEmMemoria(resultados) {
-    if (Object.keys(filtrosAtivos).length === 0) {
-        return resultados;
+    if (Object.keys(filtrosAtivos).length === 0 || !resultados || resultados.length === 0) {
+        return resultados || [];
     }
+    
+    console.log('Aplicando filtros em memória:', filtrosAtivos);
     
     return resultados.filter(item => {
         // Pula itens com erro
         if (item.error || item.status === 'error') return false;
         
-        // Aplica cada filtro
+        // Verifica cada filtro
         for (const [tipo, valor] of Object.entries(filtrosAtivos)) {
+            let passaFiltro = true;
+            
             switch(tipo) {
-                case 'envio':
-                    if (valor === 'me2' && item.shipping_mode !== 'me2') return false;
-                    if (valor === 'me1' && item.shipping_mode !== 'me1') return false;
+                case 'filtroEnvio':
+                    // Filtro ME2/ME1
+                    if (valor === 'me2') {
+                        passaFiltro = item.shipping_mode === 'me2';
+                    } else if (valor === 'me1') {
+                        passaFiltro = item.shipping_mode === 'me1';
+                    }
                     break;
                     
-                case 'manufacturing':
-                    if (valor === 'com' && (!item.manufacturing_time || item.manufacturing_time === 'N/A' || item.manufacturing_time === 0)) return false;
-                    if (valor === 'sem' && item.manufacturing_time && item.manufacturing_time !== 'N/A' && item.manufacturing_time !== 0) return false;
+                case 'filtroManufacturing':
+                    // Filtro com/sem prazo
+                    if (valor === 'com') {
+                        // Tem manufacturing time
+                        passaFiltro = item.manufacturing_time && 
+                                     item.manufacturing_time !== 'N/A' && 
+                                     item.manufacturing_time !== '0' && 
+                                     item.manufacturing_time !== 0 &&
+                                     item.manufacturing_time !== '';
+                    } else if (valor === 'sem') {
+                        // Não tem manufacturing time
+                        passaFiltro = !item.manufacturing_time || 
+                                     item.manufacturing_time === 'N/A' || 
+                                     item.manufacturing_time === '0' || 
+                                     item.manufacturing_time === 0 ||
+                                     item.manufacturing_time === '';
+                    }
                     break;
                     
-                case 'status':
-                    if (valor !== 'todos' && item.status !== valor) return false;
+                case 'filtroStatus':
+                    // Filtro status
+                    if (valor !== 'todos') {
+                        passaFiltro = item.status === valor;
+                    }
                     break;
                     
                 case 'tipoBusca':
                     // Este filtro é aplicado na busca, não no resultado
+                    passaFiltro = true;
                     break;
+                    
+                default:
+                    passaFiltro = true;
+            }
+            
+            // Se não passar em um filtro, rejeita o item
+            if (!passaFiltro) {
+                console.log(`Item ${item.id} rejeitado pelo filtro ${tipo}=${valor}`);
+                return false;
             }
         }
         
@@ -856,17 +1003,6 @@ function aplicarFiltrosEmMemoria(resultados) {
 // =========================================
 // SISTEMA DE PROGRESSO DE ATUALIZAÇÃO
 // =========================================
-
-let processoAtualizacao = {
-    ativo: false,
-    total: 0,
-    processados: 0,
-    sucesso: 0,
-    erros: 0,
-    inicio: null,
-    atualizacoes: [],
-    cancelar: false
-};
 
 function atualizarManufacturingEmMassa() {
     const mlbsText = document.getElementById('mlbs').value.trim();
@@ -1457,7 +1593,6 @@ function abrirDetalhes(mlbId) {
 // FUNÇÕES AUXILIARES DE UI
 // =========================================
 
-// Modifique a função mostrarLoading:
 function mostrarLoading(mostrar) {
     isLoading = mostrar;
     const tableLoading = document.getElementById('tableLoading');
@@ -1475,213 +1610,6 @@ function mostrarLoading(mostrar) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM carregado - inicializando');
-    
-    // Garante que o loading está escondido
-    const tableLoading = document.getElementById('tableLoading');
-    if (tableLoading) {
-        tableLoading.classList.add('hidden');
-    }
-    
-    // Garante que o estado vazio está visível
-    const emptyState = document.getElementById('emptyState');
-    const ordersContainer = document.getElementById('ordersContainer');
-    
-    if (emptyState && ordersContainer) {
-        emptyState.classList.remove('hidden');
-        ordersContainer.classList.add('hidden');
-    }
-    
-    // Inicializa os filtros expandidos
-    const filtersHeader = document.getElementById('filtersHeader');
-    if (filtersHeader) {
-        filtersHeader.classList.remove('collapsed');
-        
-        // Configura o botão toggle
-        const toggleBtn = document.querySelector('.toggle-filters-btn');
-        if (toggleBtn) {
-            toggleBtn.onclick = toggleFilters;
-        }
-    }
-    
-    // Configura o botão de aplicar filtros
-    const aplicarFiltrosBtn = document.querySelector('[onclick="aplicarFiltros()"]');
-    if (aplicarFiltrosBtn) {
-        aplicarFiltrosBtn.onclick = aplicarFiltros;
-    }
-    
-    // Event listeners para filtros
-    document.querySelectorAll('.filter-select').forEach(select => {
-        select.addEventListener('change', function() {
-            const tipo = this.id;
-            const valor = this.value;
-            atualizarFiltroAtivo(tipo, valor);
-        });
-    });
-    
-    // Enter no campo de busca
-    const mlbsInput = document.getElementById('mlbs');
-    if (mlbsInput) {
-        mlbsInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                buscarMLBs();
-            }
-        });
-    }
-    
-    // Configuração do upload de arquivo
-    const fileUpload = document.getElementById('fileUpload');
-    if (fileUpload) {
-        fileUpload.addEventListener('change', function(e) {
-            if (e.target.files[0]) {
-                processarArquivoUpload(e.target.files[0]);
-            }
-        });
-    }
-    
-    // Inicializa badges de filtros
-    atualizarBadgesFiltrosAtivos();
-    
-    // Verifica configuração
-    verificarConfiguracao();
-    
-    console.log('Inicialização completa');
-});
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM carregado - inicializando');
-    
-    // 1. Configuração inicial de visibilidade
-    const tableLoading = document.getElementById('tableLoading');
-    const emptyState = document.getElementById('emptyState');
-    const ordersContainer = document.getElementById('ordersContainer');
-    
-    if (tableLoading) tableLoading.classList.add('hidden');
-    if (emptyState) emptyState.classList.remove('hidden');
-    if (ordersContainer) ordersContainer.classList.add('hidden');
-    
-    // 2. Inicializa toggle button
-    inicializarToggleButton();
-    
-    // 3. Configura eventos
-    const mlbsInput = document.getElementById('mlbs');
-    if (mlbsInput) {
-        mlbsInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                buscarMLBs();
-            }
-        });
-    }
-    
-    // 4. Configura selects de filtro
-    document.querySelectorAll('.filter-select').forEach(select => {
-        select.addEventListener('change', function() {
-            const tipo = this.id;
-            const valor = this.value;
-            atualizarFiltroAtivo(tipo, valor);
-        });
-    });
-    
-    // 5. Configura botão de aplicar filtros
-    const aplicarBtn = document.querySelector('[onclick*="aplicarFiltros"]');
-    if (aplicarBtn) {
-        aplicarBtn.addEventListener('click', aplicarFiltros);
-    }
-    
-    // 6. Outras inicializações
-    atualizarBadgesFiltrosAtivos();
-    verificarConfiguracao();
-    
-    console.log('Inicialização completa');
-});
-
-// Modifique o DOMContentLoaded para garantir que o loading não aparece no início:
-document.addEventListener('DOMContentLoaded', function() {
-    // Garante que o loading esteja oculto no início
-    mostrarLoading(false);
-    
-    // Verifica se há estado vazio para mostrar
-    const emptyState = document.getElementById('emptyState');
-    const ordersContainer = document.getElementById('ordersContainer');
-    
-    if (emptyState && !emptyState.classList.contains('hidden')) {
-        ordersContainer.classList.add('hidden');
-    }
-    
-    // Restante do seu código...
-    document.getElementById('mlbs').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            buscarMLBs();
-        }
-    });
-    
-    document.querySelectorAll('.filter-select').forEach(select => {
-        select.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                aplicarFiltros();
-            }
-        });
-    });
-    
-    const fileUpload = document.getElementById('fileUpload');
-    if (fileUpload) {
-        fileUpload.addEventListener('change', function(e) {
-            processarArquivoUpload(e.target.files[0]);
-        });
-    }
-    
-    atualizarBadgesFiltrosAtivos();
-    verificarConfiguracao();
-    
-    const filtersHeader = document.getElementById('filtersHeader');
-    if (filtersHeader) {
-        filtersHeader.classList.remove('collapsed');
-    }
-});
-
-function inicializarToggleButton() {
-    const toggleBtn = document.getElementById('toggleFiltersBtn');
-    const filtersHeader = document.getElementById('filtersHeader');
-    
-    if (!toggleBtn || !filtersHeader) {
-        console.warn('Elementos do toggle não encontrados');
-        return;
-    }
-    
-    // Remove qualquer evento existente
-    toggleBtn.replaceWith(toggleBtn.cloneNode(true));
-    const newToggleBtn = document.getElementById('toggleFiltersBtn');
-    
-    // Adiciona novo evento
-    newToggleBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (filtersHeader.classList.contains('collapsed')) {
-            // Expande
-            filtersHeader.classList.remove('collapsed');
-            const icon = this.querySelector('i');
-            const text = this.querySelector('span');
-            if (icon) icon.className = 'fas fa-chevron-up';
-            if (text) text.textContent = 'Recolher';
-        } else {
-            // Recolhe
-            filtersHeader.classList.add('collapsed');
-            const icon = this.querySelector('i');
-            const text = this.querySelector('span');
-            if (icon) icon.className = 'fas fa-chevron-down';
-            if (text) text.textContent = 'Expandir';
-        }
-    });
-    
-    console.log('Toggle button inicializado');
-}
 function limparResultados(mantemContainer = false) {
     const statsDiv = document.getElementById('stats');
     const ordersContainer = document.getElementById('ordersContainer');
@@ -1794,11 +1722,6 @@ function fecharDetalhesModal() {
     document.getElementById('modalDetalhesMLB').style.display = 'none';
 }
 
-function fecharManufacturingModal() {
-    document.getElementById('modalManufacturing').style.display = 'none';
-    mlbSelecionado = null;
-}
-
 // Fechar modais ao clicar fora
 window.onclick = function(event) {
     const configModal = document.getElementById('configModal');
@@ -1825,46 +1748,74 @@ window.onclick = function(event) {
 }
 
 // =========================================
-// EVENT LISTENERS
+// INICIALIZAÇÃO - ÚNICA E COMPLETA
 // =========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Enter no campo de busca
-    document.getElementById('mlbs').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            buscarMLBs();
-        }
-    });
+    console.log('DOM carregado - inicializando todas as funcionalidades');
     
-    // Tecla Enter nos selects de filtro
-    document.querySelectorAll('.filter-select').forEach(select => {
-        select.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                aplicarFiltros();
-            }
-        });
-    });
+    // 1. Configuração inicial de visibilidade
+    const tableLoading = document.getElementById('tableLoading');
+    const emptyState = document.getElementById('emptyState');
+    const ordersContainer = document.getElementById('ordersContainer');
     
-    // Evento para o upload de arquivo
-    const fileUpload = document.getElementById('fileUpload');
-    if (fileUpload) {
-        fileUpload.addEventListener('change', function(e) {
-            console.log('Arquivo selecionado:', e.target.files[0]?.name);
-            processarArquivoUpload(e.target.files[0]);
-        });
+    if (tableLoading) tableLoading.classList.add('hidden');
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (ordersContainer) ordersContainer.classList.add('hidden');
+    
+    // 2. Configura o botão toggle
+    const toggleBtn = document.getElementById('toggleFiltersBtn');
+    if (toggleBtn) {
+        toggleBtn.removeAttribute('onclick');
+        toggleBtn.addEventListener('click', toggleFilters);
+        console.log('✅ Toggle button configurado');
     }
     
-    // Inicializa filtros
-    atualizarBadgesFiltrosAtivos();
-    
-    // Verificar configuração ao carregar a página
-    verificarConfiguracao();
-    
-    // Inicializa com filtros expandidos
+    // 3. Inicializa os filtros expandidos
     const filtersHeader = document.getElementById('filtersHeader');
     if (filtersHeader) {
         filtersHeader.classList.remove('collapsed');
     }
+    
+    // 4. INICIALIZA OS FILTROS (NOVO)
+    inicializarFiltros();
+    
+    // 5. Configura botão de aplicar filtros (mantém para compatibilidade)
+    const aplicarBtn = document.querySelector('[onclick*="aplicarFiltros"]');
+    if (aplicarBtn) {
+        aplicarBtn.addEventListener('click', aplicarFiltros);
+    }
+    
+    // 6. Enter no campo de busca
+    const mlbsInput = document.getElementById('mlbs');
+    if (mlbsInput) {
+        mlbsInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarMLBs();
+            }
+        });
+    }
+    
+    // 7. Configuração do upload de arquivo
+    const fileUpload = document.getElementById('fileUpload');
+    if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+            if (e.target.files[0]) {
+                processarArquivoUpload(e.target.files[0]);
+            }
+        });
+    }
+    
+    // 8. Inicializa badges de filtros
+    atualizarBadgesFiltrosAtivos();
+    
+    // 9. Verifica configuração
+    verificarConfiguracao();
+    
+    console.log('✅ Inicialização completa - filtros configurados');
 });
+
+// =========================================
+// FIM DO ARQUIVO - FUNÇÕES COMPLETAS
+// =========================================
