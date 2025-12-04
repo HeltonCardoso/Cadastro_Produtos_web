@@ -39,13 +39,39 @@ function atualizarResumoContas(contas, contaAtualId) {
     const autenticadas = contas.filter(c => c.has_token).length;
     const pendentes = total - autenticadas;
     
-    const resumoHTML = `
-        <span>Total: <strong>${total}</strong> contas</span>
-        <span class="badge bg-success">${autenticadas} autenticadas</span>
-        <span class="badge bg-warning">${pendentes} pendentes</span>
-    `;
+    // Atualiza o card "Contas Totais"
+    document.getElementById('totalAccountsCount').textContent = `${total} conta${total !== 1 ? 's' : ''}`;
     
-    document.getElementById('mlAccountsSummary').innerHTML = resumoHTML;
+    // Atualiza o card "Conta Atual"
+    const contaAtual = contas.find(c => c.id === contaAtualId);
+    if (contaAtual) {
+        document.getElementById('currentAccountName').textContent = contaAtual.name;
+        document.getElementById('currentAccountStatus').textContent = contaAtual.has_token ? 'Autenticada' : 'Pendente';
+    } else {
+        document.getElementById('currentAccountName').textContent = 'Nenhuma';
+        document.getElementById('currentAccountStatus').textContent = 'Não selecionada';
+    }
+    
+    // Atualiza status global no sidebar
+    const statusElement = document.getElementById('mlGlobalStatus');
+    if (contaAtual && contaAtual.has_token) {
+        statusElement.textContent = 'Conectado';
+        statusElement.style.color = 'var(--success-color)';
+    } else if (total > 0) {
+        statusElement.textContent = 'Pendente';
+        statusElement.style.color = 'var(--warning-color)';
+    } else {
+        statusElement.textContent = 'Não configurado';
+        statusElement.style.color = 'var(--danger-color)';
+    }
+    
+    // Mostra/esconde a seção de contas se tiver contas
+    const accountsContainer = document.getElementById('mlAccountsContainer');
+    if (total > 0) {
+        accountsContainer.style.display = 'block';
+    } else {
+        accountsContainer.style.display = 'none';
+    }
 }
 
 function renderizarListaContas(contas, contaAtualId) {
@@ -56,9 +82,11 @@ function renderizarListaContas(contas, contaAtualId) {
     
     if (contas.length === 0) {
         container.innerHTML = `
-            <div class="alert alert-info">
+            <div class="info-box">
                 <i class="fas fa-info-circle"></i>
-                Nenhuma conta configurada. Clique em "Nova Conta" para começar.
+                <div>
+                    <p>Nenhuma conta configurada. Clique em "Adicionar Nova Conta" para começar.</p>
+                </div>
             </div>
         `;
         return;
@@ -67,25 +95,23 @@ function renderizarListaContas(contas, contaAtualId) {
     contas.forEach(conta => {
         const isAtual = conta.id === contaAtualId;
         const card = document.createElement('div');
-        card.className = `account-card ${isAtual ? 'current-account' : ''}`;
+        card.className = `account-card ${isAtual ? 'current' : ''}`;
         
         card.innerHTML = `
             <div class="account-header">
-                <div>
-                    <h6>${conta.name}</h6>
-                    <small class="text-muted">App ID: ${conta.app_id}</small>
-                </div>
+                <h5>${conta.name}</h5>
                 <div>
                     ${isAtual ? 
-                        '<span class="badge badge-ml-current"><i class="fas fa-check"></i> Em uso</span>' : 
+                        '<span class="badge badge-primary-modern"><i class="fas fa-check"></i> Em uso</span>' : 
                         ''}
                     ${conta.has_token ? 
-                        '<span class="badge badge-ml-authenticated"><i class="fas fa-key"></i> Autenticada</span>' : 
-                        '<span class="badge badge-ml-pending"><i class="fas fa-clock"></i> Pendente</span>'}
+                        '<span class="badge badge-success"><i class="fas fa-key"></i> Autenticada</span>' : 
+                        '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pendente</span>'}
                 </div>
             </div>
             
             <div class="account-details">
+                <div><i class="fas fa-id-card"></i> App ID: ${conta.app_id}</div>
                 ${conta.nickname ? 
                     `<div><i class="fas fa-user"></i> ${conta.nickname}</div>` : 
                     `<div><i class="fas fa-exclamation-triangle"></i> Não autenticada</div>`}
@@ -94,23 +120,23 @@ function renderizarListaContas(contas, contaAtualId) {
             
             <div class="account-actions">
                 ${!isAtual && conta.has_token ? `
-                    <button class="btn btn-sm btn-outline-primary" onclick="selecionarContaML('${conta.id}')">
-                        <i class="fas fa-play-circle"></i> Usar esta
+                    <button class="btn-secondary btn-sm" onclick="selecionarContaML('${conta.id}')">
+                        <i class="fas fa-play-circle"></i> Usar
                     </button>
                 ` : ''}
                 
                 ${!conta.has_token ? `
-                    <button class="btn btn-sm btn-outline-success" onclick="completarAutenticacaoML('${conta.id}', '${conta.name}')">
-                        <i class="fas fa-key"></i> Completar Auth
+                    <button class="btn-secondary btn-sm" onclick="completarAutenticacaoML('${conta.id}', '${conta.name}')">
+                        <i class="fas fa-key"></i> Completar
                     </button>
                 ` : `
-                    <button class="btn btn-sm btn-outline-info" onclick="testarContaML('${conta.id}')">
+                    <button class="btn-secondary btn-sm" onclick="testarContaML('${conta.id}')">
                         <i class="fas fa-vial"></i> Testar
                     </button>
                 `}
                 
                 ${!isAtual ? `
-                    <button class="btn btn-sm btn-outline-danger" onclick="removerContaML('${conta.id}', '${conta.name}')">
+                    <button class="btn-danger btn-sm" onclick="removerContaML('${conta.id}', '${conta.name}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 ` : ''}
@@ -118,6 +144,18 @@ function renderizarListaContas(contas, contaAtualId) {
         `;
         
         container.appendChild(card);
+    });
+}
+
+function testarTodasContas() {
+    const container = document.getElementById('mlAccountsList');
+    const cards = container.querySelectorAll('.account-card');
+    
+    cards.forEach(card => {
+        const testBtn = card.querySelector('button[onclick*="testarContaML"]');
+        if (testBtn) {
+            testBtn.click();
+        }
     });
 }
 
@@ -160,13 +198,77 @@ function atualizarContaAtual(contas, contaAtualId) {
 // =========================================
 
 function abrirModalNovaConta() {
-    document.getElementById('novaContaResultado').innerHTML = '';
-    document.getElementById('modalNovaConta').style.display = 'block';
+    const modalOverlay = document.getElementById('modalNovaConta');
+    const modalContainer = modalOverlay.querySelector('.modal-container');
+    
+    if (modalOverlay) {
+        // Mostra o overlay
+        modalOverlay.style.display = 'flex';
+        // Mostra o container (se necessário)
+        if (modalContainer) {
+            modalContainer.style.display = 'block';
+        }
+    }
 }
 
 function fecharModalNovaConta() {
-    document.getElementById('modalNovaConta').style.display = 'none';
+    console.log('Fechando modal nova conta...');
+    
+    const modal = document.getElementById('modalNovaConta');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        console.log('✅ Modal fechado com sucesso');
+    }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado - inicializando modais Mercado Livre');
+    
+    // 1. Configura botões de fechar modal
+    const closeButtons = document.querySelectorAll('.close-modal-modern');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal-overlay');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+    
+    // 2. Fechar modal ao clicar fora
+    const modals = document.querySelectorAll('.modal-overlay');
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    });
+    
+    // 3. Prevenir fechamento ao clicar dentro do modal container
+    const modalContainers = document.querySelectorAll('.modal-container');
+    modalContainers.forEach(container => {
+        container.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
+    
+    // 4. Carrega contas ao iniciar
+    carregarContasMercadoLivre();
+    
+    // 5. Testa atalho de teclado (ESC para fechar)
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const modalAberto = document.querySelector('.modal-overlay[style*="display: block"]');
+            if (modalAberto) {
+                modalAberto.style.display = 'none';
+            }
+        }
+    });
+    
+    console.log('✅ Modais Mercado Livre inicializados');
+});
 
 function adicionarNovaContaML() {
     const nome = document.getElementById('novaContaNome').value.trim();

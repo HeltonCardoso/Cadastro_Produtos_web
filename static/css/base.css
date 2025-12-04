@@ -220,10 +220,13 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
+  position: relative; /* Adicione esta linha */
 }
-
 /* Top Bar */
 .top-bar {
+  position: sticky; /* Mude de display: flex para sticky */
+  top: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -231,6 +234,7 @@ body {
   background: var(--sidebar-bg);
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Evita que encolha */
 }
 
 .sidebar-toggler {
@@ -263,15 +267,21 @@ body {
 .content-wrapper {
   flex: 1;
   padding: 2rem;
+  overflow-y: auto; /* Permite scroll apenas no conteúdo */
+  min-height: 0; /* Importante para flexbox */
 }
 
 /* Global Footer */
 .global-footer {
+  position: sticky; /* Mude para sticky */
+  bottom: 0;
   background: var(--sidebar-bg);
   border-top: 1px solid var(--border-color);
   padding: 1rem 2rem;
   margin-left: var(--sidebar-width);
   transition: all 0.3s ease;
+  flex-shrink: 0; /* Evita que encolha */
+  z-index: 100;
 }
 
 /* === OVERLAY MOBILE === */
@@ -357,4 +367,20 @@ body {
 
 [data-theme="dark"] .logo-img {
   filter: brightness(0.9);
+}
+
+/* === AJUSTES PARA LAYOUT FIXO === */
+@media (max-width: 1024px) {
+  .top-bar {
+    position: static; /* Em mobile, volta ao normal */
+  }
+  
+  .global-footer {
+    position: static; /* Em mobile, volta ao normal */
+    margin-left: 0;
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
 }
