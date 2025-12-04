@@ -270,3 +270,42 @@ async function removerToken(tipo) {
         }
     }
 }
+// Adicione ao config_tokens.js
+function atualizarStatusServicos() {
+    // Status Mercado Livre
+    fetch('/api/mercadolivre/contas')
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                const contaAtual = data.contas.find(c => c.id === data.conta_atual);
+                if (contaAtual && contaAtual.has_token) {
+                    atualizarStatusElemento('ml', 'success', `OK - ${contaAtual.nickname || contaAtual.name}`);
+                } else {
+                    atualizarStatusElemento('ml', 'warning', 'Pendente ou sem conta');
+                }
+            }
+        });
+    
+    // Testa AnyMarket se tiver token
+    const anymarketToken = document.getElementById('anymarket_token').value;
+    if (anymarketToken && anymarketToken.length > 10) {
+        testarToken('anymarket', true); // true = apenas status
+    }
+}
+
+function atualizarStatusElemento(servico, status, texto) {
+    const icon = document.getElementById(`${servico}StatusIcon`);
+    const text = document.getElementById(`${servico}StatusText`);
+    
+    if (icon && text) {
+        icon.className = `status-icon ${status}`;
+        icon.innerHTML = `<i class="fas fa-${status === 'success' ? 'check' : status === 'warning' ? 'exclamation' : 'times'}"></i>`;
+        text.textContent = texto;
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    atualizarStatusServicos();
+    setInterval(atualizarStatusServicos, 30000); // Atualiza a cada 30s
+});

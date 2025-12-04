@@ -644,6 +644,421 @@ function exportarParaExcel() {
     });
 }
 
+let contaPendenteTokens = null;
+
+function carregarContas() {
+    fetch('/api/mercadolivre/contas')
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                atualizarInterfaceContas(data);
+            }
+        })
+        .catch(error => console.error('Erro ao carregar contas:', error));
+}
+
+function atualizarInterfaceContas(data) {
+    // Atualiza lista de contas
+    renderizarContas(data.contas, data.conta_atual);
+    
+    // Atualiza status na barra inferior
+    atualizarStatusContaAtual(data.contas, data.conta_atual);
+}
+
+function atualizarStatusContaAtual(contas, contaAtualId) {
+    const statusElement = document.getElementById('statusConfiguracao');
+    if (!statusElement) return;
+    
+    const contaAtual = contas.find(c => c.id === contaAtualId);
+    
+    if (!contaAtual) {
+        statusElement.innerHTML = 'Mercado Livre: <span class="badge bg-danger">Nenhuma conta</span>';
+        return;
+    }
+    
+    if (contaAtual.has_token) {
+        statusElement.innerHTML = `
+            Mercado Livre: 
+            <span class="badge bg-success">${contaAtual.name}</span>
+            ${contaAtual.nickname ? `<small>(${contaAtual.nickname})</small>` : ''}
+            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="trocarContaRapido()">
+                <i class="fas fa-sync-alt"></i> Trocar
+            </button>
+        `;
+    } else {
+        statusElement.innerHTML = `
+            Mercado Livre: 
+            <span class="badge bg-warning">${contaAtual.name} (pendente)</span>
+            <button class="btn btn-sm btn-outline-warning ms-2" onclick="completarAutenticacao('${contaAtual.id}')">
+                <i class="fas fa-key"></i> Completar
+            </button>
+        `;
+    }
+}
+
+function renderizarContas(contas, contaAtualId) {
+    const container = document.getElementById('contasList');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    contas.forEach(conta => {
+        const isAtual = conta.id === contaAtualId;
+        const card = document.createElement('div');
+        card.className = `account-card ${isAtual ? 'account-current' : ''}`;
+        
+        card.innerHTML = `
+            <div class="account-header">
+                <div>
+                    <h5>${conta.name}</h5>
+                    <small class="text-muted">App ID: ${conta.app_id}</small>
+                </div>
+                <div>
+                    ${isAtual ? '<span class="badge bg-primary"><i class="fas fa-check"></i> Atual</span>' : ''}
+                    ${conta.has_token ? 
+                        '<span class="badge bg-success"><i class="fas fa-key"></i> Autenticada</span>' : 
+                        '<span class="badge bg-warning"><i class="fas fa-clock"></i> Pendente</span>'}
+                </div>
+            </div>
+            
+            <div class="account-info">
+                ${conta.nickname ? 
+                    `<div><i class="fas fa-user"></i> ${conta.nickname}</div>` : 
+                    `<div><i class="fas fa-exclamation-triangle"></i> Não autenticada</div>`}
+                <div><i class="fas fa-calendar"></i> Criada em: ${new Date(conta.created_at).toLocaleDateString()}</div>
+            </div>
+            
+            <div class="account-actions">
+                ${!isAtual ? `
+                    <button class="btn btn-sm btn-outline-primary" onclick="selecionarConta('${conta.id}')">
+                        <i class="fas fa-play-circle"></i> Usar
+                    </button>
+                ` : ''}
+                
+                ${conta.has_token ? `
+                    <button class="btn btn-sm btn-outline-info" onclick="testarConta('${conta.id}')">
+                        <i class="fas fa-vial"></i> Testar
+                    </button>
+                ` : `
+                    <button class="btn btn-sm btn-outline-success" onclick="completarAutenticacao('${conta.id}')">
+                        <i class="fas fa-key"></i> Completar Auth
+                    </button>
+                `}
+                
+                ${!isAtual ? `
+                    <button class="btn btn-sm btn-outline-danger" onclick="removerConta('${conta.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                ` : ''}
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+// FUNÇÃO PRINCIPAL: Adicionar nova conta
+function abrirAdicionarConta() {
+    document.getElementById('adicionarContaSection').innerHTML = `
+        <h5><i class="fas fa-plus-circle"></i> Adicionar Nova Conta</h5>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <strong>O sistema tentará obter tokens automaticamente!</strong><br>
+            Apenas forneça App ID e Secret Key. O sistema tentará autenticar automaticamente.
+        </div>
+        
+        <div class="mb-3">
+            <label>Nome da Conta</label>
+            <input type="text" id="novaContaNome" class="form-control" 
+                   placeholder="Ex: Minha Segunda Loja" required>
+        </div>
+        
+        <div class="mb-3">
+            <label>App ID (Client ID)</label>
+            <input type="text" id="novaContaAppId" class="form-control" 
+                   placeholder="Seu App ID do Mercado Livre" required>
+        </div>
+        
+        <div class="mb-3">
+            <label>Secret Key (Client Secret)</label>
+            <input type="password" id="novaContaSecretKey" class="form-control" 
+                   placeholder="Sua Secret Key" required>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button class="btn btn-secondary" onclick="cancelarAdicionar()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button class="btn btn-primary" onclick="adicionarContaAutomatica()">
+                <i class="fas fa-magic"></i> Adicionar e Autenticar
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('adicionarContaSection').style.display = 'block';
+    document.getElementById('authSection').style.display = 'none';
+}
+
+function adicionarContaAutomatica() {
+    const nome = document.getElementById('novaContaNome').value.trim();
+    const appId = document.getElementById('novaContaAppId').value.trim();
+    const secretKey = document.getElementById('novaContaSecretKey').value.trim();
+    
+    if (!nome || !appId || !secretKey) {
+        mostrarMensagem('Preencha todos os campos', 'error');
+        return;
+    }
+    
+    mostrarMensagem('Adicionando conta e tentando autenticar automaticamente...', 'info');
+    
+    fetch('/api/mercadolivre/contas/adicionar', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            account_name: nome,
+            app_id: appId,
+            secret_key: secretKey
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            if (data.autenticada_automaticamente) {
+                mostrarMensagem('🎉 Conta adicionada e autenticada automaticamente!', 'success');
+                document.getElementById('adicionarContaSection').style.display = 'none';
+                carregarContas();
+            } else {
+                // Autenticação automática falhou, oferece completar manualmente
+                mostrarMensagem('Conta criada! Mas precisamos completar a autenticação manualmente.', 'warning');
+                contaPendenteTokens = data.account_id;
+                mostrarModalCompletarAuth();
+            }
+        } else {
+            mostrarMensagem('Erro: ' + data.erro, 'error');
+        }
+    })
+    .catch(error => {
+        mostrarMensagem('Erro: ' + error.message, 'error');
+    });
+}
+
+function mostrarModalCompletarAuth() {
+    document.getElementById('authSection').innerHTML = `
+        <h5><i class="fas fa-key"></i> Completar Autenticação</h5>
+        
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>A autenticação automática não funcionou, mas não se preocupe!</strong><br>
+            Siga estes passos para obter os tokens manualmente:
+        </div>
+        
+        <div class="auth-steps mb-3">
+            <ol>
+                <li>Acesse: <a href="https://developers.mercadolivre.com.br/devcenter" target="_blank">Mercado Livre DevCenter</a></li>
+                <li>Clique em "Minhas aplicações"</li>
+                <li>Selecione sua aplicação</li>
+                <li>Vá na aba "Test"</li>
+                <li>Clique em "Obtenha seu token de teste"</li>
+                <li>Copie o <strong>Access Token</strong> e <strong>Refresh Token</strong></li>
+            </ol>
+        </div>
+        
+        <div class="mb-3">
+            <label><i class="fas fa-lock"></i> Access Token</label>
+            <input type="text" id="manualAccessToken" class="form-control" 
+                   placeholder="APP_USR-..." style="font-family: monospace;">
+        </div>
+        
+        <div class="mb-3">
+            <label><i class="fas fa-redo"></i> Refresh Token</label>
+            <input type="text" id="manualRefreshToken" class="form-control" 
+                   placeholder="TG-..." style="font-family: monospace;">
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button class="btn btn-secondary" onclick="cancelarAuthManual()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button class="btn btn-success" onclick="salvarTokensManuais()">
+                <i class="fas fa-save"></i> Salvar Tokens
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('adicionarContaSection').style.display = 'none';
+}
+
+function salvarTokensManuais() {
+    if (!contaPendenteTokens) return;
+    
+    const accessToken = document.getElementById('manualAccessToken').value.trim();
+    const refreshToken = document.getElementById('manualRefreshToken').value.trim();
+    
+    if (!accessToken || !refreshToken) {
+        mostrarMensagem('Preencha ambos os tokens', 'error');
+        return;
+    }
+    
+    fetch(`/api/mercadolivre/contas/${contaPendenteTokens}/adicionar-tokens-manual`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            access_token: accessToken,
+            refresh_token: refreshToken
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem('✅ Tokens salvos com sucesso! Conta pronta para uso.', 'success');
+            document.getElementById('authSection').style.display = 'none';
+            contaPendenteTokens = null;
+            carregarContas();
+        } else {
+            mostrarMensagem('Erro: ' + data.erro, 'error');
+        }
+    })
+    .catch(error => {
+        mostrarMensagem('Erro: ' + error.message, 'error');
+    });
+}
+
+// Funções auxiliares
+function completarAutenticacao(accountId) {
+    contaPendenteTokens = accountId;
+    mostrarModalCompletarAuth();
+}
+
+function selecionarConta(accountId) {
+    fetch(`/api/mercadolivre/contas/${accountId}/selecionar`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem('Conta selecionada!', 'success');
+            carregarContas();
+        } else {
+            mostrarMensagem('Erro: ' + data.erro, 'error');
+        }
+    });
+}
+
+function testarConta(accountId) {
+    fetch(`/api/mercadolivre/contas/${accountId}/testar`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso && data.autenticada) {
+                mostrarMensagem(`✅ Conta funcionando! Usuário: ${data.nickname}`, 'success');
+            } else {
+                mostrarMensagem(`❌ Problema na conta: ${data.erro}`, 'error');
+            }
+        });
+}
+
+function removerConta(accountId) {
+    if (!confirm('Tem certeza que deseja remover esta conta?')) return;
+    
+    fetch(`/api/mercadolivre/contas/${accountId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem('Conta removida!', 'success');
+            carregarContas();
+        } else {
+            mostrarMensagem('Erro: ' + data.erro, 'error');
+        }
+    });
+}
+
+function cancelarAdicionar() {
+    document.getElementById('adicionarContaSection').style.display = 'none';
+}
+
+function cancelarAuthManual() {
+    document.getElementById('authSection').style.display = 'none';
+    contaPendenteTokens = null;
+}
+
+// Trocar conta rapidamente (modal rápido)
+function trocarContaRapido() {
+    fetch('/api/mercadolivre/contas')
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso && data.contas.length > 1) {
+                let options = '';
+                data.contas.forEach(conta => {
+                    const isCurrent = conta.id === data.conta_atual;
+                    options += `<option value="${conta.id}" ${isCurrent ? 'selected' : ''}>
+                        ${conta.name} ${conta.has_token ? '✓' : '⚠️'} ${conta.nickname ? `(${conta.nickname})` : ''}
+                    </option>`;
+                });
+                
+                const contaEscolhida = prompt(
+                    `Trocar conta atual:\n\n${data.contas.map(c => 
+                        `${c.id === data.conta_atual ? '→ ' : '  '}${c.name} ${c.nickname ? `(${c.nickname})` : ''}`
+                    ).join('\n')}\n\nDigite o ID da conta:`,
+                    data.conta_atual
+                );
+                
+                if (contaEscolhida && contaEscolhida !== data.conta_atual) {
+                    selecionarConta(contaEscolhida);
+                }
+            } else {
+                mostrarMensagem('Apenas uma conta disponível', 'info');
+            }
+        });
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    // Carrega contas ao abrir modal
+    const configModal = document.getElementById('configModal');
+    if (configModal) {
+        configModal.addEventListener('shown.bs.modal', function() {
+            carregarContas();
+        });
+    }
+    
+    // Carrega contas periodicamente
+    setInterval(carregarContas, 60000); // Atualiza a cada 1 minuto
+});
+
+
+// =========================================
+// TROCA DE CONTA NA PÁGINA DE CONSULTA
+// =========================================
+
+function trocarContaConsulta(accountId) {
+    fetch(`/api/mercadolivre/contas/${accountId}/selecionar`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem(`Conta alterada para a selecionada`, 'success');
+            
+            // Recarrega a página para refletir a mudança
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            mostrarMensagem(`Erro: ${data.erro}`, 'error');
+        }
+    })
+    .catch(error => {
+        mostrarMensagem(`Erro: ${error.message}`, 'error');
+    });
+}
+
+function toggleConfigSection() {
+    // Em vez de abrir modal local, redireciona para página de configurações
+    window.location.href = '/configuracoes/tokens#mercadolivre';
+}
 // =========================================
 // FUNÇÕES DE ATUALIZAÇÃO DE MANUFACTURING
 // =========================================
@@ -1709,10 +2124,6 @@ function mostrarErro(mensagem) {
 // =========================================
 // FUNÇÕES DE MODAL
 // =========================================
-
-function toggleConfigSection() {
-    document.getElementById('configModal').style.display = 'block';
-}
 
 function fecharConfigModal() {
     document.getElementById('configModal').style.display = 'none';

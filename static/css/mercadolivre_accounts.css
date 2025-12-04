@@ -1,0 +1,159 @@
+/* Mercado Livre Accounts CSS */
+
+.accounts-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px;
+}
+
+.account-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.account-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.account-card.current-account {
+    border-left: 5px solid #ffc107;
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.account-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.account-details {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.account-details div {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.account-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.account-actions .btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.accounts-summary {
+    font-size: 14px;
+    color: #666;
+}
+
+.accounts-summary .badge {
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.current-account-section {
+    background: #e8f4fd;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #b6d4fe;
+}
+
+.service-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.status-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-unknown {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+.status-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.status-warning {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+/* Scrollbar customizada */
+.accounts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.accounts-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.accounts-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.accounts-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Badges */
+.badge-ml-authenticated {
+    background: #28a745;
+    color: white;
+}
+
+.badge-ml-pending {
+    background: #ffc107;
+    color: #212529;
+}
+
+.badge-ml-current {
+    background: #007bff;
+    color: white;
+}

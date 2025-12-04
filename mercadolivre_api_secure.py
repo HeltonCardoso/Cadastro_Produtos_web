@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import datetime
 import time
-from token_manager_secure import get_valid_ml_token
+from token_manager_secure import ml_token_manager
 
 class MercadoLivreAPISecure:
     def __init__(self):
@@ -10,7 +10,7 @@ class MercadoLivreAPISecure:
     
     def _get_headers(self):
         """Retorna headers com token"""
-        token = get_valid_ml_token()
+        token = ml_token_manager.get_valid_token()
         if not token:
             raise Exception("Token do Mercado Livre não disponível. Faça a autenticação primeiro.")
         

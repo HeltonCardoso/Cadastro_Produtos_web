@@ -7,7 +7,18 @@
 
 {% block content %}
 <div class="mercado-livre-container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <h2><i class="fas fa-store"></i> Consulta Mercado Livre</h2>
     
+    {% if conta_atual %}
+    <div class="current-account-badge">
+        <span class="badge bg-info">
+            <i class="fas fa-user"></i> {{ conta_atual.nickname|default(conta_atual.account_name) }}
+        </span>
+        <small class="text-muted ms-2">Conta em uso</small>
+    </div>
+    {% endif %}
+</div>
     <!-- ========================================= -->
     <!-- BARRA DE BUSCA RÁPIDA -->
     <!-- ========================================= -->
@@ -157,19 +168,61 @@
     <!-- RODAPÉ COM CONFIGURAÇÃO -->
     <!-- ========================================= -->
     <div class="auto-refresh-footer">
-        <div class="auto-refresh-indicator">
-            <i class="fas fa-key"></i>
-            <span id="statusConfiguracao">Mercado Livre: </span>
-            {% if esta_autenticado %}
-                <span class="badge bg-success">Autenticado</span>
-            {% else %}
-                <span class="badge bg-danger">Não autenticado</span>
-            {% endif %}
-            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleConfigSection()">
-                <i class="fas fa-cog"></i> Configurar
-            </button>
-        </div>
+    <div class="auto-refresh-indicator">
+        <i class="fas fa-key"></i>
+        
+        {% if esta_autenticado and conta_atual %}
+            <span id="statusConfiguracao">
+                Mercado Livre: 
+                <span class="badge bg-success">{{ conta_atual.account_name }}</span>
+                {% if conta_atual.nickname %}
+                    <small>({{ conta_atual.nickname }})</small>
+                {% endif %}
+            </span>
+            
+            <!-- Seletor rápido de conta (dropdown) -->
+            <div class="dropdown d-inline-block ms-2">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-sync-alt"></i> Trocar
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    {% for conta in todas_contas %}
+                        {% if conta.has_token %}
+                            <li>
+                                <a class="dropdown-item {% if conta.id == conta_atual_id %}active{% endif %}" 
+                                   href="#" onclick="trocarContaConsulta('{{ conta.id }}')">
+                                    <i class="fas fa-store"></i> {{ conta.name }}
+                                    {% if conta.nickname %}
+                                        <small class="text-muted">({{ conta.nickname }})</small>
+                                    {% endif %}
+                                    {% if conta.id == conta_atual_id %}
+                                        <i class="fas fa-check float-end"></i>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('configurar_tokens') }}">
+                            <i class="fas fa-cog"></i> Gerenciar Contas...
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+        {% else %}
+            <span id="statusConfiguracao">
+                Mercado Livre: <span class="badge bg-danger">Não autenticado</span>
+            </span>
+        {% endif %}
+        
+        <button class="btn btn-sm btn-outline-secondary ms-2" onclick="toggleConfigSection()">
+            <i class="fas fa-cog"></i> Configurar
+        </button>
     </div>
+</div>
 </div>
 
 <!-- ========================================= -->

@@ -17,6 +17,114 @@
     display: none !important;
 }
 
+
+.account-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.account-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.account-card.account-current {
+    border-left: 5px solid #007bff;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.account-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.account-info {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.account-info div {
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.account-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.account-actions .btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.auth-steps ol {
+    margin-left: 20px;
+    padding-left: 0;
+}
+
+.auth-steps li {
+    margin-bottom: 8px;
+    padding-left: 5px;
+}
+
+/* Status badges */
+.badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+/* Modal de configuração */
+#configModal .modal-content {
+    max-width: 800px;
+}
+
+#contasList {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar customizada */
+#contasList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#contasList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#contasList::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+#contasList::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 /* ========================================= */
 /* BARRA DE BUSCA RÁPIDA */
 /* ========================================= */

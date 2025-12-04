@@ -318,14 +318,30 @@ def api_pedidos_anymarket():
 @app.route('/consultar-mercado-livre')
 def consultar_mercado_livre():
     """Página principal para consulta de MLBs"""
-    esta_autenticado = ml_token_manager.is_authenticated()
+    # Obtém informações da conta atual
+    accounts = ml_token_manager.get_all_accounts()
+    current_account = None
+    conta_atual_id = ml_token_manager.current_account_id
+    
+    if conta_atual_id and conta_atual_id in ml_token_manager.accounts:
+        current_account = ml_token_manager.accounts[conta_atual_id]
+    
+    # Verifica se tem alguma conta autenticada
+    esta_autenticado = False
+    for account in accounts:
+        if account.get('has_token'):
+            esta_autenticado = True
+            break
     
     return render_template(
         'consultar_mercado_livre.html',
         active_page='consultar_mercado_livre',
         active_module='mercadolivre',
         page_title='Consulta Mercado Livre',
-        esta_autenticado=esta_autenticado
+        esta_autenticado=esta_autenticado,
+        conta_atual=current_account,
+        conta_atual_id=conta_atual_id,
+        todas_contas=accounts
     )
 
 @app.route('/api/mercadolivre/configurar', methods=['POST'])
@@ -693,13 +709,15 @@ def baixar_arquivo(filename):
 def configurar_tokens():
     config = carregar_configuracao_google_sheets()
     
-    # ✅ CORREÇÃO: NÃO passe o token para o template
+    # Verifica se tem token do AnyMarket configurado
+    token_configurado = verificar_token_anymarket_configurado()
+    
     return render_template(
         "config_tokens.html",
         active_page='configuracao',
         config=config,
+        token_configurado=token_configurado,
         page_title='Configuração de Tokens'
-        # ✅ REMOVA: anymarket_token=anymarket_token
     )
 
 def verificar_token_anymarket_configurado():
@@ -2068,6 +2086,153 @@ def api_exportar_mlb_excel():
         import traceback
         traceback.print_exc()
         return jsonify({'sucesso': False, 'erro': f'Erro na exportação: {str(e)}'}), 500
+@app.route('/api/mercadolivre/contas')
+def api_listar_contas():
+    """Lista todas as contas"""
+    try:
+        accounts = ml_token_manager.get_all_accounts()
+        return jsonify({
+            'sucesso': True,
+            'contas': accounts,
+            'conta_atual': ml_token_manager.current_account_id
+        })
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/contas/adicionar', methods=['POST'])
+def api_adicionar_conta_auto():
+    """Adiciona nova conta e tenta obter tokens AUTOMATICAMENTE"""
+    try:
+        data = request.get_json()
+        
+        account_name = data.get('account_name')
+        app_id = data.get('app_id')
+        secret_key = data.get('secret_key')
+        
+        if not account_name or not app_id or not secret_key:
+            return jsonify({'sucesso': False, 'erro': 'Nome, App ID e Secret Key são obrigatórios'}), 400
+        
+        print(f"📥 Tentando adicionar conta: {account_name}")
+        
+        # Chama o método que tenta obter tokens automaticamente
+        account_id, sucesso, mensagem = ml_token_manager.add_account_with_app_credentials(
+            account_name, app_id, secret_key
+        )
+        
+        if account_id:
+            return jsonify({
+                'sucesso': sucesso,
+                'mensagem': mensagem,
+                'account_id': account_id,
+                'autenticada_automaticamente': sucesso
+            })
+        else:
+            return jsonify({'sucesso': False, 'erro': mensagem}), 500
+            
+    except Exception as e:
+        print(f"❌ Erro na API: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/contas/<account_id>/adicionar-tokens-manual', methods=['POST'])
+def api_adicionar_tokens_manual(account_id):
+    """Fallback: Adiciona tokens manualmente"""
+    try:
+        data = request.get_json()
+        access_token = data.get('access_token')
+        refresh_token = data.get('refresh_token')
+        
+        if not access_token or not refresh_token:
+            return jsonify({'sucesso': False, 'erro': 'Ambos os tokens são obrigatórios'}), 400
+        
+        sucesso, mensagem = ml_token_manager.add_tokens_manually(
+            account_id, access_token, refresh_token
+        )
+        
+        if sucesso:
+            return jsonify({
+                'sucesso': True,
+                'mensagem': mensagem
+            })
+        else:
+            return jsonify({'sucesso': False, 'erro': mensagem}), 400
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/contas/<account_id>/selecionar', methods=['POST'])
+def api_selecionar_conta(account_id):
+    """Seleciona conta para uso"""
+    try:
+        if ml_token_manager.set_current_account(account_id):
+            return jsonify({
+                'sucesso': True,
+                'mensagem': 'Conta selecionada com sucesso!'
+            })
+        else:
+            return jsonify({'sucesso': False, 'erro': 'Conta não encontrada'}), 404
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/contas/<account_id>/testar')
+def api_testar_conta(account_id):
+    """Testa se uma conta está funcionando"""
+    try:
+        if account_id not in ml_token_manager.accounts:
+            return jsonify({'sucesso': False, 'erro': 'Conta não encontrada'}), 404
+        
+        account = ml_token_manager.accounts[account_id]
+        token = account.get('access_token')
+        
+        if not token:
+            return jsonify({
+                'sucesso': False,
+                'autenticada': False,
+                'erro': 'Conta não tem token configurado'
+            })
+        
+        # Testa o token
+        headers = {'Authorization': f'Bearer {token}'}
+        response = requests.get(
+            'https://api.mercadolibre.com/users/me',
+            headers=headers,
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            user_data = response.json()
+            return jsonify({
+                'sucesso': True,
+                'autenticada': True,
+                'nickname': user_data.get('nickname'),
+                'user_id': user_data.get('id')
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'autenticada': False,
+                'erro': f'Token inválido (status: {response.status_code})'
+            })
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/contas/<account_id>', methods=['DELETE'])
+def api_remover_conta(account_id):
+    """Remove conta (não permite remover a atual)"""
+    try:
+        sucesso, mensagem = ml_token_manager.remove_account(account_id)
+        
+        if sucesso:
+            return jsonify({
+                'sucesso': True,
+                'mensagem': mensagem
+            })
+        else:
+            return jsonify({'sucesso': False, 'erro': mensagem}), 400
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
 
 def obter_dados_completos_perfil():
     """Obtém dados básicos do perfil - VERSÃO CORRIGIDA"""
