@@ -15,7 +15,7 @@
 </head>
 <body>
   <!-- Sidebar Moderno -->
-  <div class="sidebar-wrapper">
+  <div class="sidebar-wrapper" id="sidebarWrapper">
     <nav class="sidebar">
       <!-- Header com Logo -->
       <div class="sidebar-header">
@@ -26,13 +26,16 @@
             <small class="brand-subtitle">Sistema</small>
           </div>
         </div>
-        <button class="sidebar-toggle d-lg-none">
+        <button class="sidebar-toggle-btn" id="toggleSidebar" title="Recolher/Expandir">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="sidebar-toggle d-lg-none" id="mobileToggle">
           <i class="fas fa-bars"></i>
         </button>
       </div>
 
       <!-- Menu Navigation -->
-      <div class="sidebar-menu">
+      <div class="sidebar-menu" id="sidebarMenu">
         <!-- Dashboard -->
         <div class="menu-group">
           <a href="{{ url_for('home') }}" class="menu-item {% if active_page == 'home' %}active{% endif %}">
@@ -44,92 +47,153 @@
         </div>
 
         <!-- Módulo Cadastro -->
-        <div class="menu-group">
-          <div class="menu-title">MÓDULO CADASTRO</div>
-          <a href="{{ url_for('extrair_atributos') }}" class="menu-item {% if active_page == 'extrair_atributos' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-filter"></i>
-            </div>
-            <span class="menu-text">Extrair Atributos</span>
-          </a>
-          <a href="{{ url_for('preencher_planilha') }}" class="menu-item {% if active_page == 'preencher_planilha' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-file-excel"></i>
-            </div>
-            <span class="menu-text">Planilha Cadastro</span>
-          </a>
-          <a href="{{ url_for('comparar_prazos') }}" class="menu-item {% if active_page == 'comparar-prazos' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-clock"></i>
-            </div>
-            <span class="menu-text">Verificação Prazos</span>
-          </a>
+        <div class="menu-group" data-module="cadastro">
+          <div class="menu-title">
+            <i class="fas fa-caret-down module-toggle"></i>
+            <span class="menu-title-text">MÓDULO CADASTRO</span>
+          </div>
+          <div class="menu-subitems">
+            <a href="{{ url_for('extrair_atributos') }}" class="menu-item {% if active_page == 'extrair_atributos' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-filter"></i>
+              </div>
+              <span class="menu-text">Extrair Atributos</span>
+            </a>
+            <a href="{{ url_for('preencher_planilha') }}" class="menu-item {% if active_page == 'preencher_planilha' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-file-excel"></i>
+              </div>
+              <span class="menu-text">Planilha Cadastro</span>
+            </a>
+            <a href="{{ url_for('comparar_prazos') }}" class="menu-item {% if active_page == 'comparar-prazos' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <span class="menu-text">Verificação Prazos</span>
+            </a>
+          </div>
         </div>
 
         <!-- Módulo AnyMarket -->
-        <div class="menu-group">
-          <div class="menu-title">ANYMARKET</div>
-          <a href="{{ url_for('consultar_anymarket') }}" class="menu-item {% if active_page == 'consultar_anymarket' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-search"></i>
-            </div>
-            <span class="menu-text">Fotos</span>
-          </a>
-          <a href="{{ url_for('pedidos_anymarket') }}" class="menu-item {% if active_page == 'pedidos' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-shopping-cart"></i>
-            </div>
-            <span class="menu-text">Pedidos</span>
-          </a>
-          <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-shopping-cart"></i>
-            </div>
-            <span class="menu-text">Produtos</span>
-          </a>
-          <!-- No menu AnyMarket, adicione: -->
-          <a href="{{ url_for('consultar_mercado_livre') }}" class="menu-item {% if active_page == 'consultar_mercado_livre' %}active{% endif %}">
+        <div class="menu-group" data-module="anymarket">
+          <div class="menu-title">
+            <i class="fas fa-caret-down module-toggle"></i>
+            <span class="menu-title-text">ANYMARKET</span>
+          </div>
+          <div class="menu-subitems">
+            <a href="{{ url_for('consultar_anymarket') }}" class="menu-item {% if active_page == 'consultar_anymarket' %}active{% endif %}">
               <div class="menu-icon">
-                  <i class="fas fa-store me-2"></i>
+                <i class="fas fa-search"></i>
               </div>
-              <span class="menu-text">Mercado Livre</span>
-          </a>
-
-          <li class="nav-item">
-              <a class="nav-link {% if active_page == 'perfil_mercado_livre' %}active{% endif %}" 
-                href="{{ url_for('perfil_mercado_livre') }}">
-                  <i class="fas fa-user-circle me-2"></i>Meu Perfil
-              </a>
-          </li>
+              <span class="menu-text">Fotos</span>
+            </a>
+            <a href="{{ url_for('pedidos_anymarket') }}" class="menu-item {% if active_page == 'pedidos' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <span class="menu-text">Pedidos</span>
+            </a>
+            <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <span class="menu-text">Produtos</span>
+            </a>
+          </div>
         </div>
 
-        <!-- Configurações e Outros -->
-        <div class="menu-group">
-          <a href="{{ url_for('configurar_tokens') }}" class="menu-item {% if active_page == 'configuracao' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-cog"></i>
-            </div>
-            <span class="menu-text">Configuração</span>
-          </a>
-          <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item {% if active_page == 'sobre' %}active{% endif %}">
-            <div class="menu-icon">
-              <i class="fas fa-info-circle"></i>
-            </div>
-            <span class="menu-text">Sobre</span>
-          </a>
+        <!-- Módulo Mercado Livre -->
+        <div class="menu-group" data-module="mercadolivre">
+          <div class="menu-title">
+            <i class="fas fa-caret-down module-toggle"></i>
+            <span class="menu-title-text">MERCADO LIVRE</span>
+          </div>
+          <div class="menu-subitems">
+            <a href="{{ url_for('consultar_mercado_livre') }}" class="menu-item {% if active_page == 'consultar_mercado_livre' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <span class="menu-text">Anúncios</span>
+            </a>
+            <a href="#" class="menu-item">
+              <div class="menu-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <span class="menu-text">Pedidos</span>
+              <span class="badge badge-warning badge-pill">Em breve</span>
+            </a>
+            <a href="#" class="menu-item">
+              <div class="menu-icon">
+                <i class="fas fa-bullhorn"></i>
+              </div>
+              <span class="menu-text">Campanhas</span>
+              <span class="badge badge-warning badge-pill">Em breve</span>
+            </a>
+            <a href="{{ url_for('perfil_mercado_livre') }}" class="menu-item {% if active_page == 'perfil_mercado_livre' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <span class="menu-text">Meu Perfil</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Módulo JET -->
+        <div class="menu-group" data-module="jet">
+          <div class="menu-title">
+            <i class="fas fa-caret-down module-toggle"></i>
+            <span class="menu-title-text">MÓDULO JET</span>
+          </div>
+          <div class="menu-subitems">
+            <a href="#" class="menu-item">
+              <div class="menu-icon">
+                <i class="fas fa-box"></i>
+              </div>
+              <span class="menu-text">Produtos</span>
+              <span class="badge badge-warning badge-pill">Em breve</span>
+            </a>
+            <a href="#" class="menu-item">
+              <div class="menu-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <span class="menu-text">Pedidos</span>
+              <span class="badge badge-warning badge-pill">Em breve</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Módulo Configurações -->
+        <div class="menu-group expanded" data-module="configuracoes">
+          <div class="menu-title">
+            <i class="fas fa-caret-down module-toggle"></i>
+            <span class="menu-title-text">CONFIGURAÇÕES</span>
+          </div>
+          <div class="menu-subitems">
+            <a href="{{ url_for('configurar_tokens') }}" class="menu-item {% if active_page == 'configuracao' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-cog"></i>
+              </div>
+              <span class="menu-text">Configuração</span>
+            </a>
+            <button class="menu-item" id="darkModeToggle">
+              <div class="menu-icon">
+                <i class="fas fa-moon"></i>
+              </div>
+              <span class="menu-text">Modo Escuro</span>
+            </button>
+            <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item">
+              <div class="menu-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <span class="menu-text">Sobre</span>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Footer do Sidebar -->
       <div class="sidebar-footer">
-        <button id="btn-dark-mode" class="btn-dark-mode">
-          <div class="menu-icon">
-            <i class="fas fa-moon"></i>
-          </div>
-          <span class="menu-text">Modo Escuro</span>
-        </button>
-        
-        <a href="#" class="menu-item logout-item">
+        <a href="#" class="menu-item logout-item" id="logoutBtn">
           <div class="menu-icon">
             <i class="fas fa-sign-out-alt"></i>
           </div>
@@ -143,10 +207,10 @@
   <div class="sidebar-overlay"></div>
 
   <!-- Conteúdo Principal -->
-  <main class="main-content">
+  <main class="main-content" id="mainContent">
     <!-- Top Bar -->
     <div class="top-bar">
-      <button class="sidebar-toggler">
+      <button class="sidebar-toggler" id="sidebarToggler">
         <i class="fas fa-bars"></i>
       </button>
       <div class="top-bar-title">
@@ -166,7 +230,7 @@
   </main>
 
   <!-- Footer Global -->
-  <footer class="global-footer">
+  <footer class="global-footer" id="globalFooter">
     <div class="container-fluid">
       <div class="row align-items-center">
         <div class="col">

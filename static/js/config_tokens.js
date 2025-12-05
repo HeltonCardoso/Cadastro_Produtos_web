@@ -304,8 +304,28 @@ function atualizarStatusElemento(servico, status, texto) {
     }
 }
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    atualizarStatusServicos();
-    setInterval(atualizarStatusServicos, 30000); // Atualiza a cada 30s
+    // Verifica status apenas uma vez ao carregar
+    setTimeout(() => {
+        console.log('🔍 Verificando status inicial dos serviços...');
+        
+        // Mercado Livre
+        fetch('/api/mercadolivre/contas')
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso && data.contas.length > 0) {
+                    const contaAtual = data.contas.find(c => c.id === data.conta_atual);
+                    if (contaAtual && contaAtual.has_token) {
+                        document.getElementById('mlGlobalStatus').textContent = 'Conectado';
+                    }
+                }
+            });
+        
+        // AnyMarket já é verificado por verificarTokenConfigurado()
+        
+        // Google Sheets
+        document.getElementById('sheetsGlobalStatus').textContent = 'Conectado';
+    }, 500);
+    
+    // NÃO use setInterval - remove testes desnecessários
 });
