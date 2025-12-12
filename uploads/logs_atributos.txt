@@ -1,68 +1,25 @@
-[09:53:01] Iniciando processamento do Google Sheets em 13/11/2025 09:53:01
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 100cm Luziania Cinza Claro - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 100cm Luziania Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 120cm Michigan Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 120cm Michigan Cinza   - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Dakota Cinza Claro - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Dakota Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Marrocos Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 150cm Marrocos Cinza   - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza   - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza Claro - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 160cm Arkansas Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 180cm Dallas Castanho  - Lumil
-[09:53:03] Processado: Balcão de Cozinha Para Pia Com Tampo 180cm Dallas Cinza     - Lumil
-[09:53:03] Processado: NOME E-COMMERCE
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 100cm Luziania Cinza Claro   - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 120cm Michigan Castanho      - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 120cm Michigan Cinza         - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 150cm Dakota Cinza Claro     - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 150cm Marrocos Castanho      - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 150cm Marrocos Cinza         - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Castanho      - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Cinza         - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 160cm Arkansas Cinza Claro   - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 180cm Dallas Castanho        - Lumil
-[09:53:03] Processado: Balcão de Cozinha Com Pia Inox 180cm Dallas Cinza           - Lumil
-[09:53:03] Processado: NOME E-COMMERCE
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 150cm Dakota Cinza Claro  - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 150cm Marrocos Castanho   - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 150cm Marrocos Cinza      - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 100cm Luziania Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 180cm Dallas Castanho     - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 180cm Dallas Cinza        - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Castanho   - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Cinza      - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 160cm Arkansas Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 120cm Michigan Castanho   - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Para Pia 120cm Michigan Cinza      - Lumil
-[09:53:03] Processado: NOME E-COMMERCE
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 150cm Dakota Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 150cm Dakota Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 150cm Marrocos Castanho  - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 150cm Marrocos Cinza     - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 100cm Luziania Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 100cm Luziania Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 180cm Dallas Castanho    - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 180cm Dallas Cinza       - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Castanho  - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza     - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 160cm Arkansas Cinza Claro/Castanho - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 120cm Michigan Castanho  - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Tampo 120cm Michigan Cinza     - Lumil
-[09:53:03] Processado: NOME E-COMMERCE
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 150cm Dakota Cinza Claro   - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 150cm Marrocos Castanho    - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 150cm Marrocos Cinza      - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 100cm Luziania Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 180cm Dallas Castanho      - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 180cm Dallas Cinza         - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Castanho    - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Cinza       - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 160cm Arkansas Cinza Claro - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 120cm Michigan Castanho    - Lumil
-[09:53:03] Processado: Armário Cozinha e Balcão Com Pia 120cm Michigan Cinza       - Lumil
-[09:53:03] Arquivo gerado: Atributos_Extraidos_SemMarca_20251113_095303.xlsx
-[09:53:03] Processamento concluído - 65 itens em 2.04s
+[11:20:31] Iniciando processamento do Google Sheets em 12/12/2025 11:20:31
+[11:20:32] Processado: Rack TV 60 Pol 160cm Madeira 2 Portas Hazel Carvalho Z25    - Mpozenato
+[11:20:32] Processado: Rack TV 55 Pol 140cm Madeira 2 Gavetas Hazel Carvalho Z25   - Mpozenato
+[11:20:32] Processado: Mesa de Centro Para Sala Madeira Maciça Hazel Carvalho Z25  - Mpozenato
+[11:20:32] Processado: Cristaleira de Madeira 2 Portas e Gaveta Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Cristaleira de Madeira 1 Porta de Vidro Hazel Carvalho Z25  - Mpozenato
+[11:20:32] Processado: Cristaleira de Madeira 2 Portas de Vidro Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Buffet 93cm Madeira Maciça 2 Portas Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Buffet 120cm Madeira Maciça 2 Portas Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Buffet 156cm Madeira Maciça 3 Portas Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Sala de Estar 132cm Madeira 2 Gavetas Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Sala de Estar 93cm Madeira 1 Gaveta Hazel Carvalho Z25 - Mpozenato
+[11:20:32] Processado: Aparador Sala de Estar 91cm Madeira 2 Gavetas Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Aparador Sala de Estar 128cm Madeira 3 Gavetas Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Estante Livreiro Madeira Maciça 2 Portas Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Cristaleira de Madeira 4 Portas de Vidro Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Aparador Buffet 132cm Madeira Maciça 2 Portas Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Armário Cristaleira de Madeira 6 Portas Henry Imbuia Fosco Z25 - Mpozenato
+[11:20:32] Processado: Cômoda Quarto 81cm Madeira Pinus 5 Gavetas Carl Imbuia Z25 - Mpozenato
+[11:20:32] Processado: Cômoda Quarto 120cm Madeira Pinus 4 Gavetas Mateo Imbuia Z25 - Mpozenato
+[11:20:32] Processado: Cômoda Quarto 82cm Madeira Com Espelho 4 Gavetas Carl Imbuia Z25 - Mpozenato
+[11:20:32] Processado: Armário Cozinha Compacta 120cm Madeira 5 Portas Kyle Imbuia Z25 - Mpozenato
+[11:20:32] Processado: Armário Cozinha Compacta 159cm Madeira 7 Portas Daisy Imbuia Z25 - Mpozenato
+[11:20:32] Arquivo gerado: Atributos_Extraidos_SemMarca_20251212_112032.xlsx
+[11:20:32] Processamento concluído - 22 itens em 1.66s

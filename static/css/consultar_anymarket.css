@@ -409,4 +409,38 @@
         padding: 10px 15px;
         font-size: 14px;
     }
+    
+}
+
+#multi_product_ids {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+/* Tabela de diagnóstico */
+#tabelaDiagnostico {
+    font-size: 12px;
+}
+
+#tabelaDiagnostico th {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+#tabelaDiagnostico .table-warning:hover {
+    background-color: #fff3cd !important;
+}
+
+/* Badges para produtos */
+.badge-clickable {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.badge-clickable:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

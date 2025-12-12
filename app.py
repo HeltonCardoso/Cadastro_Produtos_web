@@ -2438,6 +2438,129 @@ def obter_pedidos_anymarket_30_dias():
             'token_configurado': verificar_token_anymarket_configurado()
         }
 
+@app.route("/api/anymarket/diagnosticar-imagens", methods=["POST"])
+def api_diagnosticar_imagens():
+    """API para diagnóstico de múltiplos produtos"""
+    try:
+        data = request.get_json()
+        product_ids = data.get('product_ids', [])
+        
+        if not product_ids:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum ID fornecido'}), 400
+        
+        # Limitar a 20 produtos por requisição
+        if len(product_ids) > 20:
+            product_ids = product_ids[:20]
+        
+        resultados = []
+        total_imagens_analisadas = 0
+        total_erros = 0
+        
+        from processamento.api_anymarket import consultar_api_anymarket, obter_token_anymarket_seguro
+        token = obter_token_anymarket_seguro()
+        
+        for product_id in product_ids:
+            try:
+                # Consultar imagens do produto
+                resultado = consultar_api_anymarket(product_id, token)
+                
+                if resultado.get('sucesso') and resultado.get('dados'):
+                    imagens = resultado['dados']
+                    total_imagens_analisadas += len(imagens)
+                    
+                    # Analisar cada imagem
+                    imagens_com_erro = []
+                    for img in imagens:
+                        erro = verificar_erro_imagem(img)
+                        if erro:
+                            imagens_com_erro.append({
+                                'id': img.get('id'),
+                                'index': img.get('index'),
+                                'url': img.get('url'),
+                                'erro': erro,
+                                'campos_faltantes': identificar_campos_faltantes(img),
+                                'status': img.get('status_api'),
+                                'status_message': img.get('statusMessage')
+                            })
+                            total_erros += 1
+                    
+                    if imagens_com_erro:
+                        resultados.append({
+                            'product_id': product_id,
+                            'total_imagens': len(imagens),
+                            'imagens_com_erro': imagens_com_erro,
+                            'resumo_erros': len(imagens_com_erro)
+                        })
+                else:
+                    resultados.append({
+                        'product_id': product_id,
+                        'erro_consulta': resultado.get('erro'),
+                        'imagens_com_erro': []
+                    })
+                    
+            except Exception as e:
+                resultados.append({
+                    'product_id': product_id,
+                    'erro': str(e),
+                    'imagens_com_erro': []
+                })
+        
+        # Gerar relatório em formato para Excel
+        relatorio_excel = []
+        for resultado in resultados:
+            for img_erro in resultado.get('imagens_com_erro', []):
+                relatorio_excel.append({
+                    'ID_PRODUTO': resultado['product_id'],
+                    'ID_IMG': img_erro.get('id'),
+                    'POSICAO': img_erro.get('index'),
+                    'TIPO_ERRO': img_erro.get('erro'),
+                    'URL': img_erro.get('url'),
+                    'CAMPOS_FALTANTES': ', '.join(img_erro.get('campos_faltantes', [])),
+                    'STATUS_API': img_erro.get('status'),
+                    'STATUS_MESSAGE': img_erro.get('status_message')
+                })
+        
+        return jsonify({
+            'sucesso': True,
+            'total_produtos': len(product_ids),
+            'total_imagens_analisadas': total_imagens_analisadas,
+            'total_imagens_com_erro': total_erros,
+            'produtos_com_erro': sum(1 for r in resultados if r.get('imagens_com_erro')),
+            'resultados': resultados,
+            'relatorio_excel': relatorio_excel,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+def verificar_erro_imagem(imagem):
+    """Verifica se uma imagem tem erros baseado nos critérios"""
+    erro = None
+    
+    # Critério 1: Estrutura incompleta
+    campos_esperados = ['thumbnailUrl', 'lowResolutionUrl', 'standardUrl', 'originalImage']
+    campos_faltantes = [campo for campo in campos_esperados if not imagem.get(campo)]
+    
+    if len(campos_faltantes) >= 2:  # Se faltam 2 ou mais campos importantes
+        erro = f'Estrutura incompleta - Faltam {len(campos_faltantes)} campos'
+    
+    # Critério 2: Status de erro
+    elif imagem.get('status_api') and imagem.get('status_api').lower() not in ['active', 'ok', 'success']:
+        erro = f'Status problemático: {imagem.get("status_api")}'
+    
+    # Critério 3: URL inválida ou não disponível
+    elif not imagem.get('url') or imagem.get('status') == 'indisponivel':
+        erro = 'URL não disponível'
+    
+    return erro
+
+def identificar_campos_faltantes(imagem):
+    """Identifica quais campos estão faltando na imagem"""
+    campos_esperados = ['thumbnailUrl', 'lowResolutionUrl', 'standardUrl', 'originalImage']
+    return [campo for campo in campos_esperados if not imagem.get(campo)]
+
+
 def processar_estatisticas_detalhadas_pedidos(orders):
     """Processa estatísticas detalhadas dos pedidos - VERSÃO CORRIGIDA"""
     if not orders:
@@ -2648,6 +2771,144 @@ def processar_estatisticas_detalhadas_pedidos(orders):
         'marketplace_distribuicao': dict(marketplace_distribuicao),
         'resumo': resumo
     }
+
+@app.route('/api/anymarket/diagnosticar-produto', methods=['POST'])
+def api_diagnosticar_produto():
+    """API para diagnóstico individual de produto - VERSÃO CORRIGIDA"""
+    try:
+        data = request.get_json()
+        product_id = data.get('product_id')
+        
+        if not product_id:
+            return jsonify({'sucesso': False, 'erro': 'ID do produto é obrigatório'}), 400
+        
+        # Consultar imagens do produto
+        from processamento.api_anymarket import consultar_api_anymarket, obter_token_anymarket_seguro
+        token = obter_token_anymarket_seguro()
+        
+        resultado = consultar_api_anymarket(product_id, token)
+        
+        if not resultado.get('sucesso'):
+            return jsonify({
+                'sucesso': False,
+                'erro': resultado.get('erro', 'Erro na consulta'),
+                'product_id': product_id
+            })
+        
+        if not resultado.get('dados'):
+            return jsonify({
+                'sucesso': True,
+                'product_id': product_id,
+                'mensagem': 'Nenhuma imagem encontrada',
+                'imagens_com_erro': [],
+                'imagens_ok': []
+            })
+        
+        imagens = resultado['dados']
+        imagens_com_erro = []
+        imagens_ok = []
+        
+        # Analisar cada imagem
+        for img in imagens:
+            erro = analisar_imagem_erro_corrigido(img)
+            if erro:
+                imagens_com_erro.append({
+                    'id': img.get('id'),
+                    'index': img.get('index'),
+                    'url': img.get('url'),
+                    'erro': erro['descricao'],
+                    'tipo_erro': erro['tipo'],
+                    'status_api': img.get('status_api'),
+                    'status_message': img.get('statusMessage'),
+                    'dimensoes': f"{img.get('originalWidth', 0)}x{img.get('originalHeight', 0)}"
+                })
+            else:
+                imagens_ok.append({
+                    'id': img.get('id'),
+                    'index': img.get('index'),
+                    'url': img.get('url'),
+                    'status': 'OK',
+                    'dimensoes': f"{img.get('originalWidth', 0)}x{img.get('originalHeight', 0)}"
+                })
+        
+        # DEBUG: Log para verificar análise
+        print(f"🔍 Análise produto {product_id}:")
+        print(f"   Total imagens: {len(imagens)}")
+        print(f"   Com erro: {len(imagens_com_erro)}")
+        print(f"   OK: {len(imagens_ok)}")
+        
+        if imagens_com_erro:
+            for erro in imagens_com_erro[:3]:  # Mostra até 3 erros
+                print(f"   Erro posição {erro['index']}: {erro['tipo_erro']}")
+        
+        return jsonify({
+            'sucesso': True,
+            'product_id': product_id,
+            'total_imagens': len(imagens),
+            'imagens_com_erro': imagens_com_erro,
+            'imagens_ok': imagens_ok,
+            'resumo': {
+                'com_erro': len(imagens_com_erro),
+                'ok': len(imagens_ok),
+                'percentual_erro': (len(imagens_com_erro) / len(imagens) * 100) if imagens else 0
+            }
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro no diagnóstico: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+def analisar_imagem_erro_corrigido(imagem):
+    """Analisa imagem para identificar erros - VERSÃO SUPER PRECISA"""
+    
+    # DEBUG: Verificar estrutura da imagem
+    print(f"📸 Analisando imagem {imagem.get('id')} - Posição {imagem.get('index')}")
+    print(f"   Status: {imagem.get('status_api')}")
+    print(f"   StatusMessage: {imagem.get('statusMessage', 'N/A')}")
+    print(f"   URL: {imagem.get('url', 'N/A')[:50]}...")
+    
+    # CRITÉRIO 1: Status explicitamente ERROR
+    status = imagem.get('status_api', '').upper()
+    if status == 'ERROR':
+        print(f"   ⚠️  DETECTADO: Status ERROR")
+        return {
+            'tipo': 'STATUS_ERROR',
+            'descricao': f'ERROR: {imagem.get("statusMessage", "Imagem não processada")}'
+        }
+    
+    # CRITÉRIO 2: StatusMessage contém erro (mesmo se status não for ERROR)
+    status_message = imagem.get('statusMessage', '').lower()
+    if any(erro in status_message for erro in ['problema', 'erro', 'error', 'não encontrada', 'not found', 'fail']):
+        print(f"   ⚠️  DETECTADO: StatusMessage com erro")
+        return {
+            'tipo': 'STATUS_MESSAGE_ERROR',
+            'descricao': f'StatusMessage indica erro: {imagem.get("statusMessage", "N/A")}'
+        }
+    
+    # CRITÉRIO 3: Dimensões zeradas (0x0) - indica falha no processamento
+    if (imagem.get('originalWidth') == 0 or imagem.get('originalHeight') == 0) and status != 'PROCESSED':
+        print(f"   ⚠️  DETECTADO: Dimensões zeradas")
+        return {
+            'tipo': 'DIMENSOES_ZERADAS',
+            'descricao': f'Dimensões inválidas: {imagem.get("originalWidth", 0)}x{imagem.get("originalHeight", 0)}'
+        }
+    
+    # CRITÉRIO 4: Faltam campos essenciais de processamento
+    campos_processados = ['thumbnailUrl', 'lowResolutionUrl', 'standardUrl', 'originalImage']
+    campos_faltantes = [campo for campo in campos_processados if not imagem.get(campo)]
+    
+    if len(campos_faltantes) >= 3:  # Se faltam 3 ou mais campos de processamento
+        print(f"   ⚠️  DETECTADO: Faltam {len(campos_faltantes)} campos de processamento")
+        return {
+            'tipo': 'CAMPOS_PROCESSAMENTO_FALTANTES',
+            'descricao': f'Faltam campos de processamento: {", ".join(campos_faltantes)}'
+        }
+    
+    # Se não encontrou nenhum erro
+    print(f"   ✅ IMAGEM OK")
+    return None
 
 def obter_estatisticas_anymarket_7_dias():
     """Obtém estatísticas dos últimos 7 dias do AnyMarket"""

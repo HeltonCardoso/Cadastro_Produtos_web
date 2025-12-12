@@ -27,6 +27,12 @@
                         <i class="fas fa-trash me-2"></i>Excluir em Lote
                     </button>
                 </li>
+                <!-- NOVA ABA: Diagnóstico -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="diagnostico-tab" data-bs-toggle="tab" data-bs-target="#diagnostico" type="button" role="tab">
+                        <i class="fas fa-bug me-2"></i>Diagnóstico em Lote
+                    </button>
+                </li>
             </ul>
 
             <div class="tab-content mt-4" id="myTabContent">
@@ -260,6 +266,109 @@
                         </div>
                     </div>
                     {% endif %}
+                </div>
+
+                <!-- Tab Diagnóstico em Lote -->
+                <div class="tab-pane fade" id="diagnostico" role="tabpanel">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="multi_product_ids" class="form-label">IDs de Produtos:</label>
+                            <textarea class="form-control" id="multi_product_ids" name="multi_product_ids" 
+                                      rows="4" placeholder="Digite os IDs separados por vírgula ou linha nova
+Exemplo: 
+347776280, 347776267
+347776255"></textarea>
+                            <small class="text-muted">Máximo 20 produtos por consulta</small>
+                        </div>
+                    </div>
+
+                    <div class="actions-row">
+                        <div>
+                            <button type="button" class="btn btn-info" id="btnDiagnosticar">
+                                <i class="fas fa-search me-2"></i>Diagnosticar Imagens com Erro
+                            </button>
+                            <button type="button" class="btn btn-success" id="btnExportarDiagnostico" style="display:none;">
+                                <i class="fas fa-file-excel me-2"></i>Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resultados do diagnóstico -->
+                    <div class="results-section mt-4" id="resultadosDiagnostico" style="display:none;">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-bug me-2"></i>
+                                    Resultado do Diagnóstico
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- Resumo -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Produtos Analisados</h6>
+                                                <span class="badge bg-info" id="totalProdutos">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-warning">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Imagens com Erro</h6>
+                                                <span class="badge bg-warning" id="totalErros">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Imagens OK</h6>
+                                                <span class="badge bg-success" id="totalOk">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card border-secondary">
+                                            <div class="card-body text-center py-2">
+                                                <h6 class="card-title mb-1">Tempo</h6>
+                                                <small class="text-muted" id="tempoExecucao">0s</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabela de resultados -->
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover" id="tabelaDiagnostico">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID Produto</th>
+                                                <th>ID Imagem</th>
+                                                <th>Posição</th>
+                                                <th>Status</th>
+                                                <th>Tipo de Erro</th>
+                                                <th>URL</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="corpoTabelaDiagnostico">
+                                            <!-- Dados serão inseridos via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Lista de produtos com erro -->
+                                <div class="mt-4" id="listaProdutosErro" style="display:none;">
+                                    <h6><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Produtos com imagens problemáticas:</h6>
+                                    <div class="d-flex flex-wrap gap-2 mt-2" id="listaProdutos">
+                                        <!-- Produtos serão adicionados via JS -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
