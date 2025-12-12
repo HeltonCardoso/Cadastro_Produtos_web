@@ -3,6 +3,7 @@ from flask import current_app
 from models import db, Processo, ItemProcessado
 from datetime import datetime, timedelta
 import json
+from sqlalchemy import text
 
 def registrar_processo(modulo: str, qtd_itens: int, tempo_execucao: float, 
                      status: str = "sucesso", usuario: str = "Sistema", erro_mensagem: str = None) -> int:
@@ -89,3 +90,81 @@ def contar_status_processos(modulo: str, hoje_only: bool = False) -> tuple:
         sucesso = query.filter_by(status='sucesso').count()
         erro = query.filter_by(status='erro').count()
         return sucesso, erro
+
+def obter_grafico_processos_7_dias():
+    """Retorna dados para gráfico de processos dos últimos 7 dias"""
+    try:
+        # Conecta ao banco
+        from app import db  # Importa o db do app
+        db.session.execute(text("PRAGMA foreign_keys = ON"))
+        
+        # Calcula data de 7 dias atrás
+        from datetime import datetime, timedelta
+        data_limite = datetime.now() - timedelta(days=7)
+        
+        # Query para agrupar por dia
+        query = text("""
+            SELECT DATE(data_hora) as dia, 
+                   COUNT(*) as total,
+                   SUM(CASE WHEN status = 'sucesso' THEN 1 ELSE 0 END) as sucessos,
+                   SUM(CASE WHEN status = 'erro' THEN 1 ELSE 0 END) as erros
+            FROM processo
+            WHERE data_hora >= :data_limite
+            GROUP BY DATE(data_hora)
+            ORDER BY dia
+        """)
+        
+        resultados = db.session.execute(query, {'data_limite': data_limite})
+        
+        # Prepara arrays de dias
+        dias = []
+        total_processos = []
+        sucessos = []
+        erros = []
+        
+        for i in range(7):
+            data = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+            dias.append(data)
+            total_processos.append(0)
+            sucessos.append(0)
+            erros.append(0)
+        
+        # Preenche com dados reais
+        for row in resultados:
+            data_str = row[0] if isinstance(row[0], str) else row[0].strftime('%Y-%m-%d')
+            if data_str in dias:
+                idx = dias.index(data_str)
+                total_processos[idx] = row[1]
+                sucessos[idx] = row[2] or 0
+                erros[idx] = row[3] or 0
+        
+        # Inverte para ordem cronológica
+        dias.reverse()
+        total_processos.reverse()
+        sucessos.reverse()
+        erros.reverse()
+        
+        # Formata datas para exibição
+        labels = []
+        for data_str in dias:
+            try:
+                data_obj = datetime.strptime(data_str, '%Y-%m-%d')
+                labels.append(data_obj.strftime('%d/%m'))
+            except:
+                labels.append(data_str)
+        
+        return {
+            'labels': labels,
+            'valores': total_processos,
+            'sucessos': sucessos,
+            'erros': erros
+        }
+        
+    except Exception as e:
+        print(f"Erro ao obter gráfico de processos: {str(e)}")
+        return {
+            'labels': [],
+            'valores': [],
+            'sucessos': [],
+            'erros': []
+        }

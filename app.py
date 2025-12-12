@@ -1,3 +1,4 @@
+from collections import defaultdict
 from io import BytesIO
 import sys
 from pathlib import Path
@@ -75,6 +76,13 @@ def home():
         stats = get_processing_stats()
         ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
         
+        # ========== MÉTRICAS ANYMARKET (ÚLTIMOS 30 DIAS) ==========
+        anymarket_stats = obter_pedidos_anymarket_30_dias()
+        
+        # ========== ESTATÍSTICAS DO SISTEMA ==========
+        from log_utils import obter_grafico_processos_7_dias
+        grafico_processos = obter_grafico_processos_7_dias()
+        
         return render_template(
             'home.html',
             active_page='home',
@@ -89,12 +97,59 @@ def home():
             ultima_planilha_data=ultima_planilha_data,
             total_itens_sucesso=stats['total_itens_sucesso'],
             total_itens_erro=stats['total_itens_erro'],
+            
+            # NOVAS VARIÁVEIS
+            anymarket_stats=anymarket_stats,
+            grafico_processos=grafico_processos,
+            
             now=datetime.now()
         )
     except Exception as e:
         app.logger.error(f"Erro na rota home: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return render_template('error.html'), 500
 
+
+@app.route('/api/dashboard/atualizar-metricas')
+def api_atualizar_metricas():
+    """API para atualizar métricas do dashboard"""
+    try:
+        stats = get_processing_stats()
+        
+        # Métricas Mercado Livre
+        ml_autenticado = ml_token_manager.is_authenticated()
+        ml_metricas = {}
+        if ml_autenticado:
+            try:
+                dados_ml = obter_dados_completos_perfil()
+                ml_metricas = dados_ml.get('metricas', {})
+            except:
+                ml_metricas = {}
+        
+        # Métricas AnyMarket
+        anymarket_stats = obter_estatisticas_anymarket_7_dias()
+        
+        return jsonify({
+            'sucesso': True,
+            'sistema': {
+                'processamentos_hoje': stats['hoje'],
+                'sucessos_hoje': stats['sucessos_hoje'],
+                'erros_hoje': stats['erros_hoje'],
+                'ultima_execucao': stats['ultima']
+            },
+            'mercadolivre': {
+                'autenticado': ml_autenticado,
+                'metricas': ml_metricas
+            },
+            'anymarket': anymarket_stats,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+        
 @app.route('/api/mercadolivre/atualizar-manufacturing', methods=['POST'])
 def atualizar_manufacturing():
     """Rota para atualizar manufacturing time"""
@@ -139,7 +194,64 @@ def debug_mlb(mlb):
             'sucesso': False,
             'erro': str(e)
         })
-    
+
+@app.route('/api/dashboard/metricas-gerais')
+def api_metricas_gerais():
+    """API para obter métricas gerais para dashboard"""
+    try:
+        stats = get_processing_stats()
+        
+        # Métricas Mercado Livre
+        ml_autenticado = ml_token_manager.is_authenticated()
+        ml_metricas = {}
+        if ml_autenticado:
+            try:
+                dados_ml = obter_dados_completos_perfil()
+                ml_metricas = dados_ml.get('metricas', {})
+            except:
+                ml_metricas = {}
+        
+        # Métricas AnyMarket
+        anymarket_token_configurado = verificar_token_anymarket_configurado()
+        anymarket_metricas = {}
+        
+        return jsonify({
+            'sucesso': True,
+            'sistema': {
+                'processamentos_hoje': stats['hoje'],
+                'sucessos_hoje': stats['sucessos_hoje'],
+                'erros_hoje': stats['erros_hoje'],
+                'ultima_execucao': stats['ultima']
+            },
+            'mercadolivre': {
+                'autenticado': ml_autenticado,
+                'metricas': ml_metricas
+            },
+            'anymarket': {
+                'token_configurado': anymarket_token_configurado
+            },
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/dashboard/atualizar-planilhas')
+def api_atualizar_planilhas():
+    """API para atualizar lista de planilhas"""
+    try:
+        ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
+        
+        return jsonify({
+            'sucesso': True,
+            'ultima_planilha': ultima_planilha,
+            'ultima_planilha_data': ultima_planilha_data,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+     
 @app.route('/pedidos-anymarket')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
 def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
@@ -2232,6 +2344,486 @@ def api_remover_conta(account_id):
             
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+def obter_pedidos_anymarket_30_dias():
+    """Obtém todos os pedidos dos últimos 30 dias do AnyMarket"""
+    try:
+        # Verifica se tem token configurado
+        if not verificar_token_anymarket_configurado():
+            return {
+                'sucesso': False,
+                'erro': 'Token do AnyMarket não configurado',
+                'token_configurado': False
+            }
+        
+        # Obtém o token
+        from processamento.api_anymarket import obter_token_anymarket_seguro
+        token = obter_token_anymarket_seguro()
+        
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'gumgaToken': token
+        }
+        
+        # Calcula datas dos últimos 30 dias
+        hoje = datetime.now()
+        data_30_dias_atras = (hoje - timedelta(days=30)).strftime('%Y-%m-%d')
+        data_hoje = hoje.strftime('%Y-%m-%d')
+        
+        # Configurações da API
+        url = "https://api.anymarket.com.br/v2/orders"
+        limit = 100  # Máximo por página
+        offset = 0
+        all_orders = []
+        
+        print(f"📊 Buscando TODOS os pedidos AnyMarket de {data_30_dias_atras} até {data_hoje}")
+        
+        # Loop para paginação - busca TODOS os pedidos
+        while True:
+            params = {
+                'limit': limit,
+                'offset': offset,
+                'createdAfter': f'{data_30_dias_atras}',
+                'createdBefore': f'{data_hoje}',
+                'sort': 'createdAt',
+                'sortDirection': 'DESC'
+            }
+            
+            response = requests.get(url, params=params, headers=headers, timeout=30)
+            
+            if response.status_code != 200:
+                print(f"❌ Erro API AnyMarket: {response.status_code} - {response.text[:200]}")
+                break
+            
+            data = response.json()
+            orders = data.get('content', [])
+            
+            if orders:
+                all_orders.extend(orders)
+                print(f"✅ Página {offset//limit + 1}: {len(orders)} pedidos (total: {len(all_orders)})")
+            
+            # Verifica se há mais páginas
+            if len(orders) < limit:
+                break
+            
+            offset += limit
+            
+            # Safety limit - máximo de 500 pedidos
+            if offset >= 500:
+                print(f"⚠️ Limite de 500 pedidos atingido")
+                break
+        
+        print(f"📦 Total de pedidos coletados: {len(all_orders)}")
+        
+        # Processa estatísticas detalhadas
+        estatisticas = processar_estatisticas_detalhadas_pedidos(all_orders)
+        
+        return {
+            'sucesso': True,
+            'token_configurado': True,
+            'total_pedidos': len(all_orders),
+            'periodo': f'{data_30_dias_atras} até {data_hoje}',
+            'estatisticas': estatisticas,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar pedidos AnyMarket: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            'sucesso': False,
+            'erro': str(e),
+            'token_configurado': verificar_token_anymarket_configurado()
+        }
+
+def processar_estatisticas_detalhadas_pedidos(orders):
+    """Processa estatísticas detalhadas dos pedidos - VERSÃO CORRIGIDA"""
+    if not orders:
+        return {
+            'total_pedidos': 0,
+            'valor_total': 0,
+            'total_itens': 0,
+            'pedidos_por_dia': [],
+            'top_produtos_quantidade': [],
+            'top_produtos_valor': [],
+            'status_distribuicao': {},
+            'marketplace_distribuicao': {},
+            'resumo': {
+                'valor_total': 0,
+                'total_pedidos': 0,
+                'total_itens': 0,
+                'ticket_medio_pedido': 0,
+                'ticket_medio_item': 0,
+                'media_itens_por_pedido': 0,
+                'pedidos_concluidos': 0,
+                'pedidos_pendentes': 0,
+                'pedidos_cancelados': 0,
+                'pedidos_faturados': 0,
+                'marketplace_principal': 'N/A'
+            }
+        }
+    
+    # Dicionários para agrupamentos
+    pedidos_por_dia = defaultdict(int)
+    status_distribuicao = defaultdict(int)
+    marketplace_distribuicao = defaultdict(int)
+    
+    # Dicionários para produtos - VERSÃO CORRIGIDA
+    produtos_por_quantidade = defaultdict(int)
+    produtos_por_valor = defaultdict(float)
+    produtos_info = {}
+    
+    # Variáveis para estatísticas básicas
+    valor_total = 0
+    total_itens = 0
+    
+    for order in orders:
+        # Valor total do pedido - CORRIGIDO
+        try:
+            valor_pedido = float(order.get('total', 0) or 0)
+            valor_total += valor_pedido
+        except:
+            valor_pedido = 0
+        
+        # Data do pedido
+        created_at = order.get('createdAt', '')
+        if created_at:
+            try:
+                # Extrai apenas a data
+                data_dia = created_at.split('T')[0] if 'T' in created_at else created_at[:10]
+                pedidos_por_dia[data_dia] += 1
+            except:
+                pass
+        
+        # Status
+        status = order.get('status', 'DESCONHECIDO')
+        status_distribuicao[status] += 1
+        
+        # Marketplace
+        marketplace = order.get('marketPlace', 'DESCONHECIDO')
+        marketplace_distribuicao[marketplace] += 1
+        
+        # Itens do pedido - VERSÃO CORRIGIDA
+        items = order.get('items', [])
+        if not items:
+            # Tenta obter itens de outra forma
+            items = order.get('orderItems', [])
+        
+        for item in items:
+            try:
+                # Quantidade - CORRIGIDO
+                quantidade = int(item.get('amount', 1) or 1)
+                total_itens += quantidade
+                
+                # Preço - CORRIGIDO
+                preco_unitario = 0
+                try:
+                    preco_unitario = float(item.get('price', 0) or 0)
+                except:
+                    # Tenta outros campos de preço
+                    preco_unitario = float(item.get('value', 0) or 0)
+                
+                valor_item = preco_unitario * quantidade
+                
+                # Informações do produto - CORRIGIDO
+                nome_produto = 'Produto Desconhecido'
+                sku = 'SKU Desconhecido'
+                
+                # Tenta obter nome do produto de várias formas
+                if item.get('product'):
+                    nome_produto = item['product'].get('title', 'Produto Desconhecido')
+                    sku = item['product'].get('partnerId', 'SKU Desconhecido')
+                elif item.get('sku'):
+                    nome_produto = item['sku'].get('title', 'Produto Desconhecido')
+                    sku = item['sku'].get('partnerId', 'SKU Desconhecido')
+                elif item.get('description'):
+                    nome_produto = item['description']
+                
+                # Tenta obter SKU de várias formas
+                if sku == 'SKU Desconhecido':
+                    sku = item.get('partnerId', 'SKU Desconhecido')
+                
+                # Chave única para o produto
+                chave_produto = f"{sku}|{nome_produto}"
+                
+                # DEBUG: Mostra informações do produto
+                print(f"🔍 Produto encontrado: {nome_produto[:30]}... - Quantidade: {quantidade} - Preço: {preco_unitario}")
+                
+                # Atualiza contadores
+                produtos_por_quantidade[chave_produto] += quantidade
+                produtos_por_valor[chave_produto] += valor_item
+                
+                # Armazena informações detalhadas
+                if chave_produto not in produtos_info:
+                    produtos_info[chave_produto] = {
+                        'nome': nome_produto,
+                        'sku': sku,
+                        'preco_medio': preco_unitario
+                    }
+                    
+            except Exception as e:
+                print(f"⚠️ Erro ao processar item: {str(e)}")
+                continue
+    
+    print(f"📊 Total de itens processados: {total_itens}")
+    print(f"📊 Total de produtos únicos: {len(produtos_por_quantidade)}")
+    
+    # Prepara top produtos por quantidade
+    top_produtos_quantidade = []
+    for chave, quantidade in sorted(produtos_por_quantidade.items(), key=lambda x: x[1], reverse=True)[:15]:
+        info = produtos_info.get(chave, {})
+        preco_medio = info.get('preco_medio', 0)
+        valor_total_produto = produtos_por_valor.get(chave, 0)
+        
+        top_produtos_quantidade.append({
+            'nome': info.get('nome', 'Desconhecido'),
+            'sku': info.get('sku', 'N/A'),
+            'quantidade': quantidade,
+            'valor_total': valor_total_produto,
+            'preco_medio': valor_total_produto / quantidade if quantidade > 0 else preco_medio
+        })
+    
+    # Prepara top produtos por valor
+    top_produtos_valor = []
+    for chave, valor_total_produto in sorted(produtos_por_valor.items(), key=lambda x: x[1], reverse=True)[:15]:
+        info = produtos_info.get(chave, {})
+        quantidade = produtos_por_quantidade.get(chave, 0)
+        
+        top_produtos_valor.append({
+            'nome': info.get('nome', 'Desconhecido'),
+            'sku': info.get('sku', 'N/A'),
+            'valor_total': valor_total_produto,
+            'quantidade': quantidade,
+            'preco_medio': valor_total_produto / quantidade if quantidade > 0 else info.get('preco_medio', 0)
+        })
+    
+    # Prepara dados para gráfico de pedidos por dia (últimos 30 dias)
+    pedidos_por_dia_lista = []
+    for i in range(30):
+        data = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        quantidade = pedidos_por_dia.get(data, 0)
+        pedidos_por_dia_lista.append({
+            'data': data,
+            'quantidade': quantidade,
+            'dia_semana': ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][
+                (datetime.now() - timedelta(days=i)).weekday()
+            ]
+        })
+    
+    # Inverte para ordem cronológica
+    pedidos_por_dia_lista.reverse()
+    
+    # Resumo geral
+    resumo = {
+        'valor_total': valor_total,
+        'total_pedidos': len(orders),
+        'total_itens': total_itens,
+        'ticket_medio_pedido': valor_total / len(orders) if orders else 0,
+        'ticket_medio_item': valor_total / total_itens if total_itens else 0,
+        'media_itens_por_pedido': total_itens / len(orders) if orders else 0,
+        'pedidos_concluidos': sum(1 for o in orders if str(o.get('status', '')).upper() == 'CONCLUDED'),
+        'pedidos_pendentes': sum(1 for o in orders if str(o.get('status', '')).upper() == 'PENDING'),
+        'pedidos_cancelados': sum(1 for o in orders if str(o.get('status', '')).upper() == 'CANCELED'),
+        'pedidos_faturados': sum(1 for o in orders if str(o.get('status', '')).upper() == 'INVOICED'),
+        'marketplace_principal': max(marketplace_distribuicao.items(), key=lambda x: x[1])[0] if marketplace_distribuicao else 'N/A'
+    }
+    
+    print(f"🎯 RESUMO:")
+    print(f"   Valor Total: R$ {resumo['valor_total']:.2f}")
+    print(f"   Total Pedidos: {resumo['total_pedidos']}")
+    print(f"   Total Itens: {resumo['total_itens']}")
+    print(f"   Ticket Médio: R$ {resumo['ticket_medio_pedido']:.2f}")
+    print(f"   Itens/Pedido: {resumo['media_itens_por_pedido']:.1f}")
+    
+    return {
+        'total_pedidos': len(orders),
+        'valor_total': valor_total,
+        'total_itens': total_itens,
+        'pedidos_por_dia': pedidos_por_dia_lista,
+        'top_produtos_quantidade': top_produtos_quantidade,
+        'top_produtos_valor': top_produtos_valor,
+        'status_distribuicao': dict(status_distribuicao),
+        'marketplace_distribuicao': dict(marketplace_distribuicao),
+        'resumo': resumo
+    }
+
+def obter_estatisticas_anymarket_7_dias():
+    """Obtém estatísticas dos últimos 7 dias do AnyMarket"""
+    try:
+        # Verifica se tem token configurado
+        if not verificar_token_anymarket_configurado():
+            return {
+                'sucesso': False,
+                'erro': 'Token do AnyMarket não configurado',
+                'token_configurado': False
+            }
+        
+        # Obtém o token
+        from processamento.api_anymarket import obter_token_anymarket_seguro
+        token = obter_token_anymarket_seguro()
+        
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'gumgaToken': token
+        }
+        
+        # Calcula datas dos últimos 7 dias
+        hoje = datetime.now()
+        data_7_dias_atras = (hoje - timedelta(days=7)).strftime('%Y-%m-%d')
+        data_hoje = hoje.strftime('%Y-%m-%d')
+        
+        # Faz a requisição para pedidos dos últimos 7 dias
+        url = "https://api.anymarket.com.br/v2/orders"
+        params = {
+            'limit': 100,  # Aumentei o limite para pegar mais pedidos
+            'offset': 0,
+            'createdAfter': f'{data_7_dias_atras}T00:00:00-03:00',
+            'createdBefore': f'{data_hoje}T23:59:59-03:00',
+            'sort': 'createdAt',
+            'sortDirection': 'DESC'
+        }
+        
+        print(f"📊 Buscando pedidos AnyMarket de {data_7_dias_atras} até {data_hoje}")
+        
+        response = requests.get(url, params=params, headers=headers, timeout=30)
+        
+        if response.status_code != 200:
+            print(f"❌ Erro API AnyMarket: {response.status_code} - {response.text[:200]}")
+            return {
+                'sucesso': False,
+                'erro': f'Erro na API AnyMarket: {response.status_code}',
+                'status_code': response.status_code,
+                'token_configurado': True
+            }
+        
+        data = response.json()
+        orders = data.get('content', [])
+        total_elements = data.get('page', {}).get('totalElements', 0)
+        
+        print(f"✅ {len(orders)} pedidos encontrados (total: {total_elements})")
+        
+        # Se não encontrou pedidos, pode ser problema de timezone
+        if not orders:
+            # Tenta sem timezone específico
+            params_sem_tz = {
+                'limit': 100,
+                'offset': 0,
+                'createdAfter': f'{data_7_dias_atras}',
+                'createdBefore': f'{data_hoje}',
+                'sort': 'createdAt',
+                'sortDirection': 'DESC'
+            }
+            
+            print("🔄 Tentando sem timezone específico...")
+            response_sem_tz = requests.get(url, params=params_sem_tz, headers=headers, timeout=30)
+            
+            if response_sem_tz.status_code == 200:
+                data_sem_tz = response_sem_tz.json()
+                orders = data_sem_tz.get('content', [])
+                total_elements = data_sem_tz.get('page', {}).get('totalElements', 0)
+                print(f"✅ {len(orders)} pedidos encontrados (sem timezone)")
+        
+        # Processa as estatísticas
+        estatisticas = processar_estatisticas_pedidos(orders)
+        
+        return {
+            'sucesso': True,
+            'token_configurado': True,
+            'total_pedidos': total_elements,
+            'pedidos_ultimos_7_dias': len(orders),
+            'estatisticas': estatisticas,
+            'timestamp': datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        print(f"❌ Erro ao buscar estatísticas AnyMarket: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {
+            'sucesso': False,
+            'erro': str(e),
+            'token_configurado': verificar_token_anymarket_configurado() if 'verificar_token_anymarket_configurado' in locals() else False
+        }
+
+def processar_estatisticas_pedidos(orders):
+    """Processa estatísticas dos pedidos"""
+    if not orders:
+        return {
+            'total_pedidos': 0,
+            'valor_total': 0,
+            'pedidos_por_dia': [],
+            'top_produtos': [],
+            'status_distribuicao': {},
+            'marketplace_distribuicao': {}
+        }
+    
+    # Cálculo de estatísticas
+    valor_total = sum(float(order.get('total', 0)) for order in orders)
+    
+    # Agrupa por data
+    pedidos_por_dia = {}
+    for order in orders:
+        created_at = order.get('createdAt', '')
+        if created_at:
+            # Extrai apenas a data (YYYY-MM-DD)
+            data = created_at.split('T')[0] if 'T' in created_at else created_at[:10]
+            pedidos_por_dia[data] = pedidos_por_dia.get(data, 0) + 1
+    
+    # Distribuição por status
+    status_distribuicao = {}
+    for order in orders:
+        status = order.get('status', 'DESCONHECIDO')
+        status_distribuicao[status] = status_distribuicao.get(status, 0) + 1
+    
+    # Distribuição por marketplace
+    marketplace_distribuicao = {}
+    for order in orders:
+        marketplace = order.get('marketPlace', 'DESCONHECIDO')
+        marketplace_distribuicao[marketplace] = marketplace_distribuicao.get(marketplace, 0) + 1
+    
+    # Top produtos (baseado em itens dos pedidos)
+    top_produtos = {}
+    for order in orders:
+        items = order.get('items', [])
+        for item in items:
+            product_id = item.get('sku', {}).get('partnerId') or item.get('product', {}).get('title', 'Produto Desconhecido')
+            quantidade = item.get('amount', 1)
+            top_produtos[product_id] = top_produtos.get(product_id, 0) + quantidade
+    
+    # Ordena top produtos
+    top_produtos_lista = sorted(top_produtos.items(), key=lambda x: x[1], reverse=True)[:10]
+    
+    # Formata pedidos por dia para gráfico
+    pedidos_por_dia_lista = []
+    for i in range(7):
+        data = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+        quantidade = pedidos_por_dia.get(data, 0)
+        pedidos_por_dia_lista.append({
+            'data': data,
+            'quantidade': quantidade,
+            'dia_semana': ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][
+                (datetime.now() - timedelta(days=i)).weekday()
+            ]
+        })
+    
+    # Inverte para ordem cronológica
+    pedidos_por_dia_lista.reverse()
+    
+    return {
+        'total_pedidos': len(orders),
+        'valor_total': valor_total,
+        'pedidos_por_dia': pedidos_por_dia_lista,
+        'top_produtos': top_produtos_lista,
+        'status_distribuicao': status_distribuicao,
+        'marketplace_distribuicao': marketplace_distribuicao,
+        'ticket_medio': valor_total / len(orders) if orders else 0,
+        'pedidos_pendentes': sum(1 for o in orders if o.get('status') == 'PENDING'),
+        'pedidos_concluidos': sum(1 for o in orders if o.get('status') == 'CONCLUDED'),
+        'pedidos_cancelados': sum(1 for o in orders if o.get('status') == 'CANCELED')
+    }
 
 
 def obter_dados_completos_perfil():

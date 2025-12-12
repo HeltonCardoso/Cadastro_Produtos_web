@@ -1081,6 +1081,14 @@ function formatMarketplace(marketplace) {
             image: '/static/img/leroy.png',
             name: 'Leroy Merlin'
         },
+        'AMAZON_GLOBAL_API': {
+            image: '/static/img/amazon.png',
+            name: 'AMAZON'
+        },
+        'WEB_CONTINENTAL_V2': {
+            image: '/static/img/webcontinental.png',
+            name: 'WEB CONTINENTAL'
+        },
     };
     const marketplaceData = marketplaces[safeMarketplace];
     if (marketplaceData) {
@@ -1787,7 +1795,9 @@ function formatMarketplaceName(marketplace) {
         'SHOPEE': 'Shopee',
         'MAGAZINE_LUIZA': 'Magazine Luiza',
         'MOBLY': 'Mobly',
-        'LEROY_MERLIN': 'Leroy Merlin'
+        'LEROY_MERLIN': 'Leroy Merlin',
+        'AMAZON_GLOBAL_API': 'Amazon',
+        'WEB_CONTINENTAL_V2': 'Web Continental'
     };
     return names[marketplace] || marketplace;
 }
@@ -2038,7 +2048,8 @@ function formatMarketplaceName(marketplace) {
         'MAGAZINE_LUIZA': 'Magazine Luiza',
         'MOBLY': 'Mobly',
         'LEROY_MERLIN': 'Leroy Merlin',
-        'WEB_CONTINENTAL_V2': 'Web Continental'
+        'WEB_CONTINENTAL_V2': 'Web Continental',
+        'AMAZON_GLOBAL_API': 'Amazon',
     };
     return names[marketplace] || marketplace;
 }
@@ -2168,6 +2179,10 @@ function formatMarketplace(marketplace) {
         'WEB_CONTINENTAL_V2': {
             image: '/static/img/webcontinental.png',
             name: 'Web Continental'
+        },
+        'AMAZON_GLOBAL_API': {
+            image: '/static/img/amazon.png',
+            name: 'Amazon'
         }
     };
     
