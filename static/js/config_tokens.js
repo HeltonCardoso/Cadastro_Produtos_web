@@ -329,3 +329,167 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // NÃO use setInterval - remove testes desnecessários
 });
+// 🔹 FUNÇÕES INTELIPOST
+function testarTokenIntelipost() {
+    const apiKey = document.getElementById('intelipost_api_key').value;
+    const statusDiv = document.getElementById('intelipostStatus');
+    
+    if (!apiKey) {
+        mostrarStatus(statusDiv, 'Por favor, insira a API Key para testar', 'error');
+        return;
+    }
+    
+    mostrarStatus(statusDiv, '<i class="fas fa-spinner fa-spin"></i> Testando conexão com Intelipost...', 'info');
+    
+    fetch('/api/tokens/intelipost/testar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ api_key: apiKey })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            if (data.conectado) {
+                mostrarStatus(statusDiv, 
+                    `<strong>✅ Conexão bem-sucedida!</strong><br>
+                     ${data.mensagem}<br>
+                     Tempo de resposta: ${data.tempo_resposta || 'N/A'}`, 
+                    'success');
+            } else {
+                mostrarStatus(statusDiv, 
+                    `<strong>⚠️ Conexão parcial</strong><br>
+                     ${data.mensagem || 'API respondeu mas não está totalmente funcional'}`, 
+                    'warning');
+            }
+        } else {
+            mostrarStatus(statusDiv, 
+                `<strong>❌ Falha na conexão</strong><br>
+                 ${data.erro || data.mensagem || 'Erro desconhecido'}<br>
+                 ${data.sugestao ? `<small>${data.sugestao}</small>` : ''}`, 
+                'error');
+        }
+    })
+    .catch(error => {
+        mostrarStatus(statusDiv, 
+            `<strong>❌ Erro de conexão</strong><br>
+             Não foi possível testar a API: ${error}`, 
+            'error');
+    });
+}
+
+function salvarTokenIntelipost() {
+    const apiKey = document.getElementById('intelipost_api_key').value;
+    const statusDiv = document.getElementById('intelipostStatus');
+    
+    if (!apiKey) {
+        mostrarStatus(statusDiv, 'Por favor, insira a API Key', 'error');
+        return;
+    }
+    
+    if (confirm('Deseja salvar esta API Key do Intelipost?\n\nA chave será armazenada de forma segura no sistema.')) {
+        mostrarStatus(statusDiv, '<i class="fas fa-spinner fa-spin"></i> Salvando API Key...', 'info');
+        
+        fetch('/api/tokens/intelipost/salvar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ api_key: apiKey })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                mostrarStatus(statusDiv, 
+                    `<strong>✅ API Key salva com sucesso!</strong><br>
+                     ${data.mensagem}<br>
+                     <small>Salvo em: ${data.salvo_em || 'tokens_secure.json'}</small>`, 
+                    'success');
+                
+                // Atualizar status global e recarregar após 2 segundos
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } else {
+                mostrarStatus(statusDiv, 
+                    `<strong>❌ Erro ao salvar</strong><br>
+                     ${data.erro || 'Erro desconhecido'}`, 
+                    'error');
+            }
+        })
+        .catch(error => {
+            mostrarStatus(statusDiv, 
+                `<strong>❌ Erro de conexão</strong><br>
+                 Não foi possível salvar: ${error}`, 
+                'error');
+        });
+    }
+}
+
+function removerTokenIntelipost() {
+    if (confirm('Tem certeza que deseja remover a API Key do Intelipost?\n\nO módulo de rastreamento deixará de funcionar.')) {
+        fetch('/api/tokens/intelipost/remover', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                alert(data.mensagem);
+                location.reload();
+            } else {
+                alert('Erro ao remover: ' + (data.erro || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            alert('Erro de conexão: ' + error);
+        });
+    }
+}
+
+// Função auxiliar para mostrar status
+function mostrarStatus(element, message, type) {
+    element.innerHTML = message;
+    element.className = 'status-message';
+    
+    switch(type) {
+        case 'success':
+            element.classList.add('status-success');
+            break;
+        case 'error':
+            element.classList.add('status-error');
+            break;
+        case 'warning':
+            element.classList.add('status-warning');
+            break;
+        case 'info':
+            element.classList.add('status-info');
+            break;
+    }
+    
+    element.style.display = 'block';
+    
+    // Auto-esconder após 8 segundos (exceto sucesso)
+    if (type !== 'success') {
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 8000);
+    }
+}
+
+// Adicione esta função se não existir
+function toggleTokenVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.nextElementSibling;
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}

@@ -1,0 +1,452 @@
+/* static/css/mlb_exclusao.css */
+/* ESTILOS ESPECÍFICOS PARA EXCLUSÃO DE MLB */
+
+/* Modal de Exclusão */
+.modal-mlb-exclusao {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    animation: fadeInExclusao 0.3s ease;
+}
+
+@keyframes fadeInExclusao {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content-exclusao {
+    position: relative;
+    background: #1a1a1a;
+    margin: 5% auto;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(255, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: hidden;
+    border: 1px solid #ff4444;
+    animation: slideInExclusao 0.3s ease;
+}
+
+@keyframes slideInExclusao {
+    from { 
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header-exclusao {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    padding: 20px;
+    border-bottom: 2px solid #ff6b6b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header-exclusao h2 {
+    margin: 0;
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-modal-exclusao {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.close-modal-exclusao:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.modal-body-exclusao {
+    padding: 25px;
+    color: #e0e0e0;
+    background: #2d2d2d;
+}
+
+/* Alerta Crítico */
+.alerta-critico {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    border-left: 5px solid #ff0000;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: pulseWarning 2s infinite;
+}
+
+@keyframes pulseWarning {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(255, 68, 68, 0); }
+}
+
+.alerta-icon {
+    font-size: 24px;
+    color: white;
+}
+
+.alerta-conteudo h3 {
+    margin: 0 0 5px 0;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.alerta-conteudo p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+/* Informações do MLB */
+.mlb-info-exclusao {
+    background: #3a3a3a;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #444;
+}
+
+.mlb-label {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.mlb-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 10px;
+}
+
+.mlb-verificacao {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #444;
+    display: inline-block;
+}
+
+/* Etapas do Processo */
+.etapas-exclusao {
+    margin: 25px 0;
+}
+
+.etapa {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #3a3a3a;
+    border-radius: 8px;
+    border-left: 4px solid #666;
+    transition: all 0.3s;
+}
+
+.etapa.concluida {
+    border-left-color: #4caf50;
+    background: #2a3a2a;
+}
+
+.etapa.em-andamento {
+    border-left-color: #2196f3;
+    background: #2a3a4a;
+    animation: pulseEtapa 1.5s infinite;
+}
+
+@keyframes pulseEtapa {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+    50% { box-shadow: 0 0 0 5px rgba(33, 150, 243, 0); }
+}
+
+.etapa-numero {
+    width: 32px;
+    height: 32px;
+    background: #666;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.etapa.concluida .etapa-numero {
+    background: #4caf50;
+}
+
+.etapa.em-andamento .etapa-numero {
+    background: #2196f3;
+}
+
+.etapa-conteudo h4 {
+    margin: 0 0 5px 0;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.etapa-conteudo p {
+    margin: 0;
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.etapa-conteudo code {
+    background: #222;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    color: #ff9800;
+}
+
+.etapa-status {
+    margin-top: 8px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pendente {
+    background: #666;
+    color: #ddd;
+}
+
+.status-andamento {
+    background: #2196f3;
+    color: white;
+}
+
+.status-concluido {
+    background: #4caf50;
+    color: white;
+}
+
+.status-erro {
+    background: #f44336;
+    color: white;
+}
+
+/* Logs */
+.logs-exclusao {
+    margin-top: 25px;
+}
+
+.logs-exclusao h4 {
+    margin: 0 0 10px 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logs-container {
+    background: #222;
+    border-radius: 6px;
+    padding: 15px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid #333;
+    color: #e0e0e0;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry.success {
+    color: #4caf50;
+}
+
+.log-entry.error {
+    color: #f44336;
+}
+
+.log-entry.warning {
+    color: #ff9800;
+}
+
+.log-entry.info {
+    color: #2196f3;
+}
+
+/* Botões */
+.modal-footer-exclusao {
+    padding: 20px;
+    background: #252525;
+    border-top: 1px solid #444;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-exclusao-cancelar {
+    background: transparent;
+    border: 2px solid #666;
+    color: #aaa;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-exclusao-cancelar:hover {
+    background: #666;
+    color: white;
+}
+
+.btn-exclusao-confirmar {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(215, 47, 47, 0.3);
+}
+
+.btn-exclusao-confirmar:hover:not(:disabled) {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(215, 47, 47, 0.4);
+}
+
+.btn-exclusao-confirmar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Upload para Massa */
+.upload-section-exclusao {
+    margin: 20px 0;
+}
+
+.upload-area {
+    border: 3px dashed #666;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #3a3a3a;
+}
+
+.upload-area:hover {
+    border-color: #ff4444;
+    background: #444;
+}
+
+.upload-area i {
+    font-size: 48px;
+    color: #666;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+
+.upload-area:hover i {
+    color: #ff4444;
+}
+
+.upload-area h4 {
+    margin: 10px 0;
+    color: #fff;
+}
+
+.upload-area p {
+    color: #aaa;
+    margin: 0;
+}
+
+.preview-exclusao {
+    margin-top: 25px;
+}
+
+.preview-list {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.mlb-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.mlb-preview-item:last-child {
+    border-bottom: none;
+}
+
+.mlb-preview-item code {
+    font-family: 'Courier New', monospace;
+    color: #ff6b6b;
+    background: #222;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.preview-stats {
+    text-align: center;
+    padding: 15px;
+    background: #3a3a3a;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.preview-stats span {
+    color: #ff4444;
+    font-size: 1.5rem;
+}

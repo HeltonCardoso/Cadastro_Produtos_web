@@ -777,6 +777,29 @@
     font-size: 0.85rem;
 }
 
+/* Estilo para input de API Key */
+.api-key-input {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+/* Estilo para passos */
+.steps-list {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.steps-list li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* Ícone Intelipost */
+.fa-shipping-fast {
+    color: #3498db;
+}
+
 /* ========================================= */
 /* ANIMAÇÕES SUAVES */
 /* ========================================= */

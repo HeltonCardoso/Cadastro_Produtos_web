@@ -27,6 +27,7 @@ from logging.handlers import RotatingFileHandler
 from log_utils import (registrar_processo,registrar_itens_processados,obter_historico_processos,contar_processos_hoje)
 from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_anymarket, excluir_fotos_planilha_anymarket)
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
+from routes_intelipost import intelipost_bp
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -34,6 +35,8 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 db.init_app(app)
+
+app.register_blueprint(intelipost_bp)  # <-- ADICIONE AQUI
 
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
@@ -510,7 +513,110 @@ def api_forcar_renovacao():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
     
-
+@app.route('/api/mercadolivre/excluir-definitivo', methods=['POST'])
+def api_excluir_mlb_definitivo():
+    """
+    Rota para exclusão definitiva de MLB (2 etapas)
+    """
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({
+                'sucesso': False, 
+                'erro': 'Não autenticado no Mercado Livre',
+                'codigo': 'nao_autenticado'
+            }), 401
+        
+        data = request.get_json()
+        mlb = data.get('mlb')
+        mlbs = data.get('mlbs')  # Para exclusão em lote
+        
+        if not mlb and not mlbs:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Nenhum MLB fornecido',
+                'codigo': 'sem_mlb'
+            }), 400
+        
+        # Função para validar e limpar MLB
+        def processar_mlb(mlb_str):
+            if not mlb_str:
+                return None
+            mlb_str = str(mlb_str).strip().upper()
+            # Remove caracteres não alfanuméricos
+            import re
+            mlb_str = re.sub(r'[^A-Z0-9]', '', mlb_str)
+            
+            if mlb_str.startswith('MLB'):
+                return mlb_str
+            elif mlb_str.isdigit():
+                return 'MLB' + mlb_str
+            else:
+                numeros = re.sub(r'\D', '', mlb_str)
+                return 'MLB' + numeros if numeros else None
+        
+        if mlbs:
+            # Exclusão em lote
+            mlbs_validos = []
+            for m in mlbs:
+                mlb_processado = processar_mlb(m)
+                if mlb_processado:
+                    mlbs_validos.append(mlb_processado)
+            
+            if not mlbs_validos:
+                return jsonify({
+                    'sucesso': False,
+                    'erro': 'Nenhum MLB válido encontrado',
+                    'codigo': 'mlbs_invalidos'
+                }), 400
+            
+            print(f"🔍 Iniciando exclusão em lote de {len(mlbs_validos)} MLBs")
+            
+            resultados = []
+            for mlb_valido in mlbs_validos:
+                resultado = ml_api_secure.excluir_anuncio_definitivo(mlb_valido)
+                resultado['mlb'] = mlb_valido
+                resultados.append(resultado)
+                
+                # Delay entre exclusões para evitar rate limit
+                import time
+                time.sleep(1)
+            
+            sucessos = sum(1 for r in resultados if r.get('sucesso'))
+            
+            return jsonify({
+                'sucesso': sucessos > 0,
+                'resultados': resultados,
+                'total': len(mlbs_validos),
+                'sucessos': sucessos,
+                'erros': len(mlbs_validos) - sucessos
+            })
+            
+        else:
+            # Exclusão única
+            mlb_processado = processar_mlb(mlb)
+            
+            if not mlb_processado:
+                return jsonify({
+                    'sucesso': False,
+                    'erro': f'MLB inválido: {mlb}',
+                    'codigo': 'mlb_invalido'
+                }), 400
+            
+            print(f"🔍 Iniciando exclusão única do MLB: {mlb_processado}")
+            resultado = ml_api_secure.excluir_anuncio_definitivo(mlb_processado)
+            
+            return jsonify(resultado)
+            
+    except Exception as e:
+        print(f"❌ ERRO NA ROTA DE EXCLUSÃO: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': f'Erro interno: {str(e)}',
+            'codigo': 'erro_interno'
+        }), 500
+    
 @app.route('/api/mercadolivre/autenticar', methods=['POST'])
 def api_autenticar_mercadolivre():
     """API para autenticar no Mercado Livre"""
@@ -822,15 +928,216 @@ def configurar_tokens():
     config = carregar_configuracao_google_sheets()
     
     # Verifica se tem token do AnyMarket configurado
-    token_configurado = verificar_token_anymarket_configurado()
+    token_anymarket_configurado = verificar_token_anymarket_configurado()
+    
+    # 🔹 VERIFICA SE TEM TOKEN DO INTELIPOST CONFIGURADO
+    token_intelipost_configurado = verificar_token_intelipost_configurado()
     
     return render_template(
         "config_tokens.html",
         active_page='configuracao',
         config=config,
-        token_configurado=token_configurado,
+        token_anymarket_configurado=token_anymarket_configurado,
+        token_intelipost_configurado=token_intelipost_configurado,  # 🔹 NOVO
         page_title='Configuração de Tokens'
     )
+
+def verificar_token_intelipost_configurado():
+    """Verifica se o token do Intelipost está configurado"""
+    try:
+        tokens_file = 'tokens_secure.json'
+        if not os.path.exists(tokens_file):
+            return False
+        
+        with open(tokens_file, 'r', encoding='utf-8') as f:
+            tokens = json.load(f)
+        
+        # Procura por token intelipost
+        if 'intelipost' in tokens and tokens['intelipost'].get('api_key'):
+            return True
+        
+        # Tenta estrutura antiga
+        for key, value in tokens.items():
+            if isinstance(value, dict) and value.get('tipo') == 'intelipost' and value.get('api_key'):
+                return True
+        
+        return False
+        
+    except Exception:
+        return False
+
+@app.route('/api/tokens/intelipost/salvar', methods=['POST'])
+def salvar_token_intelipost():
+    """Salva token do Intelipost no arquivo seguro"""
+    try:
+        data = request.get_json()
+        api_key = data.get('api_key')
+        
+        if not api_key:
+            return jsonify({'sucesso': False, 'erro': 'API Key é obrigatória'}), 400
+        
+        tokens_file = 'tokens_secure.json'
+        tokens = {}
+        
+        # Carrega tokens existentes
+        if os.path.exists(tokens_file):
+            try:
+                with open(tokens_file, 'r', encoding='utf-8') as f:
+                    tokens = json.load(f)
+            except json.JSONDecodeError:
+                tokens = {}
+        
+        # Salva token Intelipost
+        tokens['intelipost'] = {
+            'api_key': api_key,
+            'criado_em': datetime.now().isoformat(),
+            'ultima_atualizacao': datetime.now().isoformat(),
+            'tipo': 'intelipost',
+            'descricao': 'API Key para rastreamento Intelipost'
+        }
+        
+        # Salva arquivo
+        with open(tokens_file, 'w', encoding='utf-8') as f:
+            json.dump(tokens, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Token Intelipost salvo em {tokens_file}")
+        
+        return jsonify({
+            'sucesso': True, 
+            'mensagem': 'API Key do Intelipost salva com sucesso!',
+            'salvo_em': tokens_file
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro ao salvar token Intelipost: {str(e)}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/tokens/intelipost/obter')
+def obter_token_intelipost():
+    """Obtém status do token Intelipost (não retorna a chave)"""
+    try:
+        tokens_file = 'tokens_secure.json'
+        
+        if not os.path.exists(tokens_file):
+            return jsonify({
+                'sucesso': False,
+                'configurado': False,
+                'mensagem': 'Token não configurado'
+            })
+        
+        with open(tokens_file, 'r', encoding='utf-8') as f:
+            tokens = json.load(f)
+        
+        # Procura token Intelipost
+        token_configurado = False
+        token_data = None
+        
+        if 'intelipost' in tokens:
+            token_data = tokens['intelipost']
+            token_configurado = bool(token_data.get('api_key'))
+        else:
+            # Tenta estrutura antiga
+            for key, value in tokens.items():
+                if isinstance(value, dict) and value.get('tipo') == 'intelipost' and value.get('api_key'):
+                    token_data = value
+                    token_configurado = True
+                    break
+        
+        return jsonify({
+            'sucesso': True,
+            'configurado': token_configurado,
+            'criado_em': token_data.get('criado_em') if token_data else None,
+            'mensagem': 'Token configurado' if token_configurado else 'Token não configurado',
+            'caracteres': len(token_data.get('api_key', '')) if token_data and token_data.get('api_key') else 0
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/tokens/intelipost/testar', methods=['POST'])
+def testar_token_intelipost():
+    """Testa o token do Intelipost - VERSÃO DEFINITIVA"""
+    try:
+        data = request.get_json()
+        api_key = data.get('api_key', '').strip()
+        
+        if not api_key:
+            return jsonify({'sucesso': False, 'erro': 'API Key é obrigatória'}), 400
+        
+        print(f"🧪 Testando API Key Intelipost...")
+        print(f"🔑 Tamanho: {len(api_key)} caracteres")
+        
+        try:
+            from processamento.intelipost_api import IntelipostAPI
+            
+            # Cria cliente
+            api_client = IntelipostAPI(api_key=api_key)
+            
+            # 🔹 TESTE 1: Conexão básica
+            print("🔄 Teste 1: Conexão básica...")
+            resultado = api_client.testar_conexao()
+            
+            if resultado.get('sucesso') and resultado.get('conectado'):
+                # 🔹 TESTE 2: Com pedido de teste (se quiser)
+                print("🔄 Teste 2: Com pedido de teste...")
+                resultado_teste = api_client.testar_com_pedido_real("PEDIDO0001")
+                
+                if resultado_teste.get('sucesso'):
+                    resultado.update(resultado_teste)
+                    resultado['teste_pedido'] = 'bem_sucedido'
+                else:
+                    resultado['teste_pedido'] = 'falhou_mas_api_funciona'
+                    resultado['aviso'] = 'API funciona mas pedido de teste não encontrado'
+            
+            print(f"📊 Resultado final: {resultado}")
+            return jsonify(resultado)
+            
+        except ImportError:
+            return jsonify({
+                'sucesso': False,
+                'conectado': False,
+                'erro': 'Módulo Intelipost não encontrado',
+                'sugestao': 'Verifique se processamento/intelipost_api.py existe'
+            })
+        except Exception as api_error:
+            print(f"❌ Erro na API: {str(api_error)}")
+            return jsonify({
+                'sucesso': False,
+                'conectado': False,
+                'erro': f'Erro: {str(api_error)}'
+            })
+        
+    except Exception as e:
+        print(f"❌ Erro geral: {str(e)}")
+        return jsonify({
+            'sucesso': False,
+            'conectado': False,
+            'erro': f'Erro interno: {str(e)}'
+        })
+
+
+    
+@app.route('/api/tokens/intelipost/remover', methods=['POST'])
+def remover_token_intelipost():
+    """Remove token do Intelipost"""
+    try:
+        tokens_file = 'tokens_secure.json'
+        
+        if os.path.exists(tokens_file):
+            with open(tokens_file, 'r', encoding='utf-8') as f:
+                tokens = json.load(f)
+            
+            if 'intelipost' in tokens:
+                del tokens['intelipost']
+                
+                with open(tokens_file, 'w', encoding='utf-8') as f:
+                    json.dump(tokens, f, indent=2, ensure_ascii=False)
+        
+        return jsonify({'sucesso': True, 'mensagem': 'Token Intelipost removido'})
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
 
 def verificar_token_anymarket_configurado():
     """Verifica se o token do AnyMarket está configurado (sem retornar o token)"""

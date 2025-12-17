@@ -27,6 +27,18 @@
                         <span class="status-indicator connected"></span>
                     </div>
                 </div>
+                <div class="service-menu-item" data-target="intelipost-section">
+                <div class="service-icon">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="service-info">
+                    <h4>Intelipost</h4>
+                    <p>Rastreamento</p>
+                </div>
+                <div class="service-status">
+                    <span class="status-indicator {% if token_intelipost_configurado %}connected{% else %}disconnected{% endif %}"></span>
+                </div>
+            </div>
 
                 <div class="service-menu-item" data-target="anymarket-section">
                     <div class="service-icon">
@@ -254,6 +266,88 @@
                     <div id="googleSheetsStatus" class="status-message"></div>
                 </div>
             </div>
+            <!-- =============================================== -->
+<!-- 🔹 SEÇÃO INTELIPOST (NOVA) -->
+<!-- =============================================== -->
+<div class="settings-section" id="intelipost-section">
+    <div class="section-header">
+        <div class="section-title">
+            <i class="fas fa-shipping-fast"></i>
+            <h2>Intelipost</h2>
+        </div>
+        <div class="section-badge">
+            <span class="badge {% if token_intelipost_configurado %}badge-success{% else %}badge-warning{% endif %}">
+                {% if token_intelipost_configurado %}Configurado{% else %}Pendente{% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="section-description">
+        <p>Configure a API Key para integração com o sistema de rastreamento Intelipost.</p>
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Informações:</strong>
+                <p>A API Key permite consultar status de pedidos e rastrear entregas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORMULÁRIO -->
+    <div class="simple-form">
+        <div class="form-group">
+            <label for="intelipost_api_key">
+                <i class="fas fa-key"></i> API Key
+            </label>
+            <div class="input-with-action">
+                <input type="password" 
+                       id="intelipost_api_key" 
+                       class="form-control api-key-input"
+                       placeholder="{% if token_intelipost_configurado %}API Key configurada{% else %}Cole sua API Key do Intelipost...{% endif %}">
+                <button type="button" class="btn-eye" onclick="toggleTokenVisibility('intelipost_api_key')">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            <small class="form-help">
+                Chave de API fornecida pelo Intelipost para acesso aos serviços de rastreamento
+            </small>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary" onclick="salvarTokenIntelipost()">
+                <i class="fas fa-save"></i> Salvar API Key
+            </button>
+            <button class="btn-secondary" onclick="testarTokenIntelipost()">
+                <i class="fas fa-vial"></i> Testar Conexão
+            </button>
+            {% if token_intelipost_configurado %}
+            <button class="btn-danger" onclick="removerTokenIntelipost()">
+                <i class="fas fa-trash"></i> Remover
+            </button>
+            {% endif %}
+        </div>
+
+        <div id="intelipostStatus" class="status-message"></div>
+    </div>
+
+    <!-- INFORMAÇÕES ADICIONAIS -->
+    <div class="info-container">
+        <h4><i class="fas fa-question-circle"></i> Como obter a API Key</h4>
+        <ol class="steps-list">
+            <li>Acesse o painel do Intelipost</li>
+            <li>Navegue até <strong>Configurações > API</strong></li>
+            <li>Clique em <strong>"Gerar nova chave"</strong></li>
+            <li>Copie a chave e cole no campo acima</li>
+            <li>Clique em <strong>"Testar Conexão"</strong> para verificar</li>
+            <li>Salve a chave para uso permanente</li>
+        </ol>
+        
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Permissões:</strong> A API Key precisa ter permissão para consultar <code>shipment_order</code>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </div>

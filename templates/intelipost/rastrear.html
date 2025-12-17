@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Rastreamento Intelipost - Sistema MPOZENATO{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/intelipost.css') }}">
+{% endblock %}
+
+{% block page_title %}Rastreamento Intelipost{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/intelipost.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid intelipost-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- Cabeçalho -->
+            <div class="intelipost-header">
+                <div class="intelipost-logo">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h1>Rastreamento <span style="color: #3498db;">Intelipost</span></h1>
+                </div>
+                <p class="text-muted mb-4">
+                    Rastreie seus pedidos em tempo real usando a API Intelipost
+                </p>
+                
+                <!-- Caixa de busca -->
+                <div class="intelipost-search-box">
+                    <input type="text" 
+                           id="intelipost-order-number"
+                           placeholder="Digite o número do pedido Intelipost"
+                           value="{{ pedido or '' }}">
+                    <button id="intelipost-search-btn">
+                        <i class="fas fa-search"></i> Rastrear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading -->
+            <div class="intelipost-loading" id="intelipost-loading" style="display: none;">
+                <i class="fas fa-spinner"></i>
+                <p class="mt-2">Buscando informações de rastreio...</p>
+            </div>
+            
+            <!-- Erro -->
+            <div class="intelipost-error" id="intelipost-error" style="display: none;">
+                <!-- Mensagem de erro será inserida aqui -->
+            </div>
+            
+            <!-- Resultado -->
+            <div id="intelipost-result" class="intelipost-result">
+                <!-- Resultado será inserido aqui pelo JavaScript -->
+            </div>
+            
+            <!-- Informações da API -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informações</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Como usar:</h6>
+                            <ul class="mb-0">
+                                <li>Digite o número do pedido fornecido pela Intelipost</li>
+                                <li>O sistema buscará automaticamente as informações mais recentes</li>
+                                <li>Você pode rastrear múltiplos pedidos em sequência</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>O que você pode ver:</h6>
+                            <ul class="mb-0">
+                                <li>Status atual da entrega</li>
+                                <li>Histórico completo de rastreamento</li>
+                                <li>Informações do destinatário</li>
+                                <li>Detalhes dos produtos no pedido</li>
+                                <li>Link direto para rastreamento na transportadora</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+// Script adicional para melhorar a experiência
+document.addEventListener('DOMContentLoaded', function() {
+    // Verifica se tem parâmetro na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const pedidoParam = urlParams.get('pedido');
+    
+    if (pedidoParam) {
+        document.getElementById('intelipost-order-number').value = pedidoParam;
+        
+        // Busca automaticamente após 1 segundo
+        setTimeout(() => {
+            window.intelipostTracker.buscarRastreio();
+        }, 1000);
+    }
+    
+    // Foco no campo de busca
+    document.getElementById('intelipost-order-number').focus();
+});
+</script>
+{% endblock %}

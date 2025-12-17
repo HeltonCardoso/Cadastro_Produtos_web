@@ -3,6 +3,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/consultar_mercado_livre.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mlb_exclusao.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -126,10 +127,13 @@
                     <i class="fas fa-clock"></i> Atualizar Lote
                 </button>
                 <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
-                    <i class="fas fa-file-excel"></i> Via Planilha
+                    <i class="fas fa-file-excel"></i> Prazo Via Planilha
                 </button>
-                <button class="btn btn-outline-secondary" onclick="limparCampos()">
-                    <i class="fas fa-broom"></i> Limpar
+                <button class="btn btn-outline-danger" onclick="abrirModalExclusaoPlanilha()">
+                    <i class="fas fa-file-excel"></i> Excluir MLB Via Planilha
+                </button>
+                 <button class="btn btn-outline-secondary" onclick="limparCampos()">
+                    <i class="fas fa-broom"></i> Limpar Filtros
                 </button>
                 <button class="btn btn-outline-warning" onclick="aplicarFiltros()">
                     <i class="fas fa-filter"></i> Aplicar Filtros
@@ -493,4 +497,9 @@
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/consultar_mercado_livre.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- ADICIONE ESTA LINHA -->
+<script src="{{ url_for('static', filename='js/mlb_exclusao.js') }}"></script>
 {% endblock %}
+
+<!-- ADICIONE ESTA SEÇÃO NO FINAL DO BODY -->
+{% include 'mlb_exclusao_modal.html' %}

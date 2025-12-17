@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Histórico Intelipost - Cadastro Produtos Web{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/intelipost.css') }}">
+{% endblock %}
+
+{% block page_title %}Histórico Intelipost{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- Cabeçalho -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1><i class="fas fa-history"></i> Histórico de Consultas</h1>
+                    <p class="text-muted mb-0">Consultas realizadas recentemente</p>
+                </div>
+                <a href="{{ url_for('intelipost.rastrear') }}" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Nova Consulta
+                </a>
+            </div>
+            
+            <!-- Histórico de consultas -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Últimas Consultas</h5>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="limparHistorico()">
+                            <i class="fas fa-trash-alt"></i> Limpar Histórico
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if historico_consultas %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Número do Pedido</th>
+                                    <th>Data da Consulta</th>
+                                    <th>Resultado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consulta in historico_consultas %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <strong>{{ consulta.numero_pedido }}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ consulta.data_consulta.strftime('%d/%m/%Y %H:%M') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if consulta.sucesso %}
+                                        <span class="badge bg-success">Sucesso</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Erro</span>
+                                        <small class="text-muted d-block">{{ consulta.erro[:50] }}...</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('intelipost.rastrear', pedido=consulta.numero_pedido) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-redo"></i> Refazer
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                        <h5>Nenhuma consulta realizada</h5>
+                        <p class="text-muted">Realize sua primeira consulta para ver o histórico aqui.</p>
+                        <a href="{{ url_for('intelipost.rastrear') }}" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Fazer Primeira Consulta
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Estatísticas -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h1 class="display-4 text-primary">{{ total_consultas }}</h1>
+                            <p class="card-text">Total de Consultas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h1 class="display-4 text-success">{{ consultas_sucesso }}</h1>
+                            <p class="card-text">Consultas com Sucesso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h1 class="display-4 text-info">{{ consultas_hoje }}</h1>
+                            <p class="card-text">Consultas Hoje</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+function limparHistorico() {
+    if (confirm('Tem certeza que deseja limpar todo o histórico de consultas?')) {
+        fetch('{{ url_for("intelipost.api_limpar_historico") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                location.reload();
+            } else {
+                alert('Erro ao limpar histórico: ' + data.erro);
+            }
+        })
+        .catch(error => {
+            alert('Erro de conexão: ' + error);
+        });
+    }
+}
+</script>
+{% endblock %}

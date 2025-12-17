@@ -15,3 +15,8 @@ class Config:
     GOOGLE_SHEET_ID = os.environ.get('GOOGLE_SHEET_ID', '')
     GOOGLE_SHEET_ABA = os.environ.get('GOOGLE_SHEET_ABA', '')
     GOOGLE_SHEET_CONFIG_FILE = Path('config/google_sheets_config.json')
+
+    # Configuração Intelipost
+    INTELIPOST_API_KEY = os.environ.get('INTELIPOST_API_KEY', 'sua_chave_api_aqui')
+    INTELIPOST_BASE_URL = 'https://api.intelipost.com.br/api/v1'
+    INTELIPOST_CACHE_TIMEOUT = 300  # 5 minutos

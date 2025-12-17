@@ -138,6 +138,37 @@
           </div>
         </div>
 
+          <!-- =============================================== -->
+          <!-- 🔹 MÓDULO INTELIPOST (NOVO) -->
+          <!-- =============================================== -->
+          <div class="menu-group" data-module="intelipost">
+            <div class="menu-title">
+              <i class="fas fa-caret-down module-toggle"></i>
+              <span class="menu-title-text">INTELIPOST</span>
+            </div>
+            <div class="menu-subitems">
+              <a href="{{ url_for('intelipost.rastrear') }}" class="menu-item {% if active_page == 'intelipost_rastrear' %}active{% endif %}">
+                <div class="menu-icon">
+                  <i class="fas fa-search-location"></i>
+                </div>
+                <span class="menu-text">Rastreamento</span>
+              </a>
+              <a href="{{ url_for('intelipost.historico') }}" class="menu-item {% if active_page == 'intelipost_historico' %}active{% endif %}">
+                <div class="menu-icon">
+                  <i class="fas fa-history"></i>
+                </div>
+                <span class="menu-text">Histórico</span>
+              </a>
+              <a href="#" class="menu-item">
+                <div class="menu-icon">
+                  <i class="fas fa-cog"></i>
+                </div>
+                <span class="menu-text">Configurações</span>
+                <span class="badge badge-warning badge-pill">Em breve</span>
+              </a>
+            </div>
+          </div>
+
         <!-- Módulo JET -->
         <div class="menu-group" data-module="jet">
           <div class="menu-title">

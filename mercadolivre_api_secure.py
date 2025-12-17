@@ -474,5 +474,141 @@ class MercadoLivreAPISecure:
                 'erro': str(e)
             }
 
+    def excluir_anuncio_definitivo(self, mlb_id):
+        """
+        Exclui permanentemente um anúncio seguindo o fluxo oficial de 2 etapas:
+        1. Fechar o anúncio (status: closed)
+        2. Marcar como deletado (deleted: true)
+        
+        Documentação oficial: https://developers.mercadolivre.com.br/pt_br/atualiza-tuas-publicacoes
+        """
+        try:
+            headers = self._get_headers()
+            print(f"🔍 INICIANDO EXCLUSÃO DEFINITIVA DO MLB: {mlb_id}")
+            
+            # ETAPA 1: FECHAR O ANÚNCIO
+            print("📋 ETAPA 1: Alterando status para 'closed'...")
+            payload_fechar = {"status": "closed"}
+            
+            response_fechar = requests.put(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                json=payload_fechar,
+                timeout=30
+            )
+            
+            print(f"📥 Resposta ETAPA 1 (fechar): Status {response_fechar.status_code}")
+            
+            if response_fechar.status_code != 200:
+                error_msg = self._extrair_mensagem_erro(response_fechar)
+                print(f"❌ FALHA na ETAPA 1: {error_msg}")
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao fechar anúncio: {error_msg}',
+                    'etapa': 1,
+                    'status_code': response_fechar.status_code
+                }
+            
+            print("✅ ETAPA 1 concluída: Anúncio fechado com sucesso")
+            
+            # Aguarda 2 segundos para evitar erro de conflito
+            import time
+            time.sleep(2)
+            
+            # ETAPA 2: EXCLUIR PERMANENTEMENTE
+            print("📋 ETAPA 2: Marcando como deletado permanente (deleted: true)...")
+            payload_excluir = {"deleted": True}
+            
+            response_excluir = requests.put(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                json=payload_excluir,
+                timeout=30
+            )
+            
+            print(f"📥 Resposta ETAPA 2 (deletar): Status {response_excluir.status_code}")
+            
+            # Tratamento especial para erro 409 (conflito)
+            if response_excluir.status_code == 409:
+                print("⚠️  Erro 409 - Conflito detectado. Aguardando e tentando novamente...")
+                time.sleep(5)
+                
+                # Segunda tentativa
+                response_excluir = requests.put(
+                    f"{self.base_url}/items/{mlb_id}",
+                    headers=headers,
+                    json=payload_excluir,
+                    timeout=30
+                )
+                print(f"📥 Segunda tentativa: Status {response_excluir.status_code}")
+            
+            if response_excluir.status_code == 200:
+                print(f"🎉 EXCLUSÃO DEFINITIVA CONCLUÍDA! MLB {mlb_id} removido permanentemente.")
+                
+                # Verifica se realmente foi deletado
+                try:
+                    response_verificacao = requests.get(
+                        f"{self.base_url}/items/{mlb_id}",
+                        headers=headers,
+                        timeout=10
+                    )
+                    if response_verificacao.status_code == 404:
+                        print("✅ Confirmação: MLB não encontrado (excluído com sucesso)")
+                    elif response_verificacao.status_code == 200:
+                        data = response_verificacao.json()
+                        if data.get('status') == 'closed' and 'deleted' in data.get('sub_status', []):
+                            print("✅ Confirmação: MLB marcado como deletado no sistema")
+                except:
+                    pass  # Ignora erro na verificação
+                
+                return {
+                    'sucesso': True,
+                    'mensagem': f'MLB {mlb_id} excluído permanentemente do Mercado Livre.',
+                    'etapa': 2,
+                    'status_code': response_excluir.status_code,
+                    'detalhes': response_excluir.json() if response_excluir.content else {}
+                }
+            else:
+                error_msg = self._extrair_mensagem_erro(response_excluir)
+                print(f"❌ FALHA na ETAPA 2: {error_msg}")
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro na exclusão permanente: {error_msg}',
+                    'etapa': 2,
+                    'status_code': response_excluir.status_code
+                }
+                
+        except requests.exceptions.Timeout:
+            print(f"❌ TIMEOUT na exclusão do MLB {mlb_id}")
+            return {
+                'sucesso': False,
+                'erro': 'Timeout na conexão com o Mercado Livre',
+                'etapa': 'timeout'
+            }
+        except requests.exceptions.ConnectionError:
+            print(f"❌ ERRO DE CONEXÃO na exclusão do MLB {mlb_id}")
+            return {
+                'sucesso': False,
+                'erro': 'Erro de conexão com o Mercado Livre',
+                'etapa': 'connection'
+            }
+        except Exception as e:
+            print(f"❌ ERRO INESPERADO: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return {
+                'sucesso': False,
+                'erro': f'Erro inesperado: {str(e)}',
+                'etapa': 'exception'
+            }
+
+    def _extrair_mensagem_erro(self, response):
+        """Extrai mensagem de erro da resposta da API"""
+        try:
+            error_data = response.json()
+            return error_data.get('message', error_data.get('error', str(error_data)))
+        except:
+            return response.text[:200] if response.text else f'Erro HTTP {response.status_code}'
+    
 # Instância global
 ml_api_secure = MercadoLivreAPISecure()

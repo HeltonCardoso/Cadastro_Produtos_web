@@ -1,0 +1,43 @@
+<!-- templates/mlb_exclusao_simples.html -->
+<!-- MODAL SIMPLES PARA EXCLUSÃO VIA PLANILHA -->
+<div id="modalExclusaoPlanilha" class="modal"> <!-- Removi classe 'modal fade' e adicionei 'modal' -->
+    <div class="modal-content" style="max-width: 600px;"> <!-- Adicionei max-width como nos outros -->
+        <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">
+                <i class="fas fa-trash-alt"></i> Excluir MLB Via Planilha
+            </h5>
+            <button type="button" class="close-modal" onclick="fecharModalExclusaoPlanilha()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Atenção:</strong> Esta ação excluirá permanentemente os MLBs listados.
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">
+                    <i class="fas fa-file-upload"></i> Selecione o arquivo
+                </label>
+                <input type="file" id="arquivoExclusao" class="form-control" 
+                       accept=".txt,.csv,.xlsx,.xls">
+                <div class="form-text">
+                    Formatos: .txt, .csv, .xlsx, .xls (um MLB por linha ou coluna)
+                </div>
+            </div>
+            
+            <div id="previewExclusao">
+                <!-- Preview será inserido aqui -->
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="fecharModalExclusaoPlanilha()">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="button" class="btn btn-danger" id="btnIniciarExclusao" disabled>
+                <i class="fas fa-play"></i> Iniciar Exclusão
+            </button>
+        </div>
+    </div>
+</div>
