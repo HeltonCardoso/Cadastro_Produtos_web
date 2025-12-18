@@ -454,7 +454,7 @@ function diagnosticarMultiplosProdutos() {
         .split(/[,\n]/)
         .map(id => id.trim())
         .filter(id => id.length > 0 && !isNaN(id))
-        .slice(0, 20); // Limitar a 20 produtos
+        .slice(0, 1000); // Limitar a 20 produtos
     
     if (ids.length === 0) {
         showAlert('Nenhum ID válido encontrado. Digite números válidos.', 'error');

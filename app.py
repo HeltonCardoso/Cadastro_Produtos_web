@@ -2748,7 +2748,7 @@ def obter_pedidos_anymarket_30_dias():
 
 @app.route("/api/anymarket/diagnosticar-imagens", methods=["POST"])
 def api_diagnosticar_imagens():
-    """API para diagnóstico de múltiplos produtos"""
+    """API para diagnóstico de múltiplos produtos (AGORA ATÉ 1000 PRODUTOS)"""
     try:
         data = request.get_json()
         product_ids = data.get('product_ids', [])
@@ -2756,9 +2756,10 @@ def api_diagnosticar_imagens():
         if not product_ids:
             return jsonify({'sucesso': False, 'erro': 'Nenhum ID fornecido'}), 400
         
-        # Limitar a 20 produtos por requisição
-        if len(product_ids) > 20:
-            product_ids = product_ids[:20]
+        # ✅✅✅ ALTERAÇÃO PRINCIPAL: Aumentar para 1000 produtos
+        LIMITE_MAXIMO = 1000
+        if len(product_ids) > LIMITE_MAXIMO:
+            product_ids = product_ids[:LIMITE_MAXIMO]
         
         resultados = []
         total_imagens_analisadas = 0
@@ -2836,6 +2837,7 @@ def api_diagnosticar_imagens():
             'produtos_com_erro': sum(1 for r in resultados if r.get('imagens_com_erro')),
             'resultados': resultados,
             'relatorio_excel': relatorio_excel,
+            'limite_utilizado': LIMITE_MAXIMO,
             'timestamp': datetime.now().isoformat()
         })
         
