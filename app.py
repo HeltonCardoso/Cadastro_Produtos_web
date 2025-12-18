@@ -36,7 +36,8 @@ app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 db.init_app(app)
 
-app.register_blueprint(intelipost_bp)  # <-- ADICIONE AQUI
+app.register_blueprint(intelipost_bp)
+
 
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
