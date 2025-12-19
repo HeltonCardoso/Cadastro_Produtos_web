@@ -2,566 +2,209 @@
 {% block title %}Dashboard - Mpozenato{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<style>
+    .dashboard-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+        height: 100%;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div id="conteudoPrincipal">
-  <!-- Seção 1: Visão Geral -->
-  <div class="row mb-4">
-    <!-- Sistema -->
-    <div class="col-xl-3 col-lg-6 mb-4">
-      <div class="card card-statistics h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="card-title mb-1">Processamentos</h6>
-              <h2 class="text-primary">{{ processamentos_hoje }}</h2>
-              <small class="text-muted">Hoje</small>
-            </div>
-            <div class="avatar bg-primary-light rounded-circle p-3">
-              <i class="fas fa-cogs fa-2x text-primary"></i>
-            </div>
-          </div>
-          <div class="mt-3">
-            <div class="progress" style="height: 6px;">
-              {% if processamentos_hoje > 0 %}
-                <div class="progress-bar bg-success" 
-                     style="width: {{ (hoje_sucesso/processamentos_hoje*100)|round }}%">
+<div class="container-fluid py-4">
+    <!-- Cabeçalho -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-2">Dashboard</h1>
+                    <p class="text-muted mb-0">Bem-vindo ao Sistema MPOZENATO</p>
                 </div>
-              {% endif %}
+                <div>
+                    <span class="badge bg-success">Online</span>
+                </div>
             </div>
-            <div class="d-flex justify-content-between mt-2">
-              <small class="text-success">{{ hoje_sucesso }} ✓</small>
-              <small class="text-danger">{{ hoje_erro }} ✗</small>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 
-    <!-- AnyMarket - Pedidos -->
-    <div class="col-xl-3 col-lg-6 mb-4">
-      <div class="card card-statistics h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="card-title mb-1">Pedidos</h6>
-              {% if anymarket_stats.sucesso %}
-                <h2 class="text-info">{{ anymarket_stats.total_pedidos }}</h2>
-                <small class="text-muted">Últimos 30 dias</small>
-              {% else %}
-                <h2 class="text-muted">-</h2>
-                <small class="text-muted">{{ anymarket_stats.erro[:30] if anymarket_stats.erro else 'Não configurado' }}</small>
-              {% endif %}
-            </div>
-            <div class="avatar bg-info-light rounded-circle p-3">
-              <i class="fas fa-shopping-cart fa-2x text-info"></i>
-            </div>
-          </div>
-          {% if anymarket_stats.sucesso %}
-          <div class="mt-3">
-            <div class="d-flex justify-content-between">
-              <small class="text-success">
-                <i class="fas fa-check-circle me-1"></i> {{ anymarket_stats.estatisticas.resumo.pedidos_concluidos }}
-              </small>
-              <small class="text-warning">
-                <i class="fas fa-clock me-1"></i> {{ anymarket_stats.estatisticas.resumo.pedidos_pendentes }}
-              </small>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <!-- AnyMarket - Valor -->
-    <div class="col-xl-3 col-lg-6 mb-4">
-      <div class="card card-statistics h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="card-title mb-1">Valor Total</h6>
-              {% if anymarket_stats.sucesso %}
-                <h2 class="text-success">R$ {{ "%.0f"|format(anymarket_stats.estatisticas.resumo.valor_total) }}</h2>
-                <small class="text-muted">Ticket: R$ {{ "%.2f"|format(anymarket_stats.estatisticas.resumo.ticket_medio_pedido) }}</small>
-              {% else %}
-                <h2 class="text-muted">-</h2>
-                <small class="text-muted">{{ anymarket_stats.erro[:30] if anymarket_stats.erro else 'Não configurado' }}</small>
-              {% endif %}
-            </div>
-            <div class="avatar bg-success-light rounded-circle p-3">
-              <i class="fas fa-money-bill-wave fa-2x text-success"></i>
-            </div>
-          </div>
-          {% if anymarket_stats.sucesso %}
-          <div class="mt-3">
-            <div class="d-flex justify-content-between">
-              <small class="text-muted">
-                <i class="fas fa-box me-1"></i> {{ anymarket_stats.estatisticas.total_itens }} itens
-              </small>
-              <small class="text-muted">
-                <i class="fas fa-calculator me-1"></i> {{ "%.1f"|format(anymarket_stats.estatisticas.resumo.media_itens_por_pedido) }}/pedido
-              </small>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <!-- Última Planilha -->
-    <div class="col-xl-3 col-lg-6 mb-4">
-      <div class="card card-statistics h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 class="card-title mb-1">Última Planilha</h6>
-              {% if ultima_planilha %}
-                <h6 class="text-warning">{{ ultima_planilha|truncate(15) }}</h6>
-                <small class="text-muted">{{ ultima_planilha_data|default('') }}</small>
-              {% else %}
-                <h6 class="text-muted">Nenhuma planilha</h6>
-              {% endif %}
-            </div>
-            <div class="avatar bg-warning-light rounded-circle p-3">
-              <i class="fas fa-file-excel fa-2x text-warning"></i>
-            </div>
-          </div>
-          {% if ultima_planilha %}
-          <div class="mt-3">
-            <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha|urlencode) }}" 
-               class="btn btn-sm btn-outline-warning w-100">
-               <i class="fas fa-download me-2"></i> Baixar
-            </a>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Seção 2: Gráficos -->
-  <div class="row mb-4">
-    <!-- Gráfico de Pedidos AnyMarket (30 dias) -->
-    <div class="col-xl-8 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="mb-0">
-            <i class="fas fa-chart-line text-info me-2"></i>
-            Evolução de Pedidos - Últimos 30 Dias
-          </h5>
-          <small class="text-muted">Período: {{ anymarket_stats.periodo if anymarket_stats.sucesso else '' }}</small>
-        </div>
-        <div class="card-body">
-          {% if anymarket_stats.sucesso and anymarket_stats.estatisticas.pedidos_por_dia %}
-            <canvas id="graficoPedidos30Dias" height="200"></canvas>
-          {% else %}
-            <div class="text-center py-5">
-              <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
-              <p class="text-muted">Sem dados de pedidos disponíveis</p>
-              {% if not anymarket_stats.token_configurado %}
-                <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-info mt-2">
-                  <i class="fas fa-key me-2"></i> Configurar Token
-                </a>
-              {% endif %}
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-
-    <!-- Status dos Pedidos -->
-    <div class="col-xl-4 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <h5 class="mb-0">
-            <i class="fas fa-chart-pie text-danger me-2"></i>
-            Distribuição por Status
-          </h5>
-          <small class="text-muted">Total: {{ anymarket_stats.total_pedidos if anymarket_stats.sucesso else 0 }}</small>
-        </div>
-        <div class="card-body">
-          {% if anymarket_stats.sucesso and anymarket_stats.estatisticas.status_distribuicao %}
-            <canvas id="graficoStatus" height="200"></canvas>
-          {% else %}
-            <div class="text-center py-5">
-              <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-              <p class="text-muted">Sem dados de status</p>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Seção 3: Top Produtos -->
-  {% if anymarket_stats.sucesso and anymarket_stats.estatisticas.top_produtos_quantidade %}
-  <div class="row mb-4">
-    <!-- Top Produtos por Quantidade -->
-    <div class="col-xl-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-0">
-                <i class="fas fa-medal text-warning me-2"></i>
-                Mais Vendidos (Quantidade)
-              </h5>
-              <small class="text-muted">Top 10 produtos</small>
-            </div>
-            <span class="badge bg-warning">{{ anymarket_stats.estatisticas.total_itens }} itens totais</span>
-          </div>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="bg-light">
-                <tr>
-                  <th width="40">#</th>
-                  <th>Produto</th>
-                  <th width="100" class="text-center">Quant.</th>
-                  <th width="120" class="text-end">Valor Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for produto in anymarket_stats.estatisticas.top_produtos_quantidade[:10] %}
-                <tr>
-                  <td class="text-center">
-                    <span class="badge bg-light text-dark">{{ loop.index }}</span>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light-warning rounded-circle d-flex align-items-center justify-content-center me-2">
-                        <i class="fas fa-box text-warning"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0 text-truncate" style="max-width: 200px;" title="{{ produto.nome }}">
-                          {{ produto.nome }}
-                        </h6>
-                        <small class="text-muted">SKU: {{ produto.sku }}</small>
-                      </div>
+    <!-- Cards de Resumo Rápido -->
+    <div class="row mb-4">
+        <!-- Sistema -->
+        <div class="col-xl-3 col-lg-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-cogs"></i>
                     </div>
-                  </td>
-                  <td class="text-center">
-                    <span class="badge bg-primary rounded-pill px-3 py-1">{{ produto.quantidade }}</span>
-                  </td>
-                  <td class="text-end">
-                    <span class="fw-bold text-success">R$ {{ "%.2f"|format(produto.valor_total) }}</span>
-                    <div class="small text-muted">R$ {{ "%.2f"|format(produto.preco_medio) }} cada</div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                    <h5 class="card-title">Processamentos</h5>
+                    <h2 class="text-primary mb-0">{{ processamentos_hoje|default(0) }}</h2>
+                    <p class="text-muted mb-0">Hoje</p>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- Planilhas -->
+        <div class="col-xl-3 col-lg-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h5 class="card-title">Última Planilha</h5>
+                    {% if ultima_planilha %}
+                    <h6 class="text-dark mb-1">{{ ultima_planilha|truncate(20) }}</h6>
+                    <p class="text-muted mb-0 small">{{ ultima_planilha_data|default('') }}</p>
+                    <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha|urlencode) }}" 
+                       class="btn btn-sm btn-outline-success mt-2">
+                       <i class="fas fa-download me-1"></i> Baixar
+                    </a>
+                    {% else %}
+                    <p class="text-muted mb-0">Nenhuma planilha</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- AnyMarket Status -->
+        <div class="col-xl-3 col-lg-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon bg-info bg-opacity-10 text-info">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h5 class="card-title">AnyMarket</h5>
+                    {% if anymarket_stats.sucesso %}
+                        <h2 class="text-info mb-0">Conectado</h2>
+                        <p class="text-muted mb-0">API configurada</p>
+                        <a href="{{ url_for('pedidos_anymarket') }}" class="btn btn-sm btn-outline-info mt-2">
+                            <i class="fas fa-external-link-alt me-1"></i> Ver Pedidos
+                        </a>
+                    {% else %}
+                        <p class="text-muted mb-0">Não configurado</p>
+                        <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-outline-info mt-2">
+                            <i class="fas fa-key me-1"></i> Configurar
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema Status -->
+        <div class="col-xl-3 col-lg-6 mb-4">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <div class="card-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h5 class="card-title">Sistema</h5>
+                    <div class="mt-2">
+                        <span class="badge bg-success">Online</span>
+                        <span class="badge bg-success ms-1">API OK</span>
+                        <span class="badge bg-success ms-1">BD OK</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-cog me-1"></i> Configurações
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Top Produtos por Valor -->
-    <div class="col-xl-6 mb-4">
-      <div class="card h-100">
-        <div class="card-header">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-0">
-                <i class="fas fa-trophy text-success me-2"></i>
-                Mais Rentáveis (Valor)
-              </h5>
-              <small class="text-muted">Top 10 produtos</small>
-            </div>
-            <span class="badge bg-success">R$ {{ "%.2f"|format(anymarket_stats.estatisticas.valor_total) }} totais</span>
-          </div>
-        </div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="bg-light">
-                <tr>
-                  <th width="40">#</th>
-                  <th>Produto</th>
-                  <th width="120" class="text-end">Valor Total</th>
-                  <th width="100" class="text-center">Quant.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for produto in anymarket_stats.estatisticas.top_produtos_valor[:10] %}
-                <tr>
-                  <td class="text-center">
-                    <span class="badge bg-light text-dark">{{ loop.index }}</span>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light-success rounded-circle d-flex align-items-center justify-content-center me-2">
-                        <i class="fas fa-gem text-success"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0 text-truncate" style="max-width: 200px;" title="{{ produto.nome }}">
-                          {{ produto.nome }}
-                        </h6>
-                        <small class="text-muted">SKU: {{ produto.sku }}</small>
-                      </div>
+    <!-- Menu Rápido -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Acesso Rápido</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('consultar_anymarket') }}" class="text-decoration-none">
+                                <div class="card border-0 bg-light hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-search fa-2x text-primary mb-3"></i>
+                                        <h6>Consultar Fotos</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('consultar_produto') }}" class="text-decoration-none">
+                                <div class="card border-0 bg-light hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-box fa-2x text-success mb-3"></i>
+                                        <h6>Consultar Produto</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('extrair_atributos') }}" class="text-decoration-none">
+                                <div class="card border-0 bg-light hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-filter fa-2x text-warning mb-3"></i>
+                                        <h6>Extrair Atributos</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('pedidos_anymarket') }}" class="text-decoration-none">
+                                <div class="card border-0 bg-light hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-shopping-cart fa-2x text-info mb-3"></i>
+                                        <h6>Pedidos</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                  </td>
-                  <td class="text-end">
-                    <span class="fw-bold text-success">R$ {{ "%.2f"|format(produto.valor_total) }}</span>
-                    <div class="small text-muted">R$ {{ "%.2f"|format(produto.preco_medio) }} cada</div>
-                  </td>
-                  <td class="text-center">
-                    <span class="badge bg-primary rounded-pill px-3 py-1">{{ produto.quantidade }}</span>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  {% elif anymarket_stats.sucesso and anymarket_stats.estatisticas.top_produtos_quantidade|length == 0 %}
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body text-center py-5">
-          <i class="fas fa-box fa-3x text-muted mb-3"></i>
-          <h5 class="text-muted">Nenhum produto encontrado nos pedidos</h5>
-          <p class="text-muted mb-0">Os pedidos podem não ter itens ou as informações dos produtos não estão disponíveis.</p>
-          <div class="mt-3">
+
+    <!-- Informação -->
+    <div class="row mt-4">
+        <div class="col-12">
             <div class="alert alert-info">
-              <i class="fas fa-info-circle me-2"></i>
-              Total de pedidos: {{ anymarket_stats.total_pedidos }} | 
-              Total de itens: {{ anymarket_stats.estatisticas.total_itens }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endif %}
-
-  <!-- Seção 4: Marketplaces -->
-{% if anymarket_stats.sucesso and anymarket_stats.estatisticas.marketplace_distribuicao %}
-<div class="row">
-  <div class="col-xl-12 mb-4">
-    <div class="card">
-      <div class="card-header">
-        <h5 class="mb-0">
-          <i class="fas fa-store text-primary me-2"></i>
-          Distribuição por Marketplace
-        </h5>
-        <small class="text-muted">Total: {{ anymarket_stats.total_pedidos }} pedidos</small>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-8">
-            <canvas id="graficoMarketplace" height="150"></canvas>
-          </div>
-          <div class="col-md-4">
-            <div class="list-group">
-              {% set colors = ['#4CAF50', '#2196F3', '#FF9800', '#E91E63', '#9C27B0'] %}
-              {% for marketplace, quantidade in anymarket_stats.estatisticas.marketplace_distribuicao.items()|sort(attribute='1', reverse=True) %}
-              <div class="list-group-item border-0">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <i class="fas fa-circle me-2" style="color: {{ colors[loop.index0 % colors|length] }}"></i>
-                    <span>{{ marketplace }}</span>
-                  </div>
-                  <div>
-                    <span class="badge bg-light text-dark">{{ quantidade }}</span>
-                    <small class="text-muted ms-2">
-                      ({{ "%.1f"|format(quantidade/anymarket_stats.total_pedidos*100) }}%)
-                    </small>
-                  </div>
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="alert-heading">Dashboard Simplificada</h6>
+                        <p class="mb-0">Para melhor performance, as análises detalhadas foram movidas para páginas específicas. Acesse o menu lateral para todas as funcionalidades.</p>
+                    </div>
                 </div>
-              </div>
-              {% endfor %}
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
-{% endif %}
 </div>
 
-<!-- Scripts para gráficos -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Função auxiliar para ciclo de cores
-//function cycle(arr, index) {
- //   return arr[index % arr.length];
-//}
-
 document.addEventListener('DOMContentLoaded', function() {
-  // Gráfico de Pedidos AnyMarket (30 dias)
-  {% if anymarket_stats.sucesso and anymarket_stats.estatisticas.pedidos_por_dia %}
-  const ctxPedidos30Dias = document.getElementById('graficoPedidos30Dias').getContext('2d');
-  const labels30Dias = {{ anymarket_stats.estatisticas.pedidos_por_dia|map(attribute='dia_semana')|list|tojson }};
-  const data30Dias = {{ anymarket_stats.estatisticas.pedidos_por_dia|map(attribute='quantidade')|list|tojson }};
-  
-  // Cria gradiente
-  const gradient = ctxPedidos30Dias.createLinearGradient(0, 0, 0, 200);
-  gradient.addColorStop(0, 'rgba(54, 162, 235, 0.8)');
-  gradient.addColorStop(1, 'rgba(54, 162, 235, 0.1)');
-  
-  new Chart(ctxPedidos30Dias, {
-    type: 'line',
-    data: {
-      labels: labels30Dias,
-      datasets: [{
-        label: 'Pedidos por dia',
-        data: data30Dias,
-        backgroundColor: gradient,
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 4
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1,
-          callbacks: {
-            label: function(context) {
-              return `Pedidos: ${context.raw}`;
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: 'rgba(0, 0, 0, 0.05)'
-          },
-          ticks: {
-            precision: 0
-          }
-        },
-        x: {
-          grid: {
-            display: false
-          }
-        }
-      }
-    }
-  });
-
-  // Gráfico de Status
-  const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
-  const statusLabels = {{ anymarket_stats.estatisticas.status_distribuicao.keys()|list|tojson }};
-  const statusData = {{ anymarket_stats.estatisticas.status_distribuicao.values()|list|tojson }};
-  const statusColors = {
-    'CONCLUDED': '#4CAF50',
-    'PENDING': '#FFC107',
-    'CANCELED': '#F44336',
-    'INVOICED': '#2196F3',
-    'PAID': '#9C27B0',
-    'SHIPPED': '#00BCD4',
-    'DELIVERED': '#8BC34A',
-    'DESCONHECIDO': '#9E9E9E'
-  };
-  
-  const backgroundColors = statusLabels.map(label => statusColors[label] || '#9E9E9E');
-  
-  new Chart(ctxStatus, {
-    type: 'doughnut',
-    data: {
-      labels: statusLabels,
-      datasets: [{
-        data: statusData,
-        backgroundColor: backgroundColors,
-        borderWidth: 2,
-        borderColor: '#fff'
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '70%',
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: {
-            padding: 20,
-            usePointStyle: true,
-            pointStyle: 'circle',
-            font: {
-              size: 11
-            }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.label || '';
-              const value = context.raw || 0;
-              const total = context.dataset.data.reduce((a, b) => a + b, 0);
-              const percentage = Math.round((value / total) * 100);
-              return `${label}: ${value} (${percentage}%)`;
-            }
-          }
-        }
-      }
-    }
-  });
-
-  // Gráfico de Marketplace
-  const ctxMarketplace = document.getElementById('graficoMarketplace').getContext('2d');
-const marketplaceLabels = {{ anymarket_stats.estatisticas.marketplace_distribuicao.keys()|list|tojson }};
-const marketplaceData = {{ anymarket_stats.estatisticas.marketplace_distribuicao.values()|list|tojson }};
-const marketplaceColors = ['#4CAF50', '#2196F3', '#FF9800', '#E91E63', '#9C27B0', '#00BCD4', '#FF5722', '#795548'];
-
-new Chart(ctxMarketplace, {
-    type: 'bar',
-    data: {
-        labels: marketplaceLabels,
-        datasets: [{
-            data: marketplaceData,
-            backgroundColor: marketplaceColors.slice(0, marketplaceLabels.length),
-            borderWidth: 0,
-            borderRadius: 6
-        }]
-    },
-    options: {
-        responsive: true,
-        indexAxis: 'y',
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            x: {
-                beginAtZero: true,
-                grid: {
-                    display: false
-                }
-            },
-            y: {
-                grid: {
-                    display: false
-                }
-            }
-        }
-    }
-});
-  {% endif %}
+    console.log('Dashboard carregada');
 });
 </script>
 {% endblock %}

@@ -74,61 +74,45 @@ def obter_ultima_planilha():
         app.logger.error(f"Erro em obter_ultima_planilha: {str(e)}")
         return None, None
     
-@app.route("/")
+@app.route('/')
 def home():
-    """Página inicial simplificada"""
     try:
-        # Dados básicos - sem consultas pesadas à API
-        processamentos_hoje = 0
-        hoje_sucesso = 0
-        hoje_erro = 0
+        stats = get_processing_stats()
+        ultima_planilha, ultima_planilha_data = obter_ultima_planilha()
         
-        # Verificar última planilha
-        ultima_planilha = None
-        ultima_planilha_data = None
+        # ========== MÉTRICAS ANYMARKET (ÚLTIMOS 30 DIAS) ==========
+        anymarket_stats = obter_pedidos_anymarket_30_dias()
         
-        # Verificar configuração do AnyMarket (sem fazer consulta real)
-        anymarket_stats = {
-            'sucesso': False,
-            'token_configurado': False,
-            'total_pedidos': 0,
-            'erro': 'Dashboard simplificada - Consulte a página de pedidos para detalhes'
-        }
-        
-        # Verificar se o token está configurado (sem fazer API call)
-        try:
-            from processamento.api_anymarket import obter_token_anymarket_seguro
-            token = obter_token_anymarket_seguro()
-            if token:
-                anymarket_stats['token_configurado'] = True
-                anymarket_stats['sucesso'] = True
-                anymarket_stats['total_pedidos'] = "N/D"
-        except:
-            pass
+        # ========== ESTATÍSTICAS DO SISTEMA ==========
+        from log_utils import obter_grafico_processos_7_dias
+        grafico_processos = obter_grafico_processos_7_dias()
         
         return render_template(
             'home.html',
-            processamentos_hoje=processamentos_hoje,
-            hoje_sucesso=hoje_sucesso,
-            hoje_erro=hoje_erro,
+            active_page='home',
+            total_processamentos=stats['total'],
+            processos_sucesso=stats['sucessos_total'],
+            processos_erro=stats['erros_total'],
+            processamentos_hoje=stats['hoje'],
+            hoje_sucesso=stats['sucessos_hoje'],
+            hoje_erro=stats['erros_hoje'],
+            ultima_execucao=stats['ultima'],
             ultima_planilha=ultima_planilha,
             ultima_planilha_data=ultima_planilha_data,
+            total_itens_sucesso=stats['total_itens_sucesso'],
+            total_itens_erro=stats['total_itens_erro'],
+            
+            # NOVAS VARIÁVEIS
             anymarket_stats=anymarket_stats,
-            page_title='Dashboard Simplificada'
+            grafico_processos=grafico_processos,
+            
+            now=datetime.now()
         )
-        
     except Exception as e:
-        # Em caso de erro, retorna página mínima
-        return render_template(
-            'home.html',
-            processamentos_hoje=0,
-            hoje_sucesso=0,
-            hoje_erro=0,
-            ultima_planilha=None,
-            ultima_planilha_data=None,
-            anymarket_stats={'sucesso': False, 'erro': str(e)},
-            page_title='Dashboard'
-        )
+        app.logger.error(f"Erro na rota home: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return render_template('error.html'), 500
 
 
 @app.route('/api/dashboard/atualizar-metricas')
