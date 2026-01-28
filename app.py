@@ -1506,6 +1506,20 @@ def excluir_fotos_lote_route():
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
    
 
+def limpar_moeda(valor):
+    if pd.isna(valor):
+        return None
+
+    valor = str(valor)
+
+    return (
+        valor
+        .replace("R$", "")
+        .replace(" ", "")
+        .replace(".", "")
+        .replace(",", ".")
+    )
+    
 @app.route("/preencher-planilha", methods=["GET", "POST"])
 def preencher_planilha():
     nome_arquivo_saida = None

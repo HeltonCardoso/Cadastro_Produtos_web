@@ -31,6 +31,33 @@ def reaplicar_validacoes(worksheet, validacoes):
     for dv in validacoes:
         worksheet.add_data_validation(dv)
 
+def limpar_moeda(valor):
+    if pd.isna(valor):
+        return None
+
+    valor = str(valor)
+
+    return (
+        valor
+        .replace("R$", "")
+        .replace(" ", "")
+        .replace(".", "")
+        .replace(",", ".")
+    )
+
+def ajustar_decimal(valor):
+    if pd.isna(valor):
+        return None
+
+    valor = str(valor).strip()
+
+    # Corrige decimal brasileiro
+    if "," in valor and "." not in valor:
+        valor = valor.replace(",", ".")
+
+    return valor
+
+
 def executar_processamento(planilha_origem, planilha_destino=None):
 
     inicio = datetime.now()
@@ -113,19 +140,20 @@ def executar_processamento(planilha_origem, planilha_destino=None):
 
         # 🔹 Corrige o erro de conversão de "VOLUMES"
         try:
-            volumes = int(float(row["VOLUMES"])) if pd.notna(row["VOLUMES"]) else 1
+            valor_volumes = ajustar_decimal(row["VOLUMES"])
+            volumes = int(float(valor_volumes)) if valor_volumes else 1
         except Exception:
             volumes = 1
 
         componentes = row["EANCOMPONENTES"]
         marca = row["MARCA"]
-        custo = row["CUSTO"]
-        preco_venda = row["DE"]
-        preco_promo = row["POR"]
+        custo = limpar_moeda(row["CUSTO"])
+        preco_venda = limpar_moeda(row["DE"])
+        preco_promo = limpar_moeda(row["POR"])
         fornecedor = row["FORNECEDOR"]
         outros = row["OUTROS"]
-        ipi = row["IPI"]
-        frete = row["FRETE"]
+        ipi = limpar_moeda(row["IPI"])
+        frete = limpar_moeda(row["FRETE"])
         ncm = row["NCM"]
         cod_forn = row["CODFORN"]
         categoria = row["CATEGORIA"]
@@ -178,7 +206,7 @@ def executar_processamento(planilha_origem, planilha_destino=None):
                 ])
 
         dados_sheets["PRECO"].append([
-            ean, fornecedor, custo, ipi, "", frete, row["CUSTOTOTAL"], preco_venda, preco_promo, preco_promo,
+            ean, fornecedor, custo, ipi, "", frete, limpar_moeda(row["CUSTOTOTAL"]), preco_venda, preco_promo, preco_promo,
             data_formatada, data_formatada_mais_20_anos, "", "F"
         ])
 

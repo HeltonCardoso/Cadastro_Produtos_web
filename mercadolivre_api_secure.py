@@ -42,21 +42,29 @@ class MercadoLivreAPISecure:
             return False
     
     def atualizar_manufacturing_time(self, mlb_id, manufacturing_time_days):
-        """Atualiza o manufacturing time de um anúncio"""
+        """Atualiza o manufacturing time de um anúncio - VERSÃO CORRIGIDA"""
         try:
             headers = self._get_headers()
+            
+            # 🔹 CORREÇÃO: Tratar dias=0 de forma especial
+            if manufacturing_time_days == 0:
+                value_name = ""  # String vazia para REMOVER o prazo
+                mensagem = "Prazo removido (sem prazo)"
+            else:
+                value_name = f"{manufacturing_time_days} dias"  # String normal para definir prazo
+                mensagem = f"Manufacturing Time atualizado para {manufacturing_time_days} dias"
             
             # Prepara os dados de atualização
             update_data = {
                 "sale_terms": [
                     {
                         "id": "MANUFACTURING_TIME",
-                        "value_name": f"{manufacturing_time_days} dias"
+                        "value_name": value_name
                     }
                 ]
             }
             
-            print(f"🔄 Atualizando MLB {mlb_id} - Manufacturing Time: {manufacturing_time_days} dias")
+            print(f"🔄 Atualizando MLB {mlb_id} - Manufacturing Time: {value_name if value_name else 'REMOVER PRAZO'}")
             
             response = requests.put(
                 f"{self.base_url}/items/{mlb_id}",
@@ -66,17 +74,25 @@ class MercadoLivreAPISecure:
             )
             
             if response.status_code == 200:
-                print(f"✅ Manufacturing Time atualizado com sucesso para {manufacturing_time_days} dias")
+                print(f"✅ {mensagem}")
                 return {
                     'sucesso': True,
-                    'mensagem': f'Manufacturing Time atualizado para {manufacturing_time_days} dias'
+                    'mensagem': mensagem,
+                    'dias': manufacturing_time_days,
+                    'detalhes': f'Valor enviado: "{value_name}"'
                 }
             else:
-                error_msg = f"Erro HTTP {response.status_code}"
+                error_msg = f"Erro HTTP {response.status_code}: {response.text[:200]}"
                 print(f"❌ {error_msg}")
+                
+                # 🔹 TENTATIVA ALTERNATIVA se a primeira falhar para dias=0
+                if manufacturing_time_days == 0 and response.status_code == 400:
+                    return self._tentar_abordagem_alternativa_remocao(mlb_id, headers)
+                
                 return {
                     'sucesso': False,
-                    'erro': error_msg
+                    'erro': error_msg,
+                    'dias': manufacturing_time_days
                 }
                 
         except Exception as e:
@@ -86,36 +102,124 @@ class MercadoLivreAPISecure:
                 'erro': str(e)
             }
     
+    def _tentar_abordagem_alternativa_remocao(self, mlb_id, headers):
+        """Tentativa alternativa para remover manufacturing time"""
+        try:
+            print(f"🔄 Tentando abordagem alternativa para MLB {mlb_id}...")
+            
+            # Primeiro busca os dados atuais para ver a estrutura
+            response_get = requests.get(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                timeout=10
+            )
+            
+            if response_get.status_code != 200:
+                return {'sucesso': False, 'erro': 'Não foi possível buscar dados do item'}
+            
+            dados_atuais = response_get.json()
+            print(f"📋 Dados atuais do MLB {mlb_id}:")
+            print(f"   - Sale terms: {dados_atuais.get('sale_terms', [])}")
+            
+            # Verifica se tem outros sale_terms além do manufacturing
+            sale_terms_atuais = dados_atuais.get('sale_terms', [])
+            outros_terms = []
+            
+            for term in sale_terms_atuais:
+                if term.get('id') != 'MANUFACTURING_TIME':
+                    outros_terms.append(term)  # Mantém os outros termos
+            
+            # Prepara update_data sem o MANUFACTURING_TIME
+            update_data = {}
+            if outros_terms:
+                # Mantém os outros termos e OMITE o MANUFACTURING_TIME
+                update_data["sale_terms"] = outros_terms
+                print(f"✅ Mantendo {len(outros_terms)} outros sale_terms")
+            else:
+                # Se não tem outros termos, envia array vazio
+                update_data["sale_terms"] = []
+                print(f"✅ Enviando sale_terms vazio")
+            
+            print(f"📤 Enviando (abordagem alternativa): {update_data}")
+            
+            response = requests.put(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                json=update_data,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                print(f"✅ Prazo removido com abordagem alternativa")
+                return {
+                    'sucesso': True,
+                    'mensagem': 'Prazo removido (sem prazo)',
+                    'dias': 0,
+                    'abordagem': 'alternativa'
+                }
+            else:
+                error_msg = f"Erro alternativo {response.status_code}: {response.text[:200]}"
+                print(f"❌ {error_msg}")
+                return {'sucesso': False, 'erro': error_msg}
+                
+        except Exception as e:
+            print(f"❌ Erro na abordagem alternativa: {str(e)}")
+            return {'sucesso': False, 'erro': str(e)}
+        
     def atualizar_multiplos_manufacturing(self, atualizacoes):
-        """Atualiza manufacturing time para múltiplos anúncios"""
+        """Atualiza manufacturing time para múltiplos anúncios - VERSÃO MELHORADA"""
         try:
             resultados = []
+            log_detalhado = []
             
-            for atualizacao in atualizacoes:
+            for idx, atualizacao in enumerate(atualizacoes):
                 mlb_id = atualizacao.get('mlb')
                 dias = atualizacao.get('dias')
                 
-                if not mlb_id or not dias:
-                    resultados.append({
+                if not mlb_id or dias is None:
+                    resultado = {
                         'mlb': mlb_id,
                         'sucesso': False,
                         'erro': 'MLB ou dias não fornecidos'
-                    })
+                    }
+                    resultados.append(resultado)
+                    log_detalhado.append(f"❌ {mlb_id}: MLB ou dias não fornecidos")
                     continue
                 
                 # Atualiza individualmente
+                log_detalhado.append(f"🔄 [{idx+1}/{len(atualizacoes)}] {mlb_id} → {dias} dias")
                 resultado = self.atualizar_manufacturing_time(mlb_id, dias)
                 resultado['mlb'] = mlb_id
                 resultados.append(resultado)
                 
-                # Delay para evitar rate limit
-                time.sleep(0.5)
+                if resultado.get('sucesso'):
+                    log_detalhado.append(f"   ✅ Sucesso: {resultado.get('mensagem', '')}")
+                else:
+                    log_detalhado.append(f"   ❌ Erro: {resultado.get('erro', '')}")
+                
+                # Delay para evitar rate limit (maior delay para remoções)
+                delay = 1.0 if dias == 0 else 0.5  # Mais tempo para remoções
+                time.sleep(delay)
+            
+            # Estatísticas finais
+            sucessos = len([r for r in resultados if r.get('sucesso')])
+            erros = len([r for r in resultados if not r.get('sucesso')])
+            removidos = len([r for r in resultados if r.get('sucesso') and r.get('dias') == 0])
+            
+            print(f"\n📊 RESUMO DA ATUALIZAÇÃO EM MASSA:")
+            print(f"   Total processados: {len(atualizacoes)}")
+            print(f"   Sucessos: {sucessos}")
+            print(f"   Erros: {erros}")
+            print(f"   Prazos removidos: {removidos}")
             
             return {
-                'sucesso': True,
+                'sucesso': sucessos > 0,
                 'resultados': resultados,
-                'total_atualizado': len([r for r in resultados if r.get('sucesso')]),
-                'total_erros': len([r for r in resultados if not r.get('sucesso')])
+                'total_atualizado': sucessos,
+                'total_erros': erros,
+                'prazos_removidos': removidos,
+                'mensagem': f'{sucessos} de {len(atualizacoes)} atualizados com sucesso',
+                'log_detalhado': log_detalhado
             }
             
         except Exception as e:
@@ -476,9 +580,14 @@ class MercadoLivreAPISecure:
 
     def excluir_anuncio_definitivo(self, mlb_id):
         """
-        Exclui permanentemente um anúncio seguindo o fluxo oficial de 2 etapas:
-        1. Fechar o anúncio (status: closed)
-        2. Marcar como deletado (deleted: true)
+        Exclui permanentemente um anúncio com tratamento inteligente para diferentes status.
+        
+        Fluxo correto:
+        1. Verificar status atual
+        2. Se under_review: tentar excluir diretamente (sem fechar)
+        3. Se active: pausar → fechar → marcar como deletado
+        4. Se paused: fechar → marcar como deletado
+        5. Se já closed: apenas marcar como deletado
         
         Documentação oficial: https://developers.mercadolivre.com.br/pt_br/atualiza-tuas-publicacoes
         """
@@ -486,8 +595,94 @@ class MercadoLivreAPISecure:
             headers = self._get_headers()
             print(f"🔍 INICIANDO EXCLUSÃO DEFINITIVA DO MLB: {mlb_id}")
             
-            # ETAPA 1: FECHAR O ANÚNCIO
-            print("📋 ETAPA 1: Alterando status para 'closed'...")
+            # ETAPA 0: VERIFICAR STATUS ATUAL
+            print("📋 ETAPA 0: Verificando status atual...")
+            response_status = requests.get(
+                f"{self.base_url}/items/{mlb_id}",
+                headers=headers,
+                timeout=10
+            )
+            
+            # Se o item já não existe
+            if response_status.status_code == 404:
+                print(f"✅ MLB {mlb_id} já não existe ou já foi excluído")
+                return {
+                    'sucesso': True,
+                    'mensagem': f'MLB {mlb_id} já não existe no sistema',
+                    'status_code': 404
+                }
+            
+            current_status = 'unknown'
+            if response_status.status_code == 200:
+                item_data = response_status.json()
+                current_status = item_data.get('status', 'unknown')
+                print(f"📊 Status atual: {current_status}")
+            
+            # CASO ESPECIAL 1: ANÚNCIO EM REVISÃO
+            if current_status == 'under_review':
+                print("⚠️  Anúncio em revisão - Tentando exclusão direta...")
+                
+                # Tenta excluir diretamente sem fechar
+                payload_excluir = {"deleted": True}
+                
+                response_excluir = requests.put(
+                    f"{self.base_url}/items/{mlb_id}",
+                    headers=headers,
+                    json=payload_excluir,
+                    timeout=30
+                )
+                
+                print(f"📥 Resposta exclusão direta: Status {response_excluir.status_code}")
+                
+                if response_excluir.status_code == 200:
+                    print(f"✅ Anúncio em revisão excluído com sucesso!")
+                    return {
+                        'sucesso': True,
+                        'mensagem': f'MLB {mlb_id} (em revisão) excluído permanentemente.',
+                        'status': current_status,
+                        'detalhes': response_excluir.json() if response_excluir.content else {}
+                    }
+                else:
+                    error_msg = self._extrair_mensagem_erro(response_excluir)
+                    print(f"❌ Não foi possível excluir anúncio em revisão: {error_msg}")
+                    return {
+                        'sucesso': False,
+                        'erro': f'Anúncio em revisão. Aguarde a análise do Mercado Livre para excluir: {error_msg}',
+                        'status': current_status
+                    }
+            
+            # CASO ESPECIAL 2: ANÚNCIO ATIVO - PRIMEIRO PAUSAR
+            if current_status == 'active':
+                print("📋 ETAPA 1 (ativo): Pausando anúncio primeiro...")
+                payload_pausar = {"status": "paused"}
+                
+                response_pausar = requests.put(
+                    f"{self.base_url}/items/{mlb_id}",
+                    headers=headers,
+                    json=payload_pausar,
+                    timeout=30
+                )
+                
+                print(f"📥 Resposta pausar: Status {response_pausar.status_code}")
+                
+                if response_pausar.status_code != 200:
+                    error_msg = self._extrair_mensagem_erro(response_pausar)
+                    print(f"❌ FALHA ao pausar anúncio ativo: {error_msg}")
+                    return {
+                        'sucesso': False,
+                        'erro': f'Erro ao pausar anúncio: {error_msg}',
+                        'etapa': 'pausar',
+                        'status': current_status
+                    }
+                
+                print("✅ Anúncio pausado com sucesso")
+                import time
+                time.sleep(2)
+            
+            # ETAPA 1 (GERAL): FECHAR O ANÚNCIO (closed)
+            # Nota: Para under_review pulamos esta etapa, para active já pausamos, 
+            # para paused vamos fechar direto
+            print("📋 ETAPA 1 (geral): Alterando status para 'closed'...")
             payload_fechar = {"status": "closed"}
             
             response_fechar = requests.put(
@@ -499,15 +694,43 @@ class MercadoLivreAPISecure:
             
             print(f"📥 Resposta ETAPA 1 (fechar): Status {response_fechar.status_code}")
             
+            # Se já estiver fechado, continua normalmente
             if response_fechar.status_code != 200:
                 error_msg = self._extrair_mensagem_erro(response_fechar)
-                print(f"❌ FALHA na ETAPA 1: {error_msg}")
-                return {
-                    'sucesso': False,
-                    'erro': f'Erro ao fechar anúncio: {error_msg}',
-                    'etapa': 1,
-                    'status_code': response_fechar.status_code
-                }
+                
+                # Verifica se já está fechado
+                if "already closed" in error_msg.lower() or current_status == 'closed':
+                    print("ℹ️  Anúncio já estava fechado, continuando...")
+                else:
+                    print(f"❌ FALHA na ETAPA 1: {error_msg}")
+                    
+                    # Tenta abordagem alternativa para anúncios pausados
+                    if current_status == 'paused':
+                        print("🔄 Tentando abordagem alternativa para anúncio pausado...")
+                        payload_alt = {
+                            "status": "closed",
+                            "deleted": False
+                        }
+                        response_fechar = requests.put(
+                            f"{self.base_url}/items/{mlb_id}",
+                            headers=headers,
+                            json=payload_alt,
+                            timeout=30
+                        )
+                        
+                        if response_fechar.status_code != 200:
+                            return {
+                                'sucesso': False,
+                                'erro': f'Erro ao fechar anúncio: {self._extrair_mensagem_erro(response_fechar)}',
+                                'etapa': 1
+                            }
+                    else:
+                        return {
+                            'sucesso': False,
+                            'erro': f'Erro ao fechar anúncio: {error_msg}',
+                            'etapa': 1,
+                            'status_code': response_fechar.status_code
+                        }
             
             print("✅ ETAPA 1 concluída: Anúncio fechado com sucesso")
             
@@ -541,6 +764,24 @@ class MercadoLivreAPISecure:
                     timeout=30
                 )
                 print(f"📥 Segunda tentativa: Status {response_excluir.status_code}")
+            
+            # Tratamento especial para erro 400 (bad request)
+            if response_excluir.status_code == 400:
+                error_msg = self._extrair_mensagem_erro(response_excluir)
+                print(f"⚠️  Erro 400 - Tentando abordagem alternativa: {error_msg}")
+                
+                # Tenta com payload diferente
+                payload_alt = {
+                    "deleted": True,
+                    "status": "closed"
+                }
+                response_excluir = requests.put(
+                    f"{self.base_url}/items/{mlb_id}",
+                    headers=headers,
+                    json=payload_alt,
+                    timeout=30
+                )
+                print(f"📥 Tentativa alternativa: Status {response_excluir.status_code}")
             
             if response_excluir.status_code == 200:
                 print(f"🎉 EXCLUSÃO DEFINITIVA CONCLUÍDA! MLB {mlb_id} removido permanentemente.")

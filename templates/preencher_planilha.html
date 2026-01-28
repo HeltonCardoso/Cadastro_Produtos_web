@@ -8,8 +8,8 @@
 {% block content %}
 <div class="alert alert-info">
     <i class="fas fa-info-circle me-2"></i>
-    Preenchimento automático da planilha de cadastro modelo ATHUS (via arquivo ou Google Sheets).
-    <strong>Modelo ATHUS fixo integrado no sistema.</strong>
+    Preenchimento automático da planilha de cadastro modelo ATHUS (via upload ou Google Sheets).
+  
 </div>
 
 <h2 class="mb-4">Preencher Planilha Athus</h2>
@@ -47,7 +47,7 @@
             <div class="mb-3">
                 <label for="arquivo_origem" class="form-label">Planilha Online (dados de origem):</label>
                 <input type="file" class="form-control" id="arquivo_origem" name="arquivo_origem" required>
-                <small class="text-muted">Envie apenas a planilha com os dados. O modelo ATHUS é fixo no sistema.</small>
+                <small class="text-muted">Envie apenas a planilha com os dados.</small>
             </div>
             <button id="btnProcessar" type="submit" class="btn btn-primary">PROCESSAR PLANILHA</button>
         </form>

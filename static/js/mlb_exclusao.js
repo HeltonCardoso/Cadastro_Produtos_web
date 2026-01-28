@@ -1,8 +1,187 @@
 // static/js/mlb_exclusao_simples.js
-// SISTEMA SIMPLIFICADO DE EXCLUSÃO - CORRIGIDO PARA MODAIS CUSTOMIZADOS
+// SISTEMA SIMPLIFICADO DE EXCLUSÃO - COM BARRA DE PROGRESSO
 
 let mlbAtual = null;
 let mlbsParaExcluir = [];
+let emProcessamento = false;
+
+// =========================================
+// BARRA DE PROGRESSO (NOVAS FUNÇÕES)
+// =========================================
+
+function iniciarProgresso(totalMLBs) {
+    console.log(`Iniciando progresso para ${totalMLBs} MLBs`);
+    
+    // Mostra container de progresso
+    const container = document.getElementById('progressoContainer');
+    if (container) {
+        container.style.display = 'block';
+    }
+    
+    // Esconde resumo anterior
+    const resumo = document.getElementById('resumoExclusao');
+    if (resumo) {
+        resumo.style.display = 'none';
+    }
+    
+    // Reseta a barra
+    atualizarProgresso(0, totalMLBs, 'Preparando exclusão...');
+    
+    // Desabilita botões durante processamento
+    const btnIniciar = document.getElementById('btnIniciarExclusao');
+    const arquivoInput = document.getElementById('arquivoExclusao');
+    
+    if (btnIniciar) {
+        btnIniciar.disabled = true;
+        btnIniciar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+    }
+    
+    if (arquivoInput) {
+        arquivoInput.disabled = true;
+    }
+    
+    // Não altera os botões ainda (mantém Cancelar e Processando...)
+    
+    emProcessamento = true;
+}
+
+function atualizarProgresso(processados, total, status, mlbAtual = '') {
+    const porcentagem = total > 0 ? Math.round((processados / total) * 100) : 0;
+    
+    console.log(`Progresso: ${processados}/${total} (${porcentagem}%) - ${status}`);
+    
+    // Atualiza barra
+    const progressoBar = document.getElementById('progressoBar');
+    const progressoTexto = document.getElementById('progressoTexto');
+    const progressoStatus = document.getElementById('progressoStatus');
+    const progressoContador = document.getElementById('progressoContador');
+    const progressoDetalhes = document.getElementById('progressoDetalhes');
+    
+    if (progressoBar) {
+        progressoBar.style.width = `${porcentagem}%`;
+    }
+    
+    if (progressoTexto) {
+        progressoTexto.textContent = `${porcentagem}%`;
+    }
+    
+    if (progressoStatus) {
+        progressoStatus.textContent = status;
+    }
+    
+    if (progressoContador) {
+        progressoContador.textContent = `${processados}/${total} processados`;
+    }
+    
+    // Adiciona detalhes se houver MLB atual
+    if (progressoDetalhes) {
+        if (mlbAtual && processados < total) {
+            progressoDetalhes.innerHTML = `
+                <div class="alert alert-info p-2 mb-0">
+                    <small><i class="fas fa-sync-alt fa-spin"></i> Processando: ${mlbAtual}</small>
+                </div>
+            `;
+        } else if (processados === total) {
+            progressoDetalhes.innerHTML = `
+                <div class="alert alert-success p-2 mb-0">
+                    <small><i class="fas fa-check"></i> Todos os MLBs processados</small>
+                </div>
+            `;
+        }
+    }
+}
+
+function finalizarProgresso(sucessos, erros, total, detalhes) {
+    console.log(`Finalizando: ${sucessos} sucessos, ${erros} erros de ${total} total`);
+    
+    // Remove animação da barra
+    const progressoBar = document.getElementById('progressoBar');
+    if (progressoBar) {
+        progressoBar.classList.remove('progress-bar-animated');
+        
+        // Atualiza para cor final
+        if (erros === 0) {
+            progressoBar.classList.remove('bg-danger', 'bg-warning');
+            progressoBar.classList.add('bg-success');
+        } else if (sucessos > 0) {
+            progressoBar.classList.remove('bg-danger', 'bg-success');
+            progressoBar.classList.add('bg-warning');
+        }
+        // Se falha total, mantém vermelho
+    }
+    
+    // Atualiza status final
+    const progressoStatus = document.getElementById('progressoStatus');
+    if (progressoStatus) {
+        if (erros === 0) {
+            progressoStatus.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> Concluído com sucesso!</span>';
+        } else if (sucessos === 0) {
+            progressoStatus.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle"></i> Falha completa</span>';
+        } else {
+            progressoStatus.innerHTML = `<span class="text-warning"><i class="fas fa-exclamation-circle"></i> Concluído com ${erros} erro(s)</span>`;
+        }
+    }
+    
+    // Atualiza contador final
+    const progressoContador = document.getElementById('progressoContador');
+    if (progressoContador) {
+        progressoContador.textContent = `Total: ${total} | Sucessos: ${sucessos} | Erros: ${erros}`;
+    }
+    
+    // Mostra resumo
+    const resumoExclusao = document.getElementById('resumoExclusao');
+    if (resumoExclusao) {
+        resumoExclusao.style.display = 'block';
+    }
+    
+    // Atualiza números do resumo
+    const totalSucesso = document.getElementById('totalSucesso');
+    const totalErros = document.getElementById('totalErros');
+    
+    if (totalSucesso) totalSucesso.textContent = sucessos;
+    if (totalErros) totalErros.textContent = erros;
+    
+    // Adiciona detalhes ao resumo
+    const resumoDetalhes = document.getElementById('resumoDetalhes');
+    if (resumoDetalhes && detalhes && detalhes.length > 0) {
+        let html = '<div class="mt-2"><small><strong>Detalhes:</strong></small><ul class="mb-0">';
+        
+        const itensParaMostrar = detalhes.slice(0, 5);
+        
+        itensParaMostrar.forEach(detalhe => {
+            const tipo = detalhe.sucesso ? 'text-success' : 'text-danger';
+            const icone = detalhe.sucesso ? 'fa-check' : 'fa-times';
+            const mensagem = detalhe.mensagem || detalhe.erro || 'Sem informações';
+            html += `<li class="${tipo}"><small><i class="fas ${icone}"></i> ${detalhe.mlb}: ${mensagem}</small></li>`;
+        });
+        
+        if (detalhes.length > 5) {
+            html += `<li class="text-muted"><small>... e mais ${detalhes.length - 5} itens</small></li>`;
+        }
+        
+        html += '</ul></div>';
+        resumoDetalhes.innerHTML = html;
+    }
+    
+    // 🔥 MOSTRA APENAS O BOTÃO FECHAR
+    mostrarBotaoFechar();
+    
+    // Limpa o estado de processamento
+    emProcessamento = false;
+    
+    // Remove o texto "Processando" da área de detalhes
+    const progressoDetalhes = document.getElementById('progressoDetalhes');
+    if (progressoDetalhes) {
+        progressoDetalhes.innerHTML = `
+            <div class="alert alert-success p-2 mb-0">
+                <small><i class="fas fa-check-circle"></i> Processo finalizado</small>
+            </div>
+        `;
+    }
+    
+    // Atualiza título da página
+    document.title = 'MLB Manager - Exclusão Concluída';
+}
 
 // =========================================
 // FUNÇÕES DO MODAL DE EXCLUSÃO
@@ -11,20 +190,113 @@ let mlbsParaExcluir = [];
 function abrirModalExclusaoPlanilha() {
     console.log('Abrindo modal de exclusão via planilha...');
     
-    // Limpa dados anteriores
+    // 🔴 RESET COMPLETO DE TODOS OS ESTADOS
+    
+    // 1. Limpa dados
     mlbsParaExcluir = [];
+    emProcessamento = false;
+    mlbAtual = null;
+    
+    // 2. Reseta campos do formulário
     document.getElementById('arquivoExclusao').value = '';
     document.getElementById('previewExclusao').innerHTML = '';
-    document.getElementById('btnIniciarExclusao').disabled = true;
     
-    // Mostra o modal (mesmo padrão dos outros modais)
+    // 3. Esconde barra de progresso
+    const progressoContainer = document.getElementById('progressoContainer');
+    if (progressoContainer) {
+        progressoContainer.style.display = 'none';
+    }
+    
+    // 4. Esconde resumo
+    const resumoExclusao = document.getElementById('resumoExclusao');
+    if (resumoExclusao) {
+        resumoExclusao.style.display = 'none';
+    }
+    
+    // 5. Reseta completamente a barra de progresso
+    const progressoBar = document.getElementById('progressoBar');
+    if (progressoBar) {
+        progressoBar.style.width = '0%';
+        progressoBar.classList.remove('bg-success', 'bg-warning', 'progress-bar-animated');
+        progressoBar.classList.add('bg-danger', 'progress-bar-animated');
+    }
+    
+    // 6. Reseta textos da barra
+    const progressoTexto = document.getElementById('progressoTexto');
+    if (progressoTexto) {
+        progressoTexto.textContent = '0%';
+    }
+    
+    const progressoStatus = document.getElementById('progressoStatus');
+    if (progressoStatus) {
+        progressoStatus.textContent = 'Aguardando início...';
+    }
+    
+    const progressoContador = document.getElementById('progressoContador');
+    if (progressoContador) {
+        progressoContador.textContent = '0/0 processados';
+    }
+    
+    // 7. Reseta detalhes do progresso
+    const progressoDetalhes = document.getElementById('progressoDetalhes');
+    if (progressoDetalhes) {
+        progressoDetalhes.innerHTML = '';
+    }
+    
+    // 8. Reseta resumo detalhado
+    const resumoDetalhes = document.getElementById('resumoDetalhes');
+    if (resumoDetalhes) {
+        resumoDetalhes.innerHTML = '';
+    }
+    
+    // 9. Reseta números do resumo
+    const totalSucesso = document.getElementById('totalSucesso');
+    const totalErros = document.getElementById('totalErros');
+    if (totalSucesso) totalSucesso.textContent = '0';
+    if (totalErros) totalErros.textContent = '0';
+    
+    // 🔴 10. RESETA OS BOTÕES IMPORTANTE!
+    restaurarBotoesOriginais();
+    
+    // 11. Habilita input de arquivo
+    const arquivoInput = document.getElementById('arquivoExclusao');
+    if (arquivoInput) {
+        arquivoInput.disabled = false;
+    }
+    
+    // 12. Reseta botão iniciar exclusão
+    const btnIniciar = document.getElementById('btnIniciarExclusao');
+    if (btnIniciar) {
+        btnIniciar.disabled = true; // Começa desabilitado
+        btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Exclusão';
+    }
+    
+    // 13. Mostra o modal
     document.getElementById('modalExclusaoPlanilha').style.display = 'block';
     
-    console.log('✅ Modal de exclusão aberto');
+    console.log('✅ Modal de exclusão aberto com reset completo');
 }
 
+
+
 function fecharModalExclusaoPlanilha() {
+    console.log('Fechando modal...');
+    
+    // Verifica se está em processamento
+    if (emProcessamento) {
+        if (!confirm('A exclusão ainda está em andamento. Deseja realmente cancelar?')) {
+            return;
+        }
+        emProcessamento = false;
+    }
+    
+    // Fecha o modal
     document.getElementById('modalExclusaoPlanilha').style.display = 'none';
+    
+    // 🔴 RESETA O MODAL APÓS FECHAR (após um pequeno delay)
+    setTimeout(resetarModalCompletamente, 300);
+    
+    console.log('✅ Modal fechado e resetado');
 }
 
 // =========================================
@@ -49,7 +321,6 @@ function processarPlanilhaExclusao(input) {
             if (extensao === 'txt' || extensao === 'csv') {
                 // Processa texto puro
                 const texto = e.target.result;
-                console.log('Texto do arquivo (primeiros 200 chars):', texto.substring(0, 200));
                 
                 mlbs = texto.split(/[\n,;]+/)
                     .map(m => m.trim())
@@ -61,12 +332,9 @@ function processarPlanilhaExclusao(input) {
                 
             } else if (extensao === 'xlsx' || extensao === 'xls') {
                 // Processa Excel
-                console.log('Processando Excel...');
                 const workbook = XLSX.read(e.target.result, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                
-                console.log('Dados brutos do Excel:', data.length, 'linhas');
                 
                 // Pega todos os valores da planilha e procura MLBs
                 mlbs = [];
@@ -127,26 +395,10 @@ function mostrarPreviewExclusao(mlbs) {
     </div>
     <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
         <table class="table table-sm table-striped">
-            <thead>
-                <tr><th>MLB</th><th>Status</th></tr>
-            </thead>
             <tbody>`;
+   
     
-    mlbs.slice(0, 20).forEach(mlb => {
-        html += `<tr>
-            <td><code>${mlb}</code></td>
-            <td><span class="badge bg-warning">Aguardando exclusão</span></td>
-        </tr>`;
-    });
     
-    if (mlbs.length > 20) {
-        html += `<tr>
-            <td colspan="2" class="text-muted text-center">
-                <i class="fas fa-ellipsis-h"></i>
-                ... e mais ${mlbs.length - 20} MLBs
-            </td>
-        </tr>`;
-    }
     
     html += `</tbody></table></div>`;
     
@@ -157,10 +409,10 @@ function mostrarPreviewExclusao(mlbs) {
 }
 
 // =========================================
-// EXCLUSÃO EM MASSA
+// EXCLUSÃO EM MASSA (ATUALIZADA COM PROGRESSO)
 // =========================================
 
-function iniciarExclusaoEmMassa() {
+async function iniciarExclusaoEmMassa() {
     console.log('Iniciando exclusão em massa...', mlbsParaExcluir.length, 'MLBs');
     
     if (mlbsParaExcluir.length === 0) {
@@ -173,47 +425,102 @@ function iniciarExclusaoEmMassa() {
         return;
     }
     
-    const btn = document.getElementById('btnIniciarExclusao');
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo...';
-    btn.disabled = true;
+    const total = mlbsParaExcluir.length;
+    let sucessos = 0;
+    let erros = 0;
+    const detalhes = [];
     
-    console.log('Enviando para API...');
+    // Inicia barra de progresso
+    iniciarProgresso(total);
     
-    fetch('/api/mercadolivre/excluir-definitivo', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ mlbs: mlbsParaExcluir })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Resposta da API:', data);
+    // Processa cada MLB individualmente
+    for (let i = 0; i < total; i++) {
+        const mlb = mlbsParaExcluir[i];
         
-        if (data.sucesso) {
-            mostrarMensagem(`✅ Exclusão concluída! Sucesso: ${data.sucessos || data.total_excluidos || 0}, Erros: ${data.erros || 0}`, 'success');
-            fecharModalExclusaoPlanilha();
+        // Atualiza progresso
+        atualizarProgresso(
+            i + 1,  // CORREÇÃO: i+1 para mostrar o atual como processado
+            total, 
+            `Excluindo MLB ${i + 1} de ${total}`,
+            mlb
+        );
+        
+        try {
+            // Faz a requisição para excluir
+            const response = await fetch('/api/mercadolivre/excluir-definitivo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mlb: mlb })
+            });
             
-            // Atualiza a página se estiver mostrando resultados
-            if (window.ultimosResultados && window.ultimosResultados.length > 0) {
-                buscarMLBs();
+            const resultado = await response.json();
+            
+            // Registra resultado
+            if (resultado.sucesso) {
+                sucessos++;
+                detalhes.push({
+                    mlb: mlb,
+                    sucesso: true,
+                    mensagem: resultado.mensagem || 'Excluído com sucesso'
+                });
+                
+                // Remove da visualização se estiver na tabela
+                removerDaTabela(mlb);
+                
+            } else {
+                erros++;
+                detalhes.push({
+                    mlb: mlb,
+                    sucesso: false,
+                    erro: resultado.erro || 'Erro desconhecido'
+                });
             }
-        } else {
-            mostrarMensagem(`❌ Erro: ${data.erro || 'Erro desconhecido'}`, 'error');
+            
+        } catch (error) {
+            erros++;
+            detalhes.push({
+                mlb: mlb,
+                sucesso: false,
+                erro: 'Erro de conexão: ' + error.message
+            });
         }
-    })
-    .catch(error => {
-        console.error('Erro na exclusão:', error);
-        mostrarMensagem('Erro de conexão com o servidor', 'error');
-    })
-    .finally(() => {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        console.log('Processo de exclusão finalizado');
-    });
+        
+        // Pequeno delay para não sobrecarregar a API (300ms)
+        if (i < total - 1) {
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+    }
+    
+    // CORREÇÃO: Garantir que o último item foi atualizado
+    atualizarProgresso(
+        total, 
+        total, 
+        'Processamento concluído',
+        ''
+    );
+    
+    // CORREÇÃO: Pequeno delay antes de finalizar
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Finaliza progresso
+    finalizarProgresso(sucessos, erros, total, detalhes);
+    
+    // Mostra mensagem de conclusão
+    if (erros === 0) {
+        mostrarMensagem(`✅ Exclusão concluída com sucesso! Todos os ${total} anúncios foram excluídos.`, 'success');
+    } else if (sucessos === 0) {
+        mostrarMensagem(`❌ Falha completa! Nenhum anúncio foi excluído.`, 'error');
+    } else {
+        mostrarMensagem(`⚠️ Exclusão parcialmente concluída! Sucesso: ${sucessos}, Erros: ${erros}`, 'warning');
+    }
+    
+    console.log('Processo de exclusão finalizado');
 }
 
 // =========================================
-// EXCLUSÃO INDIVIDUAL
+// EXCLUSÃO INDIVIDUAL (MANTIDA)
 // =========================================
 
 function excluirMLB(mlb) {
@@ -263,7 +570,7 @@ function excluirMLB(mlb) {
 }
 
 // =========================================
-// FUNÇÕES AUXILIARES
+// FUNÇÕES AUXILIARES (MANTIDAS)
 // =========================================
 
 function limparMLB(mlb) {
@@ -339,7 +646,7 @@ function mostrarMensagem(mensagem, tipo) {
 }
 
 // =========================================
-// INTEGRAÇÃO COM A TABELA
+// INTEGRAÇÃO COM A TABELA (MANTIDA)
 // =========================================
 
 function adicionarBotoesExclusao() {
@@ -369,11 +676,90 @@ function adicionarBotoesExclusao() {
 }
 
 // =========================================
-// INICIALIZAÇÃO
+// FUNÇÕES PARA CONTROLE DOS BOTÕES
+// =========================================
+
+function mostrarBotoesPreProcessamento(mostrar = true) {
+    const botoesPre = document.getElementById('botoesPreProcessamento');
+    const botoesPos = document.getElementById('botaoPosProcessamento');
+    
+    if (botoesPre) {
+        botoesPre.style.display = mostrar ? 'block' : 'none';
+    }
+    
+    if (botoesPos) {
+        botoesPos.style.display = mostrar ? 'none' : 'block';
+    }
+}
+
+function resetarModalCompletamente() {
+    console.log('🔄 Resetando modal completamente...');
+    
+    // Chama a mesma lógica da abertura, mas sem mostrar o modal
+    mlbsParaExcluir = [];
+    emProcessamento = false;
+    
+    const progressoBar = document.getElementById('progressoBar');
+    if (progressoBar) {
+        progressoBar.style.width = '0%';
+        progressoBar.classList.remove('bg-success', 'bg-warning');
+        progressoBar.classList.add('bg-danger');
+        progressoBar.classList.add('progress-bar-animated');
+    }
+    
+    const progressoTexto = document.getElementById('progressoTexto');
+    if (progressoTexto) {
+        progressoTexto.textContent = '0%';
+    }
+    
+    const progressoStatus = document.getElementById('progressoStatus');
+    if (progressoStatus) {
+        progressoStatus.textContent = 'Aguardando início...';
+    }
+    
+    restaurarBotoesOriginais();
+    
+    console.log('✅ Modal resetado completamente');
+}
+
+function mostrarBotaoFechar() {
+    const botoesPre = document.getElementById('botoesPreProcessamento');
+    const botoesPos = document.getElementById('botaoPosProcessamento');
+    
+    if (botoesPre) {
+        botoesPre.style.display = 'none';
+    }
+    
+    if (botoesPos) {
+        botoesPos.style.display = 'block';
+    }
+    
+    console.log('✅ Botão "Fechar" ativado');
+}
+
+function restaurarBotoesOriginais() {
+    const botoesPre = document.getElementById('botoesPreProcessamento');
+    const botoesPos = document.getElementById('botaoPosProcessamento');
+    
+    if (botoesPre) {
+        botoesPre.style.display = 'flex'; // ou 'block'
+        botoesPre.style.gap = '10px'; // para espaçamento
+    }
+    
+    if (botoesPos) {
+        botoesPos.style.display = 'none';
+    }
+    
+    console.log('🔁 Botões restaurados ao estado original');
+}
+
+
+// =========================================
+// INICIALIZAÇÃO (ATUALIZADA)
 // =========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Sistema de exclusão carregado');
+    console.log('✅ Sistema de exclusão carregado (com barra de progresso)');
     
     // Configurar evento para o input de arquivo
     const arquivoExclusao = document.getElementById('arquivoExclusao');
