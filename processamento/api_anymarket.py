@@ -9,20 +9,23 @@ logger = logging.getLogger(__name__)
 
 
 class AnyMarketAPI:
-    """Classe para interagir com a API do AnyMarket - VERSÃO CORRIGIDA"""
+    """Classe para interagir com a API do AnyMarket - VERSÃO COMPLETA"""
     
     def __init__(self, token: str):
         self.token = token
-        self.base_url = "https://api.anymarket.com.br/v2"  # URL CORRETA
+        self.base_url = "https://api.anymarket.com.br/v2"
         self.headers = {
             "Content-Type": "application/json",
-            "gumgaToken": token  # ✅ APENAS gumgaToken NO HEADER
+            "gumgaToken": token
         }
     
+    # ======================================================
+    # MÉTODOS DE FOTOS (já existentes)
+    # ======================================================
+    
     def buscar_fotos_produto(self, product_id: str) -> Dict[str, Any]:
-        """Busca fotos de um produto específico - VERSÃO CORRIGIDA"""
+        """Busca fotos de um produto específico"""
         try:
-            # URL CORRETA com endpoint correto
             url = f"{self.base_url}/products/{product_id}/images"
             logger.info(f"Consultando API AnyMarket - Produto: {product_id}")
             
@@ -74,15 +77,13 @@ class AnyMarketAPI:
             }
 
     def _processar_fotos_v2(self, dados: list) -> list:
-        """Processa os dados das fotos da NOVA API - VERSÃO CORRIGIDA"""
+        """Processa os dados das fotos da API"""
         fotos_processadas = []
         
         for i, foto in enumerate(dados):
             print(f"=== DEBUG FOTO {i} ===")
             print(f"Campos disponíveis: {list(foto.keys())}")
             
-            # ✅ CORREÇÃO: Usa a URL correta da nova API
-            # Prioridade: url > originalImage > standardUrl > thumbnailUrl
             url_imagem = (
                 foto.get("url") or 
                 foto.get("originalImage") or 
@@ -97,10 +98,9 @@ class AnyMarketAPI:
                 "main": foto.get("main", False),
                 "type": foto.get("type", ""),
                 "url": url_imagem,
-                "original": url_imagem,  # Campo compatível com template
+                "original": url_imagem,
                 "status": "disponivel" if url_imagem else "indisponivel",
                 "debug_campos": list(foto.keys()),
-                # Novos campos disponíveis
                 "thumbnailUrl": foto.get("thumbnailUrl"),
                 "lowResolutionUrl": foto.get("lowResolutionUrl"),
                 "standardUrl": foto.get("standardUrl"),
@@ -120,14 +120,78 @@ class AnyMarketAPI:
         
         return fotos_processadas
 
-    def _processar_fotos(self, dados: list) -> list:
-        """Mantém método antigo para compatibilidade"""
-        return self._processar_fotos_v2(dados)
-
-    def excluir_foto(self, product_id: str, photo_id: str) -> Dict[str, Any]:
-        """Exclui uma foto específica de um produto - VERSÃO CORRIGIDA"""
+    # ======================================================
+    # NOVO MÉTODO: Buscar canais de transmissão
+    # ======================================================
+    
+    def buscar_canais_transmissao(self, partner_id: str = None) -> Dict[str, Any]:
+        """
+        Busca os canais/marketplaces com transmissões criadas
+        Endpoint: /skus/marketplaces
+        """
         try:
-            # URL CORRETA
+            url = f"{self.base_url}/skus/marketplaces"
+            
+            params = {}
+            if partner_id:
+                params['partnerID'] = partner_id
+            
+            logger.info(f"Consultando canais de transmissão - PartnerID: {partner_id}")
+            
+            print(f"🔍 Fazendo requisição para: {url}")
+            print(f"📋 Headers: {self.headers}")
+            print(f"📋 Params: {params}")
+            
+            response = requests.get(url, headers=self.headers, params=params, timeout=60)
+            
+            resultado = {
+                "sucesso": response.status_code == 200,
+                "status_code": response.status_code,
+                "timestamp": datetime.now().isoformat(),
+                "url_consultada": url,
+                "params": params
+            }
+            
+            print(f"📡 Resposta da API: {response.status_code}")
+            
+            if response.status_code == 200:
+                dados = response.json()
+                print(f"📊 Dados recebidos: {len(dados)} canais")
+                resultado["dados"] = dados
+                resultado["quantidade"] = len(dados)
+                logger.info(f"Consulta bem-sucedida - {resultado['quantidade']} canais encontrados")
+            elif response.status_code == 401:
+                resultado["erro"] = "Token inválido ou não autorizado"
+                resultado["dados"] = []
+                logger.error("Erro 401 - Token inválido")
+            elif response.status_code == 404:
+                resultado["erro"] = "Endpoint não encontrado"
+                resultado["dados"] = []
+                logger.error("Erro 404 - Endpoint não encontrado")
+            else:
+                resultado["erro"] = f"Erro HTTP {response.status_code}"
+                resultado["dados"] = []
+                resultado["detalhes_erro"] = response.text[:500]
+                logger.error(f"Erro na consulta: {response.status_code} - {response.text}")
+            
+            return resultado
+            
+        except Exception as e:
+            logger.error(f"Erro inesperado: {str(e)}")
+            return {
+                "sucesso": False,
+                "erro": f"Erro inesperado: {str(e)}",
+                "dados": [],
+                "timestamp": datetime.now().isoformat()
+            }
+
+    # ======================================================
+    # MÉTODOS DE EXCLUSÃO (já existentes)
+    # ======================================================
+    
+    def excluir_foto(self, product_id: str, photo_id: str) -> Dict[str, Any]:
+        """Exclui uma foto específica de um produto"""
+        try:
             url = f"{self.base_url}/products/{product_id}/images/{photo_id}"
             logger.info(f"Excluindo foto - Produto: {product_id}, Foto: {photo_id}")
             
@@ -166,7 +230,7 @@ class AnyMarketAPI:
             }
 
     def excluir_fotos_planilha(self, caminho_planilha: str) -> Dict[str, Any]:
-        """Exclui fotos baseado em uma planilha Excel - VERSÃO CORRIGIDA"""
+        """Exclui fotos baseado em uma planilha Excel"""
         try:
             import pandas as pd
             
@@ -212,11 +276,11 @@ class AnyMarketAPI:
 
 
 # ======================================================
-# 🔹 Funções globais acessíveis para import no app.py
+# FUNÇÕES GLOBAIS (ACESSÍVEIS PARA IMPORT)
 # ======================================================
 
 def consultar_api_anymarket(product_id: str, token: str = None) -> Dict[str, Any]:
-    """Consulta fotos do produto na API AnyMarket - VERSÃO CORRIGIDA"""
+    """Consulta fotos do produto na API AnyMarket"""
     if not token:
         try:
             token = obter_token_anymarket_seguro()
@@ -226,21 +290,41 @@ def consultar_api_anymarket(product_id: str, token: str = None) -> Dict[str, Any
     api = AnyMarketAPI(token)
     return api.buscar_fotos_produto(product_id)
 
+
+def consultar_canais_transmissao(partner_id: str = None, token: str = None) -> Dict[str, Any]:
+    """
+    Consulta canais de transmissão do AnyMarket
+    Endpoint: /skus/marketplaces
+    """
+    if not token:
+        try:
+            token = obter_token_anymarket_seguro()
+            print(f"✅ Token obtido com sucesso: {token[:20]}...")
+        except Exception as e:
+            print(f"❌ Erro ao obter token: {str(e)}")
+            raise ValueError("Token do AnyMarket não configurado. Configure em /configuracoes/tokens")
+    
+    api = AnyMarketAPI(token)
+    return api.buscar_canais_transmissao(partner_id)
+
+
 def excluir_foto_anymarket(product_id: str, photo_id: str, token: str = None) -> Dict[str, Any]:
-    """Exclui foto do produto - VERSÃO CORRIGIDA"""
+    """Exclui foto do produto"""
     if not token:
         token = obter_token_anymarket_seguro()
     
     api = AnyMarketAPI(token)
     return api.excluir_foto(product_id, photo_id)
 
+
 def excluir_fotos_planilha_anymarket(caminho_planilha: str, token: str = None) -> Dict[str, Any]:
-    """Exclui fotos em lote - VERSÃO CORRIGIDA"""
+    """Exclui fotos em lote"""
     if not token:
         token = obter_token_anymarket_seguro()
     
     api = AnyMarketAPI(token)
     return api.excluir_fotos_planilha(caminho_planilha)
+
 
 def obter_token_anymarket_seguro() -> str:
     """
@@ -258,6 +342,7 @@ def obter_token_anymarket_seguro() -> str:
         # Primeiro tenta a estrutura nova: {"anymarket": {"token": ...}}
         token_data = tokens.get('anymarket')
         if token_data and token_data.get('token'):
+            print(f"✅ Token encontrado na estrutura nova")
             return token_data['token']
         
         # Se não encontrar, procura em estrutura antiga com IDs aleatórios
@@ -273,39 +358,9 @@ def obter_token_anymarket_seguro() -> str:
     except Exception as e:
         raise ValueError(f"Erro ao obter token: {str(e)}")
 
-# Função de teste para verificar a nova API
-def testar_nova_api(product_id="347730803"):
-    """Testa a conexão com a nova API"""
-    try:
-        token = obter_token_anymarket_seguro()
-        print(f"🔑 Token obtido: {token[:20]}...")
-        
-        api = AnyMarketAPI(token)
-        
-        # Testa com um produto conhecido
-        resultado = api.buscar_fotos_produto(product_id)
-        print("=== TESTE NOVA API ===")
-        print(f"Sucesso: {resultado['sucesso']}")
-        print(f"Status: {resultado['status_code']}")
-        print(f"Fotos encontradas: {resultado.get('quantidade_fotos', 0)}")
-        
-        if resultado['sucesso'] and resultado.get('dados'):
-            for i, foto in enumerate(resultado['dados'][:3]):  # Mostra apenas 3 primeiras
-                print(f"Foto {i+1}: ID={foto['id']}, Principal={foto['main']}, URL={foto['url'][:50]}...")
-        elif resultado.get('erro'):
-            print(f"❌ Erro: {resultado['erro']}")
-        
-        return resultado
-        
-    except Exception as e:
-        print(f"❌ Erro no teste: {str(e)}")
-        return None
-# ======================================================
-# 🔹 Funções Para exibir produtos
-# ======================================================
 
 def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
-    """Busca produto por SKU - VERSÃO CORRIGIDA COM PARÂMETRO CERTO"""
+    """Busca produto por SKU"""
     try:
         if not token:
             token = obter_token_anymarket_seguro()
@@ -315,11 +370,8 @@ def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
             "gumgaToken": token
         }
         
-        # URL com o parâmetro CORRETO: sku=
         url = "https://api.anymarket.com.br/v2/products"
-        params = {
-            'sku': sku  # ✅ PARÂMETRO CORRETO!
-        }
+        params = {'sku': sku}
         
         print(f"🔍 Buscando produto com SKU: {sku}")
         print(f"🌐 URL: {url}?sku={sku}")
@@ -335,10 +387,9 @@ def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
             print(f"📦 Produtos encontrados: {len(produtos)}")
             
             if produtos:
-                produto = produtos[0]  # Pega o primeiro produto
+                produto = produtos[0]
                 print(f"✅ PRODUTO ENCONTRADO: {produto.get('title', 'Sem título')}")
                 
-                # Encontra o SKU específico nos SKUs do produto
                 for sku_info in produto.get('skus', []):
                     if sku_info.get('partnerId') == sku:
                         print(f"🎯 SKU ESPECÍFICO ENCONTRADO: {sku}")
@@ -349,9 +400,8 @@ def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
                             'tipo_busca': 'sku_direto'
                         }
                 
-                # Se não encontrou o SKU específico, retorna o primeiro produto mesmo
                 if produto.get('skus'):
-                    print(f"⚠️  SKU não encontrado, mas produto sim. Usando primeiro SKU: {produto['skus'][0].get('partnerId')}")
+                    print(f"⚠️ SKU não encontrado, mas produto sim. Usando primeiro SKU: {produto['skus'][0].get('partnerId')}")
                     return {
                         'sucesso': True,
                         'produto': produto,
@@ -382,24 +432,33 @@ def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:
             'sucesso': False,
             'erro': f'Erro ao buscar produto: {str(e)}'
         }
-    
-def buscar_produtos_com_filtros(self, filtros: Dict = None, limite: int = 50) -> Dict[str, Any]:
-        """Busca produtos com filtros específicos"""
-        url = f"{self.base_url}/products"
-        params = {
-            'limit': limite,
-            'offset': 0
-        }
+
+
+def testar_nova_api(product_id="347730803"):
+    """Testa a conexão com a nova API"""
+    try:
+        token = obter_token_anymarket_seguro()
+        print(f"🔑 Token obtido: {token[:20]}...")
         
-        if filtros:
-            params.update(filtros)
+        api = AnyMarketAPI(token)
         
-        return self._fazer_requisicao('GET', url, params=params)
-    
-def buscar_produto_por_id(self, product_id: str) -> Dict[str, Any]:
-        """Busca produto por ID específico"""
-        url = f"{self.base_url}/products/{product_id}"
-        return self._fazer_requisicao('GET', url)
+        resultado = api.buscar_fotos_produto(product_id)
+        print("=== TESTE NOVA API ===")
+        print(f"Sucesso: {resultado['sucesso']}")
+        print(f"Status: {resultado['status_code']}")
+        print(f"Fotos encontradas: {resultado.get('quantidade_fotos', 0)}")
+        
+        if resultado['sucesso'] and resultado.get('dados'):
+            for i, foto in enumerate(resultado['dados'][:3]):
+                print(f"Foto {i+1}: ID={foto['id']}, Principal={foto['main']}, URL={foto['url'][:50]}...")
+        elif resultado.get('erro'):
+            print(f"❌ Erro: {resultado['erro']}")
+        
+        return resultado
+        
+    except Exception as e:
+        print(f"❌ Erro no teste: {str(e)}")
+        return None
 
 
 # Teste rápido se executado diretamente

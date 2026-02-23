@@ -1,0 +1,931 @@
+<!-- templates/canais_transmissao.html -->
+{% extends "base.html" %}
+
+{% block title %}Canais de Transmissão - AnyMarket{% endblock %}
+
+{% block page_title %}Canais de Transmissão - AnyMarket{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<style>
+    .channel-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    .channel-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .channel-header {
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        position: relative;
+    }
+    .channel-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    .channel-body {
+        padding: 15px;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .info-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    .info-value {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    .badge-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .badge-active {
+        background: #d4edda;
+        color: #155724;
+    }
+    .badge-inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .badge-marketplace {
+        background: #e9ecef;
+        color: #495057;
+        padding: 3px 8px;
+        border-radius: 15px;
+        font-size: 11px;
+        margin-right: 5px;
+    }
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .stats-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #667eea;
+    }
+    .stats-label {
+        color: #6c757d;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .filters-section {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    .marketplace-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+    .nav-tabs .nav-link {
+        color: #495057;
+        font-weight: 500;
+        border: none;
+        padding: 10px 20px;
+    }
+    .nav-tabs .nav-link.active {
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+        background: transparent;
+    }
+    .nav-tabs .nav-link i {
+        margin-right: 8px;
+    }
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .empty-state i {
+        font-size: 64px;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+    .empty-state h5 {
+        color: #495057;
+        margin-bottom: 10px;
+    }
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+    .token-info {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-left: 4px solid #667eea;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Mensagens Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' or category == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Informações do Token -->
+    <div class="token-info">
+        <div class="row align-items-center">
+         <!--   <div class="col-md-8">
+                <i class="fas fa-shield-alt text-primary me-2"></i>
+                <strong>Status do Token:</strong>
+                {% if token_configurado %}
+                    <span class="badge bg-success ms-2">Configurado</span>
+                    {% if token_preview %}
+                        <code class="ms-3 text-muted">{{ token_preview }}</code>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-danger ms-2">Não configurado</span>
+                    <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-outline-primary ms-3">
+                        <i class="fas fa-cog me-1"></i>Configurar Token
+                    </a>
+                {% endif %}
+            </div> 
+            <div class="col-md-4 text-end">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Endpoint: /skus/marketplaces
+                </small>
+            </div>
+        </div>
+    </div>-->
+
+    <!-- Formulário de Busca -->
+    <div class="filters-section">
+        <form method="GET" action="{{ url_for('canais_transmissao') }}" id="searchForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-id-card me-1"></i> Partner ID
+                    </label>
+                    <input type="text" 
+                           class="form-control form-control-lg" 
+                           id="partner_id" 
+                           name="partner_id" 
+                           placeholder="Ex: SV5657675" 
+                           value="{{ partner_id or '' }}"
+                           required>
+                    <small class="text-muted">Digite o Partner ID fornecido pelo AnyMarket</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Filtrar por Status</label>
+                    <select class="form-select" id="filterStatus">
+                        <option value="todos">Todos</option>
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="btnBuscar">
+                            <i class="fas fa-search me-2"></i> Buscar
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="exportarCanais()" 
+                                {% if not dados %}disabled{% endif %} title="Exportar para CSV">
+                            <i class="fas fa-download me-1"></i> CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Indicador de Carregamento -->
+    <div id="loadingIndicator" style="display: none;" class="text-center my-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-3 fw-bold">Consultando API AnyMarket...</p>
+        <p class="text-muted">Isso pode levar alguns segundos</p>
+    </div>
+
+    <!-- Cards de Estatísticas (só aparece se houver dados) -->
+    {% if dados %}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-store fa-2x text-primary opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="stats-number" id="totalCanais">{{ stats.total_canais }}</div>
+                        <div class="stats-label">Total de Canais</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle fa-2x text-success opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="stats-number" id="totalAtivos">{{ stats.total_ativos }}</div>
+                        <div class="stats-label">Canais Ativos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-times-circle fa-2x text-danger opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="stats-number" id="totalInativos">{{ stats.total_inativos }}</div>
+                        <div class="stats-label">Canais Inativos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-percent fa-2x text-info opacity-75"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="stats-number" id="percentualAtivos">
+                            {% if stats.total_canais > 0 %}
+                                {{ ((stats.total_ativos / stats.total_canais) * 100)|round|int }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </div>
+                        <div class="stats-label">% Ativos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Abas de Visualização -->
+    <ul class="nav nav-tabs mb-4" id="viewTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if dados %}active{% endif %}" id="cards-tab" data-bs-toggle="tab" data-bs-target="#cards" type="button" role="tab">
+                <i class="fas fa-th-large"></i> Cards
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab">
+                <i class="fas fa-table"></i> Tabela
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab">
+                <i class="fas fa-chart-bar"></i> Estatísticas
+            </button>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content" id="viewTabsContent">
+        <!-- Aba Cards -->
+        <div class="tab-pane fade {% if dados %}show active{% endif %}" id="cards" role="tabpanel">
+            {% if dados %}
+                <div class="row" id="cardsContainer">
+                    {% for canal in dados %}
+                    <div class="col-xl-3 col-lg-4 col-md-6 mb-4 canal-item" 
+                        data-marketplace="{{ canal.marketPlace or '' }}" 
+                        data-marketplace-id="{{ canal.id or '' }}"
+                        data-status="{{ 'ativo' if canal.publicationStatus == 'PUBLISHED' else 'inativo' }}">
+                        <div class="channel-card">
+                            <div class="channel-header">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="channel-icon">
+                                        {% if 'MERCADO_LIVRE' in canal.marketPlace %}
+                                            <i class="fab fa-mercadolibre"></i>
+                                        {% elif 'SHOPEE' in canal.marketPlace %}
+                                            <i class="fas fa-shopping-bag"></i>
+                                        {% elif 'MAGAZINE' in canal.marketPlace %}
+                                            <i class="fas fa-store"></i>
+                                        {% else %}
+                                            <i class="fas fa-store-alt"></i>
+                                        {% endif %}
+                                    </div>
+                                    <span class="badge {{ 'badge-active' if canal.publicationStatus == 'PUBLISHED' else 'badge-inactive' }}">
+                                        {{ canal.publicationStatus or 'Desconhecido' }}
+                                    </span>
+                                </div>
+                                <h5 class="mt-2 mb-0 text-truncate" title="{{ canal.marketPlace or 'Marketplace' }}">
+                                    {{ canal.accountName or canal.marketPlace or 'Marketplace' }}
+                                </h5>
+                                <small>ID: {{ canal.id or 'N/A' }}</small>
+                            </div>
+                            <div class="channel-body">
+                                <div class="info-row">
+                                    <span class="info-label">Marketplace:</span>
+                                    <span class="info-value">{{ canal.marketPlace or 'N/A' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">SKU:</span>
+                                    <span class="info-value">{{ canal.skuInMarketplace or 'N/A' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">ID Marketplace:</span>
+                                    <span class="info-value"><small>{{ canal.idInMarketplace or 'N/A' }}</small></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Status:</span>
+                                    <span class="info-value">{{ canal.marketplaceStatus or 'N/A' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Preço:</span>
+                                    <span class="info-value">R$ {{ "%.2f"|format(canal.price|float) if canal.price else 'N/A' }}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Transmissão:</span>
+                                    <span class="info-value">
+                                        <span class="badge {{ 'bg-success' if canal.transmissionStatus == 'OK' else 'bg-warning' }}">
+                                            {{ canal.transmissionStatus or 'N/A' }}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-info flex-grow-1" onclick="verDetalhes('{{ canal.id }}')">
+                                        <i class="fas fa-eye"></i> Detalhes
+                                    </button>
+                                    {% if canal.permalink %}
+                                    <a href="{{ canal.permalink }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ver no Marketplace">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-store-alt"></i>
+                    <h5>Nenhum canal encontrado</h5>
+                    <p>
+                        {% if partner_id %}
+                            Nenhum canal encontrado para o Partner ID <strong>"{{ partner_id }}"</strong>
+                        {% else %}
+                            Digite um Partner ID e clique em "Buscar"
+                        {% endif %}
+                    </p>
+                    {% if not token_configurado %}
+                    <a href="{{ url_for('configurar_tokens') }}" class="btn btn-primary">
+                        <i class="fas fa-cog me-2"></i>Configurar Token
+                    </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Aba Tabela -->
+        <div class="tab-pane fade" id="table" role="tabpanel">
+            {% if dados %}
+                <div class="table-responsive">
+                    <table id="canaisTable" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Conta</th>
+                                <th>Marketplace</th>
+                                <th>SKU</th>
+                                <th>ID Marketplace</th>
+                                <th>Status</th>
+                                <th>Transmissão</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for canal in dados %}
+                            <tr data-id="{{ canal.id }}">
+                                <td><code>{{ canal.id }}</code></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="marketplace-logo me-2">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                        {{ canal.accountName or 'N/A' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ canal.marketPlace or 'N/A' }}</span>
+                                </td>
+                                <td><code>{{ canal.skuInMarketplace or 'N/A' }}</code></td>
+                                <td><small>{{ canal.idInMarketplace or 'N/A' }}</small></td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if canal.publicationStatus == 'PUBLISHED' else 'bg-warning' }}">
+                                        {{ canal.publicationStatus or 'N/A' }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">{{ canal.marketplaceStatus or '' }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if canal.transmissionStatus == 'OK' else 'bg-secondary' }}">
+                                        {{ canal.transmissionStatus or 'N/A' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if canal.price %}
+                                        R$ {{ "%.2f"|format(canal.price|float) }}
+                                        {% if canal.discountPrice and canal.discountPrice != canal.price %}
+                                            <br><small class="text-success">R$ {{ "%.2f"|format(canal.discountPrice|float) }}</small>
+                                        {% endif %}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" onclick="verDetalhes('{{ canal.id }}')" title="Detalhes">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        {% if canal.permalink %}
+                                        <a href="{{ canal.permalink }}" target="_blank" class="btn btn-outline-primary" title="Ver no Marketplace">
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-table"></i>
+                    <h5>Nenhum dado para exibir</h5>
+                    <p>Realize uma busca para visualizar os canais em formato de tabela</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Aba Estatísticas -->
+        <div class="tab-pane fade" id="stats" role="tabpanel">
+            {% if dados and dados|length > 0 %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Distribuição por Marketplace</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="marketplaceChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Status dos Canais</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="statusChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-chart-bar"></i>
+                    <h5>Nenhuma estatística disponível</h5>
+                    <p>Carregue os canais para visualizar gráficos e estatísticas</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detalhesModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Detalhes do Canal
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                        Carregando...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dados recebidos do backend
+    const canaisData = {{ dados | tojson | safe if dados else '[]' }};
+    const partnerId = {{ partner_id | tojson | safe if partner_id else '""' }};
+
+    $(document).ready(function() {
+        console.log("🔍 Página carregada. Dados:", canaisData.length, "canais");
+        console.log("📋 Partner ID:", partnerId);
+
+        // Inicializar DataTable se houver dados
+        {% if dados %}
+            if ($('#canaisTable tbody tr').length > 0) {
+                $('#canaisTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    },
+                    pageLength: 10,
+                    order: [[0, 'asc']]
+                });
+            }
+            
+            // Inicializar gráficos
+            if (canaisData.length > 0) {
+                setTimeout(inicializarGraficos, 100);
+            }
+        {% endif %}
+        
+        // Mostrar loading ao enviar formulário
+        $('#searchForm').on('submit', function() {
+            $('#btnBuscar').prop('disabled', true);
+            $('#btnBuscar').html('<span class="spinner-border spinner-border-sm me-2"></span>Buscando...');
+            $('#loadingIndicator').show();
+        });
+
+        // Filtro de status
+        $('#filterStatus').on('change', function() {
+            aplicarFiltros();
+        });
+
+        // Campo de busca rápida
+        $('#filterSearch').on('keyup', function() {
+            aplicarFiltros();
+        });
+
+        // Se partner_id foi fornecido, mostrar mensagem de carregamento inicial
+        {% if partner_id and not dados %}
+            $('#loadingIndicator').show();
+            setTimeout(function() {
+                $('#loadingIndicator').hide();
+            }, 2000);
+        {% endif %}
+    });
+    
+    function inicializarGraficos() {
+    if (canaisData.length === 0) return;
+    
+    // Contar marketplaces
+    const marketplaceCount = {};
+    let ativos = 0;
+    let inativos = 0;
+    
+    canaisData.forEach(canal => {
+        const marketplace = canal.marketPlace || 'Desconhecido';
+        marketplaceCount[marketplace] = (marketplaceCount[marketplace] || 0) + 1;
+        
+        if (canal.publicationStatus === 'PUBLISHED') {
+            ativos++;
+        } else {
+            inativos++;
+        }
+    });
+    
+    console.log("📊 Marketplaces:", marketplaceCount);
+    console.log("📊 Ativos:", ativos, "Inativos:", inativos);
+    
+    // Destruir gráficos existentes se houver
+    if (window.marketplaceChart) window.marketplaceChart.destroy();
+    if (window.statusChart) window.statusChart.destroy();
+    
+    // Gráfico de Marketplaces
+    const ctxMarketplace = document.getElementById('marketplaceChart').getContext('2d');
+    window.marketplaceChart = new Chart(ctxMarketplace, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(marketplaceCount),
+            datasets: [{
+                data: Object.values(marketplaceCount),
+                backgroundColor: [
+                    '#667eea', '#764ba2', '#f39c12', '#e74c3c', 
+                    '#2ecc71', '#3498db', '#9b59b6', '#f1c40f',
+                    '#1abc9c', '#e67e22', '#95a5a6', '#34495e'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+    
+    // Gráfico de Status
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    window.statusChart = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ativos', 'Inativos'],
+            datasets: [{
+                data: [ativos, inativos],
+                backgroundColor: ['#2ecc71', '#e74c3c']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+}
+    
+    function aplicarFiltros() {
+    const searchTerm = $('#filterSearch').val().toLowerCase();
+    const status = $('#filterStatus').val();
+    let totalVisiveis = 0;
+    let totalAtivos = 0;
+    
+    $('.canal-item').each(function() {
+        const marketplace = $(this).data('marketplace') || '';
+        const itemStatus = $(this).data('status') || '';
+        
+        let show = true;
+        
+        // Filtro por texto
+        if (searchTerm && !marketplace.toLowerCase().includes(searchTerm)) {
+            show = false;
+        }
+        
+        // Filtro por status
+        if (status !== 'todos') {
+            if (status === 'ativo' && itemStatus !== 'ativo') show = false;
+            if (status === 'inativo' && itemStatus !== 'inativo') show = false;
+        }
+        
+        $(this).toggle(show);
+        
+        if (show) {
+            totalVisiveis++;
+            if (itemStatus === 'ativo') {
+                totalAtivos++;
+            }
+        }
+    });
+    
+    // Atualizar contadores
+    $('#totalCanais').text(totalVisiveis);
+    $('#totalAtivos').text(totalAtivos);
+    $('#totalInativos').text(totalVisiveis - totalAtivos);
+    
+    const percentual = totalVisiveis > 0 ? Math.round((totalAtivos / totalVisiveis) * 100) : 0;
+    $('#percentualAtivos').text(percentual + '%');
+}
+    
+    function verDetalhes(canalId) {
+    const canal = canaisData.find(c => String(c.id) === String(canalId));
+    
+    if (!canal) {
+        $('#modalBody').html('<p class="text-danger">Canal não encontrado</p>');
+        $('#detalhesModal').modal('show');
+        return;
+    }
+    
+    // Formatar preços
+    const precoFormatado = canal.price ? `R$ ${canal.price.toFixed(2)}` : 'N/A';
+    const precoDescontoFormatado = canal.discountPrice && canal.discountPrice !== canal.price 
+        ? `R$ ${canal.discountPrice.toFixed(2)}` : 'N/A';
+    
+    // Formatar fields como JSON bonito
+    let fieldsHtml = '';
+    if (canal.fields && Object.keys(canal.fields).length > 0) {
+        fieldsHtml = '<table class="table table-sm table-bordered mt-2">';
+        for (const [key, value] of Object.entries(canal.fields)) {
+            fieldsHtml += `<tr><th style="width: 40%">${key}</th><td>${value || '-'}</td></tr>`;
+        }
+        fieldsHtml += '</table>';
+    }
+    
+    // Formatar attributes como JSON bonito
+    let attributesHtml = '';
+    if (canal.attributes && Object.keys(canal.attributes).length > 0) {
+        attributesHtml = '<table class="table table-sm table-bordered mt-2">';
+        for (const [key, value] of Object.entries(canal.attributes)) {
+            attributesHtml += `<tr><th style="width: 40%">${key}</th><td>${value || '-'}</td></tr>`;
+        }
+        attributesHtml += '</table>';
+    }
+    
+    let html = `
+        <table class="table table-bordered">
+            <tr>
+                <th style="width: 200px; background: #f8f9fa;">ID</th>
+                <td><code>${canal.id || 'N/A'}</code></td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Conta</th>
+                <td><strong>${canal.accountName || 'N/A'}</strong> (ID: ${canal.idAccount || 'N/A'})</td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Marketplace</th>
+                <td>${canal.marketPlace || 'N/A'}</td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">SKU no Marketplace</th>
+                <td><code>${canal.skuInMarketplace || 'N/A'}</code></td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">ID no Marketplace</th>
+                <td><code>${canal.idInMarketplace || 'N/A'}</code></td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Código do Item</th>
+                <td><code>${canal.marketplaceItemCode || 'N/A'}</code></td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Status</th>
+                <td>
+                    <span class="badge ${canal.publicationStatus == 'PUBLISHED' ? 'badge-active' : 'badge-inactive'}">
+                        Publicação: ${canal.publicationStatus || 'N/A'}
+                    </span>
+                    <br>
+                    <span class="badge ${canal.transmissionStatus == 'OK' ? 'bg-success' : 'bg-secondary'} mt-1">
+                        Transmissão: ${canal.transmissionStatus || 'N/A'}
+                    </span>
+                    <br>
+                    <small class="text-muted mt-1 d-block">${canal.marketplaceStatus || ''}</small>
+                </td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Preços</th>
+                <td>
+                    <strong>Preço:</strong> ${precoFormatado}<br>
+                    <strong>Preço c/ desconto:</strong> ${precoDescontoFormatado}<br>
+                    <strong>Fator:</strong> ${canal.priceFactor || '1'}
+                </td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Índice</th>
+                <td>${canal.index || 'N/A'}</td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">Tempo Adicional</th>
+                <td>${canal.additionalTime || '0'} dias</td>
+            </tr>
+            <tr>
+                <th style="background: #f8f9fa;">É Catálogo?</th>
+                <td>${canal.isCatalog ? 'Sim' : 'Não'}</td>
+            </tr>
+    `;
+    
+    if (canal.permalink) {
+        html += `
+            <tr>
+                <th style="background: #f8f9fa;">Link</th>
+                <td><a href="${canal.permalink}" target="_blank" class="text-break">${canal.permalink}</a></td>
+            </tr>
+        `;
+    }
+    
+    html += `</table>`;
+    
+    if (fieldsHtml) {
+        html += `
+            <div class="mt-3">
+                <h6 class="fw-bold">Campos Adicionais:</h6>
+                ${fieldsHtml}
+            </div>
+        `;
+    }
+    
+    if (attributesHtml) {
+        html += `
+            <div class="mt-3">
+                <h6 class="fw-bold">Atributos:</h6>
+                ${attributesHtml}
+            </div>
+        `;
+    }
+    
+    $('#modalBody').html(html);
+    $('#detalhesModal').modal('show');
+}
+    
+    function exportarCanais() {
+    if (!canaisData || canaisData.length === 0) {
+        alert('Nenhum dado para exportar');
+        return;
+    }
+    
+    // Criar CSV
+    let csv = 'ID,Conta,ID Conta,Marketplace,SKU,ID Marketplace,Status Publicação,Status Transmissão,Status Marketplace,Preço,Preço c/ Desconto,Fator,Link\n';
+    
+    canaisData.forEach(canal => {
+        csv += `"${canal.id || ''}",`;
+        csv += `"${canal.accountName || ''}",`;
+        csv += `"${canal.idAccount || ''}",`;
+        csv += `"${canal.marketPlace || ''}",`;
+        csv += `"${canal.skuInMarketplace || ''}",`;
+        csv += `"${canal.idInMarketplace || ''}",`;
+        csv += `"${canal.publicationStatus || ''}",`;
+        csv += `"${canal.transmissionStatus || ''}",`;
+        csv += `"${canal.marketplaceStatus || ''}",`;
+        csv += `"${canal.price || ''}",`;
+        csv += `"${canal.discountPrice || ''}",`;
+        csv += `"${canal.priceFactor || ''}",`;
+        csv += `"${canal.permalink || ''}"\n`;
+    });
+    
+    // Download
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.href = url;
+    link.setAttribute('download', `canais_transmissao_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert(`✅ Exportação concluída!\n${canaisData.length} canais exportados.`);
+}
+    
+    function recarregarComPartnerId() {
+        const novoPartnerId = prompt("Digite o Partner ID para buscar:", partnerId);
+        if (novoPartnerId && novoPartnerId.trim()) {
+            window.location.href = `?partner_id=${encodeURIComponent(novoPartnerId.trim())}`;
+        }
+    }
+</script>
+{% endblock %}

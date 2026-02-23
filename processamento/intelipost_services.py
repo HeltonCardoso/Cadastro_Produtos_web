@@ -1,6 +1,3 @@
-"""
-Serviços de processamento para Intelipost - VERSÃO CORRIGIDA COM ESTRUTURA REAL
-"""
 import logging
 from typing import Dict, Any, List, Optional
 from datetime import datetime
@@ -273,6 +270,159 @@ class IntelipostService:
         
         return volume_formatado
     
+
+    def formatar_dados_rastreio_por_nf(self, dados_api):
+        """Formata dados de rastreio obtidos por número da Nota Fiscal"""
+        try:
+            print(f"\n🔧 Formatando dados por NF...")
+            print(f"📊 Dados API recebidos: {dados_api.get('status', 'N/A')}")
+            print(f"🔍 Tem 'content'?: {'content' in dados_api}")
+            
+            if 'status' not in dados_api:
+                return {
+                    'sucesso': False,
+                    'mensagem': 'Resposta da API inválida',
+                    'pedidos': []
+                }
+            
+            if dados_api.get('status') != 'OK':
+                print(f"⚠️ Status não é OK: {dados_api.get('status')}")
+                return {
+                    'sucesso': False,
+                    'mensagem': dados_api.get('messages', ['Erro na API'])[0] if dados_api.get('messages') else 'Erro na API',
+                    'pedidos': []
+                }
+            
+            if not dados_api.get('content'):
+                print(f"⚠️ Content vazio ou None")
+                return {
+                    'sucesso': False,
+                    'mensagem': 'Nenhum pedido encontrado para esta Nota Fiscal',
+                    'pedidos': []
+                }
+            
+            pedidos = dados_api.get('content', [])
+            print(f"📦 Encontrados {len(pedidos)} pedido(s) para esta NF")
+            
+            pedidos_formatados = []
+            
+            for pedido in pedidos:
+                print(f"\n🔍 Processando pedido: {pedido.get('order_number', 'N/A')}")
+                
+                # Extrair informações básicas do pedido
+                end_customer = pedido.get('end_customer', {})
+                
+                # Pegar informações da NF do primeiro volume
+                nota_fiscal_info = {}
+                volumes = pedido.get('shipment_order_volume_array', [])
+                if volumes:
+                    for volume in volumes:
+                        invoice = volume.get('shipment_order_volume_invoice')
+                        if invoice:
+                            nota_fiscal_info = {
+                                'numero': invoice.get('invoice_number'),
+                                'serie': invoice.get('invoice_series'),
+                                'chave': invoice.get('invoice_key'),
+                                'data': invoice.get('invoice_date_iso_iso')
+                            }
+                            break
+                
+                # Formatar data da NF
+                nf_data_formatada = None
+                if nota_fiscal_info.get('data'):
+                    try:
+                        from datetime import datetime
+                        # Remove o timezone para simplificar
+                        dt_str = nota_fiscal_info['data'].split('.')[0].replace('T', ' ')
+                        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+                        nf_data_formatada = dt.strftime('%d/%m/%Y %H:%M')
+                    except Exception as e:
+                        print(f"⚠️ Erro ao formatar data: {e}")
+                        nf_data_formatada = nota_fiscal_info['data']
+                
+                # Processar volumes
+                volumes_formatados = []
+                for volume in volumes:
+                    invoice = volume.get('shipment_order_volume_invoice', {})
+                    volumes_formatados.append({
+                        'numero_volume': volume.get('shipment_order_volume_number', 'N/A'),
+                        'status_volume': volume.get('shipment_order_volume_state_localized', 'N/A'),
+                        'peso': f"{volume.get('weight', 0)} kg",
+                        'dimensoes': f"{volume.get('length', 0)}x{volume.get('width', 0)}x{volume.get('height', 0)} cm",
+                        'rastreio': volume.get('logistic_provider_tracking_code') or volume.get('tracking_code') or 'Não disponível',
+                        'nota_fiscal': invoice.get('invoice_number'),
+                        'serie_nf': invoice.get('invoice_series')
+                    })
+                
+                # Processar histórico do primeiro volume
+                historico_formatado = []
+                if volumes:
+                    primeiro_volume = volumes[0]
+                    historico = primeiro_volume.get('shipment_order_volume_state_history_array', [])
+                    for evento in historico:
+                        event_date = evento.get('event_date_iso')
+                        data_formatada = 'Data não disponível'
+                        if event_date:
+                            try:
+                                dt_str = event_date.split('.')[0].replace('T', ' ')
+                                dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+                                data_formatada = dt.strftime('%d/%m/%Y %H:%M')
+                            except:
+                                data_formatada = event_date
+                        
+                        historico_formatado.append({
+                            'data': data_formatada,
+                            'status': evento.get('shipment_order_volume_state_localized', 'N/A'),
+                            'descricao': evento.get('shipment_volume_micro_state', {}).get('description', 'Sem descrição')
+                        })
+                
+                pedido_formatado = {
+                    'pedido': pedido.get('order_number', 'N/A'),
+                    'pedido_venda': pedido.get('sales_order_number', 'N/A'),
+                    'nota_fiscal': nota_fiscal_info.get('numero'),
+                    'nf_serie': nota_fiscal_info.get('serie'),
+                    'nf_chave': nota_fiscal_info.get('chave'),
+                    'nf_data': nf_data_formatada,
+                    'cliente': f"{end_customer.get('first_name', '')} {end_customer.get('last_name', '')}".strip() or end_customer.get('email', 'N/A'),
+                    'cidade_destino': end_customer.get('shipping_city', 'N/A'),
+                    'estado_destino': end_customer.get('shipping_state_code', 'N/A'),
+                    'transportadora': pedido.get('logistic_provider_name', 'N/A'),
+                    'status': pedido.get('shipment_order_volume_state_localized', 'N/A'),
+                    'volumes': volumes_formatados,
+                    'historico': historico_formatado,
+                    'informacoes_adicionais': {
+                        'plataforma': pedido.get('platform', 'N/A'),
+                        'canal_venda': pedido.get('sales_channel', 'N/A'),
+                        'valor_frete': f"R$ {pedido.get('customer_shipping_costs', 0):.2f}" if pedido.get('customer_shipping_costs') else 'N/A',
+                        'data_envio': pedido.get('shipped_date_iso', 'N/A'),
+                        'data_estimada': pedido.get('estimated_delivery_date_lp_iso', 'N/A')
+                    }
+                }
+                
+                pedidos_formatados.append(pedido_formatado)
+                print(f"✅ Pedido {pedido_formatado['pedido']} formatado com sucesso")
+            
+            print(f"✅ Total de {len(pedidos_formatados)} pedido(s) formatado(s)")
+            
+            return {
+                'sucesso': True,
+                'pedidos': pedidos_formatados,
+                'quantidade_pedidos': len(pedidos_formatados),
+                'consulta_por': 'NF'
+            }
+            
+        except Exception as e:
+            print(f"❌ Erro ao formatar dados por NF: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            return {
+                'sucesso': False,
+                'erro': f'Erro ao processar dados: {str(e)}',
+                'pedidos': []
+            }
+    
+
     def _formatar_local(self, local: Dict[str, Any]) -> str:
         """Formata informações de localização"""
         if not local:

@@ -7,6 +7,8 @@ import logging
 import json
 import os
 
+import requests
+
 # Criação do blueprint
 intelipost_bp = Blueprint('intelipost', __name__, 
                          url_prefix='/intelipost',
@@ -155,7 +157,131 @@ def api_buscar_rastreio(numero_pedido):
             'sucesso': False,
             'erro': str(e)
         }), 400
+@intelipost_bp.route('/rastrear-nf')
+def rastrear_nf():
+    """Página para rastreamento por número da Nota Fiscal"""
+    nf = request.args.get('nf', '')
+    
+    # Verificar se token está configurado
+    token_configurado = bool(carregar_token_intelipost())
+    
+    if not token_configurado:
+        flash('🔧 Configure o token Intelipost em Configurações > Tokens', 'warning')
+    
+    return render_template(
+        'rastrear_nf.html',
+        active_page='intelipost_rastrear_nf',  # ← ALTERE AQUI
+        active_module='intelipost',
+        page_title='Rastreamento por NF - Intelipost',
+        nf=nf,
+        token_configurado=token_configurado
+    )
 
+
+    
+@intelipost_bp.route('/api/rastreio-nf/<numero_nf>')
+def api_buscar_rastreio_por_nf(numero_nf):
+    """API para buscar rastreio por número da Nota Fiscal - VERSÃO SIMPLIFICADA"""
+    print(f"\n🔍 ========== BUSCAR RASTREIO POR NF (SIMPLIFICADO) ==========")
+    print(f"🔍 NF: {numero_nf}")
+    
+    try:
+        # 1. Carregar token
+        api_key = carregar_token_intelipost()
+        
+        if not api_key:
+            print(f"❌ Token NÃO carregado")
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Token Intelipost não configurado. Configure em Configurações > Tokens.'
+            }), 400
+        
+        print(f"✅ Token carregado: {api_key[:20]}...")
+        
+        # 2. Fazer requisição DIRETA (igual ao teste que funcionou)
+        import requests
+        url = f"https://api.intelipost.com.br/api/v1/shipment_order/invoice/{numero_nf}"
+        headers = {
+            "Accept": "application/json",
+            "api-key": api_key
+        }
+        
+        print(f"📡 URL: {url}")
+        print(f"🔑 API Key (primeiros 20): {api_key[:20]}...")
+        
+        response = requests.get(url, headers=headers, timeout=30)
+        
+        print(f"📊 Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ Erro HTTP: {response.status_code}")
+            print(f"📝 Resposta: {response.text[:500]}")
+            
+            return jsonify({
+                'sucesso': False,
+                'erro': f'Erro HTTP {response.status_code}: {response.text[:200]}'
+            }), 400
+        
+        # 3. Processar resposta
+        dados_api = response.json()
+        print(f"✅ Dados API recebidos - Status: {dados_api.get('status', 'N/A')}")
+        print(f"📦 Quantidade de pedidos: {len(dados_api.get('content', []))}")
+        
+        # 4. Formatar dados
+        from processamento.intelipost_services import IntelipostService
+        service = IntelipostService(api_key=api_key)
+        
+        dados_formatados = service.formatar_dados_rastreio_por_nf(dados_api)
+        
+        print(f"📊 Dados formatados sucesso?: {dados_formatados.get('sucesso', False)}")
+        
+        # Registrar histórico
+        _historico_consultas.append({
+            'numero_nf': numero_nf,
+            'tipo_consulta': 'NF',
+            'data_consulta': datetime.now(),
+            'sucesso': dados_formatados.get('sucesso', False),
+            'quantidade_pedidos': dados_formatados.get('quantidade_pedidos', 0)
+        })
+        
+        print(f"✅ ========== SUCESSO ==========")
+        return jsonify({
+            'sucesso': True,
+            'dados': dados_formatados
+        })
+        
+    except requests.exceptions.Timeout:
+        print(f"⏰ Timeout na consulta")
+        return jsonify({
+            'sucesso': False,
+            'erro': 'Timeout na conexão com a API'
+        }), 400
+    except requests.exceptions.ConnectionError:
+        print(f"🔌 Erro de conexão")
+        return jsonify({
+            'sucesso': False,
+            'erro': 'Erro de conexão com a API'
+        }), 400
+    except Exception as e:
+        print(f"❌ ========== ERRO ==========")
+        print(f"❌ Erro: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        
+        _historico_consultas.append({
+            'numero_nf': numero_nf,
+            'tipo_consulta': 'NF',
+            'data_consulta': datetime.now(),
+            'sucesso': False,
+            'erro': str(e)
+        })
+        
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 400
+    
+    
 @intelipost_bp.route('/api/buscar-pedido/<numero_pedido>')
 def api_buscar_pedido(numero_pedido):
     """Alias para compatibilidade com JavaScript"""

@@ -1,0 +1,1366 @@
+{% extends "base.html" %}
+
+{% block title %}Rastreamento por NF - Intelipost{% endblock %}
+
+{% block page_title %}Rastreamento por Nota Fiscal{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========================================= */
+    /* ESTILOS ESPECÍFICOS PARA INTELIPOST */
+    /* ========================================= */
+    
+    .intelipost-container {
+        padding: 20px;
+    }
+    
+    /* Header com badge de conta */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .current-account-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* Barra de busca rápida - ESTILO ATUALIZADO */
+    .quick-search-bar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    .quick-search-bar .alert {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        border: none;
+    }
+    
+    .search-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .search-input-group input {
+        flex: 1;
+        padding: 14px 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s;
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .search-input-group input:focus {
+        border-color: #fff;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        outline: none;
+        background: white;
+    }
+    
+    .search-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .search-buttons .btn {
+        padding: 14px 25px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 15px;
+    }
+    
+    .btn-primary {
+        background: #fff;
+        color: #667eea;
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-outline-secondary {
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+    }
+    
+    .search-hint {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* TIMELINE DE RASTREIO - ESTILO MODERNO */
+    .tracking-timeline {
+        position: relative;
+        padding: 25px 0;
+        margin: 20px 0;
+        min-height: 100px;
+    }
+    
+    .timeline-track {
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #667eea, #764ba2);
+        z-index: 1;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-left: 70px;
+        margin-bottom: 30px;
+        min-height: 60px;
+    }
+    
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .timeline-item.current .timeline-dot {
+        background: #10b981;
+        border-color: #10b981;
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.2);
+        animation: pulse 2s infinite;
+    }
+    
+    .timeline-item.past .timeline-dot {
+        background: #667eea;
+        border-color: #667eea;
+    }
+    
+    .timeline-item.future .timeline-dot {
+        background: #e0e0e0;
+        border-color: #e0e0e0;
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: 22px;
+        top: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 3px solid white;
+        z-index: 2;
+        transition: all 0.3s;
+    }
+    
+    .timeline-content {
+        background: white;
+        border-radius: 10px;
+        padding: 18px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        border-left: 5px solid #667eea;
+        position: relative;
+        transition: all 0.3s;
+    }
+    
+    .timeline-item.current .timeline-content {
+        border-left-color: #10b981;
+        background: #f0fdf9;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+    }
+    
+    .timeline-item.past .timeline-content {
+        border-left-color: #667eea;
+    }
+    
+    .timeline-item.future .timeline-content {
+        border-left-color: #e0e0e0;
+        opacity: 0.8;
+    }
+    
+    .timeline-date {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+    }
+    
+    .timeline-status {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-current {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-past {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+    
+    .status-future {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+    
+    .timeline-desc {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+        margin-top: 5px;
+    }
+    
+    /* Contador de eventos na timeline */
+    .timeline-counter {
+        position: absolute;
+        left: 17px;
+        top: -10px;
+        background: #667eea;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 3;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+    
+    .timeline-item.current .timeline-counter {
+        background: #10b981;
+    }
+    
+    /* Card de pedido (estilo moderno) */
+    .order-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .order-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #667eea, #764ba2);
+    }
+    
+    .order-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+    }
+    
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .order-info h4 {
+        margin: 0;
+        color: #1f2937;
+        font-weight: 600;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .order-subtitle {
+        color: #6b7280;
+        font-size: 13px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .order-status {
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        border: 1px solid transparent;
+    }
+    
+    .status-delivered {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+        border-color: #10b981;
+    }
+    
+    .status-shipped {
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        color: #3730a3;
+        border-color: #6366f1;
+    }
+    
+    .status-pending {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+        border-color: #f59e0b;
+    }
+    
+    .status-problem {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #991b1b;
+        border-color: #ef4444;
+    }
+    
+    /* Grid de informações */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .info-item {
+        padding: 15px;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        transition: all 0.3s;
+    }
+    
+    .info-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    
+    .info-label {
+        font-size: 11px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+    
+    .info-value {
+        font-weight: 500;
+        color: #1f2937;
+        word-break: break-word;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* Volume counter (estilo moderno) */
+    .volume-counter {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        margin: 25px 0;
+        transition: all 0.3s;
+    }
+    
+    .volume-counter:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+    }
+    
+    .volume-icon {
+        font-size: 32px;
+        color: #667eea;
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+    
+    .volume-details {
+        flex: 1;
+    }
+    
+    .volume-count {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1;
+        color: #1f2937;
+        margin-bottom: 5px;
+    }
+    
+    .volume-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    /* Container de resultados */
+    .results-container {
+        margin-top: 25px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #9ca3af;
+    }
+    
+    .empty-state i {
+        font-size: 56px;
+        margin-bottom: 25px;
+        opacity: 0.3;
+    }
+    
+    .empty-state h3 {
+        margin-bottom: 15px;
+        color: #6b7280;
+        font-weight: 500;
+        font-size: 20px;
+    }
+    
+    .empty-state p {
+        max-width: 400px;
+        margin: 0 auto;
+        font-size: 15px;
+    }
+    
+    /* Loading */
+    .table-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px;
+    }
+    
+    .loading-spinner {
+        text-align: center;
+    }
+    
+    .hidden {
+        display: none !important;
+    }
+    
+    /* Botões de ação */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #f3f4f6;
+        flex-wrap: wrap;
+    }
+    
+    .btn-sm {
+        padding: 10px 18px;
+        font-size: 13px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: none;
+    }
+    
+    .btn-outline-primary {
+        background: transparent;
+        border: 2px solid #667eea;
+        color: #667eea;
+    }
+    
+    .btn-outline-primary:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-outline-secondary {
+        background: transparent;
+        border: 2px solid #9ca3af;
+        color: #6b7280;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: #9ca3af;
+        color: white;
+    }
+    
+    .btn-outline-info {
+        background: transparent;
+        border: 2px solid #0ea5e9;
+        color: #0ea5e9;
+    }
+    
+    .btn-outline-info:hover {
+        background: #0ea5e9;
+        color: white;
+    }
+    
+    /* Animação de pulso para status atual */
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+    }
+    
+    /* Toggle para mostrar/ocultar timeline completa */
+    .timeline-toggle {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .toggle-timeline-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: white;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+    
+    .toggle-timeline-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .search-input-group {
+            flex-direction: column;
+        }
+        
+        .search-buttons {
+            width: 100%;
+        }
+        
+        .search-buttons .btn {
+            flex: 1;
+            padding: 12px;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .order-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .order-status {
+            align-self: flex-start;
+        }
+        
+        .timeline-item {
+            padding-left: 55px;
+        }
+        
+        .timeline-track {
+            left: 23px;
+        }
+        
+        .timeline-dot {
+            left: 16px;
+        }
+        
+        .timeline-counter {
+            left: 11px;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+        
+        .quick-search-bar {
+            padding: 20px;
+        }
+    }
+    
+    /* Badges informativos */
+    .info-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .info-badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .badge-success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+    
+    .badge-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #93c5fd;
+    }
+    
+    .badge-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+    
+    /* Resultados de sucesso */
+    .success-header {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        border: 1px solid #10b981;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .success-header h5 {
+        color: #065f46;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="intelipost-container">
+    <!-- ========================================= -->
+    <!-- HEADER COM BADGE DE CONTA -->
+    <!-- ========================================= -->
+    <div class="page-header">
+        <h1 class="h3 mb-0">
+            <i class="fas fa-file-invoice" style="color: #667eea;"></i> 
+            Rastrear por Nota Fiscal
+        </h1>
+        
+        {% if token_configurado %}
+        <div class="current-account-badge">
+            <small class="text-muted">Intelipost - </small>
+            <span class="badge bg-info" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none;">
+                <i class="fas fa-check-circle"></i> Conectado
+            </span>
+            <a href="{{ url_for('intelipost.rastrear') }}" class="btn btn-sm btn-outline-secondary ms-2" style="border-color: #667eea; color: #667eea;">
+                <i class="fas fa-exchange-alt"></i> Buscar por Pedido
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- ========================================= -->
+    <!-- BARRA DE BUSCA RÁPIDA - NOVO ESTILO -->
+    <!-- ========================================= -->
+    <div class="quick-search-bar">
+        {% if not token_configurado %}
+        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            Configure o token Intelipost em <a href="{{ url_for('configurar_tokens') }}" class="alert-link">Configurações > Tokens</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        
+        <div class="search-input-group">
+            <input type="text" 
+                   id="intelipost-nf-number"
+                   placeholder="Digite o número da Nota Fiscal (ex: 278699)"
+                   value="{{ nf or '' }}">
+            <div class="search-buttons">
+                <button class="btn btn-primary" id="intelipost-search-nf-btn">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <button class="btn btn-outline-secondary" onclick="limparBusca()" id="btnLimpar">
+                    <i class="fas fa-times"></i> Limpar
+                </button>
+            </div>
+        </div>
+        
+        <div class="search-hint">
+            <i class="fas fa-info-circle"></i> A mesma Nota Fiscal pode ter múltiplos pedidos associados
+        </div>
+    </div>
+    
+    <!-- ========================================= -->
+    <!-- CONTAINER DE RESULTADOS -->
+    <!-- ========================================= -->
+    <div id="resultsContainer" class="results-container">
+        <!-- Estado Vazio -->
+        <div id="emptyState" class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>Nenhuma consulta realizada</h3>
+            <p>Digite o número da Nota Fiscal e clique em "Buscar" para começar</p>
+        </div>
+        
+        <!-- Loading -->
+        <div id="tableLoading" class="table-loading hidden">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem; color: #667eea !important;">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-3" style="color: #6b7280;">Buscando pedidos para a Nota Fiscal...</p>
+            </div>
+        </div>
+        
+        <!-- Erro -->
+        <div id="intelipost-nf-error" class="alert alert-danger hidden"></div>
+        
+        <!-- Resultados serão injetados aqui -->
+        <div id="intelipost-nf-result"></div>
+    </div>
+</div>
+
+<script>
+// MANTENDO TODO O JAVASCRIPT ORIGINAL - APENAS O LAYOUT FOI ALTERADO
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos da página
+    const searchInput = document.getElementById('intelipost-nf-number');
+    const searchBtn = document.getElementById('intelipost-search-nf-btn');
+    const loadingDiv = document.getElementById('tableLoading');
+    const errorDiv = document.getElementById('intelipost-nf-error');
+    const resultDiv = document.getElementById('intelipost-nf-result');
+    const emptyState = document.getElementById('emptyState');
+    const resultsContainer = document.getElementById('resultsContainer');
+    
+    // Verificar se tem NF na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const nfParam = urlParams.get('nf');
+    if (nfParam) {
+        searchInput.value = nfParam;
+        buscarPorNF(nfParam);
+    } else {
+        emptyState.classList.remove('hidden');
+    }
+    
+    // Foco no campo
+    if (searchInput) {
+        searchInput.focus();
+        
+        // Permitir Enter para buscar
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const nf = this.value.trim();
+                if (nf) buscarPorNF(nf);
+                else mostrarToast('Digite um número de Nota Fiscal', 'warning');
+            }
+        });
+    }
+    
+    // Botão de busca
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
+            const nf = searchInput.value.trim();
+            if (nf) {
+                buscarPorNF(nf);
+            } else {
+                mostrarToast('Digite um número de Nota Fiscal', 'warning');
+                searchInput.focus();
+            }
+        });
+    }
+    
+    // Botão de limpar
+    document.getElementById('btnLimpar').addEventListener('click', limparBusca);
+    
+    // Função principal de busca
+    async function buscarPorNF(nf) {
+        // Atualizar URL
+        const url = new URL(window.location);
+        url.searchParams.set('nf', nf);
+        window.history.replaceState({}, '', url);
+        
+        // Resetar interface
+        resetarInterface();
+        emptyState.classList.add('hidden');
+        loadingDiv.classList.remove('hidden');
+        
+        try {
+            const response = await fetch(`/intelipost/api/rastreio-nf/${nf}`);
+            
+            if (!response.ok) {
+                throw new Error(`Erro HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            loadingDiv.classList.add('hidden');
+            
+            if (!data.sucesso) {
+                mostrarErro(data.erro || data.mensagem || 'Erro na busca');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            if (data.dados && data.dados.quantidade_pedidos > 0 && data.dados.pedidos && data.dados.pedidos.length > 0) {
+                mostrarResultados(data.dados);
+            } else {
+                mostrarNenhumResultado(nf);
+            }
+            
+        } catch (error) {
+            console.error('💥 Erro na busca:', error);
+            loadingDiv.classList.add('hidden');
+            
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                mostrarErro('Erro de conexão. Verifique sua internet e tente novamente.');
+            } else if (error.message.includes('429') || error.message.includes('limit')) {
+                mostrarErro('Limite de requisições excedido. Aguarde alguns segundos e tente novamente.');
+            } else {
+                mostrarErro(`Erro: ${error.message}`);
+            }
+            
+            emptyState.classList.remove('hidden');
+        }
+    }
+    
+    // Mostrar resultados - ATUALIZADO COM NOVO ESTILO
+    function mostrarResultados(dados) {
+        let html = `
+            <div class="success-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">
+                            <i class="fas fa-check-circle"></i> 
+                            ${dados.quantidade_pedidos} pedido(s) encontrado(s)
+                        </h5>
+                        <p class="mb-0 mt-1" style="color: #047857;">Nota Fiscal: <strong>${dados.consulta_por || 'NF'}</strong></p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-light" onclick="limparResultados()" style="border-color: #10b981; color: #065f46;">
+                        <i class="fas fa-times"></i> Limpar
+                    </button>
+                </div>
+            </div>`;
+        
+        // Processar cada pedido
+        dados.pedidos.forEach((pedido, index) => {
+            const statusClass = getStatusClass(pedido.status);
+            const volumes = pedido.volumes || [];
+            const historico = pedido.historico || [];
+            
+            // Timeline (mostrar sempre, se houver histórico)
+            let timelineHTML = '';
+            if (historico.length > 0) {
+                timelineHTML = criarTimelineHTML(historico, index);
+            } else {
+                timelineHTML = '<div class="alert alert-info">Nenhum histórico de rastreamento disponível</div>';
+            }
+            
+            html += `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h4>
+                                <i class="fas fa-box" style="color: #667eea;"></i> 
+                                Pedido: ${pedido.pedido || 'N/A'}
+                            </h4>
+                            <div class="order-subtitle">
+                                <span><i class="fas fa-shopping-cart"></i> Venda: ${pedido.pedido_venda || 'N/A'}</span>
+                                ${pedido.nota_fiscal ? `<span><i class="fas fa-file-invoice"></i> NF: ${pedido.nota_fiscal}</span>` : ''}
+                            </div>
+                        </div>
+                        <span class="order-status ${statusClass}">
+                            ${pedido.status || 'Status Indisponível'}
+                        </span>
+                    </div>
+                    
+                    <!-- Grid de informações -->
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Cliente</div>
+                            <div class="info-value">
+                                <i class="fas fa-user"></i>
+                                ${pedido.cliente || 'N/A'}
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Destino</div>
+                            <div class="info-value">
+                                <i class="fas fa-map-marker-alt" style="color: #ef4444;"></i>
+                                ${pedido.cidade_destino || 'N/A'}/${pedido.estado_destino || 'N/A'}
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-label">Transportadora</div>
+                            <div class="info-value">
+                                <i class="fas fa-truck" style="color: #f59e0b;"></i>
+                                ${pedido.transportadora || 'N/A'}
+                            </div>
+                        </div>
+                        
+                        ${pedido.nf_data ? `
+                        <div class="info-item">
+                            <div class="info-label">Data NF</div>
+                            <div class="info-value">
+                                <i class="far fa-calendar" style="color: #8b5cf6;"></i> 
+                                ${formatarDataSimples(pedido.nf_data)}
+                            </div>
+                        </div>` : ''}
+                    </div>
+                    
+                    <!-- Contador de volumes -->
+                    <div class="volume-counter">
+                        <div class="volume-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="volume-details">
+                            <div class="volume-count">${volumes.length}</div>
+                            <div class="volume-label">VOLUME(S)</div>
+                        </div>
+                        <div class="text-end">
+                            <small class="d-block opacity-75">
+                                ${volumes.length === 1 ? '1 volume encontrado' : `${volumes.length} volumes encontrados`}
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- LINHA DO TEMPO DE RASTREIO -->
+                    <div class="mt-4">
+                        <h6 class="mb-3" style="color: #333; font-weight: 600; font-size: 16px;">
+                            <i class="fas fa-shipping-fast" style="color: #667eea;"></i> Linha do Tempo do Rastreio
+                        </h6>
+                        ${timelineHTML}
+                    </div>
+                    
+                    <!-- Informações adicionais -->
+                    ${pedido.informacoes_adicionais ? `
+                    <div class="mt-4">
+                        <h6 class="fw-semibold mb-2" style="color: #4b5563; font-size: 14px;">
+                            <i class="fas fa-info-circle" style="color: #667eea;"></i> Informações Adicionais
+                        </h6>
+                        <div class="info-badges">
+                            ${pedido.informacoes_adicionais.plataforma ? `
+                            <span class="info-badge badge-info">
+                                <i class="fas fa-store"></i> ${pedido.informacoes_adicionais.plataforma}
+                            </span>` : ''}
+                            
+                            ${pedido.informacoes_adicionais.canal_venda ? `
+                            <span class="info-badge badge-info">
+                                <i class="fas fa-shopping-cart"></i> ${pedido.informacoes_adicionais.canal_venda}
+                            </span>` : ''}
+                            
+                            ${pedido.informacoes_adicionais.valor_frete ? `
+                            <span class="info-badge badge-success">
+                                <i class="fas fa-tag"></i> ${pedido.informacoes_adicionais.valor_frete}
+                            </span>` : ''}
+                            
+                            ${pedido.informacoes_adicionais.data_envio ? `
+                            <span class="info-badge badge-info">
+                                <i class="fas fa-shipping-fast"></i> ${formatarDataSimples(pedido.informacoes_adicionais.data_envio)}
+                            </span>` : ''}
+                            
+                            ${pedido.informacoes_adicionais.data_estimada ? `
+                            <span class="info-badge badge-warning">
+                                <i class="fas fa-clock"></i> ${formatarDataSimples(pedido.informacoes_adicionais.data_estimada)}
+                            </span>` : ''}
+                        </div>
+                    </div>` : ''}
+                    
+                    <!-- Botões de ação -->
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-outline-primary" onclick="copiarTexto('${pedido.pedido || ''}')">
+                            <i class="fas fa-copy"></i> Copiar Pedido
+                        </button>
+                        
+                        ${pedido.nf_chave ? `
+                        <button class="btn btn-sm btn-outline-secondary" onclick="copiarTexto('${pedido.nf_chave}')">
+                            <i class="fas fa-key"></i> Copiar Chave
+                        </button>` : ''}
+                        
+                        ${historico.length > 3 ? `
+                        <button class="btn btn-sm btn-outline-info toggle-timeline-btn" onclick="toggleTimeline(${index})" id="toggleTimeline${index}">
+                            <i class="fas fa-chevron-down"></i> Ver Mais
+                        </button>` : ''}
+                    </div>
+                </div>`;
+        });
+        
+        resultDiv.innerHTML = html;
+        resultDiv.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+    }
+    
+    // Criar timeline HTML completa
+    function criarTimelineHTML(historico, index) {
+        if (!historico || historico.length === 0) {
+            return '<div class="alert alert-info">Nenhum histórico de rastreamento disponível</div>';
+        }
+        
+        // Ordenar por data (mais antigo primeiro para timeline)
+        const historicoOrdenado = [...historico].sort((a, b) => new Date(a.data) - new Date(b.data));
+        const totalEventos = historicoOrdenado.length;
+        const mostrarInicialmente = 3; // Mostrar apenas 3 eventos inicialmente
+        
+        let html = `<div class="tracking-timeline" id="timeline${index}"><div class="timeline-track"></div>`;
+        
+        // Adicionar contador de eventos
+        html += `<div class="timeline-counter">${totalEventos}</div>`;
+        
+        // Mostrar eventos
+        historicoOrdenado.forEach((evento, i) => {
+            const isLast = i === totalEventos - 1;
+            const isFirst = i === 0;
+            const classe = isLast ? 'current' : (isFirst ? 'future' : 'past');
+            const mostrar = i >= totalEventos - mostrarInicialmente ? '' : 'hidden';
+            const statusBadge = isLast ? 'status-current' : (isFirst ? 'status-future' : 'status-past');
+            
+            html += `
+                <div class="timeline-item ${classe} ${mostrar}" id="timelineItem${index}_${i}">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">
+                            <i class="far fa-calendar"></i>
+                            ${evento.data || 'Data não disponível'}
+                        </div>
+                        <div class="timeline-status">
+                            ${evento.status || 'N/A'}
+                            <span class="status-badge ${statusBadge}">
+                                ${classe === 'current' ? 'ATUAL' : (classe === 'past' ? 'CONCLUÍDO' : 'PENDENTE')}
+                            </span>
+                        </div>
+                        <div class="timeline-desc">${evento.descricao || ''}</div>
+                    </div>
+                </div>`;
+        });
+        
+        html += '</div>';
+        
+        return html;
+    }
+    
+    // Mostrar nenhum resultado
+    function mostrarNenhumResultado(nf) {
+        resultDiv.innerHTML = `
+            <div class="alert alert-warning">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Nenhum pedido encontrado</h5>
+                        <p class="mb-0">Não foram encontrados pedidos para a Nota Fiscal <strong>${nf}</strong></p>
+                        <small class="text-muted d-block mt-1">
+                            Verifique se o número está correto ou tente buscar pelo número do pedido.
+                        </small>
+                    </div>
+                </div>
+            </div>`;
+        resultDiv.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+    }
+    
+    // Mostrar erro
+    function mostrarErro(mensagem) {
+        errorDiv.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-circle fa-2x me-3"></i>
+                <div>
+                    <h5 class="mb-1">Erro na busca</h5>
+                    <p class="mb-0">${mensagem}</p>
+                </div>
+            </div>`;
+        errorDiv.classList.remove('hidden');
+    }
+    
+    // Resetar interface
+    function resetarInterface() {
+        loadingDiv.classList.add('hidden');
+        errorDiv.classList.add('hidden');
+        errorDiv.innerHTML = '';
+        resultDiv.classList.add('hidden');
+        resultDiv.innerHTML = '';
+    }
+    
+    // Determinar classe CSS do status
+    function getStatusClass(status) {
+        if (!status) return '';
+        
+        const statusLower = status.toLowerCase();
+        
+        if (statusLower.includes('entregue') || statusLower.includes('concluído') || statusLower.includes('delivered')) {
+            return 'status-delivered';
+        }
+        if (statusLower.includes('transito') || statusLower.includes('transit') || statusLower.includes('caminho')) {
+            return 'status-shipped';
+        }
+        if (statusLower.includes('despachado') || statusLower.includes('shipped')) {
+            return 'status-shipped';
+        }
+        if (statusLower.includes('pronto') || statusLower.includes('ready')) {
+            return 'status-pending';
+        }
+        if (statusLower.includes('pendente') || statusLower.includes('pending') || statusLower.includes('aguardando')) {
+            return 'status-pending';
+        }
+        if (statusLower.includes('problema') || statusLower.includes('problem') || statusLower.includes('erro')) {
+            return 'status-problem';
+        }
+        
+        return 'status-pending';
+    }
+    
+    // Formatar data simples
+    function formatarDataSimples(dataString) {
+        if (!dataString) return 'N/A';
+        
+        try {
+            // Tenta extrair apenas a data (remover hora se houver)
+            const data = new Date(dataString);
+            if (isNaN(data.getTime())) return dataString;
+            
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        } catch (e) {
+            return dataString;
+        }
+    }
+});
+
+// =========================================
+// FUNÇÕES GLOBAIS (MANTIDAS ORIGINAIS)
+// =========================================
+
+function limparBusca() {
+    const searchInput = document.getElementById('intelipost-nf-number');
+    searchInput.value = '';
+    searchInput.focus();
+    
+    const url = new URL(window.location);
+    url.searchParams.delete('nf');
+    window.history.replaceState({}, '', url);
+    
+    limparResultados();
+}
+
+function limparResultados() {
+    const resultDiv = document.getElementById('intelipost-nf-result');
+    const emptyState = document.getElementById('emptyState');
+    const errorDiv = document.getElementById('intelipost-nf-error');
+    
+    resultDiv.classList.add('hidden');
+    resultDiv.innerHTML = '';
+    errorDiv.classList.add('hidden');
+    errorDiv.innerHTML = '';
+    emptyState.classList.remove('hidden');
+}
+
+function copiarTexto(texto) {
+    if (!texto || texto === 'N/A') {
+        mostrarToast('Nada para copiar', 'warning');
+        return;
+    }
+    
+    navigator.clipboard.writeText(texto).then(() => {
+        mostrarToast('Texto copiado com sucesso!', 'success');
+    }).catch(err => {
+        console.error('Erro ao copiar:', err);
+        mostrarToast('Erro ao copiar texto', 'error');
+    });
+}
+
+function toggleTimeline(index) {
+    const timeline = document.getElementById(`timeline${index}`);
+    const toggleBtn = document.getElementById(`toggleTimeline${index}`);
+    
+    if (!timeline || !toggleBtn) return;
+    
+    // Encontrar todos os itens da timeline
+    const items = timeline.querySelectorAll('.timeline-item');
+    const totalItems = items.length;
+    const hiddenItems = Array.from(items).filter(item => item.classList.contains('hidden')).length;
+    
+    if (hiddenItems > 0) {
+        // Mostrar todos os itens
+        items.forEach(item => item.classList.remove('hidden'));
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-up"></i> Ver Menos';
+        toggleBtn.classList.add('active');
+    } else {
+        // Ocultar itens antigos (mostrar apenas os 3 mais recentes)
+        items.forEach((item, i) => {
+            if (i < totalItems - 3) {
+                item.classList.add('hidden');
+            }
+        });
+        toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Ver Mais';
+        toggleBtn.classList.remove('active');
+    }
+}
+
+function mostrarToast(mensagem, tipo = 'info') {
+    // Criar toast container se não existir
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.top = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Cores para cada tipo
+    const cores = {
+        'success': '#10b981',
+        'error': '#ef4444',
+        'warning': '#f59e0b',
+        'info': '#667eea'
+    };
+    
+    const cor = cores[tipo] || '#667eea';
+    const icon = {
+        'success': 'fa-check-circle',
+        'error': 'fa-exclamation-circle',
+        'warning': 'fa-exclamation-triangle',
+        'info': 'fa-info-circle'
+    }[tipo] || 'fa-info-circle';
+    
+    // Criar toast
+    const toastId = 'toast-' + Date.now();
+    const toast = document.createElement('div');
+    toast.id = toastId;
+    toast.className = 'toast-alert';
+    toast.style.cssText = `
+        background: white;
+        border-left: 4px solid ${cor};
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        min-width: 300px;
+        max-width: 400px;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    toast.innerHTML = `
+        <i class="fas ${icon} fa-lg me-3" style="color: ${cor};"></i>
+        <div style="flex: 1;">
+            <div style="font-weight: 500; color: #333; font-size: 14px;">${mensagem}</div>
+        </div>
+        <button onclick="document.getElementById('${toastId}').remove()" 
+                style="margin-left: 12px; background: none; border: none; color: #999; cursor: pointer; padding: 0;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Remover automaticamente após 5 segundos
+    setTimeout(() => {
+        const toastElement = document.getElementById(toastId);
+        if (toastElement) {
+            toastElement.style.animation = 'slideOut 0.3s ease-out forwards';
+            setTimeout(() => toastElement.remove(), 300);
+        }
+    }, 5000);
+}
+
+// Adicionar estilos CSS para as animações do toast
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .timeline-item.hidden {
+        display: none;
+    }
+    
+    .timeline-item {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

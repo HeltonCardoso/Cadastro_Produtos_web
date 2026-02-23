@@ -77,65 +77,76 @@
         <!-- Módulo AnyMarket -->
         <div class="menu-group" data-module="anymarket">
           <div class="menu-title">
-            <i class="fas fa-caret-down module-toggle"></i>
-            <span class="menu-title-text">ANYMARKET</span>
+              <i class="fas fa-caret-down module-toggle"></i>
+              <span class="menu-title-text">ANYMARKET</span>
           </div>
           <div class="menu-subitems">
-            <a href="{{ url_for('consultar_anymarket') }}" class="menu-item {% if active_page == 'consultar_anymarket' %}active{% endif %}">
-              <div class="menu-icon">
-                <i class="fas fa-search"></i>
-              </div>
-              <span class="menu-text">Fotos</span>
-            </a>
-            <a href="{{ url_for('pedidos_anymarket') }}" class="menu-item {% if active_page == 'pedidos' %}active{% endif %}">
-              <div class="menu-icon">
-                <i class="fas fa-shopping-cart"></i>
-              </div>
-              <span class="menu-text">Pedidos</span>
-            </a>
-            <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
-              <div class="menu-icon">
-                <i class="fas fa-box"></i>
-              </div>
-              <span class="menu-text">Produtos</span>
-            </a>
+              <a href="{{ url_for('consultar_anymarket') }}" class="menu-item {% if active_page == 'consultar_anymarket' %}active{% endif %}">
+                  <div class="menu-icon">
+                      <i class="fas fa-search"></i>
+                  </div>
+                  <span class="menu-text">Fotos</span>
+              </a>
+              <!-- NOVO: Canais de Transmissão -->
+              <a href="{{ url_for('canais_transmissao') }}" class="menu-item {% if active_page == 'canais_transmissao' %}active{% endif %}">
+                  <div class="menu-icon">
+                      <i class="fas fa-broadcast-tower"></i>
+                  </div>
+                  <span class="menu-text">Canais</span>
+                  {% if active_page == 'canais_transmissao' %}
+                      <span class="badge bg-primary ms-2">Novo</span>
+                  {% endif %}
+              </a>
+              <a href="{{ url_for('pedidos_anymarket') }}" class="menu-item {% if active_page == 'pedidos' %}active{% endif %}">
+                  <div class="menu-icon">
+                      <i class="fas fa-shopping-cart"></i>
+                  </div>
+                  <span class="menu-text">Pedidos</span>
+              </a>
+              <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
+                  <div class="menu-icon">
+                      <i class="fas fa-box"></i>
+                  </div>
+                  <span class="menu-text">Produtos</span>
+              </a>
           </div>
-        </div>
+      </div>
 
         <!-- Módulo Mercado Livre -->
         <div class="menu-group" data-module="mercadolivre">
-          <div class="menu-title">
-            <i class="fas fa-caret-down module-toggle"></i>
-            <span class="menu-title-text">MERCADO LIVRE</span>
-          </div>
-          <div class="menu-subitems">
-            <a href="{{ url_for('consultar_mercado_livre') }}" class="menu-item {% if active_page == 'consultar_mercado_livre' %}active{% endif %}">
-              <div class="menu-icon">
-                <i class="fas fa-store"></i>
-              </div>
-              <span class="menu-text">Anúncios</span>
-            </a>
-            <a href="#" class="menu-item">
-              <div class="menu-icon">
-                <i class="fas fa-shopping-cart"></i>
-              </div>
-              <span class="menu-text">Pedidos</span>
-              <span class="badge badge-warning badge-pill">Em breve</span>
-            </a>
-            <a href="#" class="menu-item">
-              <div class="menu-icon">
-                <i class="fas fa-bullhorn"></i>
-              </div>
-              <span class="menu-text">Campanhas</span>
-              <span class="badge badge-warning badge-pill">Em breve</span>
-            </a>
-            <a href="{{ url_for('perfil_mercado_livre') }}" class="menu-item {% if active_page == 'perfil_mercado_livre' %}active{% endif %}">
-              <div class="menu-icon">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <span class="menu-text">Meu Perfil</span>
-            </a>
-          </div>
+            <div class="menu-title">
+                <i class="fas fa-caret-down module-toggle"></i>
+                <span class="menu-title-text">MERCADO LIVRE</span>
+            </div>
+            <div class="menu-subitems">
+                <a href="{{ url_for('consultar_mercado_livre') }}" class="menu-item {% if active_page == 'consultar_mercado_livre' %}active{% endif %}">
+                    <div class="menu-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <span class="menu-text">Anúncios</span>
+                </a>
+                <!-- NOVO: Alterar Modo de Envio -->
+                <a href="{{ url_for('alterar_modo_envio') }}" class="menu-item {% if active_page == 'alterar_modo_envio' %}active{% endif %}">
+                    <div class="menu-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <span class="menu-text">Logistica ME1/ME2</span>
+                    <span class="badge bg-primary ms-2">Novo</span>
+                </a>
+                <a href="#" class="menu-item {% if active_page == 'campanhas_mercadolivre' %}active{% endif %}">
+                    <div class="menu-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <span class="menu-text">Campanhas</span>
+                    <span class="badge bg-primary ms-2">Novo</span>
+                </a>
+                <a href="{{ url_for('perfil_mercado_livre') }}" class="menu-item {% if active_page == 'perfil_mercado_livre' %}active{% endif %}">
+                    <div class="menu-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <span class="menu-text">Meu Perfil</span>
+                </a>
+            </div>
         </div>
 
           <!-- =============================================== -->
@@ -147,18 +158,32 @@
               <span class="menu-title-text">INTELIPOST</span>
             </div>
             <div class="menu-subitems">
+              <!-- Rastreamento por Pedido -->
               <a href="{{ url_for('intelipost.rastrear') }}" class="menu-item {% if active_page == 'intelipost_rastrear' %}active{% endif %}">
                 <div class="menu-icon">
                   <i class="fas fa-search-location"></i>
                 </div>
-                <span class="menu-text">Rastreamento</span>
+                <span class="menu-text">Rastrear Pedido</span>
               </a>
+              
+              <!-- Rastreamento por Nota Fiscal (NOVO) -->
+              <a href="{{ url_for('intelipost.rastrear_nf') }}" class="menu-item {% if active_page == 'intelipost_rastrear_nf' %}active{% endif %}">
+                <div class="menu-icon">
+                  <i class="fas fa-file-invoice"></i>
+                </div>
+                <span class="menu-text">Rastrear por NF</span>
+                <span class="badge badge-info badge-pill">Novo</span>
+              </a>
+              
+              <!-- Histórico -->
               <a href="{{ url_for('intelipost.historico') }}" class="menu-item {% if active_page == 'intelipost_historico' %}active{% endif %}">
                 <div class="menu-icon">
                   <i class="fas fa-history"></i>
                 </div>
                 <span class="menu-text">Histórico</span>
               </a>
+              
+              <!-- Configurações -->
               <a href="#" class="menu-item">
                 <div class="menu-icon">
                   <i class="fas fa-cog"></i>

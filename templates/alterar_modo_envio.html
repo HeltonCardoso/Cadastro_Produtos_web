@@ -1,0 +1,1315 @@
+<!-- templates/alterar_modo_envio.html -->
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+:root {
+    --me1-color: #ffc107;
+    --me2-color: #28a745;
+    --warning-color: #fd7e14;
+    --success-light: #d4edda;
+    --danger-light: #f8d7da;
+    --info-light: #d1ecf1;
+}
+
+.modo-envio-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    margin: 0;
+    color: #333;
+}
+
+.current-account-badge {
+    background: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 14px;
+}
+
+/* Quick Search */
+.quick-search-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-input-group input {
+    flex: 1;
+    min-width: 300px;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.search-input-group input:focus {
+    border-color: #0d6efd;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+}
+
+.search-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Info Cards */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-left: 4px solid transparent;
+}
+
+.info-card.me1-card {
+    border-left-color: var(--me1-color);
+    background: #fff9e6;
+}
+
+.info-card.me2-card {
+    border-left-color: var(--me2-color);
+    background: #e8f5e9;
+}
+
+.info-card.warning-card {
+    border-left-color: var(--warning-color);
+    background: #fff3e0;
+}
+
+.info-card h3 {
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card .value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.info-card .label {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Tabela de Resultados */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th {
+    background: #f8f9fa;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.orders-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 13px;
+}
+
+.orders-table tbody tr {
+    transition: background 0.2s;
+}
+
+.orders-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-me1 {
+    background: var(--me1-color);
+    color: #000;
+}
+
+.badge-me2 {
+    background: var(--me2-color);
+    color: white;
+}
+
+.status-success {
+    background: #28a745;
+    color: white;
+}
+
+.status-warning {
+    background: #ffc107;
+    color: #000;
+}
+
+.status-error {
+    background: #dc3545;
+    color: white;
+}
+
+.status-info {
+    background: #17a2b8;
+    color: white;
+}
+
+/* Ações na tabela */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-sm i {
+    font-size: 12px;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #218838;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modal de Verificação */
+.verification-result {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.verification-success {
+    background: var(--success-light);
+    border: 1px solid #c3e6cb;
+}
+
+.verification-error {
+    background: var(--danger-light);
+    border: 1px solid #f5c6cb;
+}
+
+.verification-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+}
+
+.verification-item {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 4px;
+    background: white;
+}
+
+.verification-item i {
+    margin-right: 10px;
+}
+
+.verification-item.success i {
+    color: #28a745;
+}
+
+.verification-item.error i {
+    color: #dc3545;
+}
+
+.verification-item.warning i {
+    color: #ffc107;
+}
+
+/* Modal de Progresso */
+.progress-container {
+    padding: 15px;
+}
+
+.progress-bar {
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.progress-info {
+    margin: 15px 0;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.progress-details {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.current-processing {
+    margin: 15px 0;
+    padding: 10px;
+    background: #e7f3ff;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.activity-log {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+.log-entry {
+    padding: 5px 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.log-success {
+    background: #d4edda;
+    border-left: 3px solid #28a745;
+}
+
+.log-error {
+    background: #f8d7da;
+    border-left: 3px solid #dc3545;
+}
+
+.log-warning {
+    background: #fff3cd;
+    border-left: 3px solid #ffc107;
+}
+
+.log-info {
+    background: #d1ecf1;
+    border-left: 3px solid #17a2b8;
+}
+
+/* Loading */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    text-align: center;
+}
+
+.loading-spinner i {
+    font-size: 48px;
+    color: #0d6efd;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Alertas */
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+.alert-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .search-input-group input {
+        min-width: 100%;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .orders-table {
+        font-size: 12px;
+    }
+    
+    .orders-table th, .orders-table td {
+        padding: 8px 6px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modo-envio-container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1><i class="fas fa-truck"></i> Alterar Modo de Envio</h1>
+        
+        {% if conta_atual %}
+        <div class="current-account-badge">
+            <small class="text-muted">Conta em uso: </small>
+            <span class="badge bg-info">
+                <i class="fas fa-user"></i> {{ conta_atual.nickname|default(conta_atual.account_name) }}
+            </span>
+            {% if todas_contas|length > 1 %}
+            <div class="dropdown d-inline-block ms-2">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown">
+                    <i class="fas fa-sync-alt"></i> Trocar
+                </button>
+                <ul class="dropdown-menu">
+                    {% for conta in todas_contas %}
+                        {% if conta.has_token %}
+                            <li>
+                                <a class="dropdown-item {% if conta.id == conta_atual_id %}active{% endif %}" 
+                                   href="#" onclick="trocarConta('{{ conta.id }}')">
+                                    <i class="fas fa-store"></i> {{ conta.name }}
+                                    {% if conta.nickname %}
+                                        <small>({{ conta.nickname }})</small>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Barra de Busca Rápida -->
+    <div class="quick-search-bar">
+        <div class="search-input-group">
+            <input type="text" id="mlbs" 
+                   placeholder="Digite os MLBs (separados por vírgula, espaço ou quebra de linha)" 
+                   style="font-family: monospace;">
+            <div class="search-buttons">
+                <button class="btn btn-primary" onclick="verificarMLBs()">
+                    <i class="fas fa-search"></i> Verificar
+                </button>
+                <button class="btn btn-success" onclick="iniciarMigracaoSelecionados()">
+                    <i class="fas fa-play"></i> Migrar Selecionados
+                </button>
+                <button class="btn btn-warning" onclick="verificarTodos()">
+                    <i class="fas fa-check-double"></i> Verificar Todos
+                </button>
+                <button class="btn btn-secondary" onclick="limparTudo()">
+                    <i class="fas fa-broom"></i> Limpar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards de Informação -->
+    <div class="info-cards" id="infoCards">
+        <div class="info-card me1-card">
+            <h3><i class="fas fa-truck"></i> ME1</h3>
+            <div class="value" id="totalME1">0</div>
+            <div class="label">anúncios com ME1</div>
+        </div>
+        <div class="info-card me2-card">
+            <h3><i class="fas fa-truck-fast"></i> ME2</h3>
+            <div class="value" id="totalME2">0</div>
+            <div class="label">anúncios com ME2</div>
+        </div>
+        <div class="info-card warning-card">
+            <h3><i class="fas fa-clock"></i> Pendentes</h3>
+            <div class="value" id="totalPendentes">0</div>
+            <div class="label">anúncios não verificados</div>
+        </div>
+    </div>
+
+    <!-- Tabela de Resultados -->
+    <div id="resultadosContainer" style="display: none;">
+        <div class="table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;">
+                            <input type="checkbox" id="selecionarTodos" onchange="selecionarTodosMLBs()">
+                        </th>
+                        <th>MLB</th>
+                        <th>Título</th>
+                        <th>Modo Atual</th>
+                        <th>Status ME2</th>
+                        <th>Dimensões</th>
+                        <th>Atributos</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="resultadosBody">
+                    <!-- Resultados serão inseridos aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Estado Vazio -->
+    <div id="emptyState" class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        Digite os MLBs acima e clique em "Verificar" para analisar quais podem ser migrados para ME2.
+    </div>
+</div>
+
+<!-- MODAL DE VERIFICAÇÃO DETALHADA -->
+<div id="modalVerificacao" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-clipboard-check"></i> Verificação Detalhada</h2>
+            <button class="close-modal" onclick="fecharModal('modalVerificacao')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="verificationResult"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fecharModal('modalVerificacao')">Fechar</button>
+            <button class="btn btn-success" id="btnMigrarModal" onclick="migrarModal()">
+                <i class="fas fa-play"></i> Migrar para ME2
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE PROGRESSO -->
+<div id="modalProgresso" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-sync-alt fa-spin"></i> Migrando para ME2</h2>
+            <button class="close-modal" onclick="fecharModal('modalProgresso')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                
+                <div class="progress-info">
+                    <div class="progress-stats">
+                        <span id="progressText">0% (0/0)</span>
+                        <span id="progressSpeed" class="progress-speed"></span>
+                    </div>
+                    
+                    <div class="progress-details">
+                        <div class="detail-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <span>Sucesso: </span>
+                            <strong id="progressSucesso">0</strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-times-circle text-danger"></i>
+                            <span>Erros: </span>
+                            <strong id="progressErros">0</strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock text-warning"></i>
+                            <span>Restantes: </span>
+                            <strong id="progressRestantes">0</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="current-processing">
+                        <small>Processando: </small>
+                        <code id="currentMlb">-</code>
+                        <span id="currentStatus" class="badge bg-info">Aguardando...</span>
+                    </div>
+                    
+                    <div class="activity-log" id="activityLog"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cancelarMigracao()" id="btnCancelar">
+                <i class="fas fa-stop"></i> Cancelar
+            </button>
+            <button class="btn btn-success" onclick="fecharModal('modalProgresso')" id="btnConcluir" style="display: none;">
+                <i class="fas fa-check"></i> Concluir
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-spinner">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p id="loadingMessage">Processando...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// =========================================
+// VARIÁVEIS GLOBAIS
+// =========================================
+let resultadosMLBs = [];
+let processoMigracao = {
+    ativo: false,
+    total: 0,
+    processados: 0,
+    sucesso: 0,
+    erros: 0,
+    inicio: null,
+    mlbs: [],
+    cancelar: false
+};
+
+// =========================================
+// FUNÇÕES DE CONTA
+// =========================================
+function trocarConta(accountId) {
+    fetch(`/api/mercadolivre/contas/${accountId}/selecionar`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso) {
+            mostrarMensagem('Conta alterada! Recarregando...', 'success');
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            mostrarMensagem('Erro: ' + data.erro, 'error');
+        }
+    });
+}
+
+// =========================================
+// FUNÇÕES PRINCIPAIS
+// =========================================
+function verificarMLBs() {
+    const mlbsText = document.getElementById('mlbs').value.trim();
+    
+    if (!mlbsText) {
+        mostrarMensagem('Digite os MLBs para verificar', 'error');
+        return;
+    }
+    
+    const mlbs = mlbsText.split(/[\n,;\s]+/)
+        .map(mlb => mlb.trim())
+        .filter(mlb => mlb && mlb.length > 0);
+    
+    if (mlbs.length === 0) {
+        mostrarMensagem('Nenhum MLB válido encontrado', 'error');
+        return;
+    }
+    
+    // Formatar MLBs
+    const mlbsFormatados = mlbs.map(mlb => {
+        if (!mlb.toUpperCase().startsWith('MLB')) {
+            const numeros = mlb.replace(/\D/g, '');
+            return numeros ? 'MLB' + numeros : null;
+        }
+        return mlb.toUpperCase();
+    }).filter(mlb => mlb);
+    
+    console.log('Verificando MLBs:', mlbsFormatados);
+    mostrarLoading(true, 'Verificando MLBs...');
+    
+    // Verificar cada MLB sequencialmente
+    verificarProximoMLB(mlbsFormatados, 0, []);
+}
+
+function verificarProximoMLB(mlbs, index, resultados) {
+    if (index >= mlbs.length) {
+        // Finalizado
+        resultadosMLBs = resultados;
+        atualizarTabelaResultados();
+        atualizarCardsInfo();
+        mostrarLoading(false);
+        
+        const totalME1 = resultados.filter(r => r.modo_atual === 'me1').length;
+        const totalME2 = resultados.filter(r => r.modo_atual === 'me2').length;
+        
+        mostrarMensagem(`Verificação concluída: ${totalME1} ME1, ${totalME2} ME2`, 'success');
+        return;
+    }
+    
+    const mlb = mlbs[index];
+    document.getElementById('loadingMessage').textContent = 
+        `Verificando ${index+1}/${mlbs.length}: ${mlb}`;
+    
+    fetch(`/api/mercadolivre/verificar-me2/${mlb}`)
+        .then(response => response.json())
+        .then(data => {
+            resultados.push({
+                mlb: mlb,
+                ...data
+            });
+            
+            // Pequeno delay para não sobrecarregar
+            setTimeout(() => verificarProximoMLB(mlbs, index + 1, resultados), 300);
+        })
+        .catch(error => {
+            console.error(`Erro ao verificar ${mlb}:`, error);
+            resultados.push({
+                mlb: mlb,
+                sucesso: false,
+                erro: error.message
+            });
+            setTimeout(() => verificarProximoMLB(mlbs, index + 1, resultados), 300);
+        });
+}
+
+function verificarTodos() {
+    const linhas = document.querySelectorAll('#resultadosBody tr');
+    const mlbs = [];
+    
+    linhas.forEach(linha => {
+        const checkbox = linha.querySelector('input[type="checkbox"]');
+        if (checkbox && !checkbox.checked) {
+            const mlbCell = linha.querySelector('td:nth-child(2)');
+            if (mlbCell) {
+                mlbs.push(mlbCell.textContent.trim());
+            }
+        }
+    });
+    
+    if (mlbs.length === 0) {
+        mostrarMensagem('Todos os MLBs já foram verificados', 'info');
+        return;
+    }
+    
+    document.getElementById('mlbs').value = mlbs.join('\n');
+    verificarMLBs();
+}
+
+function atualizarTabelaResultados() {
+    const container = document.getElementById('resultadosContainer');
+    const emptyState = document.getElementById('emptyState');
+    const tbody = document.getElementById('resultadosBody');
+    
+    if (resultadosMLBs.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    container.style.display = 'block';
+    emptyState.style.display = 'none';
+    
+    tbody.innerHTML = '';
+    
+    resultadosMLBs.forEach((item, index) => {
+        const podeMigrar = item.pronto === true;
+        const modoAtual = item.modo_atual || 'N/A';
+        const temErro = item.erro || item.sucesso === false;
+        
+        let statusClass = '';
+        let statusText = '';
+        let statusIcon = '';
+        
+        if (temErro) {
+            statusClass = 'status-error';
+            statusText = 'Erro';
+            statusIcon = 'fa-exclamation-triangle';
+        } else if (modoAtual === 'me2') {
+            statusClass = 'status-success';
+            statusText = 'Já ME2';
+            statusIcon = 'fa-check-circle';
+        } else if (podeMigrar) {
+            statusClass = 'status-success';
+            statusText = 'Pronto para ME2';
+            statusIcon = 'fa-check-circle';
+        } else {
+            statusClass = 'status-warning';
+            statusText = 'Não está pronto';
+            statusIcon = 'fa-exclamation-triangle';
+        }
+        
+        // Formatar atributos
+        let atributosHTML = '-';
+        if (item.atributos && item.atributos.length > 0) {
+            atributosHTML = item.atributos.map(attr => {
+                const nomes = {
+                    'SELLER_PACKAGE_HEIGHT': 'Altura',
+                    'SELLER_PACKAGE_LENGTH': 'Comprimento',
+                    'SELLER_PACKAGE_WIDTH': 'Largura',
+                    'SELLER_PACKAGE_WEIGHT': 'Peso'
+                };
+                return `<span class="badge bg-success" title="${attr}">${nomes[attr] || attr}</span>`;
+            }).join(' ');
+        } else if (item.atributos_ausentes && item.atributos_ausentes.length > 0) {
+            atributosHTML = item.atributos_ausentes.map(attr => {
+                const nomes = {
+                    'SELLER_PACKAGE_HEIGHT': 'Altura',
+                    'SELLER_PACKAGE_LENGTH': 'Comprimento',
+                    'SELLER_PACKAGE_WIDTH': 'Largura',
+                    'SELLER_PACKAGE_WEIGHT': 'Peso'
+                };
+                return `<span class="badge bg-warning" title="Ausente: ${attr}">${nomes[attr] || attr}</span>`;
+            }).join(' ');
+        }
+        
+        const linha = `
+            <tr>
+                <td>
+                    <input type="checkbox" class="mlb-checkbox" value="${item.mlb}" 
+                           ${modoAtual === 'me1' && podeMigrar ? '' : 'disabled'}>
+                </td>
+                <td><strong>${item.mlb}</strong></td>
+                <td>${item.titulo ? item.titulo.substring(0, 40) + (item.titulo.length > 40 ? '...' : '') : '-'}</td>
+                <td>
+                    <span class="badge ${modoAtual === 'me2' ? 'badge-me2' : 'badge-me1'}">
+                        ${modoAtual}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge ${statusClass}">
+                        <i class="fas ${statusIcon}"></i> ${statusText}
+                    </span>
+                </td>
+                <td><small>${item.dimensoes || '-'}</small></td>
+                <td>${atributosHTML}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-sm btn-info" onclick="verDetalhes('${item.mlb}')" 
+                                title="Ver detalhes">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${modoAtual === 'me1' && podeMigrar ? 
+                            `<button class="btn-sm btn-success" onclick="migrarUnico('${item.mlb}')" 
+                                     title="Migrar para ME2">
+                                <i class="fas fa-play"></i> Migrar
+                            </button>` : 
+                            `<button class="btn-sm btn-secondary" disabled title="Não pode migrar">
+                                <i class="fas fa-ban"></i>
+                            </button>`
+                        }
+                    </div>
+                </td>
+            </tr>
+        `;
+        
+        tbody.innerHTML += linha;
+    });
+    
+    // Atualizar checkbox "Selecionar Todos"
+    const checkboxTodos = document.getElementById('selecionarTodos');
+    if (checkboxTodos) {
+        const checkboxes = document.querySelectorAll('.mlb-checkbox:not([disabled])');
+        checkboxTodos.checked = checkboxes.length > 0 && 
+            Array.from(checkboxes).every(cb => cb.checked);
+    }
+}
+
+function atualizarCardsInfo() {
+    const totalME1 = resultadosMLBs.filter(r => r.modo_atual === 'me1').length;
+    const totalME2 = resultadosMLBs.filter(r => r.modo_atual === 'me2').length;
+    const totalPendentes = resultadosMLBs.filter(r => !r.modo_atual || r.erro).length;
+    
+    document.getElementById('totalME1').textContent = totalME1;
+    document.getElementById('totalME2').textContent = totalME2;
+    document.getElementById('totalPendentes').textContent = totalPendentes;
+}
+
+function verDetalhes(mlb) {
+    const resultado = resultadosMLBs.find(r => r.mlb === mlb);
+    if (!resultado) return;
+    
+    const modalBody = document.getElementById('verificationResult');
+    const btnMigrar = document.getElementById('btnMigrarModal');
+    
+    if (resultado.pronto) {
+        btnMigrar.style.display = 'inline-block';
+        btnMigrar.setAttribute('onclick', `migrarUnico('${mlb}')`);
+    } else {
+        btnMigrar.style.display = 'none';
+    }
+    
+    let html = `
+        <div class="verification-result ${resultado.pronto ? 'verification-success' : 'verification-error'}">
+            <h5>MLB: ${mlb}</h5>
+            <hr>
+    `;
+    
+    if (resultado.erro) {
+        html += `<p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Erro: ${resultado.erro}</p>`;
+    } else {
+        // Modo atual
+        html += `
+            <div class="verification-item ${resultado.modo_atual === 'me2' ? 'success' : ''}">
+                <i class="fas fa-truck"></i>
+                <strong>Modo atual:</strong> ${resultado.modo_atual}
+            </div>
+        `;
+        
+        // ME2 habilitado na conta
+        html += `
+            <div class="verification-item ${resultado.me2_habilitado ? 'success' : 'error'}">
+                <i class="fas fa-user-check"></i>
+                <strong>ME2 na conta:</strong> ${resultado.me2_habilitado ? '✅ Sim' : '❌ Não'}
+            </div>
+        `;
+        
+        // Categoria suporta
+        html += `
+            <div class="verification-item ${resultado.categoria_suporta ? 'success' : 'error'}">
+                <i class="fas fa-tags"></i>
+                <strong>Categoria suporta:</strong> ${resultado.categoria_suporta ? '✅ Sim' : '❌ Não'}
+            </div>
+        `;
+        
+        // Dimensões
+        html += `
+            <div class="verification-item ${resultado.dimensoes ? 'success' : 'warning'}">
+                <i class="fas fa-ruler"></i>
+                <strong>Dimensões:</strong> ${resultado.dimensoes || 'Não preenchidas'}
+            </div>
+        `;
+        
+        // Atributos
+        if (resultado.atributos && resultado.atributos.length > 0) {
+            html += `
+                <div class="verification-item success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Atributos presentes:</strong> ${resultado.atributos.join(', ')}
+                </div>
+            `;
+        }
+        
+        if (resultado.atributos_ausentes && resultado.atributos_ausentes.length > 0) {
+            html += `
+                <div class="verification-item error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Atributos ausentes:</strong> ${resultado.atributos_ausentes.join(', ')}
+                </div>
+            `;
+        }
+        
+        // Problemas
+        if (resultado.problemas && resultado.problemas.length > 0) {
+            html += '<hr><h6>Problemas encontrados:</h6><ul>';
+            resultado.problemas.forEach(p => {
+                html += `<li class="text-danger">${p}</li>`;
+            });
+            html += '</ul>';
+        }
+    }
+    
+    html += '</div>';
+    modalBody.innerHTML = html;
+    
+    document.getElementById('modalVerificacao').style.display = 'block';
+}
+
+function selecionarTodosMLBs() {
+    const checkboxTodos = document.getElementById('selecionarTodos');
+    const checkboxes = document.querySelectorAll('.mlb-checkbox:not([disabled])');
+    
+    checkboxes.forEach(cb => {
+        cb.checked = checkboxTodos.checked;
+    });
+}
+
+function iniciarMigracaoSelecionados() {
+    const checkboxes = document.querySelectorAll('.mlb-checkbox:checked');
+    
+    if (checkboxes.length === 0) {
+        mostrarMensagem('Selecione pelo menos um MLB para migrar', 'error');
+        return;
+    }
+    
+    const mlbs = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (!confirm(`Deseja migrar ${mlbs.length} MLBs para ME2?`)) {
+        return;
+    }
+    
+    abrirModalProgresso(mlbs);
+}
+
+function migrarUnico(mlb) {
+    if (!confirm(`Deseja migrar o MLB ${mlb} para ME2?`)) {
+        return;
+    }
+    
+    fecharModal('modalVerificacao');
+    abrirModalProgresso([mlb]);
+}
+
+function migrarModal() {
+    const btn = document.getElementById('btnMigrarModal');
+    const mlb = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+    migrarUnico(mlb);
+}
+
+function abrirModalProgresso(mlbs) {
+    // Resetar progresso
+    processoMigracao = {
+        ativo: true,
+        total: mlbs.length,
+        processados: 0,
+        sucesso: 0,
+        erros: 0,
+        inicio: new Date(),
+        mlbs: mlbs,
+        cancelar: false
+    };
+    
+    // Preparar interface
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressText').textContent = `0% (0/${mlbs.length})`;
+    document.getElementById('progressSucesso').textContent = '0';
+    document.getElementById('progressErros').textContent = '0';
+    document.getElementById('progressRestantes').textContent = mlbs.length;
+    document.getElementById('activityLog').innerHTML = '';
+    document.getElementById('btnCancelar').style.display = 'block';
+    document.getElementById('btnConcluir').style.display = 'none';
+    document.getElementById('currentMlb').textContent = '-';
+    document.getElementById('currentStatus').textContent = 'Aguardando...';
+    
+    // Abrir modal
+    document.getElementById('modalProgresso').style.display = 'block';
+    
+    // Iniciar processamento
+    setTimeout(() => processarProximoMLB(), 500);
+}
+
+function processarProximoMLB() {
+    if (!processoMigracao.ativo || processoMigracao.cancelar) {
+        finalizarMigracao();
+        return;
+    }
+    
+    if (processoMigracao.processados >= processoMigracao.total) {
+        finalizarMigracao();
+        return;
+    }
+    
+    const mlb = processoMigracao.mlbs[processoMigracao.processados];
+    
+    document.getElementById('currentMlb').textContent = mlb;
+    document.getElementById('currentStatus').textContent = 'Processando...';
+    
+    fetch('/api/mercadolivre/alterar-me2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mlb: mlb })
+    })
+    .then(response => response.json())
+    .then(data => {
+        processoMigracao.processados++;
+        
+        if (data.sucesso) {
+            processoMigracao.sucesso++;
+            adicionarLog(`✅ ${mlb} - Migrado para ME2`, 'log-success');
+            document.getElementById('currentStatus').textContent = 'Sucesso';
+        } else {
+            processoMigracao.erros++;
+            adicionarLog(`❌ ${mlb} - Erro: ${data.erro}`, 'log-error');
+            document.getElementById('currentStatus').textContent = 'Erro';
+        }
+        
+        atualizarBarraProgresso();
+        
+        // Atualizar resultado na tabela
+        const resultado = resultadosMLBs.find(r => r.mlb === mlb);
+        if (resultado) {
+            resultado.modo_atual = 'me2';
+        }
+        
+        setTimeout(processarProximoMLB, 1000);
+    })
+    .catch(error => {
+        processoMigracao.processados++;
+        processoMigracao.erros++;
+        adicionarLog(`❌ ${mlb} - Erro: ${error.message}`, 'log-error');
+        atualizarBarraProgresso();
+        setTimeout(processarProximoMLB, 1000);
+    });
+}
+
+function atualizarBarraProgresso() {
+    const percentual = (processoMigracao.processados / processoMigracao.total) * 100;
+    
+    document.getElementById('progressFill').style.width = percentual + '%';
+    document.getElementById('progressText').textContent = 
+        `${Math.round(percentual)}% (${processoMigracao.processados}/${processoMigracao.total})`;
+    document.getElementById('progressSucesso').textContent = processoMigracao.sucesso;
+    document.getElementById('progressErros').textContent = processoMigracao.erros;
+    document.getElementById('progressRestantes').textContent = 
+        processoMigracao.total - processoMigracao.processados;
+    
+    // Calcular tempo restante
+    const tempoDecorrido = (new Date() - processoMigracao.inicio) / 1000;
+    const velocidade = tempoDecorrido > 0 ? 
+        (processoMigracao.processados / tempoDecorrido).toFixed(1) : 0;
+    const tempoRestante = velocidade > 0 ? 
+        Math.round((processoMigracao.total - processoMigracao.processados) / velocidade) : 0;
+    
+    let infoVelocidade = `${velocidade} MLB/s`;
+    if (tempoRestante > 0) {
+        const minutos = Math.floor(tempoRestante / 60);
+        const segundos = tempoRestante % 60;
+        infoVelocidade += ` • ⏱️ ${minutos}:${segundos.toString().padStart(2, '0')}`;
+    }
+    
+    document.getElementById('progressSpeed').textContent = infoVelocidade;
+    
+    // Atualizar tabela quando terminar
+    if (processoMigracao.processados === processoMigracao.total) {
+        setTimeout(() => {
+            atualizarTabelaResultados();
+            atualizarCardsInfo();
+        }, 1000);
+    }
+}
+
+function adicionarLog(mensagem, classe) {
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry ${classe}`;
+    logEntry.textContent = mensagem;
+    
+    const logContainer = document.getElementById('activityLog');
+    logContainer.appendChild(logEntry);
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function cancelarMigracao() {
+    if (confirm('Deseja cancelar a migração?')) {
+        processoMigracao.cancelar = true;
+        processoMigracao.ativo = false;
+        adicionarLog('⏹️ Migração cancelada pelo usuário', 'log-warning');
+        document.getElementById('btnCancelar').style.display = 'none';
+        document.getElementById('btnConcluir').style.display = 'block';
+    }
+}
+
+function finalizarMigracao() {
+    processoMigracao.ativo = false;
+    document.getElementById('btnCancelar').style.display = 'none';
+    document.getElementById('btnConcluir').style.display = 'block';
+    
+    if (processoMigracao.cancelar) {
+        adicionarLog('📊 Processo interrompido', 'log-warning');
+    } else {
+        adicionarLog(`🎯 Migração concluída: ${processoMigracao.sucesso} sucesso, ${processoMigracao.erros} erros`, 'log-info');
+    }
+}
+
+function limparTudo() {
+    document.getElementById('mlbs').value = '';
+    resultadosMLBs = [];
+    atualizarTabelaResultados();
+    atualizarCardsInfo();
+    mostrarMensagem('Tudo limpo!', 'info');
+}
+
+// =========================================
+// FUNÇÕES AUXILIARES
+// =========================================
+function mostrarMensagem(mensagem, tipo) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${tipo}`;
+    alertDiv.innerHTML = `
+        <i class="fas fa-${tipo === 'error' ? 'exclamation-circle' : 
+                           tipo === 'success' ? 'check-circle' : 
+                           tipo === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        ${mensagem}
+    `;
+    
+    const container = document.querySelector('.modo-envio-container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    setTimeout(() => alertDiv.remove(), 5000);
+}
+
+function mostrarLoading(mostrar, mensagem = 'Processando...') {
+    const overlay = document.getElementById('loadingOverlay');
+    const msgEl = document.getElementById('loadingMessage');
+    
+    if (mostrar) {
+        msgEl.textContent = mensagem;
+        overlay.classList.remove('hidden');
+    } else {
+        overlay.classList.add('hidden');
+    }
+}
+
+function fecharModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Fechar modais ao clicar fora
+window.onclick = function(event) {
+    const modals = ['modalVerificacao', 'modalProgresso'];
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de alteração de modo de envio carregada');
+    
+    // Enter no campo de busca
+    document.getElementById('mlbs').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            verificarMLBs();
+        }
+    });
+});
+</script>
+{% endblock %}

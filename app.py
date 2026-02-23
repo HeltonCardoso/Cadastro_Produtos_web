@@ -29,6 +29,7 @@ from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_a
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 from routes_intelipost import intelipost_bp
 
+
 sys.path.append(str(Path(__file__).parent))
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
@@ -169,7 +170,117 @@ def api_atualizar_metricas():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
 
+
+@app.route('/testar-endpoints-campanhas')
+def testar_endpoints_campanhas():
+    """Página para testar endpoints de campanhas"""
+    from token_manager_secure import ml_token_manager
+    
+    esta_autenticado = ml_token_manager.is_authenticated()
+    
+    if not esta_autenticado:
+        flash('Autentique-se primeiro no Mercado Livre', 'warning')
+        return redirect(url_for('consultar_mercado_livre'))
+    
+    return render_template(
+        'testar_endpoints.html',
+        active_page='campanhas_mercadolivre',
+        page_title='Testar Endpoints de Campanhas',
+        esta_autenticado=esta_autenticado
+    )
+
+@app.route('/api/testar-endpoints', methods=['POST'])
+def api_testar_endpoints():
+    """API para testar endpoints"""
+    try:
+        import requests
+        from token_manager_secure import ml_token_manager
         
+        token = ml_token_manager.get_valid_token()
+        
+        if not token:
+            return jsonify({'sucesso': False, 'erro': 'Token não disponível'})
+        
+        headers = {'Authorization': f'Bearer {token}'}
+        base_url = "https://api.mercadolibre.com"
+        
+        resultados = []
+        
+        # Endpoints para testar
+        endpoints = [
+            {
+                'nome': 'seller-promotions (principal)',
+                'url': f'{base_url}/seller-promotions',
+                'params': {'promotion_type': 'SELLER_CAMPAIGN', 'app_version': 'v2', 'limit': 5}
+            },
+            {
+                'nome': 'seller_discounts',
+                'url': f'{base_url}/seller_discounts',
+                'params': {}
+            },
+            {
+                'nome': 'users/me',
+                'url': f'{base_url}/users/me',
+                'params': {}
+            }
+        ]
+        
+        # Testar cada endpoint
+        for endpoint in endpoints:
+            try:
+                response = requests.get(
+                    endpoint['url'],
+                    headers=headers,
+                    params=endpoint['params'],
+                    timeout=15
+                )
+                
+                resultado = {
+                    'nome': endpoint['nome'],
+                    'url': endpoint['url'],
+                    'status': response.status_code,
+                    'sucesso': response.status_code == 200
+                }
+                
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        resultado['dados'] = data
+                        
+                        # Verificar se tem campanhas
+                        if isinstance(data, list):
+                            resultado['possui_campanhas'] = any('promotion_id' in str(item) for item in data)
+                        elif isinstance(data, dict):
+                            resultado['possui_campanhas'] = any('promotion' in key.lower() for key in data.keys())
+                        else:
+                            resultado['possui_campanhas'] = False
+                            
+                    except:
+                        resultado['dados'] = response.text[:500]
+                        resultado['possui_campanhas'] = False
+                else:
+                    resultado['erro'] = response.text[:200]
+                
+                resultados.append(resultado)
+                
+            except Exception as e:
+                resultados.append({
+                    'nome': endpoint['nome'],
+                    'url': endpoint['url'],
+                    'status': 'erro',
+                    'sucesso': False,
+                    'erro': str(e)
+                })
+        
+        return jsonify({
+            'sucesso': True,
+            'resultados': resultados
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)})
+    
+       
 @app.route('/api/mercadolivre/atualizar-manufacturing', methods=['POST'])
 def atualizar_manufacturing():
     """Rota para atualizar manufacturing time"""
@@ -281,6 +392,186 @@ def pedidos_anymarket():
                             page_title='Pedidos - Anymarket'
                             )
 
+
+@app.route('/canais-transmissao')
+def canais_transmissao():
+    """Página para consultar canais de transmissão do AnyMarket"""
+    try:
+        # Verificar se token está configurado
+        token_configurado = verificar_token_anymarket_configurado()
+        partner_id = request.args.get('partner_id', '')
+        dados = []
+        stats = {
+            'total_canais': 0,
+            'total_ativos': 0,
+            'total_inativos': 0,
+            'total_transmitindo': 0
+        }
+        token_preview = ''
+        
+        if token_configurado and partner_id:
+            try:
+                from processamento.api_anymarket import consultar_canais_transmissao
+                token = obter_token_anymarket_seguro()
+                
+                # Mostrar preview do token (primeiros e últimos caracteres)
+                if token:
+                    token_preview = token[:10] + '...' + token[-10:]
+                
+                resultado = consultar_canais_transmissao(partner_id)
+                
+                if resultado.get('sucesso') and resultado.get('dados'):
+                    dados = resultado['dados']
+                    
+                    # Calcular estatísticas
+                    stats['total_canais'] = len(dados)
+                    stats['total_ativos'] = sum(1 for c in dados if c.get('active'))
+                    stats['total_inativos'] = stats['total_canais'] - stats['total_ativos']
+                    stats['total_transmitindo'] = stats['total_ativos']  # Simplificado
+                    
+                    flash(f'{len(dados)} canais encontrados!', 'success')
+                elif resultado.get('erro'):
+                    flash(f'Erro: {resultado["erro"]}', 'danger')
+                    
+            except Exception as e:
+                flash(f'Erro ao consultar API: {str(e)}', 'danger')
+                print(f"❌ Erro: {str(e)}")
+                import traceback
+                traceback.print_exc()
+        
+        elif partner_id and not token_configurado:
+            flash('Token do AnyMarket não configurado. Configure em Configurações.', 'warning')
+        
+        return render_template(
+            'canais_transmissao.html',
+            active_page='canais_transmissao',
+            active_module='anymarket',
+            page_title='Canais de Transmissão - AnyMarket',
+            dados=dados,
+            stats=stats,
+            token_configurado=token_configurado,
+            token_preview=token_preview,
+            partner_id=partner_id
+        )
+        
+    except Exception as e:
+        flash(f'Erro interno: {str(e)}', 'danger')
+        return render_template(
+            'canais_transmissao.html',
+            active_page='canais_transmissao',
+            active_module='anymarket',
+            page_title='Canais de Transmissão - AnyMarket',
+            dados=[],
+            stats={},
+            token_configurado=False,
+            token_preview='',
+            partner_id=''
+        )
+
+@app.route('/alterar-modo-envio')
+def alterar_modo_envio():
+    """Página para alterar modo de envio (ME1 ↔ ME2)"""
+    # Obtém informações da conta atual
+    accounts = ml_token_manager.get_all_accounts()
+    current_account = None
+    conta_atual_id = ml_token_manager.current_account_id
+    
+    if conta_atual_id and conta_atual_id in ml_token_manager.accounts:
+        current_account = ml_token_manager.accounts[conta_atual_id]
+    
+    # Verifica se tem alguma conta autenticada
+    esta_autenticado = False
+    for account in accounts:
+        if account.get('has_token'):
+            esta_autenticado = True
+            break
+    
+    return render_template(
+        'alterar_modo_envio.html',
+        active_page='alterar_modo_envio',
+        active_module='mercadolivre',
+        page_title='Alterar Modo de Envio',
+        esta_autenticado=esta_autenticado,
+        conta_atual=current_account,
+        conta_atual_id=conta_atual_id,
+        todas_contas=accounts
+    )
+
+@app.route('/api/mercadolivre/verificar-me2/<mlb>')
+def api_verificar_me2(mlb):
+    """API para verificar requisitos ME2 de um MLB"""
+    try:
+        resultado = ml_api_secure.verificar_requisitos_me2(mlb)
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/alterar-me2', methods=['POST'])
+def api_alterar_me2():
+    """API para alterar modo de envio para ME2"""
+    try:
+        data = request.get_json()
+        mlb = data.get('mlb')
+        mlbs = data.get('mlbs')
+        
+        if mlbs:
+            # Migração em massa
+            resultado = ml_api_secure.alterar_multiplos_para_me2(mlbs)
+        elif mlb:
+            # Migração única
+            resultado = ml_api_secure.alterar_para_me2(mlb)
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Nenhum MLB fornecido'
+            }), 400
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/debug-envio/<mlb>')
+def api_debug_envio(mlb):
+    """Rota para debug da mudança de envio"""
+    try:
+        resultado = ml_api_secure.debug_mudanca_envio(mlb)
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+@app.route('/api/anymarket/canais-transmissao')
+def api_canais_transmissao():
+    """API para consultar canais de transmissão (retorna JSON)"""
+    try:
+        auth_header = request.headers.get('Authorization', '')
+        partner_id = request.args.get('partner_id', '')
+        
+        # Se não veio no header, tenta obter do token seguro
+        token = None
+        if auth_header.startswith('Bearer '):
+            token = auth_header.replace('Bearer ', '')
+        else:
+            from processamento.api_anymarket import obter_token_anymarket_seguro
+            token = obter_token_anymarket_seguro()
+        
+        if not token:
+            return jsonify({
+                'success': False,
+                'error': 'Token não fornecido e não configurado'
+            }), 401
+        
+        from processamento.api_anymarket import consultar_canais_transmissao
+        resultado = consultar_canais_transmissao(partner_id, token)
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+    
 @app.route('/api/anymarket/pedidos')
 def api_pedidos_anymarket():
     """API para buscar pedidos do AnyMarket - CORREÇÃO DO FILTRO DE DATA"""
