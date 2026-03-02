@@ -1,30 +1,26 @@
-[11:40:04] Iniciando processamento do Google Sheets em 23/02/2026 11:40:04
-[11:40:05] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Off White Z56  - Mpozenato
-[11:40:05] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Nature Z56     - Mpozenato
-[11:40:05] Processado: Rack TV 55 Pol 150cm Orgânico 2 Portas Cecy Off White Z56   - Mpozenato
-[11:40:05] Processado: Rack TV 55 Pol 150cm Orgânico 2 Portas Cecy Nature Z56      - Mpozenato
-[11:40:05] Processado: Rack TV 65 Pol 180cm Orgânico 2 Portas Cecy Off White Z56   - Mpozenato
-[11:40:05] Processado: Rack TV 65 Pol 180cm Orgânico 2 Portas Cecy Nature Z56      - Mpozenato
-[11:40:05] Processado: Rack TV 75 Pol 220cm Orgânico 2 Portas Cecy Off White Z56   - Mpozenato
-[11:40:05] Processado: Rack TV 75 Pol 220cm Orgânico 2 Portas Cecy Nature Z56      - Mpozenato
-[11:40:05] Processado: NOMEE-COMMERCE
-[11:40:05] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature Z56     - Mpozenato
-[11:40:05] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[11:40:05] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature Z56     - Mpozenato
-[11:40:05] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[11:40:05] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature Z56    - Mpozenato
-[11:40:05] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[11:40:05] Processado: NOMEE-COMMERCE
-[11:40:05] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Off Z56 - Mpozenato
-[11:40:05] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Nature Z56 - Mpozenato
-[11:40:05] Processado: Cristaleira Porta de Vidro 92cm Orgânica Pé Metal Sindy Off Z56 - Mpozenato
-[11:40:05] Processado: Cristaleira Porta de Vidro 92cm Orgânica Pé Metal Sindy Nature Z56 - Mpozenato
-[11:40:05] Processado: NOMEE-COMMERCE
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm Com Prateleiras Form Preto/Nature Z56 - Mpozenato
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm Com Prateleiras Form Nature Z56 - Mpozenato
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm Com Prateleiras Form Branco Z56 - Mpozenato
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm 2 Portas Form Preto/Nature Z56 - Mpozenato
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm 2 Portas Form Nature Z56     - Mpozenato
-[11:40:05] Processado: Estante Livreiro Bipartida 63cm 2 Portas Form Branco Z56     - Mpozenato
-[11:40:05] Arquivo gerado: Atributos_Extraidos_SemMarca_20260223_114005.xlsx
-[11:40:05] Processamento concluído - 27 itens em 1.41s
+[11:55:58] Iniciando processamento do Google Sheets em 27/02/2026 11:55:58
+[11:55:59] Processado: Rack Bancada TV 60 Pol 217cm Orgânico Valen Cedro/Branco C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 217cm Orgânico Valen Cedro/Off C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 217cm Orgânico Valen Hannover/Fendi C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 158cm Pé Madeira Margot Off/Cedro C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 158cm Pé Madeira Margot Cinza/Cedro C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 160cm Pé Madeira Dalva Off/Cedro C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 160cm Pé Madeira Dalva Cinza/Cedro C14 - Mpozenato
+[11:55:59] Processado: Rack Bancada TV 60 Pol 160cm Pé Madeira Dalva Preto/Cedro C14 - Mpozenato
+[11:55:59] Processado: Buffet Aparador 160cm 4 Portas Pé Madeira Lady Off/Cedro C14 - Mpozenato
+[11:55:59] Processado: Buffet Aparador 160cm 4 Portas Pé Madeira Lady Cinza/Cedro C14 - Mpozenato
+[11:55:59] Processado: Buffet Aparador 160cm 4 Portas Pé Madeira Lady Fendi/Hannover C14 - Mpozenato
+[11:55:59] Processado: Buffet Aparador 165cm 4 Portas Pé Madeira Aspen Branco/Cedro C14 - Mpozenato
+[11:55:59] Processado: Buffet Aparador 165cm 4 Portas Pé Madeira Aspen Off/Cedro C14 - Mpozenato
+[11:56:00] Processado: Buffet Aparador 166cm 2 Portas 3 Gavetas Donni Cedro/Off C14 - Mpozenato
+[11:56:00] Processado: Buffet Aparador 166cm 2 Portas 3 Gavetas Donni Hannover/Fendi C14 - Mpozenato
+[11:56:00] Processado: Balcão Aparador Bar 75cm Com Adega Apollo Branco/Cedro C14 - Mpozenato
+[11:56:00] Processado: Balcão Aparador Bar 75cm Com Adega Apollo Cedro C14 - Mpozenato
+[11:56:00] Processado: Balcão Aparador Bar 75cm Com Adega Apollo Off/Cedro C14 - Mpozenato
+[11:56:00] Processado: Balcão Aparador Bar 75cm Com Adega Apollo Cinza/Cedro C14 - Mpozenato
+[11:56:00] Processado: Cômoda Quarto 135cm Orgânica 8 Gavetas Luke Branco C14 - Mpozenato
+[11:56:00] Processado: Cômoda Quarto 135cm Orgânica 8 Gavetas Luke Off/Cedro C14 - Mpozenato
+[11:56:00] Processado: Mesa Cabeceira Para Quarto 50cm 2 Gavetas Luke Branco C14 - Mpozenato
+[11:56:00] Processado: Mesa Cabeceira Para Quarto 50cm 2 Gavetas Luke Off/Cedro C14 - Mpozenato
+[11:56:00] Arquivo gerado: Atributos_Extraidos_SemMarca_20260227_115600.xlsx
+[11:56:00] Processamento concluído - 23 itens em 1.44s

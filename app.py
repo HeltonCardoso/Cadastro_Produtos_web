@@ -280,7 +280,293 @@ def api_testar_endpoints():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)})
     
-       
+@app.route('/campanhas-ativas')
+def campanhas_ativas():
+    """Página para visualizar campanhas ativas"""
+    from token_manager_secure import ml_token_manager
+    
+    esta_autenticado = ml_token_manager.is_authenticated()
+    
+    if not esta_autenticado:
+        flash('Autentique-se primeiro no Mercado Livre', 'warning')
+        return redirect(url_for('consultar_mercado_livre'))
+    
+    return render_template(
+        'campanhas_ativas.html',
+        active_page='campanhas_mercadolivre',
+        page_title='Campanhas Ativas no Mercado Livre',
+        esta_autenticado=esta_autenticado
+    )
+@app.route('/api/campanhas-ativas', methods=['GET'])
+def api_campanhas_ativas():
+    """API para buscar TODAS as promoções do vendedor usando o endpoint oficial"""
+    try:
+        import requests
+        from token_manager_secure import ml_token_manager
+        
+        # Obter token válido
+        token = ml_token_manager.get_valid_token()
+        
+        if not token:
+            return jsonify({
+                'sucesso': False, 
+                'erro': 'Token não disponível. Autentique-se primeiro.'
+            })
+        
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+        
+        base_url = "https://api.mercadolibre.com"
+        
+        # Primeiro, obter informações do usuário
+        user_response = requests.get(
+            f'{base_url}/users/me',
+            headers=headers,
+            timeout=15
+        )
+        
+        if user_response.status_code != 200:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Não foi possível obter informações do usuário'
+            })
+        
+        user_data = user_response.json()
+        user_id = user_data.get('id')
+        
+        # ENDPOINT CORRETO: Consultar TODAS as promoções do usuário
+        # Documentação oficial: https://developers.mercadolivre.com.br/pt_br/gerenciar-ofertas [citation:6]
+        promotions_response = requests.get(
+            f'{base_url}/seller-promotions/users/{user_id}',
+            headers=headers,
+            params={'app_version': 'v2'},  # Versão obrigatória da API
+            timeout=15
+        )
+        
+        if promotions_response.status_code == 200:
+            promotions_data = promotions_response.json()
+            
+            # A estrutura da resposta é { "results": [...] } [citation:6]
+            promotions_list = promotions_data.get('results', [])
+            
+            if not promotions_list:
+                return jsonify({
+                    'sucesso': True,
+                    'quantidade_total': 0,
+                    'quantidade_ativas': 0,
+                    'campanhas': [],
+                    'mensagem': 'Nenhuma promoção encontrada para este usuário.',
+                    'user_id': user_id,
+                    'user_nickname': user_data.get('nickname', 'N/A'),
+                    'endpoint_utilizado': f'/seller-promotions/users/{user_id}'
+                })
+            
+            # Processar todas as promoções encontradas
+            campanhas_processadas = []
+            tipos_encontrados = set()
+            
+            for promotion in promotions_list:
+                campanha_info = processar_promocao_unificada(promotion)
+                if campanha_info:
+                    campanhas_processadas.append(campanha_info)
+                    tipos_encontrados.add(campanha_info['tipo'])
+            
+            # Separar campanhas ativas (status = 'started') [citation:1][citation:2][citation:6]
+            campanhas_ativas = [
+                c for c in campanhas_processadas 
+                if c.get('status_original') == 'started'  # 'started' é o status para ativo
+            ]
+            
+            return jsonify({
+                'sucesso': True,
+                'quantidade_total': len(campanhas_processadas),
+                'quantidade_ativas': len(campanhas_ativas),
+                'campanhas': campanhas_ativas,
+                'todas_campanhas': campanhas_processadas,
+                'tipos_encontrados': list(tipos_encontrados),
+                'user_id': user_id,
+                'user_nickname': user_data.get('nickname', 'N/A'),
+                'endpoint_utilizado': f'/seller-promotions/users/{user_id}'
+            })
+            
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': f'Erro ao buscar promoções. Status: {promotions_response.status_code}',
+                'detalhes': promotions_response.text[:500],
+                'user_id': user_id,
+                'user_nickname': user_data.get('nickname', 'N/A')
+            })
+            
+    except requests.exceptions.Timeout:
+        return jsonify({'sucesso': False, 'erro': 'Timeout na requisição'})
+    except requests.exceptions.ConnectionError:
+        return jsonify({'sucesso': False, 'erro': 'Erro de conexão'})
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)})
+
+def processar_promocao_unificada(promocao):
+    """Processa dados de promoção baseado na documentação oficial unificada [citation:6]"""
+    if not promocao:
+        return None
+    
+    try:
+        # Status possíveis segundo documentação [citation:1][citation:2][citation:6]
+        # - pending: Promoção aprovada, mas ainda não iniciou
+        # - started: Promoção ativa
+        # - finished: Promoção finalizada
+        
+        status_map = {
+            'pending': 'Pendente',
+            'started': 'Ativa',
+            'finished': 'Finalizada',
+            'candidate': 'Candidata'
+        }
+        
+        status = promocao.get('status', 'N/A')
+        status_formatado = status_map.get(status, status)
+        
+        # Extrair benefícios se existirem [citation:6]
+        benefits = promocao.get('benefits', {})
+        
+        return {
+            'id': promocao.get('id', 'N/A'),
+            'nome': promocao.get('name', 'Sem nome'),
+            'tipo': promocao.get('type', 'N/A'),  # DEAL, SELLER_CAMPAIGN, LIGHTNING, etc.
+            'status': status_formatado,
+            'status_original': status,
+            'is_active': status == 'started',
+            'data_inicio': promocao.get('start_date', 'N/A'),
+            'data_fim': promocao.get('finish_date', 'N/A'),
+            'deadline': promocao.get('deadline_date', 'N/A'),  # Prazo para aceitar convite
+            'beneficios': {
+                'tipo': benefits.get('type'),
+                'meli_percent': benefits.get('meli_percent'),  # % que o MELI paga
+                'seller_percent': benefits.get('seller_percent'),  # % que o vendedor paga
+                'buy_quantity': benefits.get('buy_quantity'),  # Para VOLUME (ex: compre 3)
+                'pay_quantity': benefits.get('pay_quantity')   # Para VOLUME (ex: pague 2)
+            } if benefits else None,
+            'detalhes': promocao
+        }
+    except Exception as e:
+        return {
+            'id': 'erro',
+            'nome': f'Erro ao processar: {str(e)}',
+            'tipo': promocao.get('type', 'desconhecido'),
+            'dados_brutos': promocao
+        }
+    
+def processar_campanha_ml(campanha, tipo_promocao):
+    """Processa dados de campanha baseado na documentação oficial [citation:2][citation:5]"""
+    if not campanha:
+        return None
+    
+    try:
+        # Mapeamento de status conforme documentação [citation:2][citation:5]
+        status_map = {
+            'pending': 'Pendente',    # Promoção aprovada, mas ainda não iniciou
+            'started': 'Ativa',        # Promoção ativa [citation:5]
+            'finished': 'Finalizada',  # Promoção finalizada
+            'candidate': 'Candidata'   # Item candidato [citation:2]
+        }
+        
+        status = campanha.get('status', 'N/A')
+        status_formatado = status_map.get(status, status)
+        
+        return {
+            'id': campanha.get('id', 'N/A'),
+            'nome': campanha.get('name', 'Sem nome'),
+            'tipo': tipo_promocao,
+            'subtipo': campanha.get('sub_type', 'N/A'),  # FIXED_PERCENTAGE ou FLEXIBLE_PERCENTAGE [citation:5]
+            'status': status_formatado,
+            'status_original': status,
+            'is_active': status == 'started',  # Apenas 'started' é considerado ativo [citation:5]
+            'data_inicio': campanha.get('start_date', 'N/A'),
+            'data_fim': campanha.get('finish_date', 'N/A'),
+            'detalhes': campanha
+        }
+    except Exception as e:
+        return None
+
+def processar_promocao_ml(promocao):
+    """Processa dados de promoção do Mercado Livre baseado na documentação oficial [citation:2]"""
+    if not promocao:
+        return None
+    
+    try:
+        # Mapeamento de status baseado na documentação [citation:1][citation:3]
+        status_map = {
+            'pending': 'Pendente',
+            'started': 'Ativa',  # Status para promoção ativa [citation:1]
+            'finished': 'Finalizada',
+            'candidate': 'Candidato',
+            'active': 'Ativa'
+        }
+        
+        status = promocao.get('status', 'N/A')
+        status_formatado = status_map.get(status, status)
+        
+        # Determinar se é uma campanha ativa baseado no status [citation:1]
+        is_active = status in ['started', 'active']
+        
+        # Extrair informações de benefícios se existirem [citation:2]
+        beneficios = promocao.get('benefits', {})
+        
+        return {
+            'id': promocao.get('id', 'N/A'),
+            'nome': promocao.get('name', 'Sem nome'),
+            'tipo': promocao.get('type', 'N/A'),  # DEAL, SELLER_CAMPAIGN, etc. [citation:2]
+            'status': status_formatado,
+            'status_original': status,
+            'is_active': is_active,
+            'data_inicio': promocao.get('start_date', 'N/A'),
+            'data_fim': promocao.get('finish_date', 'N/A'),
+            'deadline': promocao.get('deadline_date', 'N/A'),  # Prazo para aceitar convite [citation:2]
+            'beneficios': {
+                'tipo': beneficios.get('type'),
+                'meli_percent': beneficios.get('meli_percent'),  # % que o MELI paga [citation:2]
+                'seller_percent': beneficios.get('seller_percent')  # % que o vendedor paga [citation:2]
+            } if beneficios else None,
+            'detalhes': promocao  # Dados brutos para debug
+        }
+    except Exception as e:
+        return {
+            'id': 'erro',
+            'nome': f'Erro ao processar: {str(e)}',
+            'tipo': promocao.get('type', 'desconhecido'),
+            'dados_brutos': promocao
+        }
+
+def processar_campanha(campanha):
+    """Função auxiliar para processar dados da campanha"""
+    if not campanha:
+        return None
+    
+    try:
+        # Extrair informações relevantes
+        return {
+            'id': campanha.get('id') or campanha.get('promotion_id') or campanha.get('campaign_id', 'N/A'),
+            'nome': campanha.get('name') or campanha.get('title') or campanha.get('campaign_name', 'Sem nome'),
+            'tipo': campanha.get('type') or campanha.get('promotion_type', 'N/A'),
+            'status': campanha.get('status') or campanha.get('campaign_status', 'N/A'),
+            'data_inicio': campanha.get('start_date') or campanha.get('date_created', 'N/A'),
+            'data_fim': campanha.get('end_date') or campanha.get('date_modified', 'N/A'),
+            'desconto': campanha.get('discount') or campanha.get('discount_percentage', 0),
+            'itens_envolvidos': campanha.get('items_quantity') or campanha.get('total_items', 0),
+            'detalhes': campanha  # Incluir dados brutos para debug
+        }
+    except Exception as e:
+        return {
+            'id': 'erro',
+            'nome': f'Erro ao processar: {str(e)}',
+            'dados_brutos': campanha
+        }
+
+
+            
 @app.route('/api/mercadolivre/atualizar-manufacturing', methods=['POST'])
 def atualizar_manufacturing():
     """Rota para atualizar manufacturing time"""
