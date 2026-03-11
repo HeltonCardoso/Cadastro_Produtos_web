@@ -1,521 +1,613 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid mt-4">
-    <!-- Cabeçalho com ações -->
+<div class="container-fluid mt-4" style="max-width: 1400px;">
+    <!-- Cabeçalho -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="fas fa-bullhorn text-primary"></i> Campanhas do Mercado Livre</h2>
-            <p class="text-muted" id="userInfoHeader">Carregando informações do usuário...</p>
+            <h1 class="h3 fw-light mb-1" style="color: #333;">
+                <i class="fas fa-store me-2" style="color: #3483fa;"></i>
+                Central de Promoções
+            </h1>
+            <p class="text-muted small mb-0" id="infoUsuario">
+                <i class="fas fa-user-circle me-1"></i> Carregando...
+            </p>
         </div>
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="buscarCampanhas()" id="btnAtualizar">
-                <i class="fas fa-sync-alt"></i> Atualizar
+        <div class="d-flex gap-2">
+            <button class="btn btn-light btn-sm border" onclick="buscarCampanhas()" style="color: #3483fa;">
+                <i class="fas fa-sync-alt me-1"></i> Atualizar
             </button>
-            <button class="btn btn-success" onclick="exportarCampanhas()" id="btnExportar">
-                <i class="fas fa-file-export"></i> Exportar CSV
-            </button>
-            <a href="{{ url_for('testar_endpoints_campanhas') }}" class="btn btn-outline-secondary" target="_blank">
-                <i class="fas fa-flask"></i> Debug
-            </a>
         </div>
     </div>
 
     <!-- Loading -->
-    <div id="loading" class="text-center my-5">
+    <div id="loading" class="text-center py-5">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
             <span class="visually-hidden">Carregando...</span>
         </div>
-        <p class="mt-3 text-muted">Buscando suas campanhas no Mercado Livre...</p>
+        <p class="mt-3 text-muted small">Carregando suas promoções...</p>
     </div>
 
-    <!-- Cards de Resumo (inicialmente ocultos) -->
-    <div id="cardsResumo" class="row mb-4" style="display: none;">
-        <div class="col-md-3 mb-3">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-white-50">Total de Campanhas</h6>
-                            <h2 class="display-6 mb-0" id="totalCampanhas">0</h2>
+    <!-- Grid de Promoções -->
+    <div id="promocoesGrid" class="row g-4" style="display: none;">
+        <!-- Cards serão inseridos aqui -->
+    </div>
+
+    <!-- Modal de Produtos -->
+    <div class="modal fade" id="modalProdutos" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="border-radius: 12px;">
+                <div class="modal-header" style="border-bottom: 1px solid #eee;">
+                    <h5 class="modal-title fw-light" id="modalTituloPromocao">
+                        <i class="fas fa-boxes me-2" style="color: #3483fa;"></i>
+                        Produtos na promoção
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Abas para separar produtos por status -->
+                    <ul class="nav nav-tabs mb-4" id="produtosTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="todos-tab" data-bs-toggle="tab" data-bs-target="#todos" type="button" role="tab">
+                                Todos <span class="badge bg-secondary ms-2" id="badgeTodos">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="elegiveis-tab" data-bs-toggle="tab" data-bs-target="#elegiveis" type="button" role="tab">
+                                Elegíveis <span class="badge bg-warning ms-2" id="badgeElegiveis">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="participando-tab" data-bs-toggle="tab" data-bs-target="#participando" type="button" role="tab">
+                                Participando <span class="badge bg-success ms-2" id="badgeParticipando">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="programados-tab" data-bs-toggle="tab" data-bs-target="#programados" type="button" role="tab">
+                                Programados <span class="badge bg-info ms-2" id="badgeProgramados">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Loading -->
+                    <div id="loadingProdutos" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
                         </div>
-                        <i class="fas fa-bullhorn fa-3x text-white-50"></i>
+                    </div>
+                    
+                    <!-- Conteúdo das abas -->
+                    <div class="tab-content" id="produtosTabContent">
+                        <div class="tab-pane fade show active" id="todos" role="tabpanel">
+                            <div id="todosContainer" class="row g-3"></div>
+                        </div>
+                        <div class="tab-pane fade" id="elegiveis" role="tabpanel">
+                            <div id="elegiveisContainer" class="row g-3"></div>
+                        </div>
+                        <div class="tab-pane fade" id="participando" role="tabpanel">
+                            <div id="participandoContainer" class="row g-3"></div>
+                        </div>
+                        <div class="tab-pane fade" id="programados" role="tabpanel">
+                            <div id="programadosContainer" class="row g-3"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-white-50">Ativas</h6>
-                            <h2 class="display-6 mb-0" id="ativasCampanhas">0</h2>
-                        </div>
-                        <i class="fas fa-check-circle fa-3x text-white-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-warning text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-white-50">Pendentes</h6>
-                            <h2 class="display-6 mb-0" id="pendentesCampanhas">0</h2>
-                        </div>
-                        <i class="fas fa-clock fa-3x text-white-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="card-title text-white-50">Tipos Diferentes</h6>
-                            <h2 class="display-6 mb-0" id="tiposCampanhas">0</h2>
-                        </div>
-                        <i class="fas fa-tags fa-3x text-white-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filtros (inicialmente ocultos) -->
-    <div id="filtros" class="card mb-4" style="display: none;">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="form-label"><i class="fas fa-filter"></i> Filtrar por Tipo:</label>
-                    <select id="filtroTipo" class="form-select" onchange="aplicarFiltros()">
-                        <option value="todos">Todos os tipos</option>
-                        <option value="DEAL">DEAL (Convites Mercado Livre)</option>
-                        <option value="SELLER_CAMPAIGN">SELLER CAMPAIGN (Criadas por mim)</option>
-                        <option value="MARKETPLACE_CAMPAIGN">MARKETPLACE (Co-participação)</option>
-                        <option value="LIGHTNING">LIGHTNING (Ofertas Relâmpago)</option>
-                        <option value="VOLUME">VOLUME (Desconto por Volume)</option>
-                        <option value="PRICE_DISCOUNT">PRICE DISCOUNT (Desconto Individual)</option>
-                        <option value="DOD">DOD (Oferta do Dia)</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label"><i class="fas fa-flag"></i> Filtrar por Status:</label>
-                    <select id="filtroStatus" class="form-select" onchange="aplicarFiltros()">
-                        <option value="todos">Todos os status</option>
-                        <option value="started">Ativas (started)</option>
-                        <option value="pending">Pendentes (pending)</option>
-                        <option value="finished">Finalizadas (finished)</option>
-                        <option value="candidate">Candidatas (candidate)</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label"><i class="fas fa-search"></i> Buscar:</label>
-                    <input type="text" id="buscaCampanha" class="form-control" placeholder="Nome da campanha..." onkeyup="aplicarFiltros()">
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="limparFiltros()">
-                        <i class="fas fa-undo"></i> Limpar filtros
-                    </button>
-                    <span class="text-muted ms-3" id="resultadosFiltro"></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Informações do usuário (inicialmente ocultas) -->
-    <div id="userInfo" class="alert alert-info alert-dismissible fade show mb-4" style="display: none;" role="alert">
-        <i class="fas fa-user-circle"></i> 
-        <span id="userInfoContent"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <!-- Tabela de Campanhas (inicialmente oculta) -->
-    <div id="tabelaContainer" style="display: none;">
-        <div class="card">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fas fa-list"></i> 
-                    Lista de Campanhas
-                </h5>
-                <span class="badge bg-primary" id="contadorCampanhas">0 campanhas</span>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Status</th>
-                                <th>Nome</th>
-                                <th>Tipo</th>
-                                <th>Benefícios</th>
-                                <th>Período</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaCampanhas">
-                            <!-- Será preenchido via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mensagem de erro -->
-    <div id="erro" class="alert alert-danger" style="display: none;">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span id="erroMensagem"></span>
-        <button class="btn btn-sm btn-outline-danger ms-3" onclick="buscarCampanhas()">
-            <i class="fas fa-redo"></i> Tentar novamente
-        </button>
-    </div>
-
-    <!-- Sem campanhas -->
-    <div id="semCampanhas" class="text-center py-5" style="display: none;">
-        <i class="fas fa-bullhorn fa-4x text-muted mb-3"></i>
-        <h4 class="text-muted">Nenhuma campanha encontrada</h4>
-        <p class="text-muted">Você não possui campanhas no Mercado Livre ou todas estão finalizadas.</p>
-        <a href="https://www.mercadolivre.com.br/campaigns" target="_blank" class="btn btn-primary">
-            <i class="fas fa-external-link-alt"></i> Criar campanha no Mercado Livre
-        </a>
-    </div>
-</div>
-
-<!-- Modal de Detalhes -->
-<div class="modal fade" id="modalDetalhes" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-info-circle"></i> Detalhes da Campanha
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <pre id="detalhesCampanha" class="bg-light p-3 rounded" style="max-height: 400px; overflow: auto;"></pre>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" onclick="copiarDetalhes()">
-                    <i class="fas fa-copy"></i> Copiar
-                </button>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Cards de campanha */
+.promocao-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.promocao-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.promocao-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    background: white;
+}
+
+.promocao-titulo {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.promocao-tipo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f5f5f5;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #666;
+}
+
+.promocao-periodo {
+    font-size: 13px;
+    color: #999;
+    margin: 8px 0 0 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.promocao-body {
+    padding: 16px 20px;
+    flex: 1;
+}
+
+/* Cards de produto */
+.produto-card {
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 12px;
+    transition: all 0.2s;
+    height: 100%;
+}
+
+.produto-card:hover {
+    border-color: #3483fa;
+    box-shadow: 0 4px 12px rgba(52,131,250,0.1);
+}
+
+.produto-card.elegivel {
+    border-left: 4px solid #ffc107;
+}
+
+.produto-card.participando {
+    border-left: 4px solid #28a745;
+}
+
+.produto-card.programado {
+    border-left: 4px solid #17a2b8;
+}
+
+.produto-card.finalizado {
+    border-left: 4px solid #6c757d;
+    opacity: 0.7;
+}
+
+/* Badges de status */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-badge.elegivel {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.participando {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.programado {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.finalizado {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* Indicador de urgência */
+.urgente-badge {
+    background: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Grid de informações */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.info-item {
+    background: #f8f9fa;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.info-label {
+    color: #6c757d;
+    font-size: 10px;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Preços */
+.preco-original {
+    color: #999;
+    font-size: 12px;
+    text-decoration: line-through;
+}
+
+.preco-promocional {
+    color: #00a650;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.desconto-badge {
+    background: #00a650;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Botão */
+.btn-outline-primary {
+    border: 1px solid #3483fa;
+    color: #3483fa;
+    background: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-outline-primary:hover {
+    background: #3483fa;
+    color: white;
+}
+</style>
 
 <script>
-let campanhasOriginal = [];
+// Mapeamento de tipos de campanha para português
+const tipoMap = {
+    'DEAL': { nome: 'Campanha Tradicional', icone: '🎯' },
+    'SELLER_CAMPAIGN': { nome: 'Criada por Você', icone: '📢' },
+    'MARKETPLACE_CAMPAIGN': { nome: 'Co-participação ML', icone: '🤝' },
+    'LIGHTNING': { nome: 'Oferta Relâmpago', icone: '⚡' },
+    'DOD': { nome: 'Oferta do Dia', icone: '🌞' },
+    'VOLUME': { nome: 'Desconto por Volume', icone: '📦' },
+    'PRICE_DISCOUNT': { nome: 'Desconto Individual', icone: '💰' },
+    'SMART': { nome: 'Co-participação Automática', icone: '🤖' },
+    'PRICE_MATCHING': { nome: 'Preço Competitivo', icone: '🏆' },
+    'UNHEALTHY_STOCK': { nome: 'Liquidação Estoque', icone: '🏷️' },
+    'SELLER_COUPON_CAMPAIGN': { nome: 'Cupons', icone: '🎫' },
+    'PRE_NEGOTIATED': { nome: 'Desconto Pré-acordado', icone: '✍️' }
+};
+
+// Mapeamento de status para português
+const statusMap = {
+    'candidate': { nome: 'Elegível', cor: 'warning' },
+    'pending': { nome: 'Programado', cor: 'info' },
+    'started': { nome: 'Participando', cor: 'success' },
+    'finished': { nome: 'Finalizado', cor: 'secondary' }
+};
+
+let todasCampanhas = [];
 let modalInstance;
 
 document.addEventListener('DOMContentLoaded', function() {
-    modalInstance = new bootstrap.Modal(document.getElementById('modalDetalhes'));
+    modalInstance = new bootstrap.Modal(document.getElementById('modalProdutos'));
     buscarCampanhas();
 });
 
 function buscarCampanhas() {
-    // Mostrar loading, esconder outros elementos
     document.getElementById('loading').style.display = 'block';
-    document.getElementById('cardsResumo').style.display = 'none';
-    document.getElementById('filtros').style.display = 'none';
-    document.getElementById('tabelaContainer').style.display = 'none';
-    document.getElementById('userInfo').style.display = 'none';
-    document.getElementById('erro').style.display = 'none';
-    document.getElementById('semCampanhas').style.display = 'none';
-    document.getElementById('btnAtualizar').disabled = true;
-    document.getElementById('btnExportar').disabled = true;
+    document.getElementById('promocoesGrid').style.display = 'none';
 
     fetch('/api/campanhas-ativas')
         .then(response => response.json())
         .then(data => {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('btnAtualizar').disabled = false;
 
-            if (data.sucesso) {
-                if (data.todas_campanhas && data.todas_campanhas.length > 0) {
-                    campanhasOriginal = data.todas_campanhas;
-                    
-                    // Atualizar informações do usuário
-                    document.getElementById('userInfoContent').innerHTML = `
-                        <strong>${data.user_nickname}</strong> (ID: ${data.user_id}) | 
-                        <strong>${data.quantidade_total}</strong> campanhas encontradas |
-                        <strong>${data.quantidade_ativas}</strong> ativas
-                    `;
-                    document.getElementById('userInfo').style.display = 'block';
-                    document.getElementById('userInfoHeader').innerHTML = `
-                        <i class="fas fa-user"></i> ${data.user_nickname} (${data.user_id})
-                    `;
-
-                    // Atualizar cards de resumo
-                    document.getElementById('totalCampanhas').textContent = data.quantidade_total;
-                    document.getElementById('ativasCampanhas').textContent = data.quantidade_ativas;
-                    
-                    const pendentes = data.todas_campanhas.filter(c => c.status_original === 'pending').length;
-                    document.getElementById('pendentesCampanhas').textContent = pendentes;
-                    
-                    const tiposUnicos = new Set(data.todas_campanhas.map(c => c.tipo)).size;
-                    document.getElementById('tiposCampanhas').textContent = tiposUnicos;
-
-                    // Mostrar cards e filtros
-                    document.getElementById('cardsResumo').style.display = 'flex';
-                    document.getElementById('filtros').style.display = 'block';
-                    document.getElementById('btnExportar').disabled = false;
-
-                    // Renderizar tabela
-                    renderizarTabela(campanhasOriginal);
-                } else {
-                    document.getElementById('semCampanhas').style.display = 'block';
-                }
+            if (data.sucesso && data.todas_campanhas && data.todas_campanhas.length > 0) {
+                todasCampanhas = data.todas_campanhas;
+                
+                document.getElementById('infoUsuario').innerHTML = `
+                    <i class="fas fa-user-circle me-1"></i> ${data.user_nickname || 'Usuário'} · 
+                    <span class="fw-bold">${todasCampanhas.length}</span> promoções
+                `;
+                
+                renderizarPromocoes(todasCampanhas);
             } else {
-                mostrarErro(data.erro || 'Erro ao carregar campanhas');
+                document.getElementById('promocoesGrid').innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-bullhorn fa-4x text-muted mb-3"></i>
+                        <p class="text-muted">Nenhuma promoção encontrada</p>
+                    </div>
+                `;
+                document.getElementById('promocoesGrid').style.display = 'flex';
             }
         })
-        .catch(error => {
+        .catch(() => {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('btnAtualizar').disabled = false;
-            mostrarErro('Erro na requisição: ' + error.message);
+            document.getElementById('promocoesGrid').style.display = 'none';
         });
 }
 
-function renderizarTabela(campanhas) {
-    const tbody = document.getElementById('tabelaCampanhas');
-    const contador = document.getElementById('contadorCampanhas');
-    
-    contador.textContent = `${campanhas.length} campanha${campanhas.length !== 1 ? 's' : ''}`;
-    
-    if (campanhas.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted py-4">
-                    <i class="fas fa-search"></i> Nenhuma campanha encontrada com os filtros aplicados
-                </td>
-            </tr>
-        `;
-        document.getElementById('resultadosFiltro').textContent = 'Nenhum resultado';
-        return;
-    }
-
+function renderizarPromocoes(campanhas) {
+    const grid = document.getElementById('promocoesGrid');
     let html = '';
-    campanhas.forEach(campanha => {
-        const statusClass = {
-            'started': 'success',
-            'pending': 'warning',
-            'finished': 'secondary',
-            'candidate': 'info'
-        }[campanha.status_original] || 'secondary';
 
-        const beneficios = campanha.beneficios ? formatarBeneficios(campanha.beneficios, campanha.tipo) : 'N/A';
+    campanhas.forEach(campanha => {
+        const tipoInfo = tipoMap[campanha.tipo] || { nome: campanha.tipo, icone: '📋' };
+        const dataInicio = formatarDataML(campanha.data_inicio);
+        const dataFim = formatarDataML(campanha.data_fim);
+        
+        // Verificar se está próximo do prazo (menos de 24h para acabar)
+        const horasRestantes = calcularHorasRestantes(campanha.data_fim);
+        const isUrgente = horasRestantes !== null && horasRestantes <= 24;
         
         html += `
-            <tr>
-                <td>
-                    <span class="badge bg-${statusClass}">
-                        ${campanha.status}
-                    </span>
-                </td>
-                <td>
-                    <strong>${campanha.nome}</strong>
-                    <br>
-                    <small class="text-muted">ID: ${campanha.id}</small>
-                </td>
-                <td>
-                    <span class="badge bg-secondary">${campanha.tipo}</span>
-                </td>
-                <td>
-                    <small>${beneficios}</small>
-                </td>
-                <td>
-                    <small>
-                        <i class="fas fa-calendar-alt"></i> Início: ${formatarData(campanha.data_inicio)}<br>
-                        <i class="fas fa-calendar-check"></i> Fim: ${formatarData(campanha.data_fim)}
-                    </small>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalhes('${campanha.id}')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </td>
-            </tr>
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="promocao-card">
+                    <div class="promocao-header">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="promocao-tipo-badge">
+                                <span>${tipoInfo.icone}</span>
+                                ${tipoInfo.nome}
+                            </span>
+                            ${isUrgente ? '<span class="urgente-badge"><i class="fas fa-clock me-1"></i>Últimas 24h!</span>' : ''}
+                        </div>
+                        <h6 class="promocao-titulo">${campanha.nome}</h6>
+                        <p class="promocao-periodo">
+                            <i class="fas fa-calendar-alt" style="color: #3483fa;"></i>
+                            ${dataInicio} - ${dataFim}
+                        </p>
+                    </div>
+                    
+                    <div class="promocao-body">
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-hashtag"></i> ID: ${campanha.id.substring(0, 8)}...
+                            </span>
+                            ${campanha.beneficios ? `
+                                <span class="badge bg-light text-dark">
+                                    <i class="fas fa-percent"></i> ML: ${campanha.beneficios.meli_percent || 0}%
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 pt-0">
+                        <button class="btn-outline-primary w-100" onclick="verProdutos('${campanha.id}', '${campanha.tipo}', '${campanha.nome.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-boxes me-1"></i> Ver produtos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = html;
+    grid.style.display = 'flex';
+}
+
+function verProdutos(promotionId, promotionType, nomePromocao) {
+    document.getElementById('modalTituloPromocao').innerHTML = `
+        <i class="fas fa-boxes me-2" style="color: #3483fa;"></i>
+        ${nomePromocao}
+    `;
+    
+    // Resetar abas e containers
+    document.getElementById('todosContainer').innerHTML = '';
+    document.getElementById('elegiveisContainer').innerHTML = '';
+    document.getElementById('participandoContainer').innerHTML = '';
+    document.getElementById('programadosContainer').innerHTML = '';
+    
+    document.getElementById('loadingProdutos').style.display = 'block';
+    document.getElementById('produtosTabs').style.display = 'none';
+    
+    modalInstance.show();
+    
+    fetch(`/api/campanha/${promotionId}/itens?type=${promotionType}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('loadingProdutos').style.display = 'none';
+            document.getElementById('produtosTabs').style.display = 'flex';
+            
+            if (data.sucesso && data.itens && data.itens.length > 0) {
+                const itens = data.itens;
+                
+                // Contar por status
+                const elegiveis = itens.filter(i => i.status === 'candidate').length;
+                const participando = itens.filter(i => i.status === 'started').length;
+                const programados = itens.filter(i => i.status === 'pending').length;
+                
+                document.getElementById('badgeTodos').textContent = itens.length;
+                document.getElementById('badgeElegiveis').textContent = elegiveis;
+                document.getElementById('badgeParticipando').textContent = participando;
+                document.getElementById('badgeProgramados').textContent = programados;
+                
+                // Renderizar cada categoria
+                renderizarItens('todosContainer', itens);
+                renderizarItens('elegiveisContainer', itens.filter(i => i.status === 'candidate'));
+                renderizarItens('participandoContainer', itens.filter(i => i.status === 'started'));
+                renderizarItens('programadosContainer', itens.filter(i => i.status === 'pending'));
+            } else {
+                document.getElementById('todosContainer').innerHTML = `
+                    <div class="col-12 text-center py-4 text-muted">
+                        <i class="fas fa-box-open fa-3x mb-3" style="color: #ccc;"></i>
+                        <p>Nenhum produto encontrado nesta promoção</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(() => {
+            document.getElementById('loadingProdutos').style.display = 'none';
+            document.getElementById('todosContainer').innerHTML = `
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #ccc;"></i>
+                    <p>Erro ao carregar produtos</p>
+                </div>
+            `;
+        });
+}
+
+function renderizarItens(containerId, itens) {
+    const container = document.getElementById(containerId);
+    
+    if (itens.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center py-4 text-muted">
+                <p>Nenhum produto nesta categoria</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    itens.forEach(item => {
+        const statusInfo = statusMap[item.status] || { nome: item.status, cor: 'secondary' };
+        const statusClass = {
+            'candidate': 'elegivel',
+            'started': 'participando',
+            'pending': 'programado',
+            'finished': 'finalizado'
+        }[item.status] || '';
+        
+        html += `
+            <div class="col-md-6">
+                <div class="produto-card ${statusClass}">
+                    <div class="d-flex gap-3">
+                        ${item.thumbnail ? 
+                            `<img src="${item.thumbnail}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">` :
+                            `<div class="bg-light" style="width: 80px; height: 80px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-box fa-2x text-muted"></i>
+                            </div>`
+                        }
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="small text-muted mb-1">${item.id}</div>
+                                    <div class="fw-bold small">${item.titulo || 'Sem título'}</div>
+                                </div>
+                                <span class="status-badge ${item.status}">
+                                    ${statusInfo.nome}
+                                </span>
+                            </div>
+                            
+                            <div class="info-grid">
+                                ${item.preco_original ? `
+                                    <div class="info-item">
+                                        <div class="info-label">Original</div>
+                                        <div class="info-value">R$ ${item.preco_original}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="info-item">
+                                    <div class="info-label">Promocional</div>
+                                    <div class="info-value text-success">R$ ${item.preco_promocional}</div>
+                                </div>
+                                
+                                ${item.desconto > 0 ? `
+                                    <div class="info-item">
+                                        <div class="info-label">Desconto</div>
+                                        <div class="info-value text-success">-${item.desconto}%</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${item.is_urgente ? `
+                                    <div class="info-item">
+                                        <div class="info-label">Início</div>
+                                        <div class="info-value text-danger">
+                                            <i class="fas fa-clock"></i> ${item.horas_para_inicio}h
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            ${item.percentual_meli ? `
+                                <div class="small text-muted mt-2">
+                                    <i class="fas fa-handshake"></i> 
+                                    ML: ${item.percentual_meli}% | Você: ${item.percentual_vendedor}%
+                                </div>
+                            ` : ''}
+                            
+                            ${item.preco_minimo ? `
+                                <div class="small text-muted">
+                                    Preço permitido: R$ ${item.preco_minimo} - R$ ${item.preco_maximo}
+                                </div>
+                            ` : ''}
+                            
+                            ${item.stock_min ? `
+                                <div class="small text-muted">
+                                    <i class="fas fa-boxes"></i> Estoque necessário: ${item.stock_min} - ${item.stock_max}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
         `;
     });
     
-    tbody.innerHTML = html;
-    document.getElementById('tabelaContainer').style.display = 'block';
-    document.getElementById('resultadosFiltro').textContent = `${campanhas.length} resultados`;
+    container.innerHTML = html;
 }
 
-function aplicarFiltros() {
-    const tipo = document.getElementById('filtroTipo').value;
-    const status = document.getElementById('filtroStatus').value;
-    const busca = document.getElementById('buscaCampanha').value.toLowerCase();
-
-    let campanhasFiltradas = campanhasOriginal.filter(campanha => {
-        // Filtro por tipo
-        if (tipo !== 'todos' && campanha.tipo !== tipo) {
-            return false;
-        }
-        
-        // Filtro por status
-        if (status !== 'todos' && campanha.status_original !== status) {
-            return false;
-        }
-        
-        // Filtro por busca (nome ou ID)
-        if (busca && !campanha.nome.toLowerCase().includes(busca) && 
-            !campanha.id.toLowerCase().includes(busca)) {
-            return false;
-        }
-        
-        return true;
-    });
-
-    renderizarTabela(campanhasFiltradas);
-}
-
-function limparFiltros() {
-    document.getElementById('filtroTipo').value = 'todos';
-    document.getElementById('filtroStatus').value = 'todos';
-    document.getElementById('buscaCampanha').value = '';
-    renderizarTabela(campanhasOriginal);
-}
-
-function formatarBeneficios(beneficios, tipo) {
-    if (!beneficios) return 'Sem benefícios';
-    
-    switch(tipo) {
-        case 'VOLUME':
-            return `Compre ${beneficios.buy_quantity || '?'} pague ${beneficios.pay_quantity || '?'}`;
-        case 'DEAL':
-        case 'SELLER_CAMPAIGN':
-        case 'MARKETPLACE_CAMPAIGN':
-            if (beneficios.meli_percent && beneficios.seller_percent) {
-                return `ML: ${beneficios.meli_percent}% | Vendedor: ${beneficios.seller_percent}%`;
-            }
-            return `${beneficios.meli_percent ? 'ML: ' + beneficios.meli_percent + '%' : ''}`;
-        case 'PRICE_DISCOUNT':
-            return `Desconto aplicado`;
-        default:
-            return 'Benefício ativo';
-    }
-}
-
-function formatarData(dataStr) {
+function formatarDataML(dataStr) {
     if (!dataStr || dataStr === 'N/A') return 'N/A';
     try {
         const data = new Date(dataStr);
-        return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        const meses = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 
+                      'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+        return `${data.getDate()} ${meses[data.getMonth()]}`;
     } catch {
         return dataStr;
     }
 }
 
-function verDetalhes(campanhaId) {
-    const campanha = campanhasOriginal.find(c => c.id === campanhaId);
-    if (campanha) {
-        document.getElementById('detalhesCampanha').textContent = 
-            JSON.stringify(campanha.detalhes || campanha, null, 2);
-        modalInstance.show();
+function calcularHorasRestantes(dataStr) {
+    if (!dataStr || dataStr === 'N/A') return null;
+    try {
+        const fim = new Date(dataStr);
+        const agora = new Date();
+        const diff = fim - agora;
+        return Math.ceil(diff / (1000 * 60 * 60));
+    } catch {
+        return null;
     }
-}
-
-function copiarDetalhes() {
-    const detalhes = document.getElementById('detalhesCampanha').textContent;
-    navigator.clipboard.writeText(detalhes).then(() => {
-        alert('Detalhes copiados para a área de transferência!');
-    });
-}
-
-function exportarCampanhas() {
-    const campanhas = campanhasOriginal;
-    
-    // Criar CSV
-    const headers = ['ID', 'Nome', 'Tipo', 'Status', 'Status Original', 'Data Início', 'Data Fim', 'Ativa'];
-    const rows = campanhas.map(c => [
-        c.id,
-        `"${c.nome.replace(/"/g, '""')}"`,
-        c.tipo,
-        c.status,
-        c.status_original,
-        c.data_inicio,
-        c.data_fim,
-        c.is_active ? 'Sim' : 'Não'
-    ]);
-    
-    const csv = [headers, ...rows]
-        .map(row => row.join(','))
-        .join('\n');
-    
-    // Download
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `campanhas_ml_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function mostrarErro(mensagem) {
-    document.getElementById('erroMensagem').textContent = mensagem;
-    document.getElementById('erro').style.display = 'block';
 }
 </script>
-
-<style>
-.card {
-    transition: transform 0.2s;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.table th {
-    font-weight: 600;
-    color: #495057;
-}
-
-.badge {
-    font-size: 0.85rem;
-    padding: 0.5em 0.8em;
-}
-
-.btn-group .btn {
-    margin-right: 5px;
-}
-
-#loading {
-    padding: 50px;
-}
-
-.modal-pre {
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    padding: 15px;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-}
-
-.display-6 {
-    font-size: 2rem;
-    font-weight: 300;
-}
-
-@media (max-width: 768px) {
-    .display-6 {
-        font-size: 1.5rem;
-    }
-}
-</style>
 {% endblock %}

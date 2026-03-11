@@ -96,7 +96,7 @@ def executar_processamento(planilha_origem, planilha_destino=None):
         "COMPLEMENTO", "DISPONIBILIDADEWEB", "DESCRICAOHTML", "PESOBRUTO",
         "PESOLIQUIDO", "VOLPESOBRUTO", "VOLPESOLIQ", "VOLLARGURA",
         "VOLALTURA", "VOLCOMPRIMENTO", "CATEGORIAPRINCIPALTRAY",
-        "CATEGORIAPRINCIPALCORP", "NIVELADICIONAL1CORP", "CUSTOTOTAL"
+        "CATEGORIAPRINCIPALJET", "NIVELADICIONAL1JET", "CUSTOTOTAL"
     ]
 
     colunas_faltando = [col for col in colunas_esperadas if col not in df.columns]
@@ -211,8 +211,8 @@ def executar_processamento(planilha_origem, planilha_destino=None):
         ])
 
         dados_sheets["LOJA WEB"].append([
-            ean, "", "", "", row["CATEGORIAPRINCIPALTRAY"], "", "", "", "T", "F", "", "", "",
-            row["CATEGORIAPRINCIPALCORP"], row["NIVELADICIONAL1CORP"], "", "", "T", "T"
+            ean, "", "", "", row["CATEGORIAPRINCIPALTRAY"], "", "", "", "T", "T", "", "", "",
+            row["CATEGORIAPRINCIPALJET"], row["NIVELADICIONAL1JET"], "", "", "T", "T"
         ])
 
         produtos_processados.append({

@@ -53,27 +53,55 @@
     <!-- BARRA DE BUSCA RÁPIDA -->
     <!-- ========================================= -->
     <div class="quick-search-bar">
-        <div class="search-input-group">
-            <input type="text" id="mlbs" placeholder="Digite os códigos MLB (separados por vírgula ou linha)" 
-                   style="font-family: monospace;">
-            <div class="search-buttons">
-                <button class="btn btn-primary" onclick="buscarMLBs()">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-                <!--<button class="btn btn-outline-primary" onclick="analisarEnvioManufacturing()">
-                    <i class="fas fa-shipping-fast"></i> Análise
-                </button> -->
-                <button class="btn btn-success" onclick="exportarParaExcel()" id="btnExportar" style="display: none;">
-                    <i class="fas fa-file-excel"></i> Exportar
-                </button>
-            </div>
-        </div>
-        
-        <!-- Filtros Ativos -->
-        <div class="active-filters" id="activeFilters" style="display: none;">
-            <!-- Filtros ativos aparecerão aqui -->
+    <div class="search-input-group">
+        <input type="text" id="mlbs" placeholder="Digite os códigos MLB (separados por vírgula ou linha)" 
+               style="font-family: monospace;">
+        <div class="search-buttons">
+            <button class="btn btn-primary" onclick="buscarMLBs()">
+                <i class="fas fa-search"></i> Buscar
+            </button>
+            
+            <!-- NOVO BOTÃO DE EXPORTAÇÃO DIRETA (sempre visível) -->
+            <button class="btn btn-success" onclick="exportarDiretoParaExcel()" id="btnExportarDireto" style="display: none;">
+                <i class="fas fa-file-excel"></i> 📥 Baixar Excel Direto
+            </button>
+            
+            <!-- Botão de exportação antigo (opcional) -->
+            <button class="btn btn-outline-success" onclick="exportarParaExcel()" id="btnExportar" style="display: none;">
+                <i class="fas fa-file-excel"></i> Exportar
+            </button>
         </div>
     </div>
+    
+    <!-- Filtros Ativos -->
+    <div class="active-filters" id="activeFilters" style="display: none;">
+        <!-- Filtros ativos aparecerão aqui -->
+    </div>
+</div>
+
+<!-- NOVA SEÇÃO DE PAGINAÇÃO -->
+<div id="paginacaoContainer" class="pagination-container" style="display: none;">
+    <div class="pagination-info" id="paginationInfo">
+        Mostrando <span id="mostrandoDe">0</span> a <span id="mostrandoAte">0</span> de <span id="totalRegistros">0</span> anúncios
+    </div>
+    <div class="pagination-controls">
+        <button class="btn-pagination" onclick="paginaAnterior()" id="btnPaginaAnterior" disabled>
+            <i class="fas fa-chevron-left"></i> Anterior
+        </button>
+        <span class="pagination-pages" id="paginacaoNumeros">
+            <span class="pagina-atual" id="paginaAtual">1</span> de <span id="totalPaginas">1</span>
+        </span>
+        <button class="btn-pagination" onclick="proximaPagina()" id="btnProximaPagina" disabled>
+            Próxima <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+    <select class="pagination-limit" id="limitPorPagina" onchange="alterarLimitePagina()">
+        <option value="50">50 por página</option>
+        <option value="100" selected>100 por página</option>
+        <option value="200">200 por página</option>
+        <option value="500">500 por página</option>
+    </select>
+</div>
     
     <!-- ========================================= -->
     <!-- HEADER DE FILTROS COMPACTOS -->

@@ -458,7 +458,126 @@ def processar_promocao_unificada(promocao):
             'tipo': promocao.get('type', 'desconhecido'),
             'dados_brutos': promocao
         }
-    
+
+@app.route('/api/campanha/<promotion_id>/itens', methods=['GET'])
+def api_campanha_itens(promotion_id):
+    """Busca os itens de uma campanha com status de elegibilidade"""
+    try:
+        from token_manager_secure import ml_token_manager
+        import requests
+        
+        token = ml_token_manager.get_valid_token()
+        if not token:
+            return jsonify({'sucesso': False, 'erro': 'Token não disponível'})
+        
+        promotion_type = request.args.get('type', '')
+        
+        headers = {'Authorization': f'Bearer {token}'}
+        base_url = "https://api.mercadolibre.com"
+        
+        # Endpoint para buscar itens da campanha [citation:1][citation:2][citation:4]
+        url = f'{base_url}/seller-promotions/promotions/{promotion_id}/items'
+        params = {
+            'promotion_type': promotion_type,
+            'app_version': 'v2',
+            'limit': 100
+        }
+        
+        response = requests.get(url, headers=headers, params=params, timeout=15)
+        
+        if response.status_code == 200:
+            data = response.json()
+            items = data.get('results', [])
+            
+            # Mapeamento de status para português
+            status_map = {
+                'candidate': 'Elegível',
+                'pending': 'Programado',
+                'started': 'Participando',
+                'finished': 'Finalizado'
+            }
+            
+            itens_processados = []
+            for item in items:
+                # Calcular horas restantes para início/prazo
+                horas_para_inicio = calcular_horas_restantes(item.get('start_date', ''))
+                horas_para_fim = calcular_horas_restantes(item.get('end_date', ''))
+                
+                item_info = {
+                    'id': item.get('id'),
+                    'status': item.get('status'),
+                    'status_pt': status_map.get(item.get('status'), item.get('status')),
+                    'preco_promocional': item.get('price', 0),
+                    'preco_original': item.get('original_price', 0),
+                    'desconto': calcular_desconto(item.get('price', 0), item.get('original_price', 0)),
+                    'percentual_meli': item.get('meli_percentage', 0),
+                    'percentual_vendedor': item.get('seller_percentage', 0),
+                    'data_inicio': item.get('start_date', ''),
+                    'data_fim': item.get('end_date', ''),
+                    'horas_para_inicio': horas_para_inicio,
+                    'horas_para_fim': horas_para_fim,
+                    'is_urgente': horas_para_inicio is not None and horas_para_inicio <= 24,  # Urgente se <= 24h
+                    'preco_minimo': item.get('min_discounted_price'),  # Preço mínimo permitido [citation:1]
+                    'preco_maximo': item.get('max_discounted_price'),  # Preço máximo permitido [citation:1]
+                    'preco_sugerido': item.get('suggested_discounted_price'),  # Preço sugerido [citation:1]
+                    'stock_min': item.get('stock', {}).get('min') if item.get('stock') else None,  # Estoque mínimo [citation:4]
+                    'stock_max': item.get('stock', {}).get('max') if item.get('stock') else None,  # Estoque máximo [citation:4]
+                    'top_deal_price': item.get('top_deal_price')  # Preço para compradores Top [citation:1]
+                }
+                
+                # Buscar detalhes do anúncio (título, imagem)
+                try:
+                    item_response = requests.get(
+                        f'{base_url}/items/{item.get("id")}',
+                        headers=headers,
+                        timeout=10
+                    )
+                    if item_response.status_code == 200:
+                        item_data = item_response.json()
+                        item_info['titulo'] = item_data.get('title', 'Sem título')
+                        item_info['thumbnail'] = item_data.get('thumbnail', '')
+                        item_info['permalink'] = item_data.get('permalink', '')
+                except:
+                    item_info['titulo'] = 'Erro ao carregar título'
+                
+                itens_processados.append(item_info)
+            
+            return jsonify({
+                'sucesso': True,
+                'itens': itens_processados,
+                'total': len(itens_processados)
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': f'Erro {response.status_code}',
+                'detalhes': response.text[:200]
+            })
+            
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)})
+
+def calcular_horas_restantes(data_str):
+    """Calcula horas restantes para uma data"""
+    if not data_str or data_str == 'N/A':
+        return None
+    try:
+        from datetime import datetime
+        data = datetime.fromisoformat(data_str.replace('Z', '+00:00'))
+        agora = datetime.now(data.tzinfo)
+        diff = data - agora
+        horas = diff.total_seconds() / 3600
+        return round(horas, 1)
+    except:
+        return None
+
+def calcular_desconto(preco_promocional, preco_original):
+    """Calcula porcentagem de desconto"""
+    if preco_original and preco_original > 0 and preco_promocional < preco_original:
+        return round(((preco_original - preco_promocional) / preco_original) * 100, 1)
+    return 0
+
+   
 def processar_campanha_ml(campanha, tipo_promocao):
     """Processa dados de campanha baseado na documentação oficial [citation:2][citation:5]"""
     if not campanha:
@@ -2009,7 +2128,60 @@ def remover_token_anymarket():
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-    
+
+@app.route('/verificar-status-mlb/<mlb>')
+def verificar_status_mlb(mlb):
+    """
+    Verifica o status real de um MLB no Mercado Livre
+    Útil para diagnosticar exclusões
+    """
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Não autenticado'
+            }), 401
+        
+        headers = ml_api_secure._get_headers()
+        
+        # Tenta acessar o item diretamente
+        response = requests.get(
+            f"https://api.mercadolibre.com/items/{mlb}",
+            headers=headers,
+            timeout=10
+        )
+        
+        resultado = {
+            'mlb': mlb,
+            'status_code': response.status_code,
+            'existe': response.status_code == 200,
+            'mensagem': ''
+        }
+        
+        if response.status_code == 200:
+            data = response.json()
+            resultado['status'] = data.get('status')
+            resultado['sub_status'] = data.get('sub_status', [])
+            resultado['titulo'] = data.get('title')
+            
+            # Verifica se está marcado como deletado
+            if 'deleted' in data.get('sub_status', []):
+                resultado['mensagem'] = '✅ Anúncio está marcado como DELETADO no sistema'
+            else:
+                resultado['mensagem'] = '⚠️ Anúncio ainda existe (não foi deletado)'
+        elif response.status_code == 404:
+            resultado['mensagem'] = '✅ Anúncio NÃO EXISTE mais (excluído com sucesso)'
+        else:
+            resultado['mensagem'] = f'❌ Erro na consulta: {response.status_code}'
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+      
 @app.route("/excluir-foto-anymarket", methods=["POST"])
 def excluir_foto_anymarket_route():
     """API para exclusão individual de foto"""
@@ -2996,9 +3168,10 @@ def perfil_mercado_livre():
 
 @app.route('/api/mercadolivre/exportar-excel', methods=['POST'])
 def api_exportar_mlb_excel():
-    """API para exportar resultados de MLB para Excel - ESTRUTURA MELHORADA"""
+    """API para exportar resultados de MLB para Excel - COM COLUNAS DE VENDAS"""
     try:
-        from openpyxl.styles import PatternFill
+        from openpyxl.styles import PatternFill, Font, Alignment
+        from openpyxl.utils import get_column_letter
         
         data = request.get_json()
         dados_exportacao = data.get('dados', [])
@@ -3009,20 +3182,29 @@ def api_exportar_mlb_excel():
         # Criar DataFrame
         df = pd.DataFrame(dados_exportacao)
         
-        # Reordenar colunas para melhor visualização
+        # DEFINIR A ORDEM DAS COLUNAS COM VENDAS
         colunas_ordenadas = [
-            'MLB Principal', 'MLB Variação', 'Tipo', 'SKU', 'Título', 'Preço', 
-            'Estoque', 'Prazo Fabricação', 'Modo Envio', 'Frete Grátis', 'Status',
-            'Catálogo', 'Variações', 'Quantidade Variações', 'Tipo Anúncio', 'Tipo Premium',
-            'Condição', 'Vendidos', 'Categoria', 'ID Catálogo', 'Data Criação', 'Link',
-            'Atributos Variação', 'Erro'
+            'MLB Principal', 'MLB Variação', 'Tipo', 'SKU', 'Título', 
+            'Preço', 'Estoque', 
+            'Vendidos (API)',          # NOVA COLUNA
+            'Vendidos (Real)',          # NOVA COLUNA
+            'Vendidos (Variações)',     # NOVA COLUNA
+            'Modo Envio', 'Prazo Fabricação', 'Status', 'Frete Grátis',
+            'Qtd Variações', 'Catálogo', 'Tipo Anúncio', 'Data Criação', 'Link', 'Erro'
         ]
         
         # Manter apenas as colunas que existem nos dados
-        colunas_finais = [col for col in colunas_ordenadas if col in df.columns]
+        colunas_existentes = []
+        for col in colunas_ordenadas:
+            if col in df.columns:
+                colunas_existentes.append(col)
+            else:
+                # Se a coluna não existe, criar com valor padrão
+                df[col] = '-'
+                colunas_existentes.append(col)
         
         # Reordenar o DataFrame
-        df = df[colunas_finais]
+        df = df[colunas_existentes]
         
         # Criar arquivo Excel em memória
         output = BytesIO()
@@ -3031,22 +3213,60 @@ def api_exportar_mlb_excel():
             # Planilha principal com todos os dados
             df.to_excel(writer, sheet_name='Resultados MLB', index=False)
             
-            # Planilha resumida com estatísticas
+            # Planilha resumida com estatísticas de vendas
+            # Calcular totais de vendas
+            total_vendas_api = 0
+            total_vendas_real = 0
+            
+            # Tentar extrair dos dados recebidos
+            for item in dados_exportacao:
+                # Pega vendas (API)
+                vendas_api = item.get('Vendidos (API)', 0)
+                if isinstance(vendas_api, str) and vendas_api != '-':
+                    try:
+                        vendas_api = int(vendas_api)
+                    except:
+                        vendas_api = 0
+                elif isinstance(vendas_api, (int, float)):
+                    pass
+                else:
+                    vendas_api = 0
+                
+                # Pega vendas (Real)
+                vendas_real = item.get('Vendidos (Real)', 0)
+                if isinstance(vendas_real, str) and vendas_real != '-':
+                    try:
+                        vendas_real = int(vendas_real)
+                    except:
+                        vendas_real = 0
+                elif isinstance(vendas_real, (int, float)):
+                    pass
+                else:
+                    vendas_real = 0
+                
+                total_vendas_api += vendas_api
+                total_vendas_real += vendas_real
+            
+            # Estatísticas
             estatisticas_data = {
                 'Métrica': [
+                    'Total de Itens',
                     'Total de Anúncios Principais',
                     'Total de Variações',
-                    'Total Geral',
-                    'Encontrados',
-                    'Não Encontrados',
+                    'Total Vendas (API Principal)',
+                    'Total Vendas (Real - Soma Variações)',
+                    'Diferença (API - Real)',
+                    'Percentual de Diferença',
                     'Data da Exportação'
                 ],
                 'Valor': [
+                    len(dados_exportacao),
                     data.get('total_principais', 0),
                     data.get('total_variações', 0),
-                    data.get('total_geral', 0),
-                    data.get('total_encontrado', 0),
-                    data.get('total_nao_encontrado', 0),
+                    f"{total_vendas_api:,.0f}",
+                    f"{total_vendas_real:,.0f}",
+                    f"{total_vendas_api - total_vendas_real:,.0f}",
+                    f"{((total_vendas_api - total_vendas_real) / total_vendas_real * 100):.1f}%" if total_vendas_real > 0 else "0%",
                     datetime.now().strftime('%d/%m/%Y %H:%M:%S')
                 ]
             }
@@ -3056,25 +3276,43 @@ def api_exportar_mlb_excel():
             # Formatar planilha principal
             worksheet = writer.sheets['Resultados MLB']
             
-            # Destacar variações com cor diferente
-            if data.get('total_variações', 0) > 0:
-                light_blue_fill = PatternFill(start_color='E6F3FF', end_color='E6F3FF', fill_type='solid')
-                light_yellow_fill = PatternFill(start_color='FFF2CC', end_color='FFF2CC', fill_type='solid')
-                
+            # Formatação para números
+            for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
+                for cell in row:
+                    if cell.column_letter in ['F', 'G', 'H', 'I', 'J']:  # Colunas de números
+                        if cell.value and cell.value != '-':
+                            try:
+                                # Formatar como número
+                                cell.number_format = '#,##0'
+                            except:
+                                pass
+            
+            # Destacar variações
+            light_blue_fill = PatternFill(start_color='E6F3FF', end_color='E6F3FF', fill_type='solid')
+            light_yellow_fill = PatternFill(start_color='FFF2CC', end_color='FFF2CC', fill_type='solid')
+            
+            # Encontrar a coluna 'Tipo'
+            tipo_col_idx = None
+            for idx, col in enumerate(df.columns, 1):
+                if col == 'Tipo':
+                    tipo_col_idx = idx
+                    break
+            
+            if tipo_col_idx:
                 for row_idx in range(2, len(dados_exportacao) + 2):
-                    tipo_cell = worksheet[f'C{row_idx}']  # Coluna Tipo
-                    if tipo_cell.value == 'Variação':
-                        # Aplicar cor azul clara para variações
+                    tipo_cell = worksheet.cell(row=row_idx, column=tipo_col_idx)
+                    if tipo_cell.value and 'Variação' in str(tipo_cell.value):
+                        # Cor azul clara para variações
                         for col_idx in range(1, worksheet.max_column + 1):
                             cell = worksheet.cell(row=row_idx, column=col_idx)
                             cell.fill = light_blue_fill
                     elif tipo_cell.value == 'Principal':
-                        # Aplicar cor amarela clara para principais
+                        # Cor amarela clara para principais
                         for col_idx in range(1, worksheet.max_column + 1):
                             cell = worksheet.cell(row=row_idx, column=col_idx)
                             cell.fill = light_yellow_fill
             
-            # Ajustar largura das colunas automaticamente
+            # Ajustar largura das colunas
             for column in worksheet.columns:
                 max_length = 0
                 column_letter = column[0].column_letter
@@ -3084,22 +3322,30 @@ def api_exportar_mlb_excel():
                             max_length = len(str(cell.value))
                     except:
                         pass
-                adjusted_width = min(max_length + 2, 35)  # Limite de 35 para não ficar muito largo
+                adjusted_width = min(max_length + 2, 40)
                 worksheet.column_dimensions[column_letter].width = adjusted_width
+            
+            # Formatar cabeçalho
+            for cell in worksheet[1]:
+                cell.font = Font(bold=True)
+                cell.alignment = Alignment(horizontal='center')
+            
+            # Adicionar filtros
+            worksheet.auto_filter.ref = worksheet.dimensions
             
             # Formatar planilha de estatísticas
             worksheet_stats = writer.sheets['Estatísticas']
+            for cell in worksheet_stats[1]:
+                cell.font = Font(bold=True)
+            
             for column in worksheet_stats.columns:
                 column_letter = column[0].column_letter
-                worksheet_stats.column_dimensions[column_letter].width = 30
-            
-            # Adicionar filtros na planilha principal
-            worksheet.auto_filter.ref = worksheet.dimensions
+                worksheet_stats.column_dimensions[column_letter].width = 35
         
         output.seek(0)
         
         # Nome do arquivo com timestamp
-        nome_arquivo = f"consulta_mlb_estruturada_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        nome_arquivo = f"consulta_mlb_vendas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
         
         return send_file(
             output,
@@ -3113,6 +3359,219 @@ def api_exportar_mlb_excel():
         import traceback
         traceback.print_exc()
         return jsonify({'sucesso': False, 'erro': f'Erro na exportação: {str(e)}'}), 500
+    
+@app.route('/api/mercadolivre/debug-vendas-site/<mlb>')
+def api_debug_vendas_site(mlb):
+    """
+    Rota de DEBUG para COMPARAR o que a API retorna vs o que aparece no site
+    Faz scraping básico da página do produto para ver os dados reais
+    """
+    try:
+        from token_manager_secure import ml_token_manager
+        import requests
+        from bs4 import BeautifulSoup
+        import re
+        
+        if not ml_token_manager.is_authenticated():
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Não autenticado no Mercado Livre'
+            }), 401
+        
+        token = ml_token_manager.get_valid_token()
+        headers_api = {'Authorization': f'Bearer {token}'}
+        
+        print(f"\n{'='*60}")
+        print(f"🔍 DEBUG COMPARATIVO - MLB: {mlb}")
+        print(f"{'='*60}")
+        
+        # =========================================
+        # 1. DADOS DA API
+        # =========================================
+        print("\n📦 1. BUSCANDO DADOS DA API...")
+        response_api = requests.get(
+            f"https://api.mercadolibre.com/items/{mlb}",
+            headers=headers_api,
+            timeout=15
+        )
+        
+        if response_api.status_code != 200:
+            return jsonify({
+                'sucesso': False,
+                'erro': f'Erro na API: {response_api.status_code}'
+            })
+        
+        dados_api = response_api.json()
+        
+        sold_quantity_api = dados_api.get('sold_quantity', 0)
+        titulo = dados_api.get('title', '')
+        
+        print(f"   Título: {titulo[:100]}...")
+        print(f"   sold_quantity (API): {sold_quantity_api}")
+        
+        # =========================================
+        # 2. DADOS DO SITE (scraping básico)
+        # =========================================
+        print("\n🌐 2. BUSCANDO DADOS DO SITE...")
+        
+        # URL do produto no site
+        url_site = f"https://produto.mercadolivre.com.br/{mlb}"
+        
+        headers_browser = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        response_site = requests.get(url_site, headers=headers_browser, timeout=15)
+        
+        dados_site = {
+            'url': url_site,
+            'status_code': response_site.status_code,
+            'vendas_texto': None,
+            'vendas_numero': None,
+            'encontrado': False
+        }
+        
+        if response_site.status_code == 200:
+            soup = BeautifulSoup(response_site.text, 'html.parser')
+            
+            # Procurar por texto de vendas em diferentes lugares
+            padroes = [
+                r'(\d+)\s*vendidos?',
+                r'(\d+[\.,]?\d*)\s*unidades?\s*vendidas?',
+                r'Mais\s*de\s*(\d+)\s*vendidos?',
+                r'(\d+)\s*compras?'
+            ]
+            
+            # Procurar em todo o texto da página
+            texto_pagina = soup.get_text()
+            
+            for padrao in padroes:
+                matches = re.findall(padrao, texto_pagina, re.IGNORECASE)
+                if matches:
+                    # Pega o primeiro match
+                    valor_texto = matches[0]
+                    # Limpar e converter para número
+                    if isinstance(valor_texto, tuple):
+                        valor_texto = valor_texto[0]
+                    valor_numero = int(re.sub(r'[^\d]', '', str(valor_texto)))
+                    
+                    dados_site['vendas_texto'] = valor_texto
+                    dados_site['vendas_numero'] = valor_numero
+                    dados_site['encontrado'] = True
+                    dados_site['padrao_usado'] = padrao
+                    break
+            
+            # Procurar em elementos específicos
+            elementos_vendas = soup.find_all(['span', 'div', 'p'], 
+                string=re.compile(r'vendidos?|unidades', re.IGNORECASE))
+            
+            dados_site['elementos_encontrados'] = len(elementos_vendas)
+            
+            print(f"   Status code: {response_site.status_code}")
+            print(f"   Vendas no site: {dados_site['vendas_numero']} (texto: '{dados_site['vendas_texto']}')")
+        else:
+            print(f"   ❌ Erro ao acessar site: {response_site.status_code}")
+        
+        # =========================================
+        # 3. VERIFICAR HISTÓRICO DE VENDAS (se disponível)
+        # =========================================
+        print("\n📊 3. VERIFICANDO HISTÓRICO...")
+        
+        # Tentar buscar vendas em outras fontes
+        outras_fontes = {}
+        
+        # Verificar se tem variações que podem ter vendas
+        if 'variations' in dados_api and dados_api['variations']:
+            print(f"   ℹ️  Produto tem {len(dados_api['variations'])} variações")
+            
+            # Buscar detalhes das variações
+            variacoes_detalhes = []
+            soma_vendas_variacoes = 0
+            
+            for var in dados_api['variations']:
+                var_id = var.get('id')
+                if var_id:
+                    response_var = requests.get(
+                        f"https://api.mercadolibre.com/items/{mlb}/variations/{var_id}",
+                        headers=headers_api,
+                        timeout=10
+                    )
+                    if response_var.status_code == 200:
+                        var_data = response_var.json()
+                        vendas_var = var_data.get('sold_quantity', 0)
+                        soma_vendas_variacoes += vendas_var
+                        variacoes_detalhes.append({
+                            'id': var_id,
+                            'sold_quantity': vendas_var,
+                            'attributes': var_data.get('attribute_combinations', [])
+                        })
+            
+            outras_fontes['vendas_variacoes'] = soma_vendas_variacoes
+            outras_fontes['variacoes_detalhadas'] = variacoes_detalhes
+            print(f"   Vendas totais nas variações: {soma_vendas_variacoes}")
+        
+        # =========================================
+        # 4. RESUMO E COMPARAÇÃO
+        # =========================================
+        print("\n" + "="*60)
+        print("📋 RESUMO COMPARATIVO:")
+        print("="*60)
+        print(f"MLB: {mlb}")
+        print(f"Título: {titulo[:80]}...")
+        print(f"\n📈 API Mercado Livre: {sold_quantity_api} vendas")
+        
+        if dados_site['vendas_numero']:
+            print(f"🌐 Site Mercado Livre: {dados_site['vendas_numero']} vendas")
+            diferenca = sold_quantity_api - dados_site['vendas_numero']
+            print(f"\n⚖️ DIFERENÇA: {diferenca} ({'+' if diferenca > 0 else ''}{diferenca})")
+            
+            if diferenca != 0:
+                print(f"\n⚠️  ALERTA: API está retornando {abs(diferenca)} vendas a mais que o site!")
+        else:
+            print("🌐 Site: Não foi possível extrair vendas")
+        
+        if 'vendas_variacoes' in outras_fontes:
+            print(f"\n📊 Soma das variações: {outras_fontes['vendas_variacoes']}")
+        
+        print("="*60)
+        
+        # =========================================
+        # 5. RETORNAR TODOS OS DADOS
+        # =========================================
+        return jsonify({
+            'sucesso': True,
+            'mlb': mlb,
+            'comparacao': {
+                'api': sold_quantity_api,
+                'site': dados_site['vendas_numero'],
+                'diferenca': sold_quantity_api - dados_site['vendas_numero'] if dados_site['vendas_numero'] else None,
+                'site_texto': dados_site['vendas_texto'],
+                'url_site': url_site
+            },
+            'dados_api': {
+                'id': dados_api.get('id'),
+                'title': dados_api.get('title'),
+                'sold_quantity': dados_api.get('sold_quantity'),
+                'available_quantity': dados_api.get('available_quantity'),
+                'status': dados_api.get('status'),
+                'has_variations': 'variations' in dados_api and len(dados_api.get('variations', [])) > 0
+            },
+            'dados_site': dados_site,
+            'outras_fontes': outras_fontes,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro no debug: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e),
+            'traceback': traceback.format_exc()
+        }), 500
+
+
 @app.route('/api/mercadolivre/contas')
 def api_listar_contas():
     """Lista todas as contas"""
