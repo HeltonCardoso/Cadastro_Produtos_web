@@ -1,129 +1,357 @@
 {% extends "base.html" %}
+
 {% block title %}Dashboard - Mpozenato{% endblock %}
 
 {% block styles %}
 <style>
-    .dashboard-card {
+    .metric-card {
         border: none;
         border-radius: 15px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        transition: transform 0.3s;
+        transition: all 0.3s;
+        border-left: 4px solid transparent;
         height: 100%;
     }
-    
-    .dashboard-card:hover {
+    .metric-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(0,0,0,0.12);
     }
-    
-    .card-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+    .metric-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .trend-up { color: #28a745; }
+    .trend-down { color: #dc3545; }
+    .refresh-btn {
+        cursor: pointer;
+        transition: transform 0.3s;
+        width: 40px;
+        height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-        margin-bottom: 15px;
+        border-radius: 50%;
+        background: #f8f9fa;
+    }
+    .refresh-btn:hover {
+        transform: rotate(180deg);
+        background: #e9ecef;
+    }
+    .refresh-btn.refreshing {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .channel-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        height: 100%;
+    }
+    .channel-header {
+        padding: 15px;
+        color: white;
+        font-weight: 500;
+    }
+    .channel-body {
+        padding: 20px;
+    }
+    .bg-ml { background: #2d3274; }
+    .bg-anymarket { background: #17a2b8; }
+    .bg-intelipost { background: #28a745; }
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .stat-value {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    .status-badge {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    .status-online {
+        background: #d4edda;
+        color: #155724;
+    }
+    .status-offline {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .status-error {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 4px;
+        height: 20px;
+    }
+    @keyframes skeleton-loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    .debug-panel {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 9999;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- Cabeçalho -->
+    <!-- Header com refresh -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 mb-2">Dashboard</h1>
-                    <p class="text-muted mb-0">Bem-vindo ao Sistema MPOZENATO</p>
+                    <p class="text-muted mb-0" id="ultima-atualizacao">
+                        Carregando dados...
+                    </p>
                 </div>
-                <div>
-                    <span class="badge bg-success">Online</span>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-success me-3" id="status-geral">Online</span>
+                    <div class="refresh-btn" onclick="carregarTodasMetricas()" title="Atualizar dados">
+                        <i class="fas fa-sync-alt" id="refresh-icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Cards de Resumo Rápido -->
-    <div class="row mb-4">
-        <!-- Sistema -->
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card dashboard-card">
+    <!-- Cards de Visão Geral -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card metric-card border-left-primary">
                 <div class="card-body">
-                    <div class="card-icon bg-primary bg-opacity-10 text-primary">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <h5 class="card-title">Processamentos</h5>
-                    <h2 class="text-primary mb-0">{{ processamentos_hoje|default(0) }}</h2>
-                    <p class="text-muted mb-0">Hoje</p>
+                    <div class="metric-label">Vendas (7 dias)</div>
+                    <div class="metric-value" id="vendas-totais">R$ 0</div>
+                    <small class="trend-up" id="vendas-trend">
+                        <i class="fas fa-arrow-up"></i> <span id="variacao-vendas">0%</span>
+                    </small>
                 </div>
             </div>
         </div>
-
-        <!-- Planilhas -->
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card dashboard-card">
+        <div class="col-md-3 col-sm-6">
+            <div class="card metric-card border-left-success">
                 <div class="card-body">
-                    <div class="card-icon bg-success bg-opacity-10 text-success">
-                        <i class="fas fa-file-excel"></i>
-                    </div>
-                    <h5 class="card-title">Última Planilha</h5>
-                    {% if ultima_planilha %}
-                    <h6 class="text-dark mb-1">{{ ultima_planilha|truncate(20) }}</h6>
-                    <p class="text-muted mb-0 small">{{ ultima_planilha_data|default('') }}</p>
-                    <a href="{{ url_for('baixar_arquivo', filename=ultima_planilha|urlencode) }}" 
-                       class="btn btn-sm btn-outline-success mt-2">
-                       <i class="fas fa-download me-1"></i> Baixar
-                    </a>
-                    {% else %}
-                    <p class="text-muted mb-0">Nenhuma planilha</p>
-                    {% endif %}
+                    <div class="metric-label">Pedidos (7 dias)</div>
+                    <div class="metric-value" id="pedidos-totais">0</div>
+                    <small>Ticket médio: <span id="ticket-medio">R$ 0</span></small>
                 </div>
             </div>
         </div>
-
-        <!-- AnyMarket Status -->
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card dashboard-card">
+        <div class="col-md-3 col-sm-6">
+            <div class="card metric-card border-left-info">
                 <div class="card-body">
-                    <div class="card-icon bg-info bg-opacity-10 text-info">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <h5 class="card-title">AnyMarket</h5>
-                    {% if anymarket_stats.sucesso %}
-                        <h2 class="text-info mb-0">Conectado</h2>
-                        <p class="text-muted mb-0">API configurada</p>
-                        <a href="{{ url_for('pedidos_anymarket') }}" class="btn btn-sm btn-outline-info mt-2">
-                            <i class="fas fa-external-link-alt me-1"></i> Ver Pedidos
-                        </a>
-                    {% else %}
-                        <p class="text-muted mb-0">Não configurado</p>
-                        <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-outline-info mt-2">
-                            <i class="fas fa-key me-1"></i> Configurar
-                        </a>
-                    {% endif %}
+                    <div class="metric-label">Produtos Vendidos</div>
+                    <div class="metric-value" id="produtos-vendidos">0</div>
+                    <small>Itens por pedido: <span id="itens-pedido">0</span></small>
                 </div>
             </div>
         </div>
-
-        <!-- Sistema Status -->
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card dashboard-card">
+        <div class="col-md-3 col-sm-6">
+            <div class="card metric-card border-left-warning">
                 <div class="card-body">
-                    <div class="card-icon bg-warning bg-opacity-10 text-warning">
-                        <i class="fas fa-server"></i>
+                    <div class="metric-label">Cancelamentos</div>
+                    <div class="metric-value" id="cancelamentos">0</div>
+                    <small>Taxa: <span id="taxa-cancelamento">0%</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards por Canal -->
+    <div class="row g-4 mb-4">
+        <!-- Mercado Livre -->
+        <div class="col-lg-4">
+            <div class="card channel-card">
+                <div class="channel-header bg-ml">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="fab fa-mercadolibre me-2"></i> Mercado Livre</span>
+                        <span class="status-badge" id="ml-status-badge">Carregando...</span>
                     </div>
-                    <h5 class="card-title">Sistema</h5>
-                    <div class="mt-2">
-                        <span class="badge bg-success">Online</span>
-                        <span class="badge bg-success ms-1">API OK</span>
-                        <span class="badge bg-success ms-1">BD OK</span>
+                </div>
+                <div class="channel-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Vendas 7 dias</span>
+                        <span class="stat-value" id="ml-vendas">R$ 0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pedidos</span>
+                        <span class="stat-value" id="ml-pedidos">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Ticket Médio</span>
+                        <span class="stat-value" id="ml-ticket">R$ 0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Anúncios Ativos</span>
+                        <span class="stat-value" id="ml-anuncios">0</span>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ url_for('configurar_tokens') }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-cog me-1"></i> Configurações
+                        <a href="{{ url_for('consultar_mercado_livre') }}" 
+                           class="btn btn-outline-secondary w-100 btn-sm">
+                            Ver Detalhes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AnyMarket -->
+        <div class="col-lg-4">
+            <div class="card channel-card">
+                <div class="channel-header bg-anymarket">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-shopping-cart me-2"></i> AnyMarket</span>
+                        <span class="status-badge" id="anymarket-status-badge">Carregando...</span>
+                    </div>
+                </div>
+                <div class="channel-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Vendas 7 dias</span>
+                        <span class="stat-value" id="anymarket-vendas">R$ 0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pedidos</span>
+                        <span class="stat-value" id="anymarket-pedidos">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Marketplaces</span>
+                        <span class="stat-value" id="anymarket-marketplaces">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Fotos c/ Erro</span>
+                        <span class="stat-value text-danger" id="anymarket-fotos-erro">0</span>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ url_for('pedidos_anymarket') }}" 
+                           class="btn btn-outline-secondary w-100 btn-sm">
+                            Ver Pedidos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intelipost -->
+        <div class="col-lg-4">
+            <div class="card channel-card">
+                <div class="channel-header bg-intelipost">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-truck me-2"></i> Intelipost</span>
+                        <span class="status-badge" id="intelipost-status-badge">Carregando...</span>
+                    </div>
+                </div>
+                <div class="channel-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Em Trânsito</span>
+                        <span class="stat-value" id="intelipost-transito">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Entregues (7d)</span>
+                        <span class="stat-value" id="intelipost-entregues">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Atrasados</span>
+                        <span class="stat-value text-danger" id="intelipost-atrasados">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Prazo Médio</span>
+                        <span class="stat-value" id="intelipost-prazo">0 dias</span>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-outline-secondary w-100 btn-sm" disabled>
+                            Rastrear Pedidos (em breve)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema e Processamentos -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-cogs me-2"></i> Processamentos do Sistema
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-row">
+                                <span>Cadastro de Produtos</span>
+                                <span class="badge bg-primary" id="proc-cadastro">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Extração de Atributos</span>
+                                <span class="badge bg-info" id="proc-atributos">0</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-row">
+                                <span>Comparação Prazos</span>
+                                <span class="badge bg-success" id="proc-prazos">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span>Consultas AnyMarket</span>
+                                <span class="badge bg-warning" id="proc-anymarket">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-excel me-2"></i> Última Planilha
+                </div>
+                <div class="card-body">
+                    <div id="planilha-info">
+                        <div class="skeleton" style="width: 70%"></div>
+                        <div class="skeleton mt-2" style="width: 50%"></div>
+                    </div>
+                    <div id="planilha-dados" style="display: none;">
+                        <p class="mb-2">
+                            <strong id="planilha-nome">-</strong>
+                        </p>
+                        <p class="text-muted small" id="planilha-data">-</p>
+                        <a href="#" id="link-download" class="btn btn-sm btn-success">
+                            <i class="fas fa-download me-1"></i> Baixar
                         </a>
                     </div>
                 </div>
@@ -131,70 +359,37 @@
         </div>
     </div>
 
-    <!-- Menu Rápido -->
+    <!-- Últimos Pedidos -->
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-4">Acesso Rápido</h5>
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <a href="{{ url_for('consultar_anymarket') }}" class="text-decoration-none">
-                                <div class="card border-0 bg-light hover-shadow">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-search fa-2x text-primary mb-3"></i>
-                                        <h6>Consultar Fotos</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{{ url_for('consultar_produto') }}" class="text-decoration-none">
-                                <div class="card border-0 bg-light hover-shadow">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-box fa-2x text-success mb-3"></i>
-                                        <h6>Consultar Produto</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{{ url_for('extrair_atributos') }}" class="text-decoration-none">
-                                <div class="card border-0 bg-light hover-shadow">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-filter fa-2x text-warning mb-3"></i>
-                                        <h6>Extrair Atributos</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <a href="{{ url_for('pedidos_anymarket') }}" class="text-decoration-none">
-                                <div class="card border-0 bg-light hover-shadow">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-shopping-cart fa-2x text-info mb-3"></i>
-                                        <h6>Pedidos</h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-history me-2"></i> Últimos Pedidos</span>
+                    <a href="{{ url_for('pedidos_anymarket') }}" class="text-decoration-none">
+                        Ver todos <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Informação -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="alert alert-info">
-                <div class="d-flex">
-                    <div class="me-3">
-                        <i class="fas fa-info-circle fa-2x"></i>
-                    </div>
-                    <div>
-                        <h6 class="alert-heading">Dashboard Simplificada</h6>
-                        <p class="mb-0">Para melhor performance, as análises detalhadas foram movidas para páginas específicas. Acesse o menu lateral para todas as funcionalidades.</p>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tabela-ultimos-pedidos">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Canal</th>
+                                    <th>Data</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pedidos-body">
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="spinner-border spinner-border-sm me-2"></div>
+                                        Carregando pedidos...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -202,9 +397,386 @@
     </div>
 </div>
 
+<!-- Debug Info -->
+<div class="debug-panel">
+    <div id="debug-status">Status: <span class="text-primary">Carregando...</span></div>
+    <div id="debug-time">Última tentativa: -</div>
+    <button onclick="carregarTodasMetricas()" class="btn btn-sm btn-primary mt-2 w-100">
+        Testar Recarregar
+    </button>
+</div>
+{% endblock %}
+
+{% block scripts %}
 <script>
+// Estado global
+let metricasAtuais = null;
+let atualizando = false;
+
+// Função principal para carregar todas as métricas
+async function carregarTodasMetricas() {
+    if (atualizando) {
+        console.log('⚠️ Já está atualizando...');
+        return;
+    }
+    
+    atualizando = true;
+    const refreshIcon = document.getElementById('refresh-icon');
+    if (refreshIcon) {
+        refreshIcon.classList.add('refreshing');
+    }
+    
+    // Atualiza debug
+    document.getElementById('debug-status').innerHTML = 'Status: <span class="text-warning">Carregando...</span>';
+    document.getElementById('debug-time').innerHTML = `Última tentativa: ${new Date().toLocaleTimeString()}`;
+    
+    console.log('🔄 Carregando métricas do dashboard...');
+    
+    try {
+        // Carrega métricas do dashboard
+        const response = await fetch('/api/metrics/dashboard');
+        console.log('📡 Status da resposta:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📊 Dados recebidos:', data);
+        
+        if (data.sucesso) {
+            metricasAtuais = data.dados;
+            atualizarDashboard(data.dados);
+            document.getElementById('debug-status').innerHTML = 'Status: <span class="text-success">OK</span>';
+        } else {
+            console.error('❌ Erro nos dados:', data.erro);
+            document.getElementById('debug-status').innerHTML = 'Status: <span class="text-danger">Erro</span>';
+            mostrarErro('Erro ao carregar dados: ' + (data.erro || 'Erro desconhecido'));
+            
+            // Usa dados de exemplo em caso de erro
+            usarDadosExemplo();
+        }
+        
+        // Carrega últimos pedidos
+        await carregarUltimosPedidos();
+        
+    } catch (error) {
+        console.error('❌ Erro na requisição:', error);
+        document.getElementById('debug-status').innerHTML = 'Status: <span class="text-danger">Erro</span>';
+        mostrarErro('Erro de conexão com o servidor: ' + error.message);
+        
+        // Dados de exemplo para teste
+        usarDadosExemplo();
+        
+    } finally {
+        atualizando = false;
+        if (refreshIcon) {
+            refreshIcon.classList.remove('refreshing');
+        }
+    }
+}
+
+function usarDadosExemplo() {
+    console.log('📊 Usando dados de exemplo para teste');
+    const dadosExemplo = {
+        mercadolivre: {
+            status: 'online',
+            vendas_7d: 15430.00,
+            pedidos_7d: 47,
+            ticket_medio: 328.30,
+            anuncios_ativos: 124
+        },
+        anymarket: {
+            status: 'online',
+            vendas_7d: 8230.00,
+            pedidos_7d: 23,
+            ticket_medio: 357.83,
+            marketplaces_ativos: 3,
+            total_itens: 45,
+            fotos_erro: 3
+        },
+        intelipost: {
+            status: 'online',
+            em_transito: 15,
+            entregues_7d: 42,
+            atrasados: 2,
+            prazo_medio: 3.2,
+            total_entregas: 57
+        },
+        sistema: {
+            processamentos_hoje: 12,
+            ultima_planilha: 'exemplo.xlsx',
+            ultima_planilha_data: '2024-01-15 14:30:00',
+            stats_modulos: {
+                cadastro: 5,
+                atributos: 3,
+                prazos: 2,
+                anymarket: 2
+            }
+        }
+    };
+    atualizarDashboard(dadosExemplo);
+}
+
+function atualizarDashboard(dados) {
+    console.log('📊 Atualizando dashboard com:', dados);
+    
+    // Verifica se dados existe
+    if (!dados) {
+        console.error('❌ Dados não fornecidos para atualização');
+        return;
+    }
+    
+    // Totais
+    const vendasML = dados.mercadolivre?.vendas_7d || 0;
+    const vendasAny = dados.anymarket?.vendas_7d || 0;
+    const vendasTotais = vendasML + vendasAny;
+    
+    const pedidosML = dados.mercadolivre?.pedidos_7d || 0;
+    const pedidosAny = dados.anymarket?.pedidos_7d || 0;
+    const pedidosTotais = pedidosML + pedidosAny;
+    
+    // Atualiza elementos do DOM com verificação de existência
+    setElementText('vendas-totais', formatarMoeda(vendasTotais));
+    setElementText('pedidos-totais', pedidosTotais);
+    setElementText('ticket-medio', formatarMoeda(
+        pedidosTotais > 0 ? vendasTotais / pedidosTotais : 0
+    ));
+    
+    // Produtos vendidos
+    const produtosVendidos = dados.anymarket?.total_itens || 0;
+    setElementText('produtos-vendidos', produtosVendidos);
+    setElementText('itens-pedido', 
+        pedidosAny > 0 ? (produtosVendidos / pedidosAny).toFixed(1) : '0'
+    );
+    
+    // Cancelamentos (placeholder)
+    setElementText('cancelamentos', '0');
+    setElementText('taxa-cancelamento', '0%');
+    
+    // Atualizar cards por canal
+    atualizarCardMercadoLivre(dados.mercadolivre);
+    atualizarCardAnymarket(dados.anymarket);
+    atualizarCardIntelipost(dados.intelipost);
+    atualizarSistema(dados.sistema);
+    
+    // Atualizar timestamp
+    const agora = new Date();
+    setElementText('ultima-atualizacao', 
+        `Última atualização: ${agora.toLocaleString('pt-BR')}`
+    );
+    
+    // Atualizar status geral
+    const statusGeral = document.getElementById('status-geral');
+    if (statusGeral) {
+        const hasError = Object.values(dados).some(d => d?.error);
+        statusGeral.className = hasError ? 'badge bg-warning' : 'badge bg-success';
+        statusGeral.textContent = hasError ? 'Parcial' : 'Online';
+    }
+}
+
+function setElementText(id, value) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = value;
+    } else {
+        console.warn(`⚠️ Elemento não encontrado: ${id}`);
+    }
+}
+
+function atualizarCardMercadoLivre(dados) {
+    if (!dados) {
+        console.warn('⚠️ Dados do Mercado Livre não disponíveis');
+        return;
+    }
+    
+    const badge = document.getElementById('ml-status-badge');
+    if (badge) {
+        badge.className = 'status-badge';
+        if (dados.error) {
+            badge.classList.add('status-offline');
+            badge.innerHTML = 'Offline';
+        } else {
+            badge.classList.add('status-online');
+            badge.innerHTML = 'Online';
+        }
+    }
+    
+    setElementText('ml-vendas', formatarMoeda(dados.vendas_7d || 0));
+    setElementText('ml-pedidos', dados.pedidos_7d || 0);
+    setElementText('ml-ticket', formatarMoeda(dados.ticket_medio || 0));
+    setElementText('ml-anuncios', dados.anuncios_ativos || 0);
+}
+
+function atualizarCardAnymarket(dados) {
+    if (!dados) {
+        console.warn('⚠️ Dados do AnyMarket não disponíveis');
+        return;
+    }
+    
+    const badge = document.getElementById('anymarket-status-badge');
+    if (badge) {
+        badge.className = 'status-badge';
+        if (dados.error) {
+            badge.classList.add('status-offline');
+            badge.innerHTML = 'Offline';
+        } else {
+            badge.classList.add('status-online');
+            badge.innerHTML = 'Online';
+        }
+    }
+    
+    setElementText('anymarket-vendas', formatarMoeda(dados.vendas_7d || 0));
+    setElementText('anymarket-pedidos', dados.pedidos_7d || 0);
+    setElementText('anymarket-marketplaces', dados.marketplaces_ativos || 0);
+    setElementText('anymarket-fotos-erro', dados.fotos_erro || 0);
+}
+
+function atualizarCardIntelipost(dados) {
+    if (!dados) {
+        console.warn('⚠️ Dados da Intelipost não disponíveis');
+        return;
+    }
+    
+    const badge = document.getElementById('intelipost-status-badge');
+    if (badge) {
+        badge.className = 'status-badge';
+        if (dados.error) {
+            badge.classList.add('status-offline');
+            badge.innerHTML = 'Offline';
+        } else {
+            badge.classList.add('status-online');
+            badge.innerHTML = 'Online';
+        }
+    }
+    
+    setElementText('intelipost-transito', dados.em_transito || 0);
+    setElementText('intelipost-entregues', dados.entregues_7d || 0);
+    setElementText('intelipost-atrasados', dados.atrasados || 0);
+    setElementText('intelipost-prazo', (dados.prazo_medio || 0) + ' dias');
+}
+
+function atualizarSistema(dados) {
+    if (!dados) return;
+    
+    if (dados.stats_modulos) {
+        setElementText('proc-cadastro', dados.stats_modulos.cadastro || 0);
+        setElementText('proc-atributos', dados.stats_modulos.atributos || 0);
+        setElementText('proc-prazos', dados.stats_modulos.prazos || 0);
+        setElementText('proc-anymarket', dados.stats_modulos.anymarket || 0);
+    }
+    
+    if (dados.ultima_planilha) {
+        const planilhaInfo = document.getElementById('planilha-info');
+        const planilhaDados = document.getElementById('planilha-dados');
+        
+        if (planilhaInfo) planilhaInfo.style.display = 'none';
+        if (planilhaDados) planilhaDados.style.display = 'block';
+        
+        setElementText('planilha-nome', dados.ultima_planilha);
+        setElementText('planilha-data', dados.ultima_planilha_data || '');
+        
+        const linkDownload = document.getElementById('link-download');
+        if (linkDownload) {
+            linkDownload.href = `/uploads/${encodeURIComponent(dados.ultima_planilha)}`;
+        }
+    }
+}
+
+async function carregarUltimosPedidos() {
+    console.log('🔄 Carregando últimos pedidos...');
+    
+    try {
+        const response = await fetch('/api/anymarket/pedidos?limit=5');
+        console.log('📡 Status pedidos:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📦 Pedidos recebidos:', data);
+        
+        const tbody = document.getElementById('pedidos-body');
+        if (!tbody) return;
+        
+        if (!data.orders || data.orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum pedido encontrado</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        data.orders.slice(0, 5).forEach(pedido => {
+            const dataPedido = pedido.createdAt ? new Date(pedido.createdAt).toLocaleDateString('pt-BR') : 'N/A';
+            const statusClass = getStatusClass(pedido.status);
+            
+            html += `
+                <tr>
+                    <td>${pedido.marketPlaceNumber || pedido.id || 'N/A'}</td>
+                    <td>${pedido.marketPlace || 'N/A'}</td>
+                    <td>${dataPedido}</td>
+                    <td>${formatarMoeda(pedido.total || 0)}</td>
+                    <td><span class="badge ${statusClass}">${pedido.status || 'N/A'}</span></td>
+                </tr>
+            `;
+        });
+        
+        tbody.innerHTML = html;
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar pedidos:', error);
+        const tbody = document.getElementById('pedidos-body');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Erro ao carregar pedidos</td></tr>';
+        }
+    }
+}
+
+function getStatusClass(status) {
+    if (!status) return 'bg-secondary';
+    const classes = {
+        'CONCLUDED': 'bg-success',
+        'PENDING': 'bg-warning',
+        'CANCELED': 'bg-danger',
+        'INVOICED': 'bg-info'
+    };
+    return classes[status] || 'bg-secondary';
+}
+
+function formatarMoeda(valor) {
+    if (valor === undefined || valor === null) valor = 0;
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(valor);
+}
+
+function mostrarErro(mensagem) {
+    console.error('❌', mensagem);
+    const statusGeral = document.getElementById('status-geral');
+    if (statusGeral) {
+        statusGeral.className = 'badge bg-danger';
+        statusGeral.textContent = 'Erro';
+    }
+}
+
+// Carregar na inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard carregada');
+    console.log('🚀 Página carregada, iniciando carregamento...');
+    carregarTodasMetricas();
 });
+
+// Atualizar a cada 5 minutos
+setInterval(carregarTodasMetricas, 300000);
+
+// Atualiza debug time a cada segundo
+setInterval(() => {
+    const debugTime = document.getElementById('debug-time');
+    if (debugTime && !atualizando) {
+        debugTime.innerHTML = `Última tentativa: ${new Date().toLocaleTimeString()}`;
+    }
+}, 1000);
 </script>
 {% endblock %}

@@ -28,25 +28,40 @@ from log_utils import (registrar_processo,registrar_itens_processados,obter_hist
 from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_anymarket, excluir_fotos_planilha_anymarket)
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 from routes_intelipost import intelipost_bp
-
+from flask_caching import Cache
+from metrics_api import metrics_bp  # Import do novo blueprint
 
 sys.path.append(str(Path(__file__).parent))
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
+
+
+# 🔹 PRIMEIRO: Inicializa o banco de dados
 db.init_app(app)
 
+# 🔹 SEGUNDO: Registra os blueprints (DEPOIS de init_app)
+app.register_blueprint(metrics_bp)
 app.register_blueprint(intelipost_bp)
 
-
+# Configuração de logs
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
 app.logger.addHandler(handler)
 
+# 🔹 TERCEIRO: Cria as tabelas dentro do contexto
 with app.app_context():
+    # Cria as pastas necessárias
     os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
-    db.create_all()
+    
+    # Cria as tabelas do banco
+    try:
+        db.create_all()
+        print("✅ Banco de dados inicializado com sucesso!")
+    except Exception as e:
+        print(f"⚠️ Erro ao criar tabelas: {e}")
+        app.logger.error(f"Erro ao criar tabelas: {e}")
 
 def obter_ultima_planilha():
     try:
