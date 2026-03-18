@@ -28,8 +28,9 @@ from log_utils import (registrar_processo,registrar_itens_processados,obter_hist
 from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_anymarket, excluir_fotos_planilha_anymarket)
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 from routes_intelipost import intelipost_bp
-from flask_caching import Cache
+from flask_caching import Cache, logger
 from metrics_api import metrics_bp  # Import do novo blueprint
+from processamento.google_sheets import ler_planilha_google
 
 sys.path.append(str(Path(__file__).parent))
 
@@ -2071,6 +2072,86 @@ def obter_token_anymarket():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/metrics/teste')
+def api_metrics_teste():
+    """Rota de teste que retorna dados fixos para verificar o frontend"""
+    return jsonify({
+        'sucesso': True,
+        'dados': {
+            'mercadolivre': {
+                'status': 'online',
+                'vendas_7d': 15430.00,
+                'pedidos_7d': 47,
+                'ticket_medio': 328.30,
+                'anuncios_ativos': 124
+            },
+            'anymarket': {
+                'status': 'online',
+                'vendas_7d': 8230.00,
+                'pedidos_7d': 23,
+                'ticket_medio': 357.83,
+                'marketplaces_ativos': 3,
+                'total_itens': 45,
+                'fotos_erro': 3
+            },
+            'intelipost': {
+                'status': 'online',
+                'em_transito': 15,
+                'entregues_7d': 42,
+                'atrasados': 2,
+                'prazo_medio': 3.2
+            },
+            'sistema': {
+                'processamentos_hoje': 12,
+                'ultima_planilha': 'exemplo.xlsx',
+                'ultima_planilha_data': '2024-01-15 14:30:00',
+                'stats_modulos': {
+                    'cadastro': 5,
+                    'atributos': 3,
+                    'prazos': 2,
+                    'anymarket': 2
+                }
+            }
+        },
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/teste-planilha')
+def api_teste_planilha():
+    """Rota para testar e ver os dados da planilha"""
+    try:
+        from google_sheets import ler_planilha_google
+        
+        # CONFIGURE AQUI - Substitua pelos seus dados
+        SHEET_ID = '1JMcU1mhbW0Q2IyLo15wHAoFLEY3IdFLEG0bMssP6y6o'
+        ABA_NOME = 'Sequência Cad.'  # Nome da sua aba
+        
+        # Lê a planilha
+        df = ler_planilha_google(SHEET_ID, ABA_NOME)
+        
+        # Converte para dicionário
+        dados = df.to_dict(orient='records')
+        
+        # Estatísticas básicas
+        info = {
+            'total_linhas': len(df),
+            'total_colunas': len(df.columns),
+            'colunas': df.columns.tolist(),
+            'primeiras_5_linhas': dados[:5],
+            'amostra': dados[0] if dados else None
+        }
+        
+        return jsonify({
+            'sucesso': True,
+            'info': info
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+    
 @app.route('/api/tokens/anymarket/salvar', methods=['POST'])
 def salvar_token_anymarket():
     """Salva token do AnyMarket no arquivo seguro - VERSÃO QUE CRIA ARQUIVO"""
@@ -2633,6 +2714,724 @@ def extrair_atributos():
         page_title='Extração de Atributos'
     )
 
+@app.route('/api/dashboard/sequencia-cadastro')
+def api_dashboard_sequencia_cadastro():
+    """
+    API que retorna métricas da planilha Sequência Cad. para o dashboard
+    """
+    try:
+        from google_sheets import ler_planilha_google
+        from datetime import datetime, timedelta
+        import pandas as pd
+        
+        # CONFIGURAÇÃO - Use o mesmo ID da sua rota de teste
+        SHEET_ID = '1JMcU1mhbW0Q2IyLo15wHAoFLEY3IdFLEG0bMssP6y6o'
+        ABA_NOME = 'Sequência Cad.'
+        
+        logger.info(f"📊 Buscando dados da planilha: {ABA_NOME}")
+        
+        # Lê a planilha
+        df = ler_planilha_google(SHEET_ID, ABA_NOME)
+        
+        if df.empty:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Planilha vazia',
+                'dados': {}
+            })
+        
+        logger.info(f"✅ {len(df)} linhas encontradas")
+        logger.info(f"📋 Colunas: {df.columns.tolist()}")
+        
+        # ============================================
+        # MÉTRICAS BÁSICAS
+        # ============================================
+        metricas = {
+            'total_registros': len(df),
+            'colunas': df.columns.tolist(),
+            'ultima_atualizacao': datetime.now().isoformat()
+        }
+        
+        # ============================================
+        # ANALISAR COLUNAS DA PLANILHA
+        # ============================================
+        colunas_lower = [str(c).lower().strip() for c in df.columns]
+        
+        # 1. PROcurar coluna de DATA
+        nomes_data = ['data', 'data cadastro', 'data_cadastro', 'dt_cadastro', 'criado em', 'criação']
+        coluna_data = None
+        
+        for i, col_lower in enumerate(colunas_lower):
+            if any(nome in col_lower for nome in nomes_data):
+                coluna_data = df.columns[i]
+                break
+        
+        if coluna_data:
+            logger.info(f"📅 Coluna de data encontrada: {coluna_data}")
+            
+            # Converte para datetime
+            df['_data_convertida'] = pd.to_datetime(df[coluna_data], errors='coerce', dayfirst=True)
+            df_validas = df[df['_data_convertida'].notna()]
+            
+            hoje = datetime.now().date()
+            ontem = hoje - timedelta(days=1)
+            sete_dias_atras = hoje - timedelta(days=7)
+            trinta_dias_atras = hoje - timedelta(days=30)
+            
+            datas_validas = df_validas['_data_convertida'].dt.date
+            
+            metricas.update({
+                'cadastros_hoje': int(len(datas_validas[datas_validas == hoje])),
+                'cadastros_ontem': int(len(datas_validas[datas_validas == ontem])),
+                'cadastros_7dias': int(len(datas_validas[datas_validas >= sete_dias_atras])),
+                'cadastros_30dias': int(len(datas_validas[datas_validas >= trinta_dias_atras])),
+                'tem_coluna_data': True,
+                'nome_coluna_data': coluna_data
+            })
+        else:
+            metricas.update({
+                'cadastros_hoje': 0,
+                'cadastros_ontem': 0,
+                'cadastros_7dias': 0,
+                'cadastros_30dias': 0,
+                'tem_coluna_data': False
+            })
+        
+        # 2. Procurar coluna de STATUS
+        nomes_status = ['status', 'situação', 'situacao', 'etapa', 'fase', 'andamento']
+        coluna_status = None
+        
+        for i, col_lower in enumerate(colunas_lower):
+            if any(nome in col_lower for nome in nomes_status):
+                coluna_status = df.columns[i]
+                break
+        
+        if coluna_status:
+            logger.info(f"📊 Coluna de status encontrada: {coluna_status}")
+            
+            # Conta valores únicos
+            status_counts = df[coluna_status].value_counts().to_dict()
+            
+            # Tenta identificar pendentes vs concluídos
+            pendentes = 0
+            concluidos = 0
+            outros = 0
+            
+            for status, qtd in status_counts.items():
+                status_str = str(status).upper()
+                if any(p in status_str for p in ['PENDENTE', 'AGUARDANDO', 'EM ANDAMENTO', 'PROCESSANDO', 'ANDAMENTO']):
+                    pendentes += qtd
+                elif any(c in status_str for c in ['CONCLUÍDO', 'CONCLUIDO', 'FINALIZADO', 'APROVADO', 'OK', 'PRONTO']):
+                    concluidos += qtd
+                else:
+                    outros += qtd
+            
+            metricas.update({
+                'status_distribuicao': status_counts,
+                'pendentes': pendentes,
+                'concluidos': concluidos,
+                'outros_status': outros,
+                'tem_coluna_status': True,
+                'nome_coluna_status': coluna_status
+            })
+        else:
+            metricas.update({
+                'status_distribuicao': {},
+                'pendentes': 0,
+                'concluidos': 0,
+                'outros_status': 0,
+                'tem_coluna_status': False
+            })
+        
+        # 3. Procurar coluna de RESPONSÁVEL
+        nomes_resp = ['responsavel', 'responsável', 'usuario', 'usuário', 'criado por', 'user']
+        coluna_resp = None
+        
+        for i, col_lower in enumerate(colunas_lower):
+            if any(nome in col_lower for nome in nomes_resp):
+                coluna_resp = df.columns[i]
+                break
+        
+        if coluna_resp:
+            resp_counts = df[coluna_resp].value_counts().head(5).to_dict()
+            metricas.update({
+                'top_responsaveis': resp_counts,
+                'tem_coluna_responsavel': True
+            })
+        
+        # 4. ÚLTIMOS 10 REGISTROS para tabela
+        ultimos_registros = []
+        for _, row in df.head(10).iterrows():
+            registro = {}
+            for col in df.columns[:6]:  # Primeiras 6 colunas
+                registro[col] = str(row[col])[:100]
+            ultimos_registros.append(registro)
+        
+        metricas['ultimos_registros'] = ultimos_registros
+        
+        # 5. Estatísticas por período (se tiver data)
+        if coluna_data and len(df_validas) > 0:
+            # Cadastros por dia (últimos 7 dias)
+            cadastros_por_dia = []
+            for i in range(6, -1, -1):
+                data = (datetime.now() - timedelta(days=i)).date()
+                qtd = len(datas_validas[datas_validas == data])
+                cadastros_por_dia.append({
+                    'data': data.strftime('%d/%m'),
+                    'quantidade': qtd
+                })
+            metricas['cadastros_por_dia'] = cadastros_por_dia
+        
+        logger.info(f"✅ Métricas calculadas: Total={metricas['total_registros']}, Hoje={metricas.get('cadastros_hoje', 0)}")
+        
+        return jsonify({
+            'sucesso': True,
+            'dados': metricas
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Erro: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+
+
+@app.route('/api/dashboard/sequencia-cadastros-corrigido')
+def api_dashboard_sequencia_cadastros_corrigido():
+    """
+    Versão corrigida que lê a planilha com cabeçalho na linha 2
+    """
+    try:
+        import gspread
+        from google.oauth2 import service_account
+        from pathlib import Path
+        import pandas as pd
+        from datetime import datetime
+        
+        # Configuração
+        SHEET_ID = '1JMcU1mhbW0Q2IyLo15wHAoFLEY3IdFLEG0bMssP6y6o'
+        ABA_NOME = 'Sequência Cad.'
+        
+        # Caminho do credentials.json
+        current_dir = Path(__file__).parent
+        credentials_path = current_dir / "credentials.json"
+        
+        if not credentials_path.exists():
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Arquivo credentials.json não encontrado'
+            })
+        
+        # Autentica
+        credentials = service_account.Credentials.from_service_account_file(
+            str(credentials_path),
+            scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        
+        gc = gspread.authorize(credentials)
+        planilha = gc.open_by_key(SHEET_ID)
+        worksheet = planilha.worksheet(ABA_NOME)
+        
+        # Pega TODOS os valores
+        todos_valores = worksheet.get_all_values()
+        
+        if not todos_valores or len(todos_valores) < 3:  # Precisa ter título + cabeçalho + dados
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Planilha sem dados suficientes'
+            })
+        
+        # 🔥 LINHA 1: Título (ignorar)
+        titulo = todos_valores[0]
+        print(f"📌 Título: {titulo}")
+        
+        # 🔥 LINHA 2: Cabeçalhos (nomes das colunas)
+        cabecalhos = todos_valores[1]
+        print(f"📋 Cabeçalhos encontrados: {cabecalhos}")
+        
+        # LINHAS 3 em diante: Dados
+        dados = todos_valores[2:]  # Pula as duas primeiras linhas
+        
+        # Filtra linhas vazias
+        dados_filtrados = []
+        for linha in dados:
+            # Verifica se a linha tem algum conteúdo relevante
+            if any(celula.strip() for celula in linha):
+                dados_filtrados.append(linha)
+        
+        print(f"📊 Total de linhas com dados: {len(dados_filtrados)}")
+        
+        # Converte para lista de dicionários
+        registros = []
+        for linha in dados_filtrados:
+            registro = {}
+            for i, coluna in enumerate(cabecalhos):
+                if coluna and coluna.strip():  # Só se a coluna tiver nome
+                    if i < len(linha):
+                        valor = linha[i].strip()
+                        if valor:  # Só adiciona se tiver valor
+                            registro[coluna] = valor
+            if registro:  # Só adiciona se tiver pelo menos um campo
+                registros.append(registro)
+        
+        # Converte para DataFrame
+        df = pd.DataFrame(registros)
+        
+        print(f"✅ DataFrame criado com {len(df)} linhas")
+        print(f"📋 Colunas no DataFrame: {df.columns.tolist()}")
+        
+        # Se não tiver dados, retorna erro
+        if df.empty:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Nenhum dado encontrado após o cabeçalho'
+            })
+        
+        # ============================================
+        # ANÁLISE DOS DADOS
+        # ============================================
+        
+        # 1. Distribuição por SITUAÇÃO
+        situacoes = {}
+        if 'SITUAÇÃO' in df.columns:
+            situacoes_raw = df['SITUAÇÃO'].dropna()
+            situacoes_raw = situacoes_raw[situacoes_raw != '']
+            situacoes = situacoes_raw.value_counts().to_dict()
+            print(f"📊 Situações: {situacoes}")
+        
+        # 2. Distribuição por RESPONSÁVEL
+        responsaveis = {}
+        if 'RESPONSÁVEL' in df.columns:
+            responsaveis_raw = df['RESPONSÁVEL'].dropna()
+            responsaveis_raw = responsaveis_raw[responsaveis_raw != '']
+            responsaveis = responsaveis_raw.value_counts().to_dict()
+            print(f"👥 Responsáveis: {responsaveis}")
+        
+        # 3. Prazos
+        prazos = {}
+        if 'PRAZO FORNECEDOR' in df.columns:
+            com_prazo = df['PRAZO FORNECEDOR'].notna().sum()
+            prazos = {
+                'com_prazo': int(com_prazo),
+                'sem_prazo': int(len(df) - com_prazo)
+            }
+        
+        # 4. Marcas por situação
+        marcas_por_situacao = {}
+        if 'SITUAÇÃO' in df.columns and 'MARCA' in df.columns:
+            for situacao in df['SITUAÇÃO'].dropna().unique():
+                if situacao and situacao != '':
+                    marcas = df[df['SITUAÇÃO'] == situacao]['MARCA'].dropna().tolist()
+                    marcas_limpas = [str(m) for m in marcas if m and m != '']
+                    if marcas_limpas:
+                        marcas_por_situacao[str(situacao)] = marcas_limpas
+        
+        # 5. Últimos registros
+        ultimos_registros = []
+        for _, row in df.head(10).iterrows():
+            registro = {
+                'marca': str(row.get('MARCA', 'N/A')) if pd.notna(row.get('MARCA')) else 'N/A',
+                'situacao': str(row.get('SITUAÇÃO', 'N/A')) if pd.notna(row.get('SITUAÇÃO')) else 'N/A',
+                'responsavel': str(row.get('RESPONSÁVEL', 'N/A')) if pd.notna(row.get('RESPONSÁVEL')) else 'N/A',
+                'observacao': str(row.get('OBSERVAÇÃO', 'N/A')) if pd.notna(row.get('OBSERVAÇÃO')) else 'N/A',
+                'prazo': str(row.get('PRAZO FORNECEDOR', 'N/A')) if pd.notna(row.get('PRAZO FORNECEDOR')) else 'N-A'
+            }
+            ultimos_registros.append(registro)
+        
+        resultado = {
+            'total_cadastros': len(df),
+            'situacoes': situacoes,
+            'responsaveis': responsaveis,
+            'prazos': prazos,
+            'marcas_por_situacao': marcas_por_situacao,
+            'ultimos_cadastros': ultimos_registros,
+            'colunas': df.columns.tolist(),
+            'cabecalhos': [c for c in cabecalhos if c],  # Remove colunas vazias
+            'ultima_atualizacao': datetime.now().isoformat()
+        }
+        
+        print(f"✅ Dashboard gerado com sucesso!")
+        print(f"   Total: {resultado['total_cadastros']}")
+        print(f"   Situações: {len(situacoes)}")
+        print(f"   Responsáveis: {len(responsaveis)}")
+        
+        return jsonify({
+            'sucesso': True,
+            'dados': resultado
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+    
+
+@app.route('/api/dashboard/sequencia-cadastros')
+def api_dashboard_sequencia_cadastros():
+    """
+    API que retorna dados da sequência de cadastros
+    Usando google_sheets_utils (que já existe e funciona)
+    """
+    try:
+        # Import do utils (que já funciona)
+        from google_sheets_utils import obter_dados_aba
+        import pandas as pd
+        from datetime import datetime
+        
+        print("✅ Import google_sheets_utils OK")
+        
+        # CONFIGURAÇÃO
+        SHEET_ID = '1JMcU1mhbW0Q2IyLo15wHAoFLEY3IdFLEG0bMssP6y6o'
+        ABA_NOME = 'Sequência Cad.'
+        
+        print(f"📊 Lendo planilha: {ABA_NOME}")
+        
+        # Busca dados usando o utils (sem limite)
+        dados_aba = obter_dados_aba(SHEET_ID, ABA_NOME, limite_linhas=1000)
+        
+        if not dados_aba or not dados_aba.get('dados'):
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Nenhum dado encontrado na planilha'
+            })
+        
+        # Converte para DataFrame
+        df = pd.DataFrame(dados_aba['dados'])
+        
+        print(f"✅ {len(df)} linhas encontradas")
+        print(f"📋 Colunas: {df.columns.tolist()}")
+        
+        # Remove linhas totalmente vazias
+        df = df.dropna(how='all')
+        
+        # ============================================
+        # MAPEAMENTO DAS COLUNAS
+        # ============================================
+        print("📋 Colunas disponíveis:")
+        for col in df.columns:
+            print(f"   - '{col}'")
+        
+        # ============================================
+        # 1. DISTRIBUIÇÃO POR SITUAÇÃO
+        # ============================================
+        situacoes = {}
+        if 'SITUAÇÃO' in df.columns:
+            situacoes_raw = df['SITUAÇÃO'].dropna()
+            situacoes_raw = situacoes_raw[situacoes_raw != '']
+            situacoes = situacoes_raw.value_counts().to_dict()
+            print(f"📊 Situações encontradas: {situacoes}")
+        
+        # ============================================
+        # 2. DISTRIBUIÇÃO POR RESPONSÁVEL
+        # ============================================
+        responsaveis = {}
+        if 'RESPONSÁVEL' in df.columns:
+            responsaveis_raw = df['RESPONSÁVEL'].dropna()
+            responsaveis_raw = responsaveis_raw[responsaveis_raw != '']
+            responsaveis = responsaveis_raw.value_counts().to_dict()
+            print(f"👥 Responsáveis: {responsaveis}")
+        
+        # ============================================
+        # 3. PRAZOS
+        # ============================================
+        prazos = {}
+        if 'PRAZO FORNECEDOR' in df.columns:
+            com_prazo = df['PRAZO FORNECEDOR'].notna().sum()
+            prazos = {
+                'com_prazo': int(com_prazo),
+                'sem_prazo': int(len(df) - com_prazo)
+            }
+        
+        # ============================================
+        # 4. MARCAS POR SITUAÇÃO
+        # ============================================
+        marcas_por_situacao = {}
+        if 'SITUAÇÃO' in df.columns and 'MARCA' in df.columns:
+            for situacao in df['SITUAÇÃO'].dropna().unique():
+                if situacao and situacao != '':
+                    marcas = df[df['SITUAÇÃO'] == situacao]['MARCA'].dropna().tolist()
+                    marcas_limpas = [str(m) for m in marcas if m and m != '']
+                    if marcas_limpas:
+                        marcas_por_situacao[str(situacao)] = marcas_limpas
+        
+        # ============================================
+        # 5. ÚLTIMOS CADASTROS (10 primeiros)
+        # ============================================
+        ultimos_cadastros = []
+        for idx, row in df.head(10).iterrows():
+            item = {
+                'marca': str(row.get('MARCA', 'N/A')) if pd.notna(row.get('MARCA')) else 'N/A',
+                'situacao': str(row.get('SITUAÇÃO', 'N/A')) if pd.notna(row.get('SITUAÇÃO')) else 'N/A',
+                'responsavel': str(row.get('RESPONSÁVEL', 'N/A')) if pd.notna(row.get('RESPONSÁVEL')) else 'N/A',
+                'observacao': str(row.get('OBSERVAÇÃO', 'N/A')) if pd.notna(row.get('OBSERVAÇÃO')) else 'N/A',
+                'prazo': str(row.get('PRAZO FORNECEDOR', 'N/A')) if pd.notna(row.get('PRAZO FORNECEDOR')) else 'N/A'
+            }
+            ultimos_cadastros.append(item)
+        
+        # ============================================
+        # RESULTADO
+        # ============================================
+        resultado = {
+            'total_cadastros': len(df),
+            'situacoes': situacoes,
+            'responsaveis': responsaveis,
+            'prazos': prazos,
+            'marcas_por_situacao': marcas_por_situacao,
+            'ultimos_cadastros': ultimos_cadastros,
+            'colunas': df.columns.tolist(),
+            'ultima_atualizacao': datetime.now().isoformat()
+        }
+        
+        print(f"✅ Dashboard gerado com sucesso!")
+        print(f"   Total: {resultado['total_cadastros']}")
+        print(f"   Situações: {len(situacoes)}")
+        print(f"   Responsáveis: {len(responsaveis)}")
+        
+        return jsonify({
+            'sucesso': True,
+            'dados': resultado
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro detalhado: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+
+
+@app.route('/api/diagnostico-import')
+def api_diagnostico_import():
+    """Rota para diagnosticar problemas de import"""
+    import os
+    import sys
+    from pathlib import Path
+    
+    resultado = {
+        'diretorio_atual': str(Path.cwd()),
+        'arquivos_py': [],
+        'python_path': sys.path,
+        'erros': []
+    }
+    
+    # Lista arquivos .py no diretório atual
+    for arquivo in Path.cwd().glob('*.py'):
+        resultado['arquivos_py'].append(arquivo.name)
+    
+    # Tenta importar de diferentes formas
+    try:
+        import google_sheets
+        resultado['import_google_sheets'] = 'OK'
+    except ImportError as e:
+        resultado['import_google_sheets'] = str(e)
+        resultado['erros'].append(str(e))
+    
+    try:
+        from processamento import google_sheets
+        resultado['import_processamento_google_sheets'] = 'OK'
+    except ImportError as e:
+        resultado['import_processamento_google_sheets'] = str(e)
+    
+    try:
+        import google_sheets_utils
+        resultado['import_google_sheets_utils'] = 'OK'
+    except ImportError as e:
+        resultado['import_google_sheets_utils'] = str(e)
+    
+    return jsonify(resultado)
+
+def processar_dataframe_cadastros(df):
+    """Função auxiliar para processar o DataFrame"""
+    try:
+        import pandas as pd
+        
+        # Remove linhas totalmente vazias
+        df = df.dropna(how='all')
+        
+        # ============================================
+        # MAPEAMENTO DAS COLUNAS
+        # ============================================
+        print("📋 Verificando colunas disponíveis:")
+        for col in df.columns:
+            print(f"   - '{col}'")
+        
+        # ============================================
+        # 1. DISTRIBUIÇÃO POR SITUAÇÃO
+        # ============================================
+        situacoes = {}
+        if 'SITUAÇÃO' in df.columns:
+            situacoes_raw = df['SITUAÇÃO'].dropna()
+            situacoes_raw = situacoes_raw[situacoes_raw != '']
+            situacoes = situacoes_raw.value_counts().to_dict()
+            print(f"📊 Situações: {situacoes}")
+        
+        # ============================================
+        # 2. DISTRIBUIÇÃO POR RESPONSÁVEL
+        # ============================================
+        responsaveis = {}
+        if 'RESPONSÁVEL' in df.columns:
+            responsaveis_raw = df['RESPONSÁVEL'].dropna()
+            responsaveis_raw = responsaveis_raw[responsaveis_raw != '']
+            responsaveis = responsaveis_raw.value_counts().to_dict()
+            print(f"👥 Responsáveis: {responsaveis}")
+        
+        # ============================================
+        # 3. PRAZOS
+        # ============================================
+        prazos = {}
+        if 'PRAZO FORNECEDOR' in df.columns:
+            com_prazo = df['PRAZO FORNECEDOR'].notna().sum()
+            prazos = {
+                'com_prazo': int(com_prazo),
+                'sem_prazo': int(len(df) - com_prazo)
+            }
+        
+        # ============================================
+        # 4. MARCAS POR SITUAÇÃO
+        # ============================================
+        marcas_por_situacao = {}
+        if 'SITUAÇÃO' in df.columns and 'MARCA' in df.columns:
+            for situacao in df['SITUAÇÃO'].dropna().unique():
+                if situacao and situacao != '':
+                    marcas = df[df['SITUAÇÃO'] == situacao]['MARCA'].dropna().tolist()
+                    marcas_limpas = [str(m) for m in marcas if m and m != '']
+                    if marcas_limpas:
+                        marcas_por_situacao[str(situacao)] = marcas_limpas
+        
+        # ============================================
+        # 5. ÚLTIMOS CADASTROS
+        # ============================================
+        ultimos_cadastros = []
+        for idx, row in df.head(10).iterrows():
+            item = {
+                'marca': str(row.get('MARCA', 'N/A')) if pd.notna(row.get('MARCA')) else 'N/A',
+                'situacao': str(row.get('SITUAÇÃO', 'N/A')) if pd.notna(row.get('SITUAÇÃO')) else 'N/A',
+                'responsavel': str(row.get('RESPONSÁVEL', 'N/A')) if pd.notna(row.get('RESPONSÁVEL')) else 'N/A',
+                'observacao': str(row.get('OBSERVAÇÃO', 'N/A')) if pd.notna(row.get('OBSERVAÇÃO')) else 'N/A',
+                'prazo': str(row.get('PRAZO FORNECEDOR', 'N/A')) if pd.notna(row.get('PRAZO FORNECEDOR')) else 'N/A'
+            }
+            ultimos_cadastros.append(item)
+        
+        # ============================================
+        # RESULTADO
+        # ============================================
+        resultado = {
+            'total_cadastros': len(df),
+            'situacoes': situacoes,
+            'responsaveis': responsaveis,
+            'prazos': prazos,
+            'marcas_por_situacao': marcas_por_situacao,
+            'ultimos_cadastros': ultimos_cadastros,
+            'colunas': df.columns.tolist()
+        }
+        
+        print(f"✅ Dashboard gerado com sucesso!")
+        print(f"   Total: {resultado['total_cadastros']}")
+        print(f"   Situações: {len(situacoes)}")
+        print(f"   Responsáveis: {len(responsaveis)}")
+        
+        return jsonify({
+            'sucesso': True,
+            'dados': resultado
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro no processamento: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise
+
+def processar_dataframe(df):
+    """Função auxiliar para processar o DataFrame"""
+    try:
+        if df.empty:
+            return jsonify({
+                'sucesso': False,
+                'erro': 'Planilha vazia'
+            })
+        
+        print(f"✅ {len(df)} linhas encontradas")
+        print(f"📋 Colunas: {df.columns.tolist()}")
+        
+        # Limpa dados
+        df = df.dropna(how='all')
+        
+        # ============================================
+        # MÉTRICAS
+        # ============================================
+        total_cadastros = len(df)
+        
+        # Distribuição por SITUAÇÃO
+        situacoes = {}
+        if 'SITUAÇÃO' in df.columns:
+            situacoes = df['SITUAÇÃO'].value_counts().to_dict()
+        
+        # Distribuição por RESPONSÁVEL
+        responsaveis = {}
+        if 'RESPONSÁVEL' in df.columns:
+            responsaveis = df['RESPONSÁVEL'].value_counts().to_dict()
+        
+        # Prazos
+        prazos = {}
+        if 'PRAZO FORNECEDOR' in df.columns:
+            prazos_preenchidos = df['PRAZO FORNECEDOR'].notna().sum()
+            prazos = {
+                'com_prazo': int(prazos_preenchidos),
+                'sem_prazo': int(len(df) - prazos_preenchidos)
+            }
+        
+        # Marcas por situação
+        marcas_por_situacao = {}
+        if 'SITUAÇÃO' in df.columns and 'MARCA' in df.columns:
+            for situacao in df['SITUAÇÃO'].unique():
+                if pd.notna(situacao):
+                    marcas = df[df['SITUAÇÃO'] == situacao]['MARCA'].tolist()
+                    marcas_por_situacao[str(situacao)] = [m for m in marcas if pd.notna(m)]
+        
+        # Últimos cadastros
+        ultimos_cadastros = []
+        for idx, row in df.head(10).iterrows():
+            item = {
+                'marca': row.get('MARCA', 'N/A'),
+                'situacao': row.get('SITUAÇÃO', 'N/A'),
+                'responsavel': row.get('RESPONSÁVEL', 'N/A'),
+                'observacao': row.get('OBSERVAÇÃO', 'N/A'),
+                'prazo': row.get('PRAZO FORNECEDOR', 'N/A')
+            }
+            ultimos_cadastros.append(item)
+        
+        # Resultado
+        resultado = {
+            'total_cadastros': total_cadastros,
+            'situacoes': situacoes,
+            'responsaveis': responsaveis,
+            'prazos': prazos,
+            'marcas_por_situacao': marcas_por_situacao,
+            'ultimos_cadastros': ultimos_cadastros,
+            'colunas': df.columns.tolist()
+        }
+        
+        print(f"✅ Dashboard gerado: {total_cadastros} cadastros")
+        
+        return jsonify({
+            'sucesso': True,
+            'dados': resultado
+        })
+        
+    except Exception as e:
+        print(f"❌ Erro no processamento: {str(e)}")
+        raise
+    
+    
 def obter_dados_aba(sheet_id, aba_nome, limite_linhas=None):
     """Obtém TODOS os dados de uma aba específica para preview"""
     try:

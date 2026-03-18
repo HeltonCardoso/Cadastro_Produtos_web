@@ -1,145 +1,270 @@
-// static/js/dashboard.js
-class DashboardManager {
-    constructor() {
-        this.refreshInterval = 60000; // 1 minuto
-        this.init();
-    }
+// ============================================
+// DASHBOARD - SEQUÊNCIA DE CADASTROS
+// JavaScript principal
+// ============================================
 
-    init() {
-        // Atualiza métricas ao carregar
-        this.updateMetrics();
+console.log('🚀 Dashboard iniciado');
+
+// Estado global
+let atualizando = false;
+
+// Função principal
+window.carregarDados = async function() {
+    if (atualizando) return;
+    
+    atualizando = true;
+    console.log('🔄 Carregando dados...');
+    
+    const refreshIcon = document.getElementById('refresh-icon');
+    if (refreshIcon) refreshIcon.classList.add('refreshing');
+    
+    try {
+        const response = await fetch('/api/dashboard/sequencia-cadastros-corrigido');
         
-        // Configura atualização automática
-        setInterval(() => this.updateMetrics(), this.refreshInterval);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
-        // Adiciona listeners para widgets
-        this.addWidgetInteractions();
-    }
-
-    async updateMetrics() {
-        try {
-            const response = await fetch('/api/dashboard/metricas-gerais');
-            const data = await response.json();
-            
-            if (data.sucesso) {
-                this.updateUI(data);
-                this.showNotification('Dashboard atualizado', 'success');
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar métricas:', error);
-        }
-    }
-
-    updateUI(data) {
-        // Atualiza contadores do sistema
-        this.updateCounter('processamentos-hoje', data.sistema.processamentos_hoje);
-        this.updateCounter('sucessos-hoje', data.sistema.sucessos_hoje);
-        this.updateCounter('erros-hoje', data.sistema.erros_hoje);
+        const data = await response.json();
+        console.log('📊 Dados recebidos:', data);
         
-        // Atualiza status do Mercado Livre
-        this.updateMLStatus(data.mercadolivre);
-        
-        // Atualiza status do AnyMarket
-        this.updateAnyMarketStatus(data.anymarket);
-        
-        // Atualiza timestamp
-        this.updateTimestamp();
-    }
-
-    updateCounter(elementId, value) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            this.animateCounter(element, value);
-        }
-    }
-
-    animateCounter(element, target) {
-        const current = parseInt(element.textContent) || 0;
-        const increment = target > current ? 1 : -1;
-        let currentValue = current;
-
-        const animate = () => {
-            if ((increment > 0 && currentValue >= target) || 
-                (increment < 0 && currentValue <= target)) {
-                element.textContent = target;
-                return;
-            }
-
-            currentValue += increment;
-            element.textContent = currentValue;
-            
-            requestAnimationFrame(animate);
-        };
-
-        requestAnimationFrame(animate);
-    }
-
-    updateMLStatus(mlData) {
-        const mlWidget = document.querySelector('.mercadolivre-widget');
-        if (!mlWidget) return;
-
-        if (mlData.autenticado && mlData.metricas) {
-            mlWidget.classList.remove('offline');
-            mlWidget.classList.add('online');
-            
-            // Atualiza métricas específicas
-            this.updateMetric(mlWidget, 'total-anuncios', mlData.metricas.anuncios_ativos);
-            this.updateMetric(mlWidget, 'vendas-30d', mlData.metricas.total_vendas_30_dias);
-            this.updateMetric(mlWidget, 'ticket-medio', 
-                mlData.metricas.ticket_medio ? 
-                `R$ ${mlData.metricas.ticket_medio.toFixed(2)}` : 'R$ 0,00');
+        if (data.sucesso && data.dados) {
+            atualizarDashboard(data.dados);
+            atualizarStatus('Online', 'online');
         } else {
-            mlWidget.classList.remove('online');
-            mlWidget.classList.add('offline');
+            throw new Error(data.erro || 'Erro ao carregar dados');
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro:', error);
+        atualizarStatus('Offline', 'offline');
+        mostrarErro(error.message);
+    } finally {
+        atualizando = false;
+        if (refreshIcon) refreshIcon.classList.remove('refreshing');
+    }
+};
+
+// Atualizar dashboard
+function atualizarDashboard(dados) {
+    console.log('📝 Atualizando dashboard...');
+    
+    // KPI Cards
+    const total = dados.total_cadastros || 0;
+    const situacoes = dados.situacoes || {};
+    const emAndamento = situacoes['EM ANDAMENTO'] || 0;
+    const ticket = situacoes['TICKET'] || 0;
+    const prazos = dados.prazos || {};
+    
+    setTexto('total-cadastros', total);
+    setTexto('em-andamento', emAndamento);
+    setTexto('ticket', ticket);
+    setTexto('com-prazo', prazos.com_prazo || 0);
+    
+    // Percentuais
+    if (total > 0) {
+        const percAndamento = ((emAndamento / total) * 100).toFixed(1);
+        const percElement = document.querySelector('#percentual-andamento span');
+        if (percElement) percElement.textContent = `${percAndamento}% do total`;
+    }
+    
+    const semPrazoElement = document.getElementById('sem-prazo');
+    if (semPrazoElement) semPrazoElement.textContent = `${prazos.sem_prazo || 0} sem prazo`;
+    
+    // Situações
+    atualizarSituacoes(situacoes, total);
+    
+    // Responsáveis
+    atualizarResponsaveis(dados.responsaveis || {});
+    
+    // Marcas por situação
+    atualizarMarcas(dados.marcas_por_situacao || {});
+    
+    // Tabela
+    if (dados.ultimos_cadastros) {
+        atualizarTabela(dados.ultimos_cadastros);
+        setTexto('total-exibido', `${dados.ultimos_cadastros.length} de ${total}`);
+    }
+    
+    // Timestamp
+    const agora = new Date();
+    setTexto('ultima-atualizacao', `Última atualização: ${agora.toLocaleString('pt-BR')}`);
+    
+    // Debug
+    atualizarDebug('Conectado', 'success');
+}
+
+// Atualizar situações
+function atualizarSituacoes(situacoes, total) {
+    const container = document.getElementById('situacoes-container');
+    if (!container) return;
+    
+    if (!situacoes || Object.keys(situacoes).length === 0) {
+        container.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Nenhuma situação encontrada</p></div>';
+        return;
+    }
+    
+    let html = '<div class="status-list">';
+    const cores = ['#4361ee', '#06d6a0', '#ffb703', '#ef476f', '#4cc9f0'];
+    let i = 0;
+    
+    for (const [situacao, quantidade] of Object.entries(situacoes)) {
+        const percent = total > 0 ? (quantidade / total * 100).toFixed(1) : 0;
+        const cor = cores[i % cores.length];
+        
+        html += `
+            <div class="status-item">
+                <div class="status-color" style="background: ${cor};"></div>
+                <div class="status-info">
+                    <span class="status-name">${situacao}</span>
+                    <span class="status-count">${quantidade}</span>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="status-bar-fill" style="width: ${percent}%; background: ${cor};"></div>
+            </div>
+        `;
+        i++;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+    setTexto('total-situacoes', `${Object.keys(situacoes).length} situações`);
+}
+
+// Atualizar responsáveis
+function atualizarResponsaveis(responsaveis) {
+    const container = document.getElementById('responsaveis-container');
+    if (!container) return;
+    
+    if (!responsaveis || Object.keys(responsaveis).length === 0) {
+        container.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Nenhum responsável encontrado</p></div>';
+        return;
+    }
+    
+    let html = '<div class="responsaveis-grid">';
+    
+    for (const [responsavel, quantidade] of Object.entries(responsaveis)) {
+        html += `
+            <div class="responsavel-item">
+                <div class="responsavel-nome">${responsavel}</div>
+                <div class="responsavel-count">${quantidade}</div>
+            </div>
+        `;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+    setTexto('total-responsaveis', `${Object.keys(responsaveis).length} responsáveis`);
+}
+
+// Atualizar marcas
+function atualizarMarcas(marcasPorSituacao) {
+    const container = document.getElementById('marcas-container');
+    if (!container) return;
+    
+    if (!marcasPorSituacao || Object.keys(marcasPorSituacao).length === 0) {
+        container.innerHTML = '<div class="loading-container"><div class="spinner"></div><p>Nenhuma marca encontrada</p></div>';
+        return;
+    }
+    
+    let html = '<div class="marcas-grid">';
+    let totalMarcas = 0;
+    
+    for (const [situacao, marcas] of Object.entries(marcasPorSituacao)) {
+        if (marcas && marcas.length > 0) {
+            totalMarcas += marcas.length;
+            const classe = situacao.includes('ANDAMENTO') ? 'andamento' : 
+                          (situacao.includes('TICKET') ? 'ticket' : 'outros');
+            
+            html += `
+                <div class="marca-card ${classe}">
+                    <div class="marca-header">
+                        <strong>${situacao}</strong>
+                        <span class="badge">${marcas.length}</span>
+                    </div>
+                    <div class="marca-tags">
+                        ${marcas.slice(0, 8).map(m => 
+                            `<span class="marca-tag">${m}</span>`
+                        ).join('')}
+                        ${marcas.length > 8 ? `<span class="marca-tag">+${marcas.length - 8}</span>` : ''}
+                    </div>
+                </div>
+            `;
         }
     }
+    
+    html += '</div>';
+    container.innerHTML = html;
+    setTexto('total-marcas', `${totalMarcas} marcas`);
+}
 
-    updateAnyMarketStatus(anymarketData) {
-        const anymarketWidget = document.querySelector('.anymarket-widget');
-        if (!anymarketWidget) return;
-
-        if (anymarketData.token_configurado) {
-            anymarketWidget.classList.remove('offline');
-            anymarketWidget.classList.add('online');
-        } else {
-            anymarketWidget.classList.remove('online');
-            anymarketWidget.classList.add('offline');
-        }
+// Atualizar tabela
+function atualizarTabela(cadastros) {
+    const tbody = document.getElementById('tabela-body');
+    if (!tbody) return;
+    
+    if (!cadastros || cadastros.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 40px;">Nenhum cadastro encontrado</td></tr>';
+        return;
     }
+    
+    let html = '';
+    cadastros.forEach(item => {
+        const situacaoClass = item.situacao?.includes('ANDAMENTO') ? 'situacao-andamento' : 
+                             (item.situacao?.includes('TICKET') ? 'situacao-ticket' : 'situacao-outros');
+        
+        html += `
+            <tr>
+                <td><strong>${item.marca || '-'}</strong></td>
+                <td><span class="situacao-tag ${situacaoClass}">${item.situacao || '-'}</span></td>
+                <td><span class="responsavel-tag">${item.responsavel || '-'}</span></td>
+                <td>${item.prazo || '-'}</td>
+                <td><span style="color: var(--gray);">${item.observacao?.substring(0, 30) || '-'}${item.observacao?.length > 30 ? '...' : ''}</span></td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
+}
 
-    updateTimestamp() {
-        const now = new Date();
-        const timeElement = document.getElementById('last-update-time');
-        if (timeElement) {
-            timeElement.textContent = now.toLocaleTimeString('pt-BR');
-        }
-    }
+// Funções utilitárias
+function setTexto(id, valor) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = valor;
+}
 
-    addWidgetInteractions() {
-        // Adiciona tooltips
-        const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        tooltips.forEach(el => {
-            new bootstrap.Tooltip(el);
-        });
-
-        // Adiciona click handlers para widgets
-        document.querySelectorAll('.dashboard-widget').forEach(widget => {
-            widget.addEventListener('click', (e) => {
-                if (!e.target.closest('a, button')) {
-                    widget.classList.add('clicked');
-                    setTimeout(() => widget.classList.remove('clicked'), 300);
-                }
-            });
-        });
-    }
-
-    showNotification(message, type = 'info') {
-        // Implemente notificações toast se desejar
-        console.log(`${type.toUpperCase()}: ${message}`);
+function atualizarStatus(status, classe) {
+    const statusEl = document.getElementById('status-geral');
+    if (statusEl) {
+        statusEl.className = `status-badge ${classe}`;
+        statusEl.innerHTML = `<i class="fas fa-circle"></i> ${status}`;
     }
 }
 
-// Inicializa quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', () => {
-    window.dashboard = new DashboardManager();
+function atualizarDebug(status, tipo) {
+    const debugStatus = document.getElementById('debug-status');
+    if (debugStatus) {
+        debugStatus.innerHTML = status;
+        debugStatus.className = tipo;
+    }
+    
+    const debugTime = document.getElementById('debug-time');
+    if (debugTime) {
+        debugTime.textContent = new Date().toLocaleTimeString();
+    }
+}
+
+function mostrarErro(mensagem) {
+    const tbody = document.getElementById('tabela-body');
+    if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger" style="padding: 40px;">Erro: ${mensagem}</td></tr>`;
+    }
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 Página carregada');
+    carregarDados();
 });
+
+// Atualizar a cada 5 minutos
+setInterval(carregarDados, 300000);

@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sequência de Cadastros</title>
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== RESET COMPLETO ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea0d 0%, #764ba20d 100%), #f0f2f5;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        /* Container principal */
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1f36;
+            margin: 0 0 4px 0;
+        }
+
+        .header-title h1 i {
+            color: #4361ee;
+            margin-right: 12px;
+        }
+
+        .header-title p {
+            color: #6b7280;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            background: #e6f7e6;
+            color: #0a5e0a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge i {
+            font-size: 8px;
+            color: #0a5e0a;
+        }
+
+        .refresh-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6b7280;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .refresh-btn:hover {
+            background: #f9fafb;
+            transform: rotate(180deg);
+            color: #4361ee;
+            border-color: #4361ee;
+        }
+
+        .refresh-btn.refreshing {
+            animation: spin 1s linear infinite;
+            color: #4361ee;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Cards KPI */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(67, 97, 238, 0.1);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4361ee, #4895ef);
+        }
+
+        .kpi-label {
+            font-size: 13px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1f36;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .kpi-trend {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #6b7280;
+        }
+
+        .kpi-trend.positive { color: #06d6a0; }
+
+        .kpi-icon {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 48px;
+            color: rgba(67, 97, 238, 0.05);
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-header span {
+            font-size: 13px;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* Status List */
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        .status-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-name {
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        .status-count {
+            font-weight: 600;
+            color: #4361ee;
+            background: #eef2ff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .status-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+            margin-left: 24px;
+        }
+
+        .status-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        /* Responsáveis Grid */
+        .responsaveis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .responsavel-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid #e5e7eb;
+        }
+
+        .responsavel-item:hover {
+            background: white;
+            border-color: #4361ee;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(67, 97, 238, 0.1);
+        }
+
+        .responsavel-nome {
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .responsavel-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4361ee;
+        }
+
+        /* Marcas Grid */
+        .marcas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .marca-card {
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .marca-card.andamento {
+            background: #fffbeb;
+            border-left: 4px solid #ffb703;
+        }
+
+        .marca-card.ticket {
+            background: #f0fdf4;
+            border-left: 4px solid #06d6a0;
+        }
+
+        .marca-card.outros {
+            background: #f9fafb;
+            border-left: 4px solid #9ca3af;
+        }
+
+        .marca-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .marca-header strong {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .marca-header .badge {
+            background: rgba(0,0,0,0.05);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .marca-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .marca-tag {
+            background: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        /* Tabela */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 28px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-count {
+            background: #f3f4f6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 20px;
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #1a1f36;
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background-color: #f9fafb;
+        }
+
+        .situacao-tag {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .situacao-andamento {
+            background: #fffbeb;
+            color: #b85c00;
+        }
+
+        .situacao-ticket {
+            background: #f0fdf4;
+            color: #0b5e42;
+        }
+
+        .situacao-outros {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .responsavel-tag {
+            background: #eef2ff;
+            color: #4361ee;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Loading */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #4361ee;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Debug Panel */
+        .debug-panel {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 12px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .debug-panel i { color: #4cc9f0; }
+        .debug-panel .success { color: #06d6a0; }
+        .debug-panel .danger { color: #ef476f; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 16px; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .kpi-value { font-size: 28px; }
+        }
+
+        @media (max-width: 480px) {
+            .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+            td, th { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-title">
+                <h1>
+                    <i class="fas fa-clipboard-list"></i>
+                    Sequência de Cadastros
+                </h1>
+                <p id="ultima-atualizacao">Carregando dados...</p>
+            </div>
+            <div class="header-actions">
+                <span class="status-badge" id="status-geral">
+                    <i class="fas fa-circle"></i>
+                    Online
+                </span>
+                <div class="refresh-btn" onclick="carregarDados()">
+                    <i class="fas fa-sync-alt" id="refresh-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total de Cadastros</div>
+                <div class="kpi-value" id="total-cadastros">-</div>
+                <div class="kpi-trend">na sequência</div>
+                <i class="fas fa-boxes kpi-icon"></i>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Em Andamento</div>
+                <div class="kpi-value" id="em-andamento">-</div>
+                <div class="kpi-trend positive" id="percentual-andamento"><span></span></div>
+                <i class="fas fa-clock kpi-icon"></i>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Ticket</div>
+                <div class="kpi-value" id="ticket">-</div>
+                <div class="kpi-trend">aguardando</div>
+                <i class="fas fa-ticket-alt kpi-icon"></i>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Com Prazo</div>
+                <div class="kpi-value" id="com-prazo">-</div>
+                <div class="kpi-trend" id="sem-prazo"></div>
+                <i class="fas fa-hourglass-half kpi-icon"></i>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-pie" style="color:#4361ee"></i>Distribuição por Situação</h3>
+                    <span id="total-situacoes"></span>
+                </div>
+                <div id="situacoes-container">
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                        <p>Carregando situações...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="fas fa-users" style="color:#06d6a0"></i>Distribuição por Responsável</h3>
+                    <span id="total-responsaveis"></span>
+                </div>
+                <div id="responsaveis-container">
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                        <p>Carregando responsáveis...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marcas por Situação -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3><i class="fas fa-tags" style="color:#ffb703"></i>Marcas por Situação</h3>
+                <span class="badge-count" id="total-marcas"></span>
+            </div>
+            <div id="marcas-container">
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Carregando marcas...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3><i class="fas fa-history" style="color:#4cc9f0"></i>Últimos 10 Cadastros</h3>
+                <span class="badge-count" id="total-exibido"></span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>Situação</th>
+                            <th>Responsável</th>
+                            <th>Prazo</th>
+                            <th>Observação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-body">
+                        <tr><td colspan="5" style="text-align:center;padding:40px">
+                            <div class="spinner"></div>
+                            <div style="margin-top:16px">Carregando dados...</div>
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel">
+        <i class="fas fa-code"></i>
+        <span id="debug-status" class="success">Conectado</span> • 
+        <span id="debug-time">-</span>
+    </div>
+
+    <script>
+        // ============================================
+        // DASHBOARD - SEQUÊNCIA DE CADASTROS
+        // ============================================
+
+        console.log('🚀 Dashboard iniciado');
+        let atualizando = false;
+
+        window.carregarDados = async function() {
+            if (atualizando) return;
+            atualizando = true;
+            
+            const refreshIcon = document.getElementById('refresh-icon');
+            if (refreshIcon) refreshIcon.classList.add('refreshing');
+            
+            try {
+                const response = await fetch('/api/dashboard/sequencia-cadastros-corrigido');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                console.log('📊 Dados recebidos:', data);
+                
+                if (data.sucesso && data.dados) {
+                    atualizarDashboard(data.dados);
+                    atualizarStatus('Online');
+                }
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                atualizarStatus('Offline');
+                mostrarErro(error.message);
+            } finally {
+                atualizando = false;
+                if (refreshIcon) refreshIcon.classList.remove('refreshing');
+            }
+        };
+
+        function atualizarDashboard(dados) {
+            const total = dados.total_cadastros || 0;
+            const situacoes = dados.situacoes || {};
+            const emAndamento = situacoes['EM ANDAMENTO'] || 0;
+            const ticket = situacoes['TICKET'] || 0;
+            const prazos = dados.prazos || {};
+            
+            document.getElementById('total-cadastros').textContent = total;
+            document.getElementById('em-andamento').textContent = emAndamento;
+            document.getElementById('ticket').textContent = ticket;
+            document.getElementById('com-prazo').textContent = prazos.com_prazo || 0;
+            
+            if (total > 0) {
+                const perc = ((emAndamento / total) * 100).toFixed(1);
+                const el = document.querySelector('#percentual-andamento span');
+                if (el) el.textContent = `${perc}% do total`;
+            }
+            
+            document.getElementById('sem-prazo').textContent = `${prazos.sem_prazo || 0} sem prazo`;
+            
+            // Atualizar situações
+            const sitContainer = document.getElementById('situacoes-container');
+            if (sitContainer) {
+                if (Object.keys(situacoes).length === 0) {
+                    sitContainer.innerHTML = '<div class="loading-container"><p>Nenhuma situação encontrada</p></div>';
+                } else {
+                    let html = '<div class="status-list">';
+                    const cores = ['#4361ee', '#06d6a0', '#ffb703', '#ef476f', '#4cc9f0'];
+                    let i = 0;
+                    
+                    for (const [sit, qtd] of Object.entries(situacoes)) {
+                        const percent = (qtd / total * 100).toFixed(1);
+                        html += `
+                            <div class="status-item">
+                                <div class="status-color" style="background:${cores[i%5]}"></div>
+                                <div class="status-info">
+                                    <span class="status-name">${sit}</span>
+                                    <span class="status-count">${qtd}</span>
+                                </div>
+                            </div>
+                            <div class="status-bar">
+                                <div class="status-bar-fill" style="width:${percent}%;background:${cores[i%5]}"></div>
+                            </div>
+                        `;
+                        i++;
+                    }
+                    html += '</div>';
+                    sitContainer.innerHTML = html;
+                    document.getElementById('total-situacoes').textContent = `${Object.keys(situacoes).length} situações`;
+                }
+            }
+            
+            // Atualizar responsáveis
+            const respContainer = document.getElementById('responsaveis-container');
+            const responsaveis = dados.responsaveis || {};
+            if (respContainer) {
+                if (Object.keys(responsaveis).length === 0) {
+                    respContainer.innerHTML = '<div class="loading-container"><p>Nenhum responsável encontrado</p></div>';
+                } else {
+                    let html = '<div class="responsaveis-grid">';
+                    for (const [nome, qtd] of Object.entries(responsaveis)) {
+                        html += `
+                            <div class="responsavel-item">
+                                <div class="responsavel-nome">${nome}</div>
+                                <div class="responsavel-count">${qtd}</div>
+                            </div>
+                        `;
+                    }
+                    html += '</div>';
+                    respContainer.innerHTML = html;
+                    document.getElementById('total-responsaveis').textContent = `${Object.keys(responsaveis).length} responsáveis`;
+                }
+            }
+            
+            // Atualizar marcas
+            const marcasContainer = document.getElementById('marcas-container');
+            const marcas = dados.marcas_por_situacao || {};
+            if (marcasContainer) {
+                if (Object.keys(marcas).length === 0) {
+                    marcasContainer.innerHTML = '<div class="loading-container"><p>Nenhuma marca encontrada</p></div>';
+                } else {
+                    let html = '<div class="marcas-grid">';
+                    let totalMarcas = 0;
+                    
+                    for (const [sit, lista] of Object.entries(marcas)) {
+                        if (lista && lista.length > 0) {
+                            totalMarcas += lista.length;
+                            const classe = sit.includes('ANDAMENTO') ? 'andamento' : 
+                                         (sit.includes('TICKET') ? 'ticket' : 'outros');
+                            
+                            html += `
+                                <div class="marca-card ${classe}">
+                                    <div class="marca-header">
+                                        <strong>${sit}</strong>
+                                        <span class="badge">${lista.length}</span>
+                                    </div>
+                                    <div class="marca-tags">
+                                        ${lista.slice(0,8).map(m => `<span class="marca-tag">${m}</span>`).join('')}
+                                        ${lista.length > 8 ? `<span class="marca-tag">+${lista.length-8}</span>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    html += '</div>';
+                    marcasContainer.innerHTML = html;
+                    document.getElementById('total-marcas').textContent = `${totalMarcas} marcas`;
+                }
+            }
+            
+            // Atualizar tabela
+            const tbody = document.getElementById('tabela-body');
+            const cadastros = dados.ultimos_cadastros || [];
+            if (tbody) {
+                if (cadastros.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px">Nenhum cadastro encontrado</td></tr>';
+                } else {
+                    let html = '';
+                    cadastros.forEach(item => {
+                        const classe = item.situacao?.includes('ANDAMENTO') ? 'situacao-andamento' :
+                                     (item.situacao?.includes('TICKET') ? 'situacao-ticket' : 'situacao-outros');
+                        
+                        html += `
+                            <tr>
+                                <td><strong>${item.marca || '-'}</strong></td>
+                                <td><span class="situacao-tag ${classe}">${item.situacao || '-'}</span></td>
+                                <td><span class="responsavel-tag">${item.responsavel || '-'}</span></td>
+                                <td>${item.prazo || '-'}</td>
+                                <td>${item.observacao?.substring(0,30) || '-'}${item.observacao?.length > 30 ? '...' : ''}</td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = html;
+                    document.getElementById('total-exibido').textContent = `${cadastros.length} de ${total}`;
+                }
+            }
+            
+            document.getElementById('ultima-atualizacao').textContent = 
+                `Última atualização: ${new Date().toLocaleString('pt-BR')}`;
+            
+            atualizarDebug('Conectado', 'success');
+        }
+
+        function atualizarStatus(status) {
+            const statusEl = document.getElementById('status-geral');
+            if (statusEl) {
+                if (status === 'Online') {
+                    statusEl.style.background = '#e6f7e6';
+                    statusEl.style.color = '#0a5e0a';
+                } else {
+                    statusEl.style.background = '#fee2e2';
+                    statusEl.style.color = '#991b1b';
+                }
+                statusEl.innerHTML = `<i class="fas fa-circle"></i> ${status}`;
+            }
+        }
+
+        function atualizarDebug(status, tipo) {
+            const debugStatus = document.getElementById('debug-status');
+            if (debugStatus) {
+                debugStatus.innerHTML = status;
+                debugStatus.className = tipo;
+            }
+            
+            const debugTime = document.getElementById('debug-time');
+            if (debugTime) {
+                debugTime.textContent = new Date().toLocaleTimeString();
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            const tbody = document.getElementById('tabela-body');
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:40px;color:#ef476f">Erro: ${mensagem}</td></tr>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📄 Página carregada');
+            carregarDados();
+        });
+        
+        setInterval(carregarDados, 300000);
+    </script>
+</body>
+</html>

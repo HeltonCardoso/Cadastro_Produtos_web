@@ -47,15 +47,25 @@ class ExtratorAtributos:
     def __init__(self):
         self.logs: List[str] = []
         self.colunas_saida = [
-            "EAN", "Nome", "Largura", "Altura", "Profundidade", "Peso", "Cor", 
-            "Modelo", "Fabricante", "Volumes", "Material da Estrutura", "Material", 
+            "EAN", "Nome", "Largura", "Altura", "Profundidade", "Peso", "Cor",
+            "Modelo", "Fabricante", "Volumes", "Material da Estrutura", "Material",
             "Peso Suportado", "Acabamento", "Possui Portas", "Quantidade de Portas",
-            "Tipo de Porta", "Possui Prateleiras", "Quantidade de Prateleiras", 
-            "Conteúdo da Embalagem", "Quantidade de Gavetas", "Possui Gavetas", 
+            "Tipo de Porta", "Possui Prateleiras", "Quantidade de Prateleiras",
+            "Conteúdo da Embalagem", "Quantidade de Gavetas", "Possui Gavetas",
             "Revestimento", "Quantidade de lugares", "Possui Nicho",
-            "Quantidade de Assentos", "Tipo de Assento", "Sugestão de Lugares", 
-            "Tipo de Encosto"
-        ]
+            "Quantidade de Assentos", "Tipo de Assento", "Sugestão de Lugares",
+            "Tipo de Encosto",
+
+            "Altura da embalagem do vendor",
+            "Largura da embalagem do vendor",
+            "Peso da embalagem do vendor",
+            "Comprimento da embalagem do vendor",
+
+            "Altura do Produto (cm)",
+            "Largura do Produto (cm)",
+            "Comprimento do Produto (cm)",
+            "Peso do Produto (kg)"
+       ]
         self.colunas_necessarias = ["EAN", "NOMEE-COMMERCE", "DESCRICAOHTML", "MODMPZ", "COR"]
         self.marca = "SemMarca"  # Valor padrão
 
@@ -154,20 +164,40 @@ class ExtratorAtributos:
         return df
 
     def _processar_linha(self, row: pd.Series) -> List:
-        """Processa uma linha individual do DataFrame"""
+
         ean = str(row.get("EAN", "")).strip()
         nome = row.get("NOMEE-COMMERCE", "Desconhecido")
         descricao_html = row.get("DESCRICAOHTML", "")
         modelo = str(row.get("MODMPZ", "")).strip()
         cor = str(row.get("COR", "")).strip()
+
         fabricante = nome.split("-")[-1].strip() if "-" in nome else ""
-        
+
+        # embalagem (vendor)
+        embaltura = self._formatar_cm(row.get("EMBALTURA", ""))
+        emblargura = self._formatar_cm(row.get("EMBLARGURA", ""))
+        embcomprimento = self._formatar_cm(row.get("EMBCOMPRIMENTO", ""))
+        pesobruto = self._converter_kg_para_g(row.get("PESOBRUTO", ""))
+
         atributos = self._extrair_atributos(descricao_html)
+
         atributos["Cor"] = cor
         atributos["Modelo"] = modelo
         atributos["Fabricante"] = fabricante
-        
-        return [ean, nome] + list(atributos.values())
+
+        # dados embalagem
+        atributos["Altura da embalagem do vendor"] = embaltura
+        atributos["Largura da embalagem do vendor"] = emblargura
+        atributos["Peso da embalagem do vendor"] = pesobruto
+        atributos["Comprimento da embalagem do vendor"] = embcomprimento
+
+        # produto (sem unidade)
+        atributos["Altura do Produto (cm)"] = self._apenas_numero(atributos.get("Altura"))
+        atributos["Largura do Produto (cm)"] = self._apenas_numero(atributos.get("Largura"))
+        atributos["Comprimento do Produto (cm)"] = self._apenas_numero(atributos.get("Profundidade"))
+        atributos["Peso do Produto (kg)"] = self._apenas_numero(atributos.get("Peso"))
+
+        return [ean, nome] + [atributos.get(col, "") for col in self.colunas_saida[2:]]
 
     def _extrair_atributos(self, descricao_html: str) -> Dict[str, str]:
         """Extrai atributos da descrição HTML"""
@@ -369,6 +399,24 @@ class ExtratorAtributos:
         
         self.logs.append(log_entry)
         logger.info(log_entry) if tipo == "info" else logger.error(log_entry)
+    
+    def _formatar_cm(self, valor):
+        try:
+            return f"{float(valor):.0f} cm"
+        except:
+            return ""
+
+    def _converter_kg_para_g(self, valor):
+        try:
+            return f"{int(float(valor) * 1000)} g"
+        except:
+            return ""
+
+    def _apenas_numero(self, valor):
+        if not valor:
+            return ""
+        return re.sub(r"[^\d,\.]", "", str(valor)).replace(",", ".")
+    
 
 # Atualize a função de processamento para aceitar ambas as fontes
 def extrair_atributos_processamento(fonte: Union[str, dict]) -> Tuple[str, int, float, list]:
