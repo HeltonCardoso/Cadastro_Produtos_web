@@ -47,8 +47,8 @@ class ExtratorAtributos:
     def __init__(self):
         self.logs: List[str] = []
         self.colunas_saida = [
-            "EAN", "Nome", "Largura", "Altura", "Profundidade", "Peso", "Cor",
-            "Modelo", "Fabricante", "Volumes", "Material da Estrutura", "Material",
+            "EAN", "Nome","Produto","Largura", "Altura", "Profundidade", "Peso", "Cor",
+            "Modelo", "Fabricante", "Volumes","Quantidade de caixas de embalagem", "Material da Estrutura",
             "Peso Suportado", "Acabamento", "Possui Portas", "Quantidade de Portas",
             "Tipo de Porta", "Possui Prateleiras", "Quantidade de Prateleiras",
             "Conteúdo da Embalagem", "Quantidade de Gavetas", "Possui Gavetas",
@@ -64,7 +64,15 @@ class ExtratorAtributos:
             "Altura do Produto (cm)",
             "Largura do Produto (cm)",
             "Comprimento do Produto (cm)",
-            "Peso do Produto (kg)"
+            "Peso do Produto (kg)",
+            "Tipo de Garantia",
+            "Coleção de Antiguidade",
+            "Duração da Garantia",
+            "País de Origem",
+            "NOMEML",
+            "Inclui manual de montagem",
+            "Requer montagem"
+
        ]
         self.colunas_necessarias = ["EAN", "NOMEE-COMMERCE", "DESCRICAOHTML", "MODMPZ", "COR"]
         self.marca = "SemMarca"  # Valor padrão
@@ -170,6 +178,17 @@ class ExtratorAtributos:
         descricao_html = row.get("DESCRICAOHTML", "")
         modelo = str(row.get("MODMPZ", "")).strip()
         cor = str(row.get("COR", "")).strip()
+        produto = row.get("NOMEE-COMMERCE")
+        volume = row.get("VOLUMES")
+        #nomeMl = row.get("NOMEML")
+
+        nomeML = ""
+        for col in ["NOMEML", "NOME ML","ML"]:
+            if col in row.index:
+                valor = row.get(col,"")
+                if valor and str(valor).strip():
+                    nomeML = str(valor).strip()
+                    break
 
         fabricante = nome.split("-")[-1].strip() if "-" in nome else ""
 
@@ -184,6 +203,9 @@ class ExtratorAtributos:
         atributos["Cor"] = cor
         atributos["Modelo"] = modelo
         atributos["Fabricante"] = fabricante
+        atributos["NOMEML"] = nomeML
+        atributos["Produto"] = produto
+        atributos["Quantidade de caixas de embalagem"] = volume
 
         # dados embalagem
         atributos["Altura da embalagem do vendor"] = embaltura
@@ -196,6 +218,17 @@ class ExtratorAtributos:
         atributos["Largura do Produto (cm)"] = self._apenas_numero(atributos.get("Largura"))
         atributos["Comprimento do Produto (cm)"] = self._apenas_numero(atributos.get("Profundidade"))
         atributos["Peso do Produto (kg)"] = self._apenas_numero(atributos.get("Peso"))
+
+        #atributos padrão da shopee
+        atributos["Tipo de Garantia"] = 'Garantia do Fabricante'
+        atributos["Coleção de Antiguidade"] = 'Não'
+        atributos["Duração da Garantia"] = '3 Meses'
+        atributos["País de Origem"] = 'Brasil'
+
+        #Atributos valores padrão
+
+        atributos["Inclui manual de montagem"] = 'Sim'
+        atributos["Requer montagem"] = 'Sim'
 
         return [ean, nome] + [atributos.get(col, "") for col in self.colunas_saida[2:]]
 
@@ -417,8 +450,6 @@ class ExtratorAtributos:
             return ""
         return re.sub(r"[^\d,\.]", "", str(valor)).replace(",", ".")
     
-
-# Atualize a função de processamento para aceitar ambas as fontes
 def extrair_atributos_processamento(fonte: Union[str, dict]) -> Tuple[str, int, float, list]:
     """Função pública para integração com Flask
     Aceita:

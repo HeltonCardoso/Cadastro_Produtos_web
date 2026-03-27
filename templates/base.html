@@ -42,7 +42,7 @@
             <div class="menu-icon">
               <i class="fas fa-home"></i>
             </div>
-            <span class="menu-text">Dashboard</span>
+            <span class="menu-text">DASHBOARD</span>
           </a>
         </div>
 
@@ -50,26 +50,26 @@
         <div class="menu-group" data-module="cadastro">
           <div class="menu-title">
             <i class="fas fa-caret-down module-toggle"></i>
-            <span class="menu-title-text">MÓDULO CADASTRO</span>
+            <span class="menu-title-text">CADASTRO PRODUTOS</span>
           </div>
           <div class="menu-subitems">
             <a href="{{ url_for('extrair_atributos') }}" class="menu-item {% if active_page == 'extrair_atributos' %}active{% endif %}">
               <div class="menu-icon">
                 <i class="fas fa-filter"></i>
               </div>
-              <span class="menu-text">Extrair Atributos</span>
+              <span class="menu-text">EXTRACÃO ATRIBUTOS</span>
             </a>
             <a href="{{ url_for('preencher_planilha') }}" class="menu-item {% if active_page == 'preencher_planilha' %}active{% endif %}">
               <div class="menu-icon">
                 <i class="fas fa-file-excel"></i>
               </div>
-              <span class="menu-text">Planilha Cadastro</span>
+              <span class="menu-text">CADASTRO PLANILHA</span>
             </a>
             <a href="{{ url_for('comparar_prazos') }}" class="menu-item {% if active_page == 'comparar-prazos' %}active{% endif %}">
               <div class="menu-icon">
                 <i class="fas fa-clock"></i>
               </div>
-              <span class="menu-text">Verificação Prazos</span>
+              <span class="menu-text">PRAZOS</span>
             </a>
           </div>
         </div>
@@ -85,14 +85,14 @@
                   <div class="menu-icon">
                       <i class="fas fa-search"></i>
                   </div>
-                  <span class="menu-text">Fotos</span>
+                  <span class="menu-text">FOTOS</span>
               </a>
               <!-- NOVO: Canais de Transmissão -->
               <a href="{{ url_for('canais_transmissao') }}" class="menu-item {% if active_page == 'canais_transmissao' %}active{% endif %}">
                   <div class="menu-icon">
                       <i class="fas fa-broadcast-tower"></i>
                   </div>
-                  <span class="menu-text">Canais</span>
+                  <span class="menu-text">TRANSMISSÃO</span>
                   {% if active_page == 'canais_transmissao' %}
                       <span class="badge bg-primary ms-2">Novo</span>
                   {% endif %}
@@ -101,13 +101,13 @@
                   <div class="menu-icon">
                       <i class="fas fa-shopping-cart"></i>
                   </div>
-                  <span class="menu-text">Pedidos</span>
+                  <span class="menu-text">PEDIDOS</span>
               </a>
               <a href="{{ url_for('consultar_produto') }}" class="menu-item {% if active_page == 'consultar_produto' %}active{% endif %}">
                   <div class="menu-icon">
                       <i class="fas fa-box"></i>
                   </div>
-                  <span class="menu-text">Produtos</span>
+                  <span class="menu-text">PRODUTOS</span>
               </a>
           </div>
       </div>
@@ -123,14 +123,14 @@
             <div class="menu-icon">
                 <i class="fas fa-store"></i>
             </div>
-            <span class="menu-text">Anúncios</span>
+            <span class="menu-text">ANÚNCIOS</span>
         </a>
         <!-- Alterar Modo de Envio -->
         <a href="{{ url_for('alterar_modo_envio') }}" class="menu-item {% if active_page == 'alterar_modo_envio' %}active{% endif %}">
             <div class="menu-icon">
                 <i class="fas fa-truck"></i>
             </div>
-            <span class="menu-text">Logistica ME1/ME2</span>
+            <span class="menu-text">LOGISTICA ME1/ME2</span>
             <span class="badge bg-primary ms-2">Novo</span>
         </a>
         <!-- CORRIGIDO: Link para Campanhas -->
@@ -138,14 +138,14 @@
             <div class="menu-icon">
                 <i class="fas fa-bullhorn"></i>
             </div>
-            <span class="menu-text">Campanhas</span>
+            <span class="menu-text">CAMPANHAS</span>
             <span class="badge bg-primary ms-2">Novo</span>
         </a>
         <a href="{{ url_for('perfil_mercado_livre') }}" class="menu-item {% if active_page == 'perfil_mercado_livre' %}active{% endif %}">
             <div class="menu-icon">
                 <i class="fas fa-user-circle"></i>
             </div>
-            <span class="menu-text">Meu Perfil</span>
+            <span class="menu-text">PERFIL</span>
         </a>
     </div>
 </div>
@@ -164,7 +164,7 @@
                 <div class="menu-icon">
                   <i class="fas fa-search-location"></i>
                 </div>
-                <span class="menu-text">Rastrear Pedido</span>
+                <span class="menu-text">RATREAMENTO</span>
               </a>
               
               <!-- Rastreamento por Nota Fiscal (NOVO) -->
@@ -172,7 +172,7 @@
                 <div class="menu-icon">
                   <i class="fas fa-file-invoice"></i>
                 </div>
-                <span class="menu-text">Rastrear por NF</span>
+                <span class="menu-text">RATREAR POR NF</span>
                 <span class="badge badge-info badge-pill">Novo</span>
               </a>
               
@@ -181,7 +181,7 @@
                 <div class="menu-icon">
                   <i class="fas fa-history"></i>
                 </div>
-                <span class="menu-text">Histórico</span>
+                <span class="menu-text">HISTORICO</span>
               </a>
               
               <!-- Configurações -->
@@ -189,7 +189,7 @@
                 <div class="menu-icon">
                   <i class="fas fa-cog"></i>
                 </div>
-                <span class="menu-text">Configurações</span>
+                <span class="menu-text">CONFIGURAÇÕES</span>
                 <span class="badge badge-warning badge-pill">Em breve</span>
               </a>
             </div>
@@ -199,21 +199,21 @@
         <div class="menu-group" data-module="jet">
           <div class="menu-title">
             <i class="fas fa-caret-down module-toggle"></i>
-            <span class="menu-title-text">MÓDULO JET</span>
+            <span class="menu-title-text">JET</span>
           </div>
           <div class="menu-subitems">
             <a href="#" class="menu-item">
               <div class="menu-icon">
                 <i class="fas fa-box"></i>
               </div>
-              <span class="menu-text">Produtos</span>
+              <span class="menu-text">PRODUTOS</span>
               <span class="badge badge-warning badge-pill">Em breve</span>
             </a>
             <a href="#" class="menu-item">
               <div class="menu-icon">
                 <i class="fas fa-shopping-cart"></i>
               </div>
-              <span class="menu-text">Pedidos</span>
+              <span class="menu-text">PEDIDOS</span>
               <span class="badge badge-warning badge-pill">Em breve</span>
             </a>
           </div>
@@ -230,19 +230,14 @@
               <div class="menu-icon">
                 <i class="fas fa-cog"></i>
               </div>
-              <span class="menu-text">Configuração</span>
+              <span class="menu-text">CONFIGURAÇÕES</span>
             </a>
-            <button class="menu-item" id="darkModeToggle">
-              <div class="menu-icon">
-                <i class="fas fa-moon"></i>
-              </div>
-              <span class="menu-text">Modo Escuro</span>
-            </button>
+            
             <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item">
               <div class="menu-icon">
                 <i class="fas fa-info-circle"></i>
               </div>
-              <span class="menu-text">Sobre</span>
+              <span class="menu-text">SOBRE</span>
             </a>
           </div>
         </div>
@@ -250,11 +245,17 @@
 
       <!-- Footer do Sidebar -->
       <div class="sidebar-footer">
+        <button class="menu-item" id="darkModeToggle">
+              <div class="menu-icon">
+                <i class="fas fa-moon"></i>
+              </div>
+              <span class="menu-text">MODO ESCURO</span>
+            </button>
         <a href="#" class="menu-item logout-item" id="logoutBtn">
           <div class="menu-icon">
             <i class="fas fa-sign-out-alt"></i>
           </div>
-          <span class="menu-text">Sair</span>
+          <span class="menu-text">SAIR</span>
         </a>
       </div>
     </nav>

@@ -1,36 +1,335 @@
-/* preencher_planilha.css - Estilos para preenchimento de planilha */
+/* ============================================ */
+/* preencher_planilha.css - Com suporte a Tema Dark */
+/* ============================================ */
+
+:root {
+    /* Cores Principais */
+    --primary: #0d6efd;
+    --primary-dark: #0b5ed7;
+    --primary-light: #3d8bff;
+    
+    /* Cores de Feedback */
+    --success: #198754;
+    --success-dark: #146c43;
+    --success-light: #2a9d6e;
+    --info: #0dcaf0;
+    --info-dark: #0bb5e0;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    
+    /* Cores de Texto e Fundo */
+    --dark: #212529;
+    --gray-dark: #495057;
+    --gray: #6c757d;
+    --gray-light: #adb5bd;
+    --light: #f8f9fa;
+    --white: #ffffff;
+    
+    /* Cores de Interface */
+    --bg-card: #ffffff;
+    --border-light: #dee2e6;
+    --border-medium: #ced4da;
+    --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    
+    /* Transições */
+    --transition: all 0.2s ease-in-out;
+}
+
+/* ============================================ */
+/* TEMA ESCURO - OVERRIDES */
+/* ============================================ */
+
+[data-theme="dark"] {
+    /* Cores de Texto e Fundo - Dark */
+    --dark: #e2e8f0;
+    --gray-dark: #cbd5e1;
+    --gray: #94a3b8;
+    --gray-light: #64748b;
+    --light: #1e293b;
+    --white: #1e293b;
+    
+    /* Cores de Interface - Dark */
+    --bg-card: #1e293b;
+    --border-light: #334155;
+    --border-medium: #475569;
+    
+    /* Ajustes de Cores de Feedback - Dark */
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --success: #10b981;
+    --success-dark: #059669;
+    --info: #06b6d4;
+    --info-dark: #0891b2;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    
+    /* Sombras - Dark */
+    --shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================ */
+/* COMPONENTES BASE COM SUPORTE DARK */
+/* ============================================ */
+
+/* Alertas */
+.alert {
+    transition: var(--transition);
+    border-radius: 0.5rem;
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border-color: var(--info);
+    color: var(--dark);
+}
+
+[data-theme="dark"] .alert-info {
+    background-color: rgba(6, 182, 212, 0.15);
+    border-color: var(--info);
+    color: var(--dark);
+}
+
+.alert-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+    border-left: 4px solid var(--success);
+    color: var(--dark);
+}
+
+[data-theme="dark"] .alert-success {
+    background-color: rgba(16, 185, 129, 0.15);
+    border-color: var(--success);
+    color: var(--dark);
+}
+
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger);
+    color: var(--dark);
+}
+
+[data-theme="dark"] .alert-danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: var(--danger);
+    color: var(--dark);
+}
+
+/* ============================================ */
+/* NAV TABS COM SUPORTE DARK */
+/* ============================================ */
+
+.nav-tabs {
+    border-bottom: 1px solid var(--border-light);
+    transition: var(--transition);
+}
 
 .nav-tabs .nav-link {
     font-weight: 500;
-    color: #6c757d;
+    color: var(--gray);
     border: none;
     padding: 0.75rem 1.5rem;
-}
-
-.nav-tabs .nav-link.active {
-    color: #0d6efd;
+    transition: var(--transition);
     background-color: transparent;
-    border-bottom: 3px solid #0d6efd;
 }
 
 .nav-tabs .nav-link:hover {
     border: none;
-    border-bottom: 3px solid #dee2e6;
+    border-bottom: 3px solid var(--border-light);
+    color: var(--primary);
+    isolation: isolate;
 }
 
-.alert-success {
-    border-left: 4px solid #198754;
+.nav-tabs .nav-link.active {
+    color: var(--primary);
+    background-color: transparent;
+    border-bottom: 3px solid var(--primary);
 }
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+    color: var(--primary-light);
+    border-bottom-color: var(--primary-light);
+}
+
+/* ============================================ */
+/* FORMULÁRIOS COM SUPORTE DARK */
+/* ============================================ */
+
+.form-label {
+    color: var(--dark);
+    font-weight: 500;
+    transition: var(--transition);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    background-color: var(--white);
+    border: 1px solid var(--border-medium);
+    color: var(--dark);
+    transition: var(--transition);
+    border-radius: 0.375rem;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--white);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    color: var(--dark);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--gray-light);
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: var(--light);
+    opacity: 0.7;
+}
+
+/* Input Group */
+.input-group .btn-outline-primary {
+    background-color: var(--white);
+    border-color: var(--border-medium);
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.input-group .btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+[data-theme="dark"] .input-group .btn-outline-primary {
+    background-color: var(--white);
+    color: var(--primary-light);
+}
+
+[data-theme="dark"] .input-group .btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Texto de ajuda */
+.text-muted {
+    color: var(--gray) !important;
+    transition: var(--transition);
+}
+
+/* ============================================ */
+/* BOTÕES COM SUPORTE DARK */
+/* ============================================ */
 
 .btn-primary {
     padding: 0.75rem 2rem;
     font-weight: 600;
+    background-color: var(--primary);
+    border-color: var(--primary);
+    transition: var(--transition);
 }
 
-/* Histórico de processos */
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-outline-info {
+    color: var(--info);
+    border-color: var(--info);
+}
+
+.btn-outline-info:hover {
+    background-color: var(--info);
+    border-color: var(--info);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.btn-success:hover {
+    background-color: var(--success-dark);
+    border-color: var(--success-dark);
+}
+
+/* ============================================ */
+/* CARD E HISTÓRICO COM SUPORTE DARK */
+/* ============================================ */
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 0.5rem;
+    transition: var(--transition);
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: var(--light);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem;
+    transition: var(--transition);
+}
+
+.card-header.bg-info {
+    background-color: rgba(13, 202, 240, 0.15) !important;
+    border-bottom-color: var(--info);
+}
+
+.card-header.bg-info h5,
+.card-header.bg-info .mb-0 {
+    color: var(--dark);
+}
+
+.card-header .text-white {
+    color: var(--dark) !important;
+}
+
+[data-theme="dark"] .card-header.bg-info {
+    background-color: rgba(6, 182, 212, 0.2) !important;
+}
+
+.card-body {
+    padding: 1rem;
+    color: var(--dark);
+    transition: var(--transition);
+}
+
+.card-footer {
+    background-color: var(--light);
+    border-top: 1px solid var(--border-light);
+    color: var(--gray);
+    transition: var(--transition);
+    padding: 0.75rem 1rem;
+}
+
+/* Histórico de processos - Scrollbar e Lista */
 .card .card-body {
     scrollbar-width: thin;
-    scrollbar-color: #c1c1c1 #f1f1f1;
+    scrollbar-color: var(--gray-light) var(--light);
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .card .card-body::-webkit-scrollbar {
@@ -38,24 +337,258 @@
 }
 
 .card .card-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--light);
     border-radius: 3px;
 }
 
 .card .card-body::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: var(--gray-light);
     border-radius: 3px;
 }
 
 .card .card-body::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: var(--gray);
+}
+
+/* Lista de históricos */
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
 }
 
 .list-unstyled li {
     padding: 0.5rem 0;
-    border-bottom: 1px solid #f8f9fa;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--dark);
+    transition: var(--transition);
 }
 
 .list-unstyled li:last-child {
     border-bottom: none;
+}
+
+.list-unstyled li:hover {
+    background-color: var(--light);
+    padding-left: 0.5rem;
+}
+
+/* ============================================ */
+/* TAB CONTENT E ABAS */
+/* ============================================ */
+
+.tab-pane {
+    transition: var(--transition);
+}
+
+.tab-pane.fade {
+    transition: opacity 0.15s linear;
+}
+
+.tab-pane.active {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ============================================ */
+/* MENSAGENS FLASH */
+/* ============================================ */
+
+#mensagens-flash {
+    min-height: 120px;
+}
+
+#mensagens-flash .alert {
+    animation: slideDown 0.3s ease-out;
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+}
+
+/* ============================================ */
+/* LOADING / PROCESSANDO */
+/* ============================================ */
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Animação de loading para o botão */
+.btn-primary.processing {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-primary.processing::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 1rem;
+    margin-top: -8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============================================ */
+/* ANIMAÇÕES */
+/* ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================ */
+/* RESPONSIVIDADE */
+/* ============================================ */
+
+@media (max-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1rem;
+        width: 100%;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .d-flex.gap-2 .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group .btn {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    h2.mb-4 {
+        font-size: 1.5rem;
+    }
+    
+    .form-label {
+        font-size: 0.875rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================ */
+/* ACESSIBILIDADE */
+/* ============================================ */
+
+*:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Redução de movimento para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .btn-primary:hover {
+        transform: none;
+    }
+}
+
+/* ============================================ */
+/* MELHORIAS ESPECÍFICAS PARA DARK MODE */
+/* ============================================ */
+
+/* Ajustes para selects no dark mode */
+[data-theme="dark"] select.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+/* Ajustes para ícones no dark mode */
+[data-theme="dark"] .fa,
+[data-theme="dark"] .fas,
+[data-theme="dark"] .far {
+    color: var(--gray);
+}
+
+[data-theme="dark"] .btn .fa,
+[data-theme="dark"] .btn .fas,
+[data-theme="dark"] .btn .far {
+    color: inherit;
+}
+
+/* Ajustes para links no dark mode */
+[data-theme="dark"] a:not(.btn) {
+    color: var(--primary-light);
+}
+
+[data-theme="dark"] a:not(.btn):hover {
+    color: var(--primary);
+}
+
+/* Ajustes para badges e labels */
+.badge {
+    transition: var(--transition);
+}
+
+/* Melhorias de contraste */
+[data-theme="dark"] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .alert-info .text-muted {
+    color: #cbd5e1 !important;
 }

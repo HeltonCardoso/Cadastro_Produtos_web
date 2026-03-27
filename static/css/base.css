@@ -1,41 +1,139 @@
-/* === VARIÁVEIS CSS === */
+/* ============================================ */
+/* 1. VARIÁVEIS E CONFIGURAÇÕES GLOBAIS */
+/* ============================================ */
+
 :root {
+  /* Dimensões */
   --sidebar-width: 280px;
   --sidebar-collapsed-width: 110px;
+  
+  /* Cores Principais */
   --primary-color: #6366f1;
   --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  
+  /* Cores de Feedback */
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --info-color: #3b82f6;
+  
+  /* Cores de Fundo e Texto */
   --bg-color: #f8fafc;
   --text-color: #334155;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  
+  /* Cores de Interface */
   --border-color: #e2e8f0;
   --sidebar-bg: #ffffff;
   --menu-hover: #f1f5f9;
+  --card-bg: #ffffff;
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Tooltip */
+  --tooltip-bg: #1e293b;
+  --tooltip-color: white;
+  
+  /* Transições */
   --transition-speed: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ============================================ */
+/* 2. TEMA ESCURO (DARK MODE) */
+/* ============================================ */
+
 [data-theme="dark"] {
+  /* Cores Principais no Dark */
+  --primary-color: #818cf8;
+  --primary-dark: #6366f1;
+  
+  /* Cores de Fundo e Texto no Dark */
   --bg-color: #0f172a;
   --text-color: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* Cores de Interface no Dark */
   --sidebar-bg: #1e293b;
   --menu-hover: #334155;
   --border-color: #334155;
+  --card-bg: #1e293b;
+  
+  /* Sombras no Dark */
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  
+  /* Tooltip no Dark */
+  --tooltip-bg: #0f172a;
+  --tooltip-color: #e2e8f0;
 }
 
-/* === RESET E BASE === */
+/* ============================================ */
+/* 3. RESET E CONFIGURAÇÕES BASE */
+/* ============================================ */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* === SIDEBAR MODERNO === */
+/* ============================================ */
+/* 4. ACESSIBILIDADE - REDUÇÃO DE MOVIMENTO */
+/* ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================ */
+/* 5. FOCO VISUAL PARA ACESSIBILIDADE */
+/* ============================================ */
+
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ============================================ */
+/* 6. SIDEBAR - ESTRUTURA PRINCIPAL */
+/* ============================================ */
+
 .sidebar-wrapper {
   position: fixed;
   left: 0;
@@ -46,11 +144,11 @@ body {
   border-right: 1px solid var(--border-color);
   box-shadow: var(--shadow);
   z-index: 1000;
-  transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width var(--transition-speed) var(--transition-timing);
   overflow-x: hidden;
 }
 
-/* Estado colapsado */
+/* Estado Colapsado */
 .sidebar-wrapper.collapsed {
   width: var(--sidebar-collapsed-width);
 }
@@ -60,10 +158,12 @@ body {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  transition: all var(--transition-speed) ease;
 }
 
-/* Header do Sidebar */
+/* ============================================ */
+/* 7. HEADER DO SIDEBAR */
+/* ============================================ */
+
 .sidebar-header {
   padding: 1.5rem 1rem;
   border-bottom: 1px solid var(--border-color);
@@ -117,16 +217,19 @@ body {
 
 .brand-subtitle {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 500;
   white-space: nowrap;
 }
 
-/* Botão de toggle - CORRIGIDO */
+/* ============================================ */
+/* 8. BOTÃO TOGGLE DO SIDEBAR */
+/* ============================================ */
+
 .sidebar-toggle-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 1.2rem;
   width: 36px;
   height: 36px;
@@ -144,7 +247,7 @@ body {
   z-index: 10;
   background-color: var(--sidebar-bg);
   border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .sidebar-toggle-btn:hover {
@@ -158,34 +261,63 @@ body {
   position: static;
   transform: none;
   margin: 0 auto;
-  display: block;
+  display: flex;
   width: 44px;
   height: 44px;
   font-size: 1.4rem;
   border: 2px solid var(--border-color);
+  justify-content: center;
+  align-items: center;
 }
 
-/* IMPORTANTE: Controle da seta via JS */
 .sidebar-toggle-btn i {
   transition: transform var(--transition-speed) ease;
 }
 
 .sidebar-toggle {
   display: none;
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 1.25rem;
 }
 
-/* Menu Navigation */
+/* ============================================ */
+/* 9. MENU DE NAVEGAÇÃO */
+/* ============================================ */
+
 .sidebar-menu {
   flex: 1;
   padding: 1rem 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
 }
 
+/* Scrollbar Customizada */
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 10px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+[data-theme="dark"] .sidebar-menu::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+[data-theme="dark"] .sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Grupos de Menu */
 .menu-group {
   margin-bottom: 0.5rem;
 }
@@ -194,15 +326,15 @@ body {
   display: block;
 }
 
-/* MUDANÇA IMPORTANTE: Quando sidebar recolhido, mostra todos os subitens */
 .sidebar-wrapper.collapsed .menu-group .menu-subitems {
   display: block !important;
 }
 
+/* Título do Grupo */
 .menu-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.75rem 1rem;
@@ -213,6 +345,10 @@ body {
   user-select: none;
   transition: all 0.2s ease;
   white-space: nowrap;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
 
 .sidebar-wrapper.collapsed .menu-title {
@@ -238,7 +374,7 @@ body {
   transition: transform var(--transition-speed) ease;
   transform: rotate(-90deg);
   flex-shrink: 0;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .menu-group.expanded .module-toggle {
@@ -246,33 +382,22 @@ body {
   color: var(--primary-color);
 }
 
-/* Quando sidebar recolhido, esconde as setas dos módulos */
 .sidebar-wrapper.collapsed .module-toggle {
   display: none !important;
 }
 
-/* MUDANÇA IMPORTANTE: Quando sidebar recolhido, mostra todos os subitens */
-.sidebar-wrapper.collapsed .menu-subitems {
-  display: block !important;
-  animation: none;
-}
-
+/* Subitens do Menu */
 .menu-subitems {
   display: none;
   animation: slideDown 0.3s ease-out;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.sidebar-wrapper.collapsed .menu-subitems {
+  display: block !important;
+  animation: none;
 }
 
+/* Itens do Menu */
 .menu-item {
   display: flex;
   align-items: center;
@@ -287,6 +412,9 @@ body {
   position: relative;
   text-align: left;
   white-space: nowrap;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .sidebar-wrapper.collapsed .menu-item {
@@ -359,6 +487,7 @@ body {
   display: none;
 }
 
+/* Badges */
 .badge {
   font-size: 0.65rem;
   padding: 0.2rem 0.5rem;
@@ -371,11 +500,29 @@ body {
 }
 
 .badge-warning {
-  background-color: #f59e0b;
+  background-color: var(--warning-color);
   color: white;
 }
 
-/* Footer do Sidebar */
+.badge-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.badge-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.badge-info {
+  background-color: var(--info-color);
+  color: white;
+}
+
+/* ============================================ */
+/* 10. FOOTER DO SIDEBAR */
+/* ============================================ */
+
 .sidebar-footer {
   padding: 1rem;
   border-top: 1px solid var(--border-color);
@@ -387,7 +534,7 @@ body {
 }
 
 .logout-item {
-  color: #ef4444 !important;
+  color: var(--danger-color) !important;
 }
 
 .logout-item:hover {
@@ -399,20 +546,71 @@ body {
   background-color: #7f1d1d !important;
 }
 
-/* === CONTEÚDO PRINCIPAL === */
+/* ============================================ */
+/* 11. TOOLTIPS PARA SIDEBAR COLAPSADO */
+/* ============================================ */
+
+.sidebar-wrapper.collapsed .menu-item[data-tooltip],
+.sidebar-wrapper.collapsed .menu-title[data-tooltip],
+.sidebar-wrapper.collapsed .logo-container[data-tooltip] {
+  position: relative;
+}
+
+.sidebar-wrapper.collapsed .menu-item[data-tooltip]::after,
+.sidebar-wrapper.collapsed .menu-title[data-tooltip]::after,
+.sidebar-wrapper.collapsed .logo-container[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1001;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  font-weight: normal;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.sidebar-wrapper.collapsed .menu-item[data-tooltip]:hover::after,
+.sidebar-wrapper.collapsed .menu-title[data-tooltip]:hover::after,
+.sidebar-wrapper.collapsed .logo-container[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+  margin-left: 10px;
+}
+
+/* ============================================ */
+/* 12. CONTEÚDO PRINCIPAL */
+/* ============================================ */
+
 .main-content {
   margin-left: var(--sidebar-width);
   min-height: 100vh;
-  transition: margin-left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  transition: margin-left var(--transition-speed) var(--transition-timing);
   display: flex;
   flex-direction: column;
+  width: calc(100% - var(--sidebar-width));
 }
 
 .sidebar-wrapper.collapsed ~ .main-content {
   margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
 }
 
-/* Top Bar */
+/* ============================================ */
+/* 13. TOP BAR */
+/* ============================================ */
+
 .top-bar {
   position: sticky;
   top: 0;
@@ -423,8 +621,10 @@ body {
   padding: 1rem 2rem;
   background: var(--sidebar-bg);
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--sidebar-bg-rgb), 0.9);
 }
 
 .sidebar-toggler {
@@ -452,10 +652,23 @@ body {
 
 .user-info {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* Content Wrapper */
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ============================================ */
+/* 14. WRAPPER DE CONTEÚDO */
+/* ============================================ */
+
 .content-wrapper {
   flex: 1;
   padding: 2rem;
@@ -464,7 +677,10 @@ body {
   width: 100%;
 }
 
-/* Global Footer */
+/* ============================================ */
+/* 15. FOOTER GLOBAL */
+/* ============================================ */
+
 .global-footer {
   background: var(--sidebar-bg);
   border-top: 1px solid var(--border-color);
@@ -481,7 +697,10 @@ body {
   width: calc(100% - var(--sidebar-collapsed-width));
 }
 
-/* === OVERLAY MOBILE === */
+/* ============================================ */
+/* 16. OVERLAY MOBILE */
+/* ============================================ */
+
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -493,9 +712,18 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 
-/* === RESPONSIVIDADE === */
+.sidebar-overlay.mobile-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================ */
+/* 17. RESPONSIVIDADE */
+/* ============================================ */
+
 @media (max-width: 1024px) {
   .sidebar-wrapper {
     transform: translateX(-100%);
@@ -516,11 +744,14 @@ body {
     width: var(--sidebar-width) !important;
   }
   
-  .main-content {
+  .main-content,
+  .sidebar-wrapper.collapsed ~ .main-content {
     margin-left: 0 !important;
+    width: 100% !important;
   }
   
-  .global-footer {
+  .global-footer,
+  .sidebar-wrapper.collapsed ~ .global-footer {
     margin-left: 0 !important;
     width: 100% !important;
   }
@@ -529,12 +760,7 @@ body {
     display: block;
   }
   
-  .sidebar-overlay.mobile-open {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Mostra texto em mobile mesmo quando collapsed */
+  /* Ajustes para mobile quando sidebar está aberta */
   .sidebar-wrapper.mobile-open .menu-text,
   .sidebar-wrapper.mobile-open .logo-text,
   .sidebar-wrapper.mobile-open .menu-title-text {
@@ -565,79 +791,50 @@ body {
   }
 }
 
-/* === SCROLLBAR CUSTOMIZADA === */
-.sidebar-menu::-webkit-scrollbar {
-  width: 4px;
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 1rem;
+  }
+  
+  .top-bar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .top-bar-title h4 {
+    font-size: 1rem;
+  }
+  
+  .user-info {
+    font-size: 0.8rem;
+  }
 }
 
-.sidebar-menu::-webkit-scrollbar-track {
-  background: transparent;
+@media (max-width: 480px) {
+  .content-wrapper {
+    padding: 0.75rem;
+  }
+  
+  .global-footer {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+  }
 }
 
-.sidebar-menu::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+/* ============================================ */
+/* 18. ANIMAÇÕES */
+/* ============================================ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.sidebar-menu::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* === DARK MODE === */
-[data-theme="dark"] .sidebar {
-  background: var(--sidebar-bg);
-}
-
-[data-theme="dark"] .logo-img {
-  filter: brightness(0.9);
-}
-
-/* === TOOLTIPS PARA SIDEBAR RECOLHIDO === */
-.sidebar-wrapper.collapsed .menu-item,
-.sidebar-wrapper.collapsed .menu-title,
-.sidebar-wrapper.collapsed .logo-container {
-  position: relative;
-}
-
-.sidebar-wrapper.collapsed .menu-item::after,
-.sidebar-wrapper.collapsed .menu-title::after,
-.sidebar-wrapper.collapsed .logo-container::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1e293b;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  z-index: 1001;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-}
-
-.sidebar-wrapper.collapsed .menu-item:hover::after,
-.sidebar-wrapper.collapsed .menu-title:hover::after,
-.sidebar-wrapper.collapsed .logo-container:hover::after {
-  opacity: 1;
-  visibility: visible;
-  margin-left: 10px;
-}
-
-[data-theme="dark"] .sidebar-wrapper.collapsed .menu-item::after,
-[data-theme="dark"] .sidebar-wrapper.collapsed .menu-title::after,
-[data-theme="dark"] .sidebar-wrapper.collapsed .logo-container::after {
-  background: #0f172a;
-  color: #e2e8f0;
-  border: 1px solid #334155;
-}
-
-/* === ANIMAÇÕES === */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -653,43 +850,116 @@ body {
   animation: slideIn 0.3s ease-out;
 }
 
-/* Garante que o conteúdo não fique escondido */
-.main-content {
-  width: calc(100% - var(--sidebar-width));
+/* ============================================ */
+/* 19. UTILITÁRIOS */
+/* ============================================ */
+
+/* Texto */
+.text-center {
+  text-align: center;
 }
 
-.sidebar-wrapper.collapsed ~ .main-content {
-  width: calc(100% - var(--sidebar-collapsed-width));
+.text-primary {
+  color: var(--primary-color);
 }
 
-@media (max-width: 1024px) {
-  .main-content {
+.text-success {
+  color: var(--success-color);
+}
+
+.text-warning {
+  color: var(--warning-color);
+}
+
+.text-danger {
+  color: var(--danger-color);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Margens */
+.m-0 { margin: 0; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+
+/* Flexbox */
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 1rem;
+}
+
+/* ============================================ */
+/* 20. DARK MODE AJUSTES ADICIONAIS */
+/* ============================================ */
+
+[data-theme="dark"] .logo-img {
+  filter: brightness(0.9);
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .sidebar-toggle-btn {
+  background-color: var(--sidebar-bg);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .sidebar-toggle-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* ============================================ */
+/* 21. PRINT STYLES */
+/* ============================================ */
+
+@media print {
+  .sidebar-wrapper,
+  .top-bar,
+  .global-footer,
+  .sidebar-overlay {
+    display: none !important;
+  }
+  
+  .main-content,
+  .content-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
     width: 100% !important;
   }
-}
-
-/* IMPORTANTE: Garantir que todos os ícones sejam visíveis quando recolhido */
-.sidebar-wrapper.collapsed .menu-icon {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* MUDANÇA CRÍTICA: Quando sidebar recolhido, mostra todos os itens de todos os módulos */
-.sidebar-wrapper.collapsed .menu-group {
-  margin-bottom: 0;
-}
-
-.sidebar-wrapper.collapsed .menu-group .menu-subitems {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  height: auto !important;
-}
-
-.sidebar-wrapper.collapsed .menu-group .menu-item {
-  display: flex !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  height: auto !important;
+  
+  body {
+    background: white;
+    color: black;
+  }
 }

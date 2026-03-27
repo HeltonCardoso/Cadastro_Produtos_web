@@ -1,92 +1,184 @@
-[11:24:52] Iniciando processamento do Google Sheets em 17/03/2026 11:24:52
-[11:24:53] Processado: Banco de Madeira Área Gourmet 180cm Trama Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Banco de Madeira Área Gourmet 180cm Trama Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Banco de Madeira Área Gourmet 180cm Trama Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Banco de Madeira Área Gourmet 180cm Trama Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Banco de Madeira Área Gourmet 180cm Trama Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Trama Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Trama Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Trama Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Trama Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Trama Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Trama Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Trama Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Trama Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Trama Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Trama Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Mesa Madeira 6 Lugares 180cm Área Gourmet Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 6 Lugares 180cm Área Gourmet Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 6 Lugares 180cm Área Gourmet Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 6 Lugares 180cm Área Gourmet Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 6 Lugares 180cm Área Gourmet Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Banco Madeira Área Gourmet 180cm Kit 2 Trama Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Banco Madeira Área Gourmet 180cm Kit 2 Trama Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Banco Madeira Área Gourmet 180cm Kit 2 Trama Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Banco Madeira Área Gourmet 180cm Kit 2 Trama Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Banco Madeira Área Gourmet 180cm Kit 2 Trama Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 2 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 2 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 2 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 2 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 2 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 2 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 2 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 2 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 2 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 2 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 4 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 4 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 4 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 4 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 4 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 4 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 4 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 4 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 4 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 4 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 6 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 6 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 6 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 6 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet com Braço Kit 6 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 6 Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 6 Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 6 Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 6 Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Cadeira Madeira Área Gourmet Kit 6 Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Mesa Madeira 180cm 2 Bancos Gourmet Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Bancos Gourmet Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Bancos Gourmet Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Bancos Gourmet Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Bancos Gourmet Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Mesa Madeira 180cm 2 Cadeiras e 2 Bancos Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Cadeiras e 2 Bancos Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Cadeiras e 2 Bancos Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Cadeiras e 2 Bancos Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 2 Cadeiras e 2 Bancos Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Mesa Madeira 180cm 6 Cadeiras Gourmet Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 6 Cadeiras Gourmet Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 6 Cadeiras Gourmet Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 6 Cadeiras Gourmet Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 6 Cadeiras Gourmet Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:53] Processado: NOMEE-COMMERCE
-[11:24:53] Processado: Mesa Madeira 180cm 4 Cadeiras e 1 Banco Gourmet Tenza Jatobá/Areia C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 4 Cadeiras e 1 Banco Gourmet Tenza Jatobá/Ocre C17 - Mpozenato
-[11:24:53] Processado: Mesa Madeira 180cm 4 Cadeiras e 1 Banco Gourmet Tenza Jatobá/Preta C17 - Mpozenato
-[11:24:54] Processado: Mesa Madeira 180cm 4 Cadeiras e 1 Banco Gourmet Tenza Jatobá/Rami C17 - Mpozenato
-[11:24:54] Processado: Mesa Madeira 180cm 4 Cadeiras e 1 Banco Gourmet Tenza Jatobá/Verde Olivia C17 - Mpozenato
-[11:24:54] Arquivo gerado: Atributos_Extraidos_SemMarca_20260317_112454.xlsx
-[11:24:54] Processamento concluído - 89 itens em 1.69s
+[15:32:04] Iniciando processamento do Google Sheets em 27/03/2026 15:32:04
+[15:32:06] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Cinamomo/Branco Z49 - Mpozenato
+[15:32:06] Processado: Mesa para Escritório 2 Portas 3 Gavetas Me4100 Branco - Tecno Mobili
+[15:32:06] Processado: Mesa para Notebook com Rodízios Me4117 Branco - Tecno Mobili
+[15:32:06] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Branco Chess - Mpozenato
+[15:32:06] Processado: Mesa para Escritório em L Me4145 Nogal/Nogal - Tecno Mobili
+[15:32:06] Processado: Estante Alta Estilo Industrial 1 Porta 2 Gavetas E92 Freijó/Preto Fosco - Pradel
+[15:32:06] Processado: Mesa para Computador Escrivaninha Office 1 Porta 1Gaveta Morada D02 Amendola/Grafito - Mpozenato
+[15:32:06] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Pistache/Castanho - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Cinamomo - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Off White - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Cinamomo - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Off White - Mpozenato
+[15:32:06] Processado: Estante Livreiro Torre Industrial Chess F04 Preto/Solanum - Mpozenato
+[15:32:06] Processado: Mesa de Centro para Sala Madeira Maciça Hazel Carvalho Z25 - Mpozenato
+[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Thalia Off/Cinamomo H01 - Mpozenato
+[15:32:06] Processado: Estante Escrivaninha Estilo Industrial Chess F04 Preto/Solanum - Mpozenato
+[15:32:06] Processado: Mesa para Home Office de 163 Cm de Largura Me4109 Amendoa - Tecno Mobili
+[15:32:06] Processado: Mesa para Notebook com Rodízios Me4117 Nogal Tecno Mobili
+[15:32:06] Processado: Jogo de Mesa Malva 107cm e 4 Cadeiras 118 Preto - Artefamol
+[15:32:06] Processado: Escrivaninha Cavalete 5 Gavetas Mobile Spirit Branco/Nogal - Artany
+[15:32:06] Processado: Escrivaninha Cavalete 5 Gavetas Mobile Spirit Preto/Nogal - Artany
+[15:32:06] Processado: Mesa de Jantar Redonda 4 Lugares 100cm Ella N02 Ypê/Preto - Mpozenato
+[15:32:06] Processado: Mesa de Jantar Redonda 6 Lugares 135cm Ella N02 Ypê/Preto - Mpozenato
+[15:32:06] Processado: Mesa para Computador Escrivaninha 1 Gaveta Facility D02 Branco - Mpozenato
+[15:32:06] Processado: Mesa de Jantar Redonda 4 Lugares Thalia D01 Freijó/Preto Fosco - Mpozenato
+[15:32:06] Processado: Mesa Escritório em L 200cm Lado Esquerdo A06 Marrom/Preto - Mpozenato
+[15:32:06] Processado: Gaveteiro para Escritório 2 Gavetas 1 Nicho May A06 Olmo/Branco - Mpozenato
+[15:32:06] Processado: Mesa de Centro para Sala Ripada Leo Freijó/Off White Matte C05 - Mpozenato
+[15:32:06] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Off/Castanho - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Castanho - Mpozenato
+[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Castanho - Mpozenato
+[15:32:06] Processado: Mesa de Centro para Sala 90cm Indy Z10 Off/Cinamomo - Mpozenato
+[15:32:06] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Nogal - Mpozenato
+[15:32:06] Processado: Mesa em L para Escritório 3 Gavetas Me4101 Rústico - Tecno Mobili
+[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off White - Hb Móveis
+[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off/Champanhe - Hb Móveis
+[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Thalia Off/Champanhe H01 - Mpozenato
+[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off/Cinamomo - Hb Móveis
+[15:32:06] Processado: Painel Tv 86 Pol 220cm Suspenso Reno Cedro/Off White A09 - Mpozenato
+[15:32:06] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Mayra Nature/Champanhe V02 - Mpozenato
+[15:32:06] Processado: Sofá 2 Lugares 150cm e Poltrona Lykan Boucle Cru Z32 - Mpozenato
+[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Virtus Cinamomo/Off - Hb Móveis
+[15:32:06] Processado: Painel Tv 65 Pol 160cm Bancada Suspensa Zenith Off/Cinamomo - Hb Móveis
+[15:32:06] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Branco Z49 - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Modulada 4 Peças Cp10 Balcão Branco/Preto - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto Direito 4 Peças Cp39 com Pia Inox Preto/Cinza - Lumil
+[15:32:06] Processado: Armário em L 68cm Escritório 4 Prateleiras Amendoa - Tecno Mobili
+[15:32:06] Processado: Balcão 03 Portas Me4120 Branco - Tecno Mobili
+[15:32:06] Processado: Adega para 9 Garrafas com Prateleira Ad5000 Branco - Tecno Mobili
+[15:32:06] Processado: Balcão para Escritório 2 Portas Me4103 Nogal - Tecno Mobili
+[15:32:06] Processado: Armário Organizador para Home Office de 171,5 Cm de Altura Me4110 Nogal - Tecno Mobili
+[15:32:06] Processado: Armário Arquivo 03 Gavetas Me4118 Nogal - Tecno Mobili
+[15:32:06] Processado: Balcão 03 Portas Me4120 Nogal - Tecno Mobili
+[15:32:06] Processado: Estante Livreiro com Prateleiras Janaína Preto - Ajl Móveis
+[15:32:06] Processado: Mesa de Cozinha Bistrô Porto Branco 120cm com 2 Banquetas Industriais Maviê Preto/Branco - Mpozenato
+[15:32:06] Processado: Balcão de Cozinha 90cm com 2 Portas Mario Nero/Preto A10 - Mpozenato
+[15:32:06] Processado: Armário Multiuso Cozinha Lavanderia com Rodízios Lisa Z17 Naturale - Mpozenato
+[15:32:06] Processado: Kit 2 Sapateiras Multiuso Hall de Entrada 60cm 2 Prateleiras Padova Demolição/Preto - Artefamol
+[15:32:06] Processado: Kit 2 Sapateiras Multiuso Hall de Entrada 60cm 3 Prateleiras Padova Demolição/Preto - Artefamol
+[15:32:06] Processado: Conjunto Sala de Jantar Cristaleira Tijuca e Buffet Vicky C05 Freijó/Off White - Mpozenato
+[15:32:06] Processado: Puff Recamier Calçadeira 195cm Base Madeira Neville Z37 Linho Bege Cru - Mpozenato
+[15:32:06] Processado: Kit Poltrona e Puff para Sala de Estar com Almofada e Pés Palito Lord Facto Preto - Ibiza
+[15:32:06] Processado: Balcão Gabinete com Pia Inox 120cm 3 Portas e 1 Gaveta Tatiane Cinza - Ajl Móveis
+[15:32:06] Processado: Balcão de Atendimento em L 147x147cm Corp A06 Carvalho/Branco - Mpozenato
+[15:32:06] Processado: Carrinho Organizador Fruteira 3 Prateleiras Industrial Liss Z34 Preto/Preto - Mpozenato
+[15:32:06] Processado: Carrinho Organizador Fruteira 2 Prateleiras Industrial Sara Z34 Branco/Preto - Mpozenato
+[15:32:06] Processado: Carrinho Auxiliar para Salão de Beleza Industrial Sara Z34 Branco/Preto - Mpozenato
+[15:32:06] Processado: Tampo para Balcão de Cozinha 160cm Maly N03 Onix - Mpozenato
+[15:32:06] Processado: Puff Recamier Decorativo Pés em Ferro 160cm Dublin Z37 Linho Cinza Claro - Mpozenato
+[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Malbec - Incorplac
+[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Carvalho/Off White - Incorplac
+[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Carvalho/Grafite - Incorplac
+[15:32:06] Processado: Balcão para Pia 120cm sem Tampo Pérola Z34 Preto - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Grafite/Freijó - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Freijó/Grafite - Mpozenato
+[15:32:06] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Cinamomo - Mpozenato
+[15:32:06] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Castanho - Mpozenato
+[15:32:06] Processado: Painel Tv 85 Pol Empire e Mesa de Centro Cadenza Off/Cinamomo - Hb Móveis
+[15:32:06] Processado: Buffet Aparador Sala de Estar 135cm Toni Z10 Off/Cinamomo - Mpozenato
+[15:32:06] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil Z10 Off/Cinamomo - Mpozenato
+[15:32:06] Processado: Balcão de Cozinha para Pia 120cm 3 Portas Manu Amêndoa/Branco - Ajl Móveis
+[15:32:06] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
+[15:32:06] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
+[15:32:06] Processado: Mesa Escrivaninha 3 Gavetas Painel Tv 40 Pol Doble Branco - Albatroz
+[15:32:06] Processado: Balcão de Cozinha para Pia 120cm Pierre Carvalho/Cinza L01 - Mpozenato
+[15:32:06] Processado: Armário de Cozinha 60cm 2 Portas Pierre Carvalho/Cinza L01 - Mpozenato
+[15:32:06] Processado: Armário de Cozinha 80cm 2 Portas Pierre Carvalho/Cinza L01 - Mpozenato
+[15:32:06] Processado: Paneleiro Cozinha Torre Quente Ripado Pierre Carvalho/Cinza L01 - Mpozenato
+[15:32:06] Processado: Aparador Sala de Estar 136cm 1 Gaveta Valerie Freijó C05 - Mpozenato
+[15:32:06] Processado: Armário Multiuso Lavanderia 55cm 2 Portas Staxx Branco Z17 - Mpozenato
+[15:32:06] Processado: Rack Bancada de Tv 60 Pol 150cm Elaine D04 Cedro/Bali - Mpozenato
+[15:32:06] Processado: Rack Bancada de Tv 65 Pol 180cm Chest D04 Off White/Cedro - Mpozenato
+[15:32:06] Processado: Sapateira Armário 18 Pares Organizador Bella Branco - Phoenix
+[15:32:06] Processado: Armário de Cozinha Aéreo 160cm com 4 Portas Nevada Castanho - Lumil
+[15:32:06] Processado: Armário de Cozinha Aéreo 100cm 2 Portas Indiana Cinza Claro - Lumil
+[15:32:06] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Aéreo 80cm 2 Portas Califórnia Cinza Claro - Lumil
+[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Branco A15 - Mpozenato
+[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Atacama A15 - Mpozenato
+[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Atacama/Off White A15 - Mpozenato
+[15:32:06] Processado: Cristaleira de Madeira 2 Portas e Gaveta Hazel Carvalho Z25 - Mpozenato
+[15:32:06] Processado: Cristaleira de Madeira 4 Portas de Vidro Henry Imbuia Fosco Z25 - Mpozenato
+[15:32:06] Processado: Armário Cozinha Compacta 159cm Madeira 7 Portas Daisy Imbuia Z25 - Mpozenato
+[15:32:06] Processado: Cristaleira de Madeira 2 Portas de Vidro Hazel Carvalho Z25 - Mpozenato
+[15:32:06] Processado: Painel Lateral de Fechamento para Cozinha 49cm 100% Mdf Belize Cinza – Henn
+[15:32:06] Processado: Aparador Sala de Estar 136cm com Prateleira Janis Off/Cinamomo H01 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Off/Champanhe - Hb Móveis
+[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Cinamomo - Hb Móveis
+[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Off/Cinamomo - Hb Móveis
+[15:32:06] Processado: Balcão Porta Toalha 20cm 100% Mdf Americana Branco Hp - Henn
+[15:32:06] Processado: Tampo para Balcão 120cm 100% Mdf Connect Duna - Henn
+[15:32:06] Processado: Tampo para Balcão 40cm 100% Mdf Connect Duna - Henn
+[15:32:06] Processado: Tampo para Balcão 40cm Americana Calcare - Henn
+[15:32:06] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Off Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Nature Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Nature Z56 - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho 2 Portas 3 Gavetas e Banqueta Atraente D02 Branco - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Preto - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Branco - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Freijó - Mpozenato
+[15:32:06] Processado: Penteadeira Escrivaninha com Espelho Bent A02 Off/Cinamomo - Mpozenato
+[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Derek Cinamomo/Off H01 - Mpozenato
+[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Derek Castanho/Off H01 - Mpozenato
+[15:32:06] Processado: Painel Tv 65 Pol 181cm Bancada Suspensa Walle Cinamomo/Off H01 - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp48 com Pia Inox Preto/Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp47 Balcão com Tampo Preto/Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp46 Balcão sem Tampo Preto/Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto Direito 4 Peças Cp37 Balcão sem Tampo Preto/Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto 6 Peças Cp29 Balcão com Tampo Preto/Cinza - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulada 5 Peças Cp13 Balcão Branco/Preto - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulada 5 Peças Cp14 Balcão com Tampo Branco/Preto - Lumil
+[15:32:06] Processado: Armário de Cozinha Modulado de Canto 7 Peças Cp21 com Pia Inox Branco/Preto - Lumil
+[15:32:06] Processado: Estante Livreiro 6 Prateleiras Office Branco - Móveis Leão
+[15:32:06] Processado: Calçadeira Baú Solteiro 90cm com Tachas Imperial J02 Veludo Rosê - Mpozenato
+[15:32:06] Processado: Calçadeira Baú Queen 160cm com Tachas Imperial J02 Veludo Azul - Mpozenato
+[15:32:06] Processado: Conjunto Escritório Mesa 90 Aparador e Estante Studio Industrial Z28 Preto - Mpozenato
+[15:32:06] Processado: Painel Ripado com Mesa de Apoio Industrial 1 Módulo 44cm Golden L06 Nature/Off White - Mpozenato
+[15:32:06] Processado: Tampo para Balcão de Cozinha 100cm Mdp Cinza - Ajl Móveis
+[15:32:06] Processado: Puff Recamier Calçadeira 195cm Pés Palito Madeira Venêto Z37 Sintético Caramelo - Mpozenato
+[15:32:06] Processado: Carrinho Organizador Fruteira 2 Prateleiras Industrial Sara Z34 Preto/Preto - Mpozenato
+[15:32:06] Processado: Carrinho Organizador Fruteira 3 Prateleiras Industrial Liss Z34 Branco/Preto - Mpozenato
+[15:32:06] Processado: Armário Multiuso 52cm 2 Portas Muniz Z46 Damasco/Off White - Mpozenato
+[15:32:06] Processado: Balcão de Cozinha com Tampo 120cm Louis Z06 Nogueira/Off - Mpozenato
+[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Branco Z34 - Mpozenato
+[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Grafite Z34 - Mpozenato
+[15:32:06] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Freijó/Off - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Freijó/Grafite - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Grafite/Freijó - Mpozenato
+[15:32:06] Processado: Guarda Roupa Solteiro 82cm 3 Portas Zeno Naturale/Branco Z17 - Mpozenato
+[15:32:06] Processado: Armário de Cozinha Aéreo 3 Portas 2 Nichos 91cm Milão Preto - Ej Móveis
+[15:32:06] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Branco - Mpozenato
+[15:32:06] Processado: Carrinho Gourmet de Apoio Industrial 3 Prateleiras Liss Z34 Branco/Preto - Mpozenato
+[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Preto/Freijó Z34 - Mpozenato
+[15:32:06] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Cinza Claro - Lumil
+[15:32:06] Processado: Armário de Cozinha Aéreo 180cm Nevada com Nicho Cinza - Lumil
+[15:32:06] Processado: Cristaleira de Madeira 1 Porta de Vidro Hazel Carvalho Z25 - Mpozenato
+[15:32:06] Processado: Armário Cozinha Compacta 120cm Madeira 5 Portas Kyle Imbuia Z25 - Mpozenato
+[15:32:06] Processado: Armário Cristaleira de Madeira 6 Portas Henry Imbuia Fosco Z25 - Mpozenato
+[15:32:06] Processado: Quarto Infantil 3 Peças com Berço Q Encanto Retrô Branco - Qmovi
+[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Delux Off/Champanhe H01 - Mpozenato
+[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Off/Cinamomo - Hb Móveis
+[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Delux Off/Cinamomo H01 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Cinamomo - Hb Móveis
+[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Islam Cinamomo H01 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Islam Off/Champanhe H01 - Mpozenato
+[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Off/Champanhe - Hb Móveis
+[15:32:06] Processado: Tampo para Balcão 20cm 100% Mdf Connect Duna - Henn
+[15:32:06] Processado: Tampo para Balcão 100cm 100% Mdf Connect Duna - Henn
+[15:32:06] Processado: Tampo para Balcão 60cm 100% Mdf Connect Duna - Henn
+[15:32:06] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Off White Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature Z56 - Mpozenato
+[15:32:06] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature Z56 - Mpozenato
+[15:32:06] Processado: Penteadeira Suspensa com Painel e Espelho Joy Z49 Preto - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho 1 Gaveta Pe2017 Branco - Tecno Mobili
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Branco - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Freijó - Mpozenato
+[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Grafite - Mpozenato
+[15:32:06] Arquivo gerado: Atributos_Extraidos_SemMarca_20260327_153206.xlsx
+[15:32:06] Processamento concluído - 181 itens em 2.02s
