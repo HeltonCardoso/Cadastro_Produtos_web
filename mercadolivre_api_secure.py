@@ -956,7 +956,7 @@ class MercadoLivreAPISecure:
                 
                 print("✅ Anúncio pausado com sucesso")
                 import time
-                time.sleep(2)
+                time.sleep(0.5)
             
             # ETAPA 1 (GERAL): FECHAR O ANÚNCIO (closed)
             # Nota: Para under_review pulamos esta etapa, para active já pausamos, 
@@ -1015,7 +1015,7 @@ class MercadoLivreAPISecure:
             
             # Aguarda 2 segundos para evitar erro de conflito
             import time
-            time.sleep(2)
+            time.sleep(1)
             
             # ETAPA 2: EXCLUIR PERMANENTEMENTE
             print("📋 ETAPA 2: Marcando como deletado permanente (deleted: true)...")

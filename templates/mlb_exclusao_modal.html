@@ -1,6 +1,6 @@
 <!-- templates/mlb_exclusao_simples.html -->
-<div id="modalExclusaoPlanilha" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+<div id="modalExclusaoPlanilha" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header bg-danger text-white">
             <h5 class="modal-title">
                 <i class="fas fa-trash-alt"></i> Excluir MLB Via Planilha
@@ -33,18 +33,30 @@
                         <span id="progressoTexto">0%</span>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between">
+                
+                <!-- Informações de progresso -->
+                <div class="d-flex justify-content-between mb-1">
                     <small id="progressoStatus">Aguardando início...</small>
                     <small id="progressoContador">0/0 processados</small>
                 </div>
-                <!--
-                <div class="mt-2" id="progressoDetalhes">
-                     Detalhes em tempo real aparecerão aqui 
-                </div> -->
+                
+                <!-- Tempo restante estimado -->
+                <div class="d-flex justify-content-between mt-2">
+                    <small><i class="fas fa-hourglass-half"></i> <strong>Tempo estimado:</strong></small>
+                    <small id="tempoRestante">--:--</small>
+                </div>
+                
+                <!-- MLB atual sendo processado -->
+                <div class="mt-2 text-center" id="mlbProcessandoAtual" style="display: none;">
+                    <small class="text-muted">
+                        <i class="fas fa-sync-alt fa-spin"></i> Processando: 
+                        <strong id="mlbAtualNome">-</strong>
+                    </small>
+                </div>
             </div>
             
             <div id="previewExclusao">
-               <!--   Preview será inserido aqui -->
+                <!-- Preview será inserido aqui (apenas contagem de MLBs) -->
             </div> 
             
             <!-- RESUMO DE EXCLUSÃO (após conclusão) -->
@@ -80,13 +92,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-3" id="resumoDetalhes">
-                            <!-- Detalhes do resumo -->
+                        
+                        <!-- Lista de erros (com scroll) -->
+                        <div id="resumoDetalhes" style="max-height: 250px; overflow-y: auto;">
+                            <!-- Detalhes do resumo serão inseridos aqui -->
+                        </div>
+                        
+                        <!-- Botão de download do relatório -->
+                        <div class="mt-3 text-center" id="btnDownloadContainer" style="display: none;">
+                            <button type="button" class="btn btn-info btn-sm" id="btnDownloadRelatorioFinal">
+                                <i class="fas fa-download"></i> Baixar Relatório Completo (CSV)
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> <!-- FECHA modal-body -->
         
         <div class="modal-footer">
             <!-- Botões durante pré-processamento -->
@@ -105,6 +126,6 @@
                     <i class="fas fa-check-circle"></i> Fechar
                 </button>
             </div>
-        </div>
-    </div>
-</div>
+        </div> <!-- FECHA modal-footer -->
+    </div> <!-- FECHA modal-content -->
+</div> <!-- FECHA modalExclusaoPlanilha -->

@@ -1,184 +1,1059 @@
-[15:32:04] Iniciando processamento do Google Sheets em 27/03/2026 15:32:04
-[15:32:06] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Cinamomo/Branco Z49 - Mpozenato
-[15:32:06] Processado: Mesa para Escritório 2 Portas 3 Gavetas Me4100 Branco - Tecno Mobili
-[15:32:06] Processado: Mesa para Notebook com Rodízios Me4117 Branco - Tecno Mobili
-[15:32:06] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Branco Chess - Mpozenato
-[15:32:06] Processado: Mesa para Escritório em L Me4145 Nogal/Nogal - Tecno Mobili
-[15:32:06] Processado: Estante Alta Estilo Industrial 1 Porta 2 Gavetas E92 Freijó/Preto Fosco - Pradel
-[15:32:06] Processado: Mesa para Computador Escrivaninha Office 1 Porta 1Gaveta Morada D02 Amendola/Grafito - Mpozenato
-[15:32:06] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Pistache/Castanho - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Cinamomo - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Off White - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Cinamomo - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Off White - Mpozenato
-[15:32:06] Processado: Estante Livreiro Torre Industrial Chess F04 Preto/Solanum - Mpozenato
-[15:32:06] Processado: Mesa de Centro para Sala Madeira Maciça Hazel Carvalho Z25 - Mpozenato
-[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Thalia Off/Cinamomo H01 - Mpozenato
-[15:32:06] Processado: Estante Escrivaninha Estilo Industrial Chess F04 Preto/Solanum - Mpozenato
-[15:32:06] Processado: Mesa para Home Office de 163 Cm de Largura Me4109 Amendoa - Tecno Mobili
-[15:32:06] Processado: Mesa para Notebook com Rodízios Me4117 Nogal Tecno Mobili
-[15:32:06] Processado: Jogo de Mesa Malva 107cm e 4 Cadeiras 118 Preto - Artefamol
-[15:32:06] Processado: Escrivaninha Cavalete 5 Gavetas Mobile Spirit Branco/Nogal - Artany
-[15:32:06] Processado: Escrivaninha Cavalete 5 Gavetas Mobile Spirit Preto/Nogal - Artany
-[15:32:06] Processado: Mesa de Jantar Redonda 4 Lugares 100cm Ella N02 Ypê/Preto - Mpozenato
-[15:32:06] Processado: Mesa de Jantar Redonda 6 Lugares 135cm Ella N02 Ypê/Preto - Mpozenato
-[15:32:06] Processado: Mesa para Computador Escrivaninha 1 Gaveta Facility D02 Branco - Mpozenato
-[15:32:06] Processado: Mesa de Jantar Redonda 4 Lugares Thalia D01 Freijó/Preto Fosco - Mpozenato
-[15:32:06] Processado: Mesa Escritório em L 200cm Lado Esquerdo A06 Marrom/Preto - Mpozenato
-[15:32:06] Processado: Gaveteiro para Escritório 2 Gavetas 1 Nicho May A06 Olmo/Branco - Mpozenato
-[15:32:06] Processado: Mesa de Centro para Sala Ripada Leo Freijó/Off White Matte C05 - Mpozenato
-[15:32:06] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Off/Castanho - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Castanho - Mpozenato
-[15:32:06] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Castanho - Mpozenato
-[15:32:06] Processado: Mesa de Centro para Sala 90cm Indy Z10 Off/Cinamomo - Mpozenato
-[15:32:06] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Nogal - Mpozenato
-[15:32:06] Processado: Mesa em L para Escritório 3 Gavetas Me4101 Rústico - Tecno Mobili
-[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off White - Hb Móveis
-[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off/Champanhe - Hb Móveis
-[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Thalia Off/Champanhe H01 - Mpozenato
-[15:32:06] Processado: Mesa de Centro Baixa para Sala Pé Madeira Liz Off/Cinamomo - Hb Móveis
-[15:32:06] Processado: Painel Tv 86 Pol 220cm Suspenso Reno Cedro/Off White A09 - Mpozenato
-[15:32:06] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Mayra Nature/Champanhe V02 - Mpozenato
-[15:32:06] Processado: Sofá 2 Lugares 150cm e Poltrona Lykan Boucle Cru Z32 - Mpozenato
-[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Virtus Cinamomo/Off - Hb Móveis
-[15:32:06] Processado: Painel Tv 65 Pol 160cm Bancada Suspensa Zenith Off/Cinamomo - Hb Móveis
-[15:32:06] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Branco Z49 - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Modulada 4 Peças Cp10 Balcão Branco/Preto - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto Direito 4 Peças Cp39 com Pia Inox Preto/Cinza - Lumil
-[15:32:06] Processado: Armário em L 68cm Escritório 4 Prateleiras Amendoa - Tecno Mobili
-[15:32:06] Processado: Balcão 03 Portas Me4120 Branco - Tecno Mobili
-[15:32:06] Processado: Adega para 9 Garrafas com Prateleira Ad5000 Branco - Tecno Mobili
-[15:32:06] Processado: Balcão para Escritório 2 Portas Me4103 Nogal - Tecno Mobili
-[15:32:06] Processado: Armário Organizador para Home Office de 171,5 Cm de Altura Me4110 Nogal - Tecno Mobili
-[15:32:06] Processado: Armário Arquivo 03 Gavetas Me4118 Nogal - Tecno Mobili
-[15:32:06] Processado: Balcão 03 Portas Me4120 Nogal - Tecno Mobili
-[15:32:06] Processado: Estante Livreiro com Prateleiras Janaína Preto - Ajl Móveis
-[15:32:06] Processado: Mesa de Cozinha Bistrô Porto Branco 120cm com 2 Banquetas Industriais Maviê Preto/Branco - Mpozenato
-[15:32:06] Processado: Balcão de Cozinha 90cm com 2 Portas Mario Nero/Preto A10 - Mpozenato
-[15:32:06] Processado: Armário Multiuso Cozinha Lavanderia com Rodízios Lisa Z17 Naturale - Mpozenato
-[15:32:06] Processado: Kit 2 Sapateiras Multiuso Hall de Entrada 60cm 2 Prateleiras Padova Demolição/Preto - Artefamol
-[15:32:06] Processado: Kit 2 Sapateiras Multiuso Hall de Entrada 60cm 3 Prateleiras Padova Demolição/Preto - Artefamol
-[15:32:06] Processado: Conjunto Sala de Jantar Cristaleira Tijuca e Buffet Vicky C05 Freijó/Off White - Mpozenato
-[15:32:06] Processado: Puff Recamier Calçadeira 195cm Base Madeira Neville Z37 Linho Bege Cru - Mpozenato
-[15:32:06] Processado: Kit Poltrona e Puff para Sala de Estar com Almofada e Pés Palito Lord Facto Preto - Ibiza
-[15:32:06] Processado: Balcão Gabinete com Pia Inox 120cm 3 Portas e 1 Gaveta Tatiane Cinza - Ajl Móveis
-[15:32:06] Processado: Balcão de Atendimento em L 147x147cm Corp A06 Carvalho/Branco - Mpozenato
-[15:32:06] Processado: Carrinho Organizador Fruteira 3 Prateleiras Industrial Liss Z34 Preto/Preto - Mpozenato
-[15:32:06] Processado: Carrinho Organizador Fruteira 2 Prateleiras Industrial Sara Z34 Branco/Preto - Mpozenato
-[15:32:06] Processado: Carrinho Auxiliar para Salão de Beleza Industrial Sara Z34 Branco/Preto - Mpozenato
-[15:32:06] Processado: Tampo para Balcão de Cozinha 160cm Maly N03 Onix - Mpozenato
-[15:32:06] Processado: Puff Recamier Decorativo Pés em Ferro 160cm Dublin Z37 Linho Cinza Claro - Mpozenato
-[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Malbec - Incorplac
-[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Carvalho/Off White - Incorplac
-[15:32:06] Processado: Armário Multiuso Organizador Lavanderia Olinda Carvalho/Grafite - Incorplac
-[15:32:06] Processado: Balcão para Pia 120cm sem Tampo Pérola Z34 Preto - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Grafite/Freijó - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Freijó/Grafite - Mpozenato
-[15:32:06] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Cinamomo - Mpozenato
-[15:32:06] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Castanho - Mpozenato
-[15:32:06] Processado: Painel Tv 85 Pol Empire e Mesa de Centro Cadenza Off/Cinamomo - Hb Móveis
-[15:32:06] Processado: Buffet Aparador Sala de Estar 135cm Toni Z10 Off/Cinamomo - Mpozenato
-[15:32:06] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil Z10 Off/Cinamomo - Mpozenato
-[15:32:06] Processado: Balcão de Cozinha para Pia 120cm 3 Portas Manu Amêndoa/Branco - Ajl Móveis
-[15:32:06] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
-[15:32:06] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
-[15:32:06] Processado: Mesa Escrivaninha 3 Gavetas Painel Tv 40 Pol Doble Branco - Albatroz
-[15:32:06] Processado: Balcão de Cozinha para Pia 120cm Pierre Carvalho/Cinza L01 - Mpozenato
-[15:32:06] Processado: Armário de Cozinha 60cm 2 Portas Pierre Carvalho/Cinza L01 - Mpozenato
-[15:32:06] Processado: Armário de Cozinha 80cm 2 Portas Pierre Carvalho/Cinza L01 - Mpozenato
-[15:32:06] Processado: Paneleiro Cozinha Torre Quente Ripado Pierre Carvalho/Cinza L01 - Mpozenato
-[15:32:06] Processado: Aparador Sala de Estar 136cm 1 Gaveta Valerie Freijó C05 - Mpozenato
-[15:32:06] Processado: Armário Multiuso Lavanderia 55cm 2 Portas Staxx Branco Z17 - Mpozenato
-[15:32:06] Processado: Rack Bancada de Tv 60 Pol 150cm Elaine D04 Cedro/Bali - Mpozenato
-[15:32:06] Processado: Rack Bancada de Tv 65 Pol 180cm Chest D04 Off White/Cedro - Mpozenato
-[15:32:06] Processado: Sapateira Armário 18 Pares Organizador Bella Branco - Phoenix
-[15:32:06] Processado: Armário de Cozinha Aéreo 160cm com 4 Portas Nevada Castanho - Lumil
-[15:32:06] Processado: Armário de Cozinha Aéreo 100cm 2 Portas Indiana Cinza Claro - Lumil
-[15:32:06] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Aéreo 80cm 2 Portas Califórnia Cinza Claro - Lumil
-[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Branco A15 - Mpozenato
-[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Atacama A15 - Mpozenato
-[15:32:06] Processado: Armário Multiuso Lavanderia 52cm Aspasia Atacama/Off White A15 - Mpozenato
-[15:32:06] Processado: Cristaleira de Madeira 2 Portas e Gaveta Hazel Carvalho Z25 - Mpozenato
-[15:32:06] Processado: Cristaleira de Madeira 4 Portas de Vidro Henry Imbuia Fosco Z25 - Mpozenato
-[15:32:06] Processado: Armário Cozinha Compacta 159cm Madeira 7 Portas Daisy Imbuia Z25 - Mpozenato
-[15:32:06] Processado: Cristaleira de Madeira 2 Portas de Vidro Hazel Carvalho Z25 - Mpozenato
-[15:32:06] Processado: Painel Lateral de Fechamento para Cozinha 49cm 100% Mdf Belize Cinza – Henn
-[15:32:06] Processado: Aparador Sala de Estar 136cm com Prateleira Janis Off/Cinamomo H01 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Off/Champanhe - Hb Móveis
-[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Cinamomo - Hb Móveis
-[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Off/Cinamomo - Hb Móveis
-[15:32:06] Processado: Balcão Porta Toalha 20cm 100% Mdf Americana Branco Hp - Henn
-[15:32:06] Processado: Tampo para Balcão 120cm 100% Mdf Connect Duna - Henn
-[15:32:06] Processado: Tampo para Balcão 40cm 100% Mdf Connect Duna - Henn
-[15:32:06] Processado: Tampo para Balcão 40cm Americana Calcare - Henn
-[15:32:06] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Off Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Nature Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm 2 Portas Orgânico Pé Metal Sindy Nature Z56 - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho 2 Portas 3 Gavetas e Banqueta Atraente D02 Branco - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Preto - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Branco - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Freijó - Mpozenato
-[15:32:06] Processado: Penteadeira Escrivaninha com Espelho Bent A02 Off/Cinamomo - Mpozenato
-[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Derek Cinamomo/Off H01 - Mpozenato
-[15:32:06] Processado: Estante Painel Tv 70 Pol 200cm com Led Derek Castanho/Off H01 - Mpozenato
-[15:32:06] Processado: Painel Tv 65 Pol 181cm Bancada Suspensa Walle Cinamomo/Off H01 - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp48 com Pia Inox Preto/Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp47 Balcão com Tampo Preto/Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto Esquerdo 4 Peças Cp46 Balcão sem Tampo Preto/Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto Direito 4 Peças Cp37 Balcão sem Tampo Preto/Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto 6 Peças Cp29 Balcão com Tampo Preto/Cinza - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulada 5 Peças Cp13 Balcão Branco/Preto - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulada 5 Peças Cp14 Balcão com Tampo Branco/Preto - Lumil
-[15:32:06] Processado: Armário de Cozinha Modulado de Canto 7 Peças Cp21 com Pia Inox Branco/Preto - Lumil
-[15:32:06] Processado: Estante Livreiro 6 Prateleiras Office Branco - Móveis Leão
-[15:32:06] Processado: Calçadeira Baú Solteiro 90cm com Tachas Imperial J02 Veludo Rosê - Mpozenato
-[15:32:06] Processado: Calçadeira Baú Queen 160cm com Tachas Imperial J02 Veludo Azul - Mpozenato
-[15:32:06] Processado: Conjunto Escritório Mesa 90 Aparador e Estante Studio Industrial Z28 Preto - Mpozenato
-[15:32:06] Processado: Painel Ripado com Mesa de Apoio Industrial 1 Módulo 44cm Golden L06 Nature/Off White - Mpozenato
-[15:32:06] Processado: Tampo para Balcão de Cozinha 100cm Mdp Cinza - Ajl Móveis
-[15:32:06] Processado: Puff Recamier Calçadeira 195cm Pés Palito Madeira Venêto Z37 Sintético Caramelo - Mpozenato
-[15:32:06] Processado: Carrinho Organizador Fruteira 2 Prateleiras Industrial Sara Z34 Preto/Preto - Mpozenato
-[15:32:06] Processado: Carrinho Organizador Fruteira 3 Prateleiras Industrial Liss Z34 Branco/Preto - Mpozenato
-[15:32:06] Processado: Armário Multiuso 52cm 2 Portas Muniz Z46 Damasco/Off White - Mpozenato
-[15:32:06] Processado: Balcão de Cozinha com Tampo 120cm Louis Z06 Nogueira/Off - Mpozenato
-[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Branco Z34 - Mpozenato
-[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Grafite Z34 - Mpozenato
-[15:32:06] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Freijó/Off - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Freijó/Grafite - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Grafite/Freijó - Mpozenato
-[15:32:06] Processado: Guarda Roupa Solteiro 82cm 3 Portas Zeno Naturale/Branco Z17 - Mpozenato
-[15:32:06] Processado: Armário de Cozinha Aéreo 3 Portas 2 Nichos 91cm Milão Preto - Ej Móveis
-[15:32:06] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Branco - Mpozenato
-[15:32:06] Processado: Carrinho Gourmet de Apoio Industrial 3 Prateleiras Liss Z34 Branco/Preto - Mpozenato
-[15:32:06] Processado: Balcão Buffet Cantinho do Café Bianca Preto/Freijó Z34 - Mpozenato
-[15:32:06] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Cinza Claro - Lumil
-[15:32:06] Processado: Armário de Cozinha Aéreo 180cm Nevada com Nicho Cinza - Lumil
-[15:32:06] Processado: Cristaleira de Madeira 1 Porta de Vidro Hazel Carvalho Z25 - Mpozenato
-[15:32:06] Processado: Armário Cozinha Compacta 120cm Madeira 5 Portas Kyle Imbuia Z25 - Mpozenato
-[15:32:06] Processado: Armário Cristaleira de Madeira 6 Portas Henry Imbuia Fosco Z25 - Mpozenato
-[15:32:06] Processado: Quarto Infantil 3 Peças com Berço Q Encanto Retrô Branco - Qmovi
-[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Delux Off/Champanhe H01 - Mpozenato
-[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Off/Cinamomo - Hb Móveis
-[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Delux Off/Cinamomo H01 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Murano Cinamomo - Hb Móveis
-[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Islam Cinamomo H01 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm com Led 3 Portas Islam Off/Champanhe H01 - Mpozenato
-[15:32:06] Processado: Cristaleira Portas de Vidro com Led 76cm Lumina Off/Champanhe - Hb Móveis
-[15:32:06] Processado: Tampo para Balcão 20cm 100% Mdf Connect Duna - Henn
-[15:32:06] Processado: Tampo para Balcão 100cm 100% Mdf Connect Duna - Henn
-[15:32:06] Processado: Tampo para Balcão 60cm 100% Mdf Connect Duna - Henn
-[15:32:06] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 160cm 4 Portas Orgânico Cecy Off White Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 125cm 4 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature/Off Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 65cm 2 Portas Orgânico Marlo Nature Z56 - Mpozenato
-[15:32:06] Processado: Buffet Aparador 95cm 3 Portas Orgânico Marlo Nature Z56 - Mpozenato
-[15:32:06] Processado: Penteadeira Suspensa com Painel e Espelho Joy Z49 Preto - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho 1 Gaveta Pe2017 Branco - Tecno Mobili
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Branco - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Freijó - Mpozenato
-[15:32:06] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Grafite - Mpozenato
-[15:32:06] Arquivo gerado: Atributos_Extraidos_SemMarca_20260327_153206.xlsx
-[15:32:06] Processamento concluído - 181 itens em 2.02s
+[14:14:42] Iniciando processamento do Google Sheets em 02/04/2026 14:14:42
+[14:14:43] Processado: Tábua de Passar com Balcão 1 Porta Giovana Branco - Lumil
+[14:14:43] Processado: Armário Multiuso Organizador Rosana 2 Portas Castanho - Ajl Móveis
+[14:14:43] Processado: Armário Multiuso Organizador Lavanderia Versus Carvalho Branco/Branco - Incorplac
+[14:14:43] Processado: Armário Multiuso Organizador Lavanderia Olinda Carvalho/Grafite - Incorplac
+[14:14:43] Processado: Armário Multiuso 02 Portas Rafaela Rústico - Nathy Móveis
+[14:14:43] Processado: Armário Organizador Multiuso Íris 2 Portas Castanho Wood - Moval
+[14:14:43] Processado: Armário Multiuso Organizador Lavanderia Olinda Malbec - Incorplac
+[14:14:43] Processado: Armário Multiuso Lavanderia 55cm 2 Portas Staxx Branco Z17 - Mpozenato
+[14:14:43] Processado: Armário Aéreo 150cm 4 Portas Andréia Cinza - Ajl Móveis
+[14:14:43] Processado: Armário Multiuso 02 Portas Rafaela Branco - Nathy Móveis
+[14:14:43] Processado: Armário Organizador Multiuso Íris 2 Portas Branco - Moval
+[14:14:43] Processado: Balcão Gabinete para Pia 100cm 2 Portas Andréia Cinza - Ajl Móveis
+[14:14:43] Processado: Sapateira Armário 18 Pares Organizador Bella Branco - Phoenix
+[14:14:43] Processado: Armário Aéreo 150cm 4 Portas Andréia Branco - Ajl Móveis
+[14:14:43] Processado: Balcão Gabinete para Pia 100cm sem Tampo 2 Portas 3 Gavetas Andréia Branco - Ajl Móveis
+[14:14:43] Processado: Armário Tábua de Passar Retrátil Tp3030 Branco - Tecno Mobili
+[14:14:43] Processado: Tábua de Passar com Balcão 2 Portas 1 Gaveta Larissa Castanho - Lumil
+[14:14:43] Processado: Tábua de Passar com Balcão 2 Portas Carla Castanho - Lumil
+[14:14:43] Processado: Tábua de Passar com Balcão 2 Portas Carla Preto - Lumil
+[14:14:43] Processado: Tábua de Passar com Balcão 1 Porta Giovana Castanho - Lumil
+[14:14:43] Processado: Tábua de Passar com Balcão 1 Porta Giovana Preto - Lumil
+[14:14:43] Processado: Tábua de Passar com Balcão 2 Portas Carla Branco - Lumil
+[14:14:44] Processado: Tábua de Passar com Balcão 2 Portas 1 Gaveta Larissa Preto - Lumil
+[14:14:44] Processado: Tábua de Passar com Balcão 2 Portas 1 Gaveta Larissa Branco - Lumil
+[14:14:44] Processado: Kit Banheiro Gabinete 56cm Pia e Armário com Espelho Munique Branco - Bechara
+[14:14:44] Processado: Kit Banheiro Gabinete 56cm Pia e Armário com Espelho Munique Branco/Preto - Bechara
+[14:14:44] Processado: Porta Papel Higiênico de Chão Glam Base de Madeira D09 Preto - Mpozenato
+[14:14:44] Processado: Gabinete Banheiro Suspenso 80cm Cuba Oval Ripy Grafite/Preto Z54 - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Retangular Messina Rt45 Amarelo C08 - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Retangular Messina Rt45 Preto C08 - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Redonda Bowl 35 C08 Rosa - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Redonda Bowl 35 C08 Branco - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Retangular Florenza Rt55 Branco C08 - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Canoa Luxo 45 C08 Branco - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Retangular 30cm Joy C08 Bege - Mpozenato
+[14:14:44] Processado: Cuba Pia para Banheiro Oval Canoa 46cm Tânia C08 Branco - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Retangular Rt49 C08 Branco - Mpozenato
+[14:14:44] Processado: Cuba Pia Semi Encaixe para Banheiro Retangular 54cm Xrt C08 Cinza - Mpozenato
+[14:14:44] Processado: Cuba Pia para Banheiro Retangular 38cm Dalila C08 Cinza - Mpozenato
+[14:14:44] Processado: Cuba Pia de Apoio para Banheiro Quadrada Kuad 32 C08 Branco - Mpozenato
+[14:14:44] Processado: Válvula para Pia Aço Inox 3.1/2 G01 Cromado - Mpozenato
+[14:14:44] Processado: Pia de Cozinha com Cuba e Válvula Bali 160cm Aço Inox - Ghel Plus
+[14:14:44] Processado: Banqueta Alta Bar Estofada Milli Sintético Caramelo A14 - Mpozenato
+[14:14:44] Processado: Banqueta Alta Bar Estofada Ella M25 Linho Cinza - Mpozenato
+[14:14:44] Processado: Tampo com Vista 120cm para Balcão D02 Avena Touch - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Cinza - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Z34 Branco - Mpozenato
+[14:14:44] Processado: Prateleira Industrial Cozinha Tripla com Painel Flora Z34 Branco - Mpozenato
+[14:14:44] Processado: Prateleira Industrial Cozinha Tripla com Painel Flora Z34 Freijó/Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 98cm Mdp Z34 Preto - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 178cm Mdp Z34 Preto - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Zaya Carvalho - Componente
+[14:14:44] Processado: Tampo para Balcão de Cozinha 178cm Mdp Z34 Grafite - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Preto - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Preto - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Lina Z06 Vanilla - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 98cm Mdp Z34 Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 118cm Mdp Z34 Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 118cm Mdp Z34 Preto - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 148cm Mdp Z34 Grafite - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Preto - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Amêndoa - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Lina Z06 Gris - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 98cm Mdp Z34 Freijó - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 148cm Mdp Z34 Freijó - Mpozenato
+[14:14:44] Processado: Tampo com Vista 120cm para Balcão D02 Amendola Touch - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Lina Z06 Supremo - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Cinza - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 98cm Mdp Z34 Grafite - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 118cm Mdp Z34 Grafite - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 148cm Mdp Z34 Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Branco - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Branco - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Charm Z06 Freijó - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Lina Z06 Gris - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Cinza - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 118cm Mdp Z34 Freijó - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 178cm Mdp Z34 Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Lina Z06 Supremo - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 180cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Cinza - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Cinza Claro - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Z34 Preto - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Branco - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Castanho - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Cinza Claro - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Cinza Claro - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 180cm Mdp Cinza Claro - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Branco - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Preto - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Preto - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão 120cm Cor Mármore Preto - Poquema
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Branco - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 180cm Mdp Preto - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 160cm Mdp Branco - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 180cm Mdp Castanho - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 180cm Mdp Branco - Lumil
+[14:14:44] Processado: Armário Multiuso Cozinha Lavanderia com Rodízios Lisa Z17 Naturale - Mpozenato
+[14:14:44] Processado: Aparador Cantinho do Café 2 Portas 68cm Hall Flow Off/Freijó - Ej Móveis
+[14:14:44] Processado: Armário Multiuso 52cm 2 Portas Muniz Z46 Branco - Mpozenato
+[14:14:44] Processado: Armário Multiuso 60cm 2 Portas Tami Z46 Branco - Mpozenato
+[14:14:44] Processado: Armário Multiuso 60cm 2 Portas Tami Z46 Chocolate/Off White - Mpozenato
+[14:14:44] Processado: Armário Multiuso Cozinha Lavanderia 2 Portas Aline V02 Branco - Mpozenato
+[14:14:44] Processado: Armário Multiuso Cozinha Lavanderia 2 Portas Aline V02 Nature/Brisa - Mpozenato
+[14:14:44] Processado: Armário de Cozinha com Fruteira e Nicho Ibiza Branco - Lumil Móveis
+[14:14:44] Processado: Armário Multiuso Irlanda com Fruteira Branco - Lumil Móveis
+[14:14:44] Processado: Armário Multiuso Irlanda com Fruteira Branco/Castanho - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha com Fruteira e Nicho Ibiza Branco/Castanho - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha com Fruteira e Nicho Ibiza Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Multiuso Irlanda com Fruteira e Nicho Micro-Ondas Branco/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Compacta Retrô 120cm Wallie N03 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Compacta Suspensa Jully N03 Carvalho/Off White - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Compacta 140cm Parisi Z46 Damasco/Off White - Mpozenato
+[14:14:44] Processado: Cozinha Compacta 8 Portas 161cm Soul Z06 Freijó/Ártico - Mpozenato
+[14:14:44] Processado: Armário Multiuso Baú 95cm 1 Porta Amanda Branco - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Maly N03 Carvalho/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Compacta 160cm 5 Portas Isabel Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo Geladeira 60cm 1 Porta Basculante Andréia Preto - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Compacta 160cm 5 Portas Isabel Branco - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Compacta 160cm 5 Portas Isabel Cinza - Ajl Móveis
+[14:14:44] Processado: Cozinha Suspensa Lilian Freijó Uv/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Basculante 80cm Maly N03 Carvalho/Off White - Mpozenato
+[14:14:44] Processado: Armário Aéreo 60cm Porta Basculante Andréia Cinza - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo 70cm Porta Basculante Lina Z06 Supremo - Mpozenato
+[14:14:44] Processado: Cozinha Compacta 130cm com 6 Portas 1 Gaveta Alice Preto/Amêndoa - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Classic Damasco/Off Z46 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Classic Ripado Damasco Z46 - Mpozenato
+[14:14:44] Processado: Kit Cozinha Compacta 130cm com 6 Portas 1 Gaveta Alice Preto Fosco - Ajl Móveis
+[14:14:44] Processado: Kit Cozinha Compacta 105cm com 6 Portas 1 Gaveta Márcia Preto Fosco - Ajl Móveis
+[14:14:44] Processado: Kit Cozinha Compacta 130cm com 6 Portas 1 Gaveta Alice Cinza Escuro - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo Ponte Modulado 97cm Taiga Branco/Avelã L01 - Mpozenato
+[14:14:44] Processado: Kit 2 Cadeiras para Sala de Jantar Assento Estofado Luci D01 Freijó/Havana - Mpozenato
+[14:14:44] Processado: Kit 2 Cadeiras 119 Europa Branco/Platina - Artefamol
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Marina Freijó L01 - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm 2 Portas Marina Cinammon L01 - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm Pierre Carvalho L01 - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Pierre Carvalho L01 - Mpozenato
+[14:14:44] Processado: Armário Aéreo Geladeira Veneza 70cm 1 Porta Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo 1 Porta 70cm Frirenze D02 Amendola/Branco - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 2 Portas 67cm Italy Preto - Ej Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 2 Portas 80cm Minsk Freijó/Soft Z06 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 3 Portas 2 Nichos 91cm Milão Preto - Ej Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 3 Portas 2 Nichos 91cm Milão Branco - Ej Móveis
+[14:14:44] Processado: Armário Cozinha Aéreo 80cm com 1 Porta Zaya Branco T01 - Mpozenato
+[14:14:44] Processado: Armário Cozinha Aéreo 120cm com 3 Portas Zaya Branco T01 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 70cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário Aéreo 120cm 3 Portas Andréia Cinza - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 2 Portas 67cm Italy Branco - Ej Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 4 Portas 160cm Andréia Preto - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm 1 Porta Minsk Z06 Freijó/Soft - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 70cm Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Armário Aéreo Basculante 80cm Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo Nicho 60cm Pérola Z34 Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm com 2 Portas Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Nala Freijó Uv/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Armário Aéreo de Cozinha 3 Portas 120cm Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 2 Portas Minsk Z06 Freijó/Soft - Mpozenato
+[14:14:44] Processado: Armário Aéreo Parma 150cm 3 Portas Branco/Castanho - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo Panamá 04 Portas 160cm Branco/Castanho - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha 120cm 2 Portas de Vidro Minsk Freijó Z06 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Basculante Mia Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Noriel Cinamomo/Branco A15 - Mpozenato
+[14:14:44] Processado: Armário Aéreo Parma 150cm 3 Portas Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo Panamá 04 Portas 160cm Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Castanho/Preto - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 3 Gavetas Andréia Preto Total - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 160cm sem Tampo 3 Portas 3 Gavetas Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo Geladeira 60cm 1 Porta Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm com 2 Portas Andréia Preto - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Branco/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda Z34 Preto/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Grace Grafite Z44 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 118cm 4 Portas Monna Freijó Z34 - Mpozenato
+[14:14:44] Processado: Armário Aéreo Parma 150cm 3 Portas Branco - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Basculante Mia Z34 Preto - Mpozenato
+[14:14:44] Processado: Armário Aéreo Panamá 04 Portas 160cm Branco - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo Honduras 03 Portas 120cm Branco/Carvalho - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Branco/Preto - Lumil
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Branco/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Preto/Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo Geladeira 60 Cm Branco - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 100cm sem Tampo 2 Portas 3 Gavetas Andréia Preto Total - Ajl Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 2 Portas 120cm Minsk Freijó Z06 - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm com 3 Portas Argélia Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo Honduras 03 Portas 120cm Branco - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Branco/Castanho - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Preto/Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo 150cm 3 Portas Lina Z06 Supremo/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 118cm 3 Portas Duda Z34 Branco/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm 2 Portas Indiana Cinza Claro - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo Canto Reto com Nicho Austin Cinza Claro - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm com 4 Portas Nevada Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm Nevada com Nicho Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Castanho/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Branco/Preto - Lumil
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Honduras Preto - Lumil
+[14:14:44] Processado: Armário Aéreo 120cm 3 Portas Lina Z06 Supremo/Freijó - Mpozenato
+[14:14:44] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Castanho - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Castanho/Preto - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo Geladeira 60cm 1 Porta Basculante Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Armário Aéreo 150cm 3 Portas Lina Z06 Gris/Freijó - Mpozenato
+[14:14:44] Processado: Armário Aéreo 70cm Porta Basculante Lina Z06 Vanilla - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Castanho/Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Preto - Lumil
+[14:14:44] Processado: Armário Aéreo Honduras 03 Portas 120cm Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Armário Aéreo 120cm 3 Portas Lina Z06 Vanilla/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 100cm Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Branco/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 80cm 2 Portas Califórnia Cinza Claro - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm 3 Portas Argélia Cinza Claro - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Castanho/Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Cinza Claro - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm com 3 Portas Argélia Castanho - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Honduras Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Castanho - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Castanho/Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm Nevada com Nicho Castanho - Lumil
+[14:14:44] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Preto - Lumil
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Preto/Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo 70cm Porta Basculante Lina Z06 Gris - Mpozenato
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Castanho/Cinza - Lumil
+[14:14:44] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Cinza Claro - Lumil
+[14:14:44] Processado: Armário Aéreo 120cm 3 Portas Lina Z06 Gris/Freijó - Mpozenato
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm com 4 Portas Nevada Castanho - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo Geladeira 70cm Texas Cinza Claro - Lumil
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 150cm Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Suporte Microondas Aéreo 81cm com Nicho Adega Miami Branco - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Castanho/Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Preto/Cinza - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha 120cm 3 Portas Classic Preto - Poquema
+[14:14:44] Processado: Armário Aéreo de Canto Reto com Nicho Adega Austin Branco - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Preto - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Cinza Claro - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Cinza - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Preto - Lumil
+[14:14:44] Processado: Armário Aéreo 100cm 2 Portas Indiana Branco - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha 120cm 3 Portas Classic Branco - Poquema
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Preto - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Preto - Lumil Móveis
+[14:14:44] Processado: Armário de Cozinha Aéreo 120cm 3 Portas Virgínia Branco - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 160cm 4 Portas Nevada Branco - Lumil
+[14:14:44] Processado: Armário Aéreo de Cozinha 150cm 3 Portas Argélia Branco - Lumil
+[14:14:44] Processado: Armário de Cozinha Aéreo 180cm 4 Portas Vitória Branco - Lumil
+[14:14:44] Processado: Armário Aéreo 80cm 2 Portas Califórnia Branco - Lumil Móveis
+[14:14:44] Processado: Armário Aéreo de Cozinha para Geladeira 70cm Texas Branco - Lumil Móveis
+[14:14:44] Processado: Balcão de Cozinha para Cooktop e Forno Microondas Carla Preto - Ajl Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão com Tampo para Cooktop 5 Bocas 2 Portas Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Preto - Lumil Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Preto/Cinza - Lumil Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Preto - Lumil Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Castanho/Cinza - Lumil Móveis
+[14:14:44] Processado: Balcão Multiuso para Cooktop 4 Bocas Georgia Branco - Lumil Móveis
+[14:14:44] Processado: Balcão para Cooktop 80cm 2 Portas Flórida Branco - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 160cm sem Tampo 3 Portas 3 Gavetas Andréia Preto - Ajl Móveis
+[14:14:44] Processado: Balcão Multiuso 62cm 2 Portas 1 Gaveta Flex Juliana Branco/Preto - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 150cm 4 Portas e 1 Gaveta Gabriela Cinza - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 150cm Mdp Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha com Tampo 120cm Louis Z06 Nogueira/Off - Mpozenato
+[14:14:44] Processado: Balcão para Pia 100cm sem Tampo Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha Porta Pano 20cm Pérola Z34 Freijó - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm Andréia Amêndoa/Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Cooktop 80cm Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha e Tampo 120cm Nala Freijó Uv/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Cooktop 80cm Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Balcão Gabinete para Pia 120cm 2 Portas Andréia Cinza - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha com Tampo 120cm Louis Z06 Freijó/Gris - Mpozenato
+[14:14:44] Processado: Balcão para Pia 120cm sem Tampo Maly N03 Carvalho/Off White - Mpozenato
+[14:14:44] Processado: Balcão para Pia 120cm sem Tampo Pérola Z34 Preto - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 150cm Lina Z06 Supremo - Mpozenato
+[14:14:44] Processado: Armário Aéreo 3 Portas 120 Cm Branco - Ajl Móveis
+[14:14:44] Processado: Balcão para Pia 180cm sem Tampo Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha Duplo para Microondas 2 Portas Duo Z06 Supremo - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm 3 Gavetas Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Cinza - Ajl Móveis
+[14:14:44] Processado: Balcão para Pia 120cm sem Tampo Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Cooktop 80cm Pérola Z34 Freijó/Grafite - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha sem Tampo 120cm Laura Plus Soft/Freijó Z06 - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Branco - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 160cm sem Tampo 3 Portas Karen Z49 Nature/Off White - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 160cm Andréia Amêndoa/Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm 3 Portas Manu Amêndoa/Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Pia 120cm Emily Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 150cm sem Tampo Dakota Cinza Claro - Lumil
+[14:14:44] Processado: Balcão Tábua de Passar Roupa Mariana Branco - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Branco/Preto - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 120cm Urban Z06 Freijó - Mpozenato
+[14:14:44] Processado: Balcão de Cozinha para Pia 100cm 3 Gavetas Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Balcão para Pia 100cm sem Tampo Pérola Z34 Branco - Mpozenato
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Castanho - Lumil
+[14:14:44] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Branco/Preto - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia 120cm sem Tampo 2 Portas 3 Gavetas Andréia Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Cooktop e Forno Microondas Carla Amêndoa/Preto - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 150cm 3 Portas Andréia Cinza - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Tatiane Branco - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Tatiane Preto - Ajl Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Gabriela Preto - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Pia 150cm Gabriela Amêndoa/Branco - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Pia 160cm sem Tampo Arkansas Cinza - Lumil
+[14:14:44] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Castanho/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Castanho/Cinza - Lumil
+[14:14:44] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Castanho/Preto - Lumil
+[14:14:44] Processado: Tampo para Balcão de Cozinha 100cm Mdp Preto - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia 120cm 3 Portas sem Tampo Suécia Cinza - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Tatiane Cinza - Ajl Móveis
+[14:14:44] Processado: Balcão de Cozinha para Cooktop 80cm Flórida Cinza Claro - Lumil
+[14:14:44] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Tampo para Balcão de Cozinha 120cm Mdp Preto - Lumil
+[14:14:44] Processado: Balcão de Cozinha Multiuso 80cm 2 Portas Hawai Cinza Claro - Lumil
+[14:14:44] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Cinza Claro - Lumil
+[14:14:44] Processado: Balcão de Cozinha para Pia 100cm sem Tampo Luziania Cinza Claro - Lumil
+[14:14:44] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Branco/Preto - Lumil Móveis
+[14:14:44] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Castanho/Preto - Lumil
+[14:14:44] Processado: Balcão Gabinete para Pia 120cm 3 Portas sem Tampo Suécia Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm sem Tampo 3 Portas Manu Preto - Ajl Móveis
+[14:14:45] Processado: Balcão de Cozinha para Cooktop 80cm Pérola Z34 Branco - Mpozenato
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Castanho/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm sem Tampo 2 Portas 3 Gavetas Andréia Preto Total - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm 4 Portas e 1 Gaveta Gabriela Preto - Ajl Móveis
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm Tatiane Amêndoa/Branco - Ajl Móveis
+[14:14:45] Processado: Balcão de Cozinha para Pia 180cm sem Tampo Dallas Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Branco/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão de Cozinha 102cm para Cooktop Georgia Cinza Claro - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm sem Tampo Michigan Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Castanho/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Branco/Preto - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 150cm 3 Gavetas Andréia Amêndoa/Preto - Ajl Móveis
+[14:14:45] Processado: Balcão de Cozinha para Cooktop 80cm Pérola Z34 Preto - Mpozenato
+[14:14:45] Processado: Balcão de Cozinha para Pia 160cm sem Tampo Arkansas Cinza Claro - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 150cm sem Tampo Marrocos Cinza - Lumil
+[14:14:45] Processado: Balcão de Cozinha Porta Pano 20cm Pérola Z34 Branco - Mpozenato
+[14:14:45] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Castanho/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Castanho/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 3 Gavetas Andréia Branco - Ajl Móveis
+[14:14:45] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Preto/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm 3 Portas sem Tampo Branco - Poquema
+[14:14:45] Processado: Balcão de Cozinha com Tampo 120cm 3 Portas Arizona Cinza Claro - Lumil
+[14:14:45] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Tampo para Balcão de Cozinha 150cm Mdp Castanho - Lumil
+[14:14:45] Processado: Balcão Gabinete 100cm sem Tampo 2 Portas 2 Gavetas Luziania Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo 3 Portas 1 Gaveta Dakota Preto - Lumil
+[14:14:45] Processado: Tampo para Balcão de Cozinha 160cm Mdp Castanho - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 160cm sem Tampo Arkansas Castanho - Lumil
+[14:14:45] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Castanho/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Castanho/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Castanho/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão de Cozinha para Pia 180cm sem Tampo Dallas Castanho - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm sem Tampo Michigan Castanho - Lumil
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Preto - Lumil Móveis
+[14:14:45] Processado: Balcão de Cozinha para Pia 150cm sem Tampo Marrocos Castanho - Lumil
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Castanho/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Castanho/Cinza - Lumil Móveis
+[14:14:45] Processado: Balcão de Canto Reto com Tampo 1 Porta Denver Branco - Lumil
+[14:14:45] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Preto/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete 120cm com Tampo 3 Portas 1 Gaveta Arizona Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 80cm 2 Portas Hawai Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete 120cm 3 Portas 2 Gavetas Michigan Branco - Lumil
+[14:14:45] Processado: Balcão Gabinete 160cm sem Tampo 4 Portas 2 Gavetas Arkansas Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Gabriela Cinza - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Branco - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm Nathan 2 Portas Rústico - Nathy Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm Nathan 2 Portas Branco - Nathy Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm sem Tampo 2 Portas Karen Z49 Nature/Off White - Mpozenato
+[14:14:45] Processado: Balcão Cozinha 120cm para Pia com 2 Portas Zaya Branco T01 - Mpozenato
+[14:14:45] Processado: Balcão Gabinete para Pia Áustria sem Tampo 160cm 4 Portas 2 Gavetas Branco/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm sem Tampo Manu Preto/Amêndoa - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 160cm Áustria sem Tampo 4 Portas 2 Gavetas Branco/Castanho - Lumil Móveis
+[14:14:45] Processado: Estante Livreiro com Prateleiras Janaína Castanho - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 160cm 3 Portas Andréia Cinza - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm 3 Portas sem Tampo Manu Cinza - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Castanho/Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm sem Tampo 3 Portas Manu Branco - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Branco/Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete Áustria 160cm sem Tampo 4 Portas 2 Gavetas Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Branco/Castanho - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 120cm Lina Z06 Supremo - Mpozenato
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm 3 Portas 2 Gavetas Livy Z46 Damasco/Off White - Mpozenato
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 120cm 3 Portas e 1 Gaveta Flex Gabriela Branco/Preto - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm Suécia 3 Portas 2 Gavetas sem Tampo Branco/Preto - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Castanho/Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Lina Z06 Gris - Mpozenato
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Branco/Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 120cm Suécia sem Tampo 3 Portas 2 Gavetas Branco/Castanho - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Preto/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 120cm Lina Z06 Gris - Mpozenato
+[14:14:45] Processado: Balcão Gabinete 120cm Suécia sem Tampo 3 Portas 2 Gavetas Branco - Lumil Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm 4 Portas e 1 Gaveta Flex Gabriela Branco/Preto - Ajl Móveis
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Preto/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo Lisboa Branco/Castanho - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 150cm 4 Portas sem Tampo Marrocos Cinza Claro - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo Lisboa Branco/Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Castanho/Cinza - Lumil
+[14:14:45] Processado: Balcão de Cozinha para Pia 120cm 3 Portas sem Tampo Michigan Cinza Claro - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Preto - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 180cm sem Tampo Dallas Castanho/Cinza - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia 150cm sem Tampo Lisboa Branco - Lumil
+[14:14:45] Processado: Balcão Gabinete de Pia para Cozinha 120cm 3 Portas Classic Z46 Preto - Mpozenato
+[14:14:45] Processado: Balcão de Cozinha para Pia 180cm 4 Portas sem Tampo Dallas Cinza Claro - Lumil
+[14:14:45] Processado: Balcão Gabinete para Pia sem Tampo 150cm Marrocos Branco - Lumil
+[14:14:45] Processado: Armário de Cozinha Compacta 160cm Montreal Z06 Freijó/Supremo - Mpozenato
+[14:14:45] Processado: Armário de Cozinha Compacta 180cm Turim Z06 Freijó/Supremo/Ripado - Mpozenato
+[14:14:45] Processado: Kit Cozinha Compacta 4 Portas 1 Gaveta Malta D02 Amendola/Branco - Mpozenato
+[14:14:45] Processado: Kit Cozinha Compacta 6 Portas 2 Gavetas Select D02 Amendola/Branco - Mpozenato
+[14:14:45] Processado: Kit Cozinha Compacta 105cm com 6 Portas 1 Gaveta Márcia Cinza Escuro - Ajl Móveis
+[14:14:45] Processado: Armário de Cozinha Compacta 90cm Bruna Z06 Freijó/Supremo - Mpozenato
+[14:14:45] Processado: Armário Aéreo 150cm 4 Portas Andréia Preto - Ajl Móveis
+[14:14:45] Processado: Armário de Cozinha Compacta 160cm Montreal Z06 Freijó/Gris - Mpozenato
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Pérola Z34 Grafite - Mpozenato
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Pérola Z34 Branco - Mpozenato
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Pérola Z34 Preto - Mpozenato
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Riad Castanho - Lumil
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Riad Preto - Lumil
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Riad Cinza Claro - Lumil
+[14:14:45] Processado: Nicho Aéreo Adega Vertical 20cm Riad Branco - Lumil
+[14:14:45] Processado: Paneleiro Torre Quente 2 Portas Lina Z06 Supremo - Mpozenato
+[14:14:45] Processado: Paneleiro de Cozinha Torre Quente Pérola Z34 Grafite/Freijó - Mpozenato
+[14:14:45] Processado: Paneleiro de Cozinha Torre Quente Minsk Z06 Branco/Soft/Freijó - Mpozenato
+[14:14:45] Processado: Paneleiro Armário Cozinha 40cm com 2 Portas Zaya Branco T01 - Mpozenato
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 70cm 1 Porta Zaya Branco T01 - Mpozenato
+[14:14:45] Processado: Paneleiro Torre Quente 4 Portas com Adega Andréia Branco - Ajl Móveis
+[14:14:45] Processado: Paneleiro de Cozinha Torre Quente Rita Freijó/Off Acetinado Z44 - Mpozenato
+[14:14:45] Processado: Paneleiro Torre Quente 4 Portas com Adega Andréia Preto/Amêndoa - Ajl Móveis
+[14:14:45] Processado: Paneleiro de Cozinha 1 Porta Maly N03 Carvalho/Off White - Mpozenato
+[14:14:45] Processado: Paneleiro de Cozinha Torre Quente Pérola Z34 Preto - Mpozenato
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente Grace Carvalho Oak/Off White Z44 - Mpozenato
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente Grace Grafite Z44 - Mpozenato
+[14:14:45] Processado: Paneleiro Torre Quente 2 Portas Lina Z06 Gris - Mpozenato
+[14:14:45] Processado: Paneleiro Torre Quente 4 Portas com Adega Andréia Cinza - Ajl Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Branco/Preto - Lumil Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Castanho/Preto - Lumil Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Preto/Cinza - Lumil Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Cinza Claro - Lumil
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Castanho/Cinza - Lumil Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Preto - Lumil Móveis
+[14:14:45] Processado: Paneleiro Cozinha Torre Quente 56cm Colorado Branco - Lumil Móveis
+[14:14:45] Processado: Suporte Microondas e Forno Elétrico Aéreo 60cm Itália Castanho - Lumil
+[14:14:45] Processado: Suporte Microondas e Forno Elétrico Aéreo 60cm Itália Cinza Claro - Lumil
+[14:14:45] Processado: Suporte Microondas e Forno Elétrico Aéreo 60cm Itália Preto - Lumil
+[14:14:45] Processado: Suporte Microondas e Forno Elétrico Aéreo 60cm Itália Branco - Lumil
+[14:14:45] Processado: Balcão para Escritório 110cm 2 Portas Rael Mel/Grafite F10 - Mpozenato
+[14:14:45] Processado: Cadeira Hoteleira Auditório Empilhável Linho Z33 Preto - Mpozenato
+[14:14:45] Processado: Cadeira Hoteleira Auditório Empilhável Sintético Z33 Cinza - Mpozenato
+[14:14:45] Processado: Mesa Escrivaninha 3 Gavetas Painel Tv 40 Pol Doble Branco - Albatroz
+[14:14:45] Processado: Gaveteiro Escritório 4 Gavetas com Rodízios Gávea Branco Trama - Móveis Leão
+[14:14:45] Processado: Mesa para Computador Escrivaninha em L Gold 2 Gavetas e Nichos Branco/Olmo - Artany
+[14:14:45] Processado: Mesa para Computador Escrivaninha Office 1 Porta 1Gaveta Morada D02 Branco - Mpozenato
+[14:14:45] Processado: Módulo Guarda Roupa Closet com Prateleiras Titan Branco Velluto - Móveis Leão
+[14:14:45] Processado: Mesa para Escritório Home Office 1 Porta Ripada Tech Freijó/Off White - Caemmun
+[14:14:45] Processado: Armário Aéreo de Cozinha 4 Portas 160cm Andréia Branco - Ajl Móveis
+[14:14:45] Processado: Mesa Escrivaninha 2 em 1 com Nichos Arbo A06 Ipê/Branco - Mpozenato
+[14:14:45] Processado: Escrivaninha Office com Tampo Dobrável Mobile Mind Ipê/Branco - Artany
+[14:14:45] Processado: Mesa para Computador Notebook Gamer Pro Preto/Vermelho - Fit Mobel
+[14:14:45] Processado: Mesa para Computador Escrivaninha 1 Gaveta Alexia Branco - Ajl Móveis
+[14:14:45] Processado: Mesa Gamer para Computador e Estudo Gelius M09 Preto/Verde - Mpozenato
+[14:14:45] Processado: Mesa para Computador Notebook Gamer X Preto/Vermelho - Fit Mobel
+[14:14:45] Processado: Mesa Gamer para Computador e Estudo Gelius Z19 Preto/Vermelho - Mpozenato
+[14:14:45] Processado: Mesa para Computador Escrivaninha Zetta 90cm Preto - Fit Mobel
+[14:14:45] Processado: Mesa Escritório Reunião 200x71x100 Cm Me4119 Amêndoa - Tecno Mobili
+[14:14:45] Processado: Mesa para Computador Escrivaninha em L Gold 2 Gavetas e Nichos Branco - Artany
+[14:14:45] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Branco Chess - Mpozenato
+[14:14:45] Processado: Mesa para Escritório em L Me4145 Nogal/Nogal - Tecno Mobili
+[14:14:45] Processado: Mesa para Computador Escrivaninha Office 1 Porta 1Gaveta Morada D02 Amendola/Grafito - Mpozenato
+[14:14:45] Processado: Mesa Escritório em L 200cm Lado Esquerdo A06 Marrom/Preto - Mpozenato
+[14:14:45] Processado: Mesa de Escritório Escrivaninha 150cm Dynamica Industrial C08 Nogal - Mpozenato
+[14:14:45] Processado: Mesa em L para Escritório 3 Gavetas Me4101 Rústico - Tecno Mobili
+[14:14:45] Processado: Mesa de Escritório Escrivaninha 120cm Dynamica Industrial C08 Preto Ônix - Mpozenato
+[14:14:45] Processado: Mesa para Computador Escrivaninha 1 Gaveta Facility D02 Branco - Mpozenato
+[14:14:45] Processado: Cabeceira Casal King 195cm Greta Sintético Bege Z51 - Mpozenato
+[14:14:45] Processado: Cabeceira Casal Queen 160cm Greta Sintético Preto Z51 - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Pérola W01 Suede Cinza - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Pérola W01 Linho Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Solteiro 90cm Florenza Z37 Linho Cinza Claro - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Solteiro 98cm Dust Z37 Veludo Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Pérola W01 Linho Cinza Escuro - Mpozenato
+[14:14:45] Processado: Cabeceira Solteiro 90cm Greta Sintético Marrom Z51 - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Pérola W01 Suede Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Luna I02 Sintético Branco - Mpozenato
+[14:14:45] Processado: Calçadeira Baú Queen 160cm com Tachas Imperial J02 Veludo Azul - Mpozenato
+[14:14:45] Processado: Calçadeira Baú King 195cm com Tachas Imperial Veludo J02 Bege - Mpozenato
+[14:14:45] Processado: Cama Queen Flutuante com Cabeceira 160cm Lyra Sintético Preto S05 - Mpozenato
+[14:14:45] Processado: Cama King Flutuante com Cabeceira 195cm Lyra Sintético Preto S05 - Mpozenato
+[14:14:45] Processado: Cama de Casal Cm8007 Nogal/Branco - Tecno Mobili
+[14:14:45] Processado: Cama Casal Base Box 140cm Many Z37 Sintético Caramelo - Mpozenato
+[14:14:45] Processado: Cama Casal Flutuante Baú Cabeceira 140cm Fly S05 Linho Preto - Mpozenato
+[14:14:45] Processado: Cama King Flutuante com Cabeceira 195cm Lyra Sintético Camel S05 - Mpozenato
+[14:14:45] Processado: Colchão Casal King Highfoam Bordado Espuma Hr45 193x203x28cm - Ortobom
+[14:14:45] Processado: Colchão Casal Queen Sleep Max Espuma D45 158x198x25cm Branco/Azul - Castor
+[14:14:45] Processado: Colchão Casal Sleep Max Espuma D45 138x188x25cm Branco/Azul - Castor
+[14:14:45] Processado: Colchão Casal Double Face Premium Gel 138x188x36cm - Castor
+[14:14:45] Processado: Colchão Casal Light Liso Espuma D23 Viscopoli 138x188x12cm - Ortobom
+[14:14:45] Processado: Colchão Solteiro Mola Class Bonnel New Euro 78x188x25cm Branco/Cinza - Castor
+[14:14:45] Processado: Colchão Solteiro Double Face Premium Gel 88X188x36cm - Castor
+[14:14:45] Processado: Colchão Solteiro Light Liso Espuma D23 Viscopoli 88x188x12cm - Ortobom
+[14:14:45] Processado: Cômoda Sapateira para Quarto 160cm 2 Portas 7 Gavetas Fontaine A02 Branco Fosco - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 1 Porta 4 Gavetas Flora D02 Amendola Touch - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 2 Portas 7 Gavetas London D02 Amendola Touch - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 8 Gavetas 147cm Parma Z17 Freijó/Cinza - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 4 Gavetas 147cm Gênova Z17 Freijó/Cinza - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 91cm 5 Gavetas Ibiza Flex Branco/Camarim - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto 109cm 1 Porta Belize Plus Off/Cinamomo - Albatroz
+[14:14:45] Processado: Cômoda para Quarto 4 Gavetas 70cm Sole Flex Off/Freijó - Albatroz
+[14:14:45] Processado: Cômoda para Quarto com Penteadeira Laris A02 Cinamomo - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto 5 Gavetas 90cm Dubai Nature/Camarim - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto com Sapateira 2 Portas 4 Gavetas Lírio V02 Branco - Mpozenato
+[14:14:45] Processado: Guarda Roupa Cômoda 4 Gavetas 120cm Cristal Nature - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto 8 Gavetas 136cm Doble Flex Branco/Freijó - Albatroz
+[14:14:45] Processado: Cômoda para Quarto 4 Gavetas 70cm Sole Flex Off/Cinamomo - Albatroz
+[14:14:45] Processado: Cômoda para Quarto 5 Gavetas 90cm Dubai Alasca - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto 2 Portas 7 Gavetas London D02 Branco - Mpozenato
+[14:14:45] Processado: Cômoda Sapateira 1 Porta 4 Gavetas 120cm Ipê Cinamomo/Sálvia - Albatroz
+[14:14:45] Processado: Cômoda para Quarto 4 Gavetas 86cm Pavia Z17 Freijó/Off White - Mpozenato
+[14:14:45] Processado: Guarda Roupa Cômoda 4 Gavetas 120cm Cristal Flex Branco - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto 8 Gavetas 136cm Doble Flex Off/Freijó - Albatroz
+[14:14:45] Processado: Cômoda para Quarto com Penteadeira Laris A02 Branco - Mpozenato
+[14:14:45] Processado: Cômoda para Quarto com Penteadeira Laris A02 Off/Freijó - Mpozenato
+[14:14:45] Processado: Guarda Roupa Cômoda 4 Gavetas 120cm Cristal Fendi - Vila Rica
+[14:14:45] Processado: Escrivaninha Bancada Estudo Modulada 90cm Taiga Branco/Grey L01 - Mpozenato
+[14:14:45] Processado: Cabeceira Solteiro Painel para Cama 97cm Delphi Branco L01 - Mpozenato
+[14:14:45] Processado: Nicho Cabideiro Suspenso Berlim Carvalho Castanho - Lumil Móveis
+[14:14:45] Processado: Nicho Cabideiro Suspenso Berlim Branco - Lumil Móveis
+[14:14:45] Processado: Nicho Cabideiro Suspenso Berlim Preto - Lumil Móveis
+[14:14:45] Processado: Guarda Roupa Solteiro Closet Az1011 Branco/Nogal - Tecno Mobili
+[14:14:45] Processado: Guarda Roupa Solteiro 04 Portas Madri Branco/Rosa/Azul/Lilás - Moval
+[14:14:45] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Freijó/Off - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Off/Cinamomo - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 154cm com Espelho Dony A02 Freijó/Titanium - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 82cm 3 Portas Zeno Naturale/Branco Z17 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 82cm 3 Portas Zeno Flex Branco Z17 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 111cm 4 Portas Évora Z17 Branco - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 120cm 3 Portas Ipê Cinamomo/Branco - Albatroz
+[14:14:45] Processado: Estante Livreiro 6 Prateleiras Office Branco - Móveis Leão
+[14:14:45] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Mayra Nature/Champanhe V02 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Ideal Flex Branco - Vila Rica
+[14:14:45] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Ideal Imbuia Rústico - Vila Rica
+[14:14:45] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Ideal Imbuia/Champanhe - Vila Rica
+[14:14:45] Processado: Guarda Roupa Solteiro 103cm com 4 Portas Ideal Nature - Vila Rica
+[14:14:45] Processado: Cama Auxiliar Solteiro Branco - Santos Andirá
+[14:14:45] Processado: Cama de Solteiro Madeira Cm8004 Amêndoa/Branco - Tecno Mobili
+[14:14:45] Processado: Base Box para Cama Viúva 128x188cm Liz S05 Suede Bordado Preto - Mpozenato
+[14:14:45] Processado: Guarda Roupa 3 Portas 2 Gavetas com Pés Quadrado Residence D02 Branco - Mpozenato
+[14:14:45] Processado: Guarda Roupa 3 Portas 1 Gaveta Prince D02 Branco - Mpozenato
+[14:14:45] Processado: Guarda Roupa Capelinha 4 Portas 3 Gavetas Persia D02 Amendola Touch - Mpozenato
+[14:14:45] Processado: Guarda Roupa Solteiro 135cm 2 Portas 3 Gavetas Delphi Avelã L01 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 180cm 6 Portas Vanci D02 Amêndola/Off - Mpozenato
+[14:14:45] Processado: Guarda Roupa Closet Casal Industrial 174cm 2 Gavetas Barcelona Demolição/Preto - Artefamol
+[14:14:45] Processado: Guarda Roupa Casal 6 Portas 2 Gavetas Flash II D02 Amendola/Off White - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 6 Portas 2 Gavetas 153cm Paraná Z17 Freijó/Cinza - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 6 Portas com Espelho 265cm Quintus Freijó/Off White - Caemmun
+[14:14:45] Processado: Guarda Roupa Casal 3 Portas de Correr e Espelho 202cm Toronto Z17 Freijó/Off White - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 200cm 3 Portas Porto Flex Nature/Alasca - Vila Rica
+[14:14:45] Processado: Cômoda para Quarto 98cm com 4 Gavetas Baco Carvalho/Fendi Z17 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 262cm com Espelho Giard D02 Amêndola/Nude - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 278cm 2 Portas 4 Espelhos Mya Off/Cinamomo Z10 - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 218cm 6 Portas Elegance Nature/Alasca - Vila Rica
+[14:14:45] Processado: Guarda Roupa Casal 6 Portas Martin C01 Buriti/Fendi - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 6 Portas 2 Gavetas 153cm Paraná Z17 Naturale/Branco - Mpozenato
+[14:14:45] Processado: Guarda Roupa Closet Casal Industrial 174cm 2 Gavetas Barcelona Preto Texturizado - Artefamol
+[14:14:45] Processado: Guarda Roupa Casal Closet Milão Preto/Demolição - Artefamol
+[14:14:45] Processado: Guarda Roupa Casal 195cm Espelho Ripado Arlon Z17 Freijó/Off - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 270cm com Espelho Fascine A02 Off/Cinamomo - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal 201cm 11 Portas Thony A02 Cinamomo - Mpozenato
+[14:14:45] Processado: Closet 2 Gavetas 1 Cabideiro Estilo Industrial Chess F04 Preto/Solanum - Mpozenato
+[14:14:45] Processado: Guarda Roupa Closet 4 Prateleiras Indy F02 Nature Texturizado - Mpozenato
+[14:14:45] Processado: Guarda Roupa Closet 2 Gavetas Indy F02 Nature Texturizado - Mpozenato
+[14:14:45] Processado: Guarda Roupa Casal Modulado Completo Lorena Z17 Freijó/Off White - Mpozenato
+[14:14:45] Processado: Painel Ripado com Mesa de Apoio Industrial 1 Módulo 44cm Golden L06 Nature/Off White - Mpozenato
+[14:14:45] Processado: Nicho Organizador Multifuncional Pés Retrô Cube Q01 Branco - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira 2 Gavetas Apolo Flex Branco - Moval
+[14:14:45] Processado: Mesa de Cabeceira Wolli 1 Gaveta Nature - Fit Mobel
+[14:14:45] Processado: Mesa de Cabeceira 2 Gavetas Blank F04 Branco - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira 51cm 2 Gavetas Lara Carvalho/Fendi Z17 - Mpozenato
+[14:14:45] Processado: Mesa Cabeceira Modulado 38cm 1 Porta 1 Gaveta Taiga Branco/Grey L01 - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira para Quarto 2 Gavetas Ares Z17 Freijó - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira Apolo Flex Castanho/Avelã/Off White - Moval
+[14:14:45] Processado: Mesa de Cabeceira 4 Gavetas Presence D02 Branco - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Cinamomo/Off White - Albatroz
+[14:14:45] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Freijó/Titanium - Albatroz
+[14:14:45] Processado: Mesa de Cabeceira 2 Gavetas Sole Flex Branco/Freijó - Albatroz
+[14:14:45] Processado: Mesa de Cabeceira Estilo Industrial Plaza L03 Branco - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira Estilo Industrial Plaza L03 Preto - Mpozenato
+[14:14:45] Processado: Mesa de Cabeceira Estilo Industrial Plaza L03 Castanho - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Freijó - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina Z34 Grafite - Mpozenato
+[14:14:45] Processado: Penteadeira Escrivaninha com Espelho 129cm Mandi A02 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho 2 Portas 3 Gavetas e Banqueta Atraente D02 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Freijó - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina Z34 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa com Painel e Espelho Joy Z49 Nature/Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Gaveta Elle Z34 Preto - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa 60cm 1 Gaveta Carina Z34 Preto - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa com Painel e Espelho Joy Z49 Branco - Mpozenato
+[14:14:45] Processado: Penteadeira Camarim com Espelho Suspensa 90cm 1 Porta Elle Z34 Preto - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa com Painel e Espelho Joy Z49 Preto - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Branco Z49 - Mpozenato
+[14:14:45] Processado: Penteadeira Suspensa 90cm 1 Gaveta Quarto Lila Cinamomo/Branco Z49 - Mpozenato
+[14:14:45] Processado: Base para Cama Box Baú Casal 138x188cm Hit Z04 Suede Bege - Mpozenato
+[14:14:45] Processado: Cama Queen Base Box 158x198cm Pés de Ferro Cold Z37 Veludo Cinza - Mpozenato
+[14:14:45] Processado: Cama Queen Base Box 158x198cm Pés de Ferro Cold Z37 Linho Bege - Mpozenato
+[14:14:45] Processado: Base Box para Cama Casal 138x188cm Liz S05 Sintético Preto - Mpozenato
+[14:14:45] Processado: Base Box para Cama Casal King 192x203cm Bipartido Liz S05 Sintético Marrom - Mpozenato
+[14:14:45] Processado: Cama Casal Queen 165cm Pés Metálicos Elisa S05 Veludo Cinza - Mpozenato
+[14:14:45] Processado: Cama Casal Queen 165cm Pés Metálicos Elisa S05 Linho Preto - Mpozenato
+[14:14:45] Processado: Cama Casal King 199cm Pés Metálicos Elisa S05 Linho Bege - Mpozenato
+[14:14:45] Processado: Cama Casal King 199cm Pés Metálicos Elisa S05 Linho Marrom - Mpozenato
+[14:14:45] Processado: Cama King Base Box 193x203cm Pés Madeira Cold Z37 Veludo Bege - Mpozenato
+[14:14:45] Processado: Cama Casal 145cm Pés Metálicos Elisa S05 Linho Preto - Mpozenato
+[14:14:45] Processado: Cama Casal 145cm Pés Metálicos Elisa S05 Linho Cinza - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Esmeralda Veludo J02 Cinza - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Esmeralda Veludo J02 Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Mali Z37 Veludo Rosê - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Cristal Veludo Chocolate - Mv Estofados
+[14:14:45] Processado: Cabeceira Solteiro 90cm Greta Linho Cinza Z51 - Mpozenato
+[14:14:45] Processado: Cabeceira Casal Oásis 140cm Suede Liso Azul Marinho - D'Monegatto
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Luna I02 Sintético Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm com Tachas Imperial J02 Linho Grafite - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Safira Sintético I02 Branco - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Safira Sintético I02 Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 193cm Safira Suede Bege Z51 - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Provença Z37 Veludo Bege - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm Provença Z37 Veludo Preto - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Mali Z37 Veludo Verde Musgo - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm Mali Z37 Linho Bege Cru - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm Paolla Z37 Linho Chumbo - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Antibes Z37 Sintético Caramelo - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Antibes Z37 Linho Cru - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal Queen 160cm Órion Z37 Linho Cru - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm Aura Linho W01 Cru - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Nicea Z37 Bouclê Off/Caramelo - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal King 195cm Oscar Z37 Veludo Verde - Mpozenato
+[14:14:45] Processado: Cabeceira Cama Box Casal 140cm Florenza Z37 Linho Cinza Claro - Mpozenato
+[14:14:46] Processado: Cabeceira Cama Queen 220cm e Mesas Laterais Ohana Grafite A05 - Mpozenato
+[14:14:46] Processado: Cabeceira Casal King Cama Box 195cm Glenda Z04 Boucle Bege - Mpozenato
+[14:14:46] Processado: Cabeceira Cama Box Casal Queen 160cm Luna I02 Suede Marrom - Mpozenato
+[14:14:46] Processado: Cabeceira Cama Box Casal King 195cm com Tachas Imperial J02 Sintético Branco - Mpozenato
+[14:14:46] Processado: Cabeceira Cama Box Casal Queen 160cm Safira Suede I02 Bege - Mpozenato
+[14:14:46] Processado: Cabeceira Casal Queen e King 2 Mesas Laterais Olinda Freijó - Albatroz
+[14:14:46] Processado: Cabeceira Cama Box Casal Queen 160cm Luna I02 Sintético Preto - Mpozenato
+[14:14:46] Processado: Cabeceira Cama Box Casal King 195cm com Tachas Imperial Veludo J02 Bege - Mpozenato
+[14:14:46] Processado: Cabeceira Casal Queen e King com 2 Mesas Laterais Olinda Cinamomo - Albatroz
+[14:14:46] Processado: Puff Recamier Calçadeira 160cm Pés Palito Madeira Vêneto Z37 Veludo Cinza - Mpozenato
+[14:14:46] Processado: Puff Recamier Calçadeira 195cm Base Madeira Neville Z37 Linho Bege Cru - Mpozenato
+[14:14:46] Processado: Puff Recamier Calçadeira 195cm Pés Palito Madeira Venêto Z37 Sintético Caramelo - Mpozenato
+[14:14:46] Processado: Puff Recamier Decorativo Pés em Ferro 160cm Dublin Z37 Linho Cinza Claro - Mpozenato
+[14:14:46] Processado: Puff Recamier Calçadeira 140cm Base Madeira Neville Z37 Sintético Caramelo - Mpozenato
+[14:14:46] Processado: Sapateira de Madeira 3 Portas 80cm Estilo Americano Lázio F07 Branco/Carvalho - Mpozenato
+[14:14:46] Processado: Cômoda Sapateira 1 Porta 4 Gavetas 120cm Ipê Branco/Cinamomo - Albatroz
+[14:14:46] Processado: Armário Multiuso Sapateira Paris Branco - Lumil Móveis
+[14:14:46] Processado: Beliche Solteiro Juvenil com Escada Móvel Joy Z40 Castanho Acetinado - Mpozenato
+[14:14:46] Processado: Berço Reto para Colchão 130x60 com Rodízios Doce Sonho Branco - Qmovi
+[14:14:46] Processado: Berço Americano Mini Cama com Rodízios Charme Z49 Branco - Mpozenato
+[14:14:46] Processado: Berço Americano Mini Cama Retrô Q Encanto Branco - Qmovi
+[14:14:46] Processado: Berço Americano Mini Cama com Rodízios Charme Nature/Off Z49 - Mpozenato
+[14:14:46] Processado: Berço Simples para Colchão 130x60 com Rodízios Doce Sonho Branco - Qmovi
+[14:14:46] Processado: Berço Americano Mini Cama Slim Q Encanto Branco - Qmovi
+[14:14:46] Processado: Berço Reto para Colchão 130x60 com Rodízios Doce Sonho Carvalho/Branco - Qmovi
+[14:14:46] Processado: Berço Americano Mini Cama Doce Sonho Branco - Qmovi
+[14:14:46] Processado: Cama Solteiro Infantil Montessoriana Casinha Nana Branco C06 - Mpozenato
+[14:14:46] Processado: Mini Cama Infantil Montessoriana Sweetheart P13 Branco - Mpozenato
+[14:14:46] Processado: Cama Auxiliar Infantil para Colchão 78x188cm Infix C06 Aveiro - Mpozenato
+[14:14:46] Processado: Colchão para Berço 60cm Espuma D18 Supreme Branco - Gazin
+[14:14:46] Processado: Colchão Berço Infantil 60x130x10cm com Espuma D18 Sonhar U01 - Mpozenato
+[14:14:46] Processado: Colchão para Berço Liso Branco 130 x 60 x 10 Cm D18 - Prorelax
+[14:14:46] Processado: Colchão para Berço 70cm Espuma D18 Supreme Branco - Gazin
+[14:14:46] Processado: Cômoda Infantil Trocador Doce Sonho 4 Gavetas Branco - Qmovi
+[14:14:46] Processado: Cômoda Infantil 100% Mdf 1 Porta e 4 Gavetas Livia Branco - Phoenix
+[14:14:46] Processado: Cômoda Infantil 1 Porta 3 Gavetas 100% Mdf Pés Retrô Mel Z39 Cinza - Mpozenato
+[14:14:46] Processado: Cômoda Infantil 2 Portas 4 Gavetas Lilly Z39 Branco - Mpozenato
+[14:14:46] Processado: Cômoda Infantil 3 Gavetas 1133 Louise Branco - Ajl Móveis
+[14:14:46] Processado: Cômoda Infantil 4 Gavetas com 1 Porta Ripada Ayla Off White - Phoenix
+[14:14:46] Processado: Cômoda Infantil Eloísa 04 Gavetas e 01 Porta Branco - Phoenix Baby
+[14:14:46] Processado: Cômoda Infantil 1 Porta 3 Gavetas 100% Mdf Pés Retrô Mel Z39 Rosê - Mpozenato
+[14:14:46] Processado: Cômoda Infantil 2 Portas 4 Gavetas Lua Z39 Cinza - Mpozenato
+[14:14:46] Processado: Cômoda Infantil Helena 01 Porta e 04 Gavetas Branco - Phoenix
+[14:14:46] Processado: Cômoda Infantil Doce Sonho 1 Porta 4 Gavetas Branco - Qmovi
+[14:14:46] Processado: Cômoda Infantil 2 Portas 4 Gavetas Lua Z39 Rose - Mpozenato
+[14:14:46] Processado: Cômoda Infantil Sapateira Q Encanto Retrô Branco - Qmovi
+[14:14:46] Processado: Cômoda Infantil 2 Portas 4 Gavetas Lua Z39 Branco - Mpozenato
+[14:14:46] Processado: Cômoda Infantil 1 Porta 3 Gavetas 100% Mdf Pés Retrô Mel Z39 Branco - Mpozenato
+[14:14:46] Processado: Cômoda Infantil com Cantoneira e 4 Gavetas 100% Mdf New Lorena Rosê - Phoenix
+[14:14:46] Processado: Cômoda Infantil com Cantoneira e 4 Gavetas 100% Mdf New Lorena Off White - Phoenix
+[14:14:46] Processado: Ponte Aérea 03 Portas Infantil com Nichos Eloísa Branco - Phoenix Baby
+[14:14:46] Processado: Mesa de Cabeceira Infantil 1 Gaveta Mel Z39 Branco - Mpozenato
+[14:14:46] Processado: Mesa de Cabeceira Infantil 1 Gaveta Mel Z39 Cinza - Mpozenato
+[14:14:46] Processado: Gavetas para Nicho Organizador Kit 3 Q01 Preto Fosco - Mpozenato
+[14:14:46] Processado: Nicho Organizador Retrô Freijó - Qmovi
+[14:14:46] Processado: Nicho Organizador com Rodízios Preto - Qmovi
+[14:14:46] Processado: Estante Infantil Organizadora com Nichos Susie Branco - Lumil Móveis
+[14:14:46] Processado: Gavetas para Nicho Organizador Kit 3 Q01 Colorido - Mpozenato
+[14:14:46] Processado: Gavetas para Nicho Organizador Kit 3 Q01 Branco - Mpozenato
+[14:14:46] Processado: Estante Casinha Infantil Organizadora 4 Prateleiras Daisy Branco - Lumil
+[14:14:46] Processado: Nicho Organizador com Rodízios Branco - Qmovi
+[14:14:46] Processado: Nicho Organizador com Rodízios Freijó - Qmovi
+[14:14:46] Processado: Gavetas para Nicho Organizador Kit 3 Q01 Off White - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 108cm 3 Portas 2 Gavetas Favo de Mel 006 Itapuã/Branco - Completa Móveis
+[14:14:46] Processado: Guarda Roupa Infantil 01 Porta Eloísa Branco - Phoenix Baby
+[14:14:46] Processado: Guarda Roupa Infantil 2 Portas Doce Sonho Branco - Qmovi
+[14:14:46] Processado: Guarda Roupa Infantil 3 Portas 4 Gavetas Lua Z39 Branco - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 100% Mdf 3 Portas Pés Retrô Mel Z39 Cinza - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 3 Portas 4 Gavetas Lua Z39 Cinza - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 4 Portas 3 Gavetas Amora Z39 Branco - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 100% Mdf 3 Portas Pés Retrô Mel Z39 Branco - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 2 Portas Chiara Carvalho/Branco - Phoenix
+[14:14:46] Processado: Guarda Roupa Infantil 100% Mdf Pés Retrô Mel Z39 Rosê - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil Chiara 2 Portas Branco - Phoenix
+[14:14:46] Processado: Guarda Roupa Infantil 3 Portas 4 Gavetas Lua Z39 Rose - Mpozenato
+[14:14:46] Processado: Guarda Roupa Infantil 2 Portas Chiara Off White/Carvalho - Phoenix
+[14:14:46] Processado: Penteadeira Camarim com Espelho 1 Gaveta Pe2017 Branco - Tecno Mobili
+[14:14:46] Processado: Buffet Aparador Sala de Estar 135cm Toni Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Buffet Aparador Sala de Estar 135cm Toni Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Aparador Sala de Estar 136cm Pés Retrô Gil Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Balcão Buffet Sala de Jantar 183cm Mônica Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Aparador Sala de Estar 136cm 1 Gaveta Valerie Freijó C05 - Mpozenato
+[14:14:46] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Castanho - Mpozenato
+[14:14:46] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Cinamomo - Mpozenato
+[14:14:46] Processado: Aparador de Sala com Prateleiras Pé Metal Wonka H01 Off White - Mpozenato
+[14:14:46] Processado: Estante Painel Tv 50 Pol 136cm Zani Freijó/Off White C05 - Mpozenato
+[14:14:46] Processado: Estante Painel Tv 82 Pol 240cm com Led Hawai Freijó/Off White C05 - Mpozenato
+[14:14:46] Processado: Estante Home Theater para Tv 75 Pol. com Led 180cm Maitê C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Estante para Tv 65 Pol 160cm Braga Nogueira Real/Off White C05 - Mpozenato
+[14:14:46] Processado: Rack com Painel para Tv até 65 Pol. Cronos Calacata/Off White - Madetec
+[14:14:46] Processado: Painel para Tv até 55 Pol. Bancada Suspensa Atena Fendi/Naturale - Madetec
+[14:14:46] Processado: Estante Painel para Tv 85 Pol 220cm Nobre Off White/Cinamomo - Hb Móveis
+[14:14:46] Processado: Estante Livreiro Clean 45cm com 2 Prateleiras Branco - Artany
+[14:14:46] Processado: Estante Escrivaninha 2 Portas 1 Gaveta Me4143 Nogal/Preto - Tecno Mobili
+[14:14:46] Processado: Estante Livreiro 1 Porta 1 Gaveta Estilo Industrial York Vermont/Preto - Artesano
+[14:14:46] Processado: Estante Livreiro 2 Portas Ripadas Nessie D01 Preto Fosco/Freijó - Mpozenato
+[14:14:46] Processado: Estante Livreiro Dynamica Industrial 60cm 5 Prateleiras C08 Nogal - Mpozenato
+[14:14:46] Processado: Estante Livreiro 2 Gavetas e 5 Prateleiras Fancy Q01 Preto Fosco - Mpozenato
+[14:14:46] Processado: Estante Livreiro Multiuso 2 Gavetas com Prateleiras Freijó - Qmovi
+[14:14:46] Processado: Estante Livreiro 5 Prateleiras Office Preto Trama - Móveis Leão
+[14:14:46] Processado: Estante Livreiro com Prateleiras Linus Branco - Qmovi
+[14:14:46] Processado: Estante Livreiro 2 Gavetas e 5 Prateleiras Fancy Q01 Branco - Mpozenato
+[14:14:46] Processado: Estante Livreiro com Prateleiras Linus Preto - Qmovi
+[14:14:46] Processado: Sofá 2 Lugares Living Orgânico Sala de Estar 140cm Conka F05 Veludo Marrom - Mpozenato
+[14:14:46] Processado: Sofá 3 Lugares Living Orgânico Sala de Estar 170cm Conka F05 Veludo Bege - Mpozenato
+[14:14:46] Processado: Sofá Namoradeira Base Madeira Preto Maressa Suede Marrom Rt - Ibiza
+[14:14:46] Processado: Sofá 3 Lugares Living Orgânico Sala de Estar 170cm Conka F05 Boucle Bege - Mpozenato
+[14:14:46] Processado: Sofá Retrátil 3 Lugares com Porta Copo 210cm Andes F05 Veludo Grafite - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Orgânico Viana B10 Bouclê Menta - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Orgânico Viana B10 Bouclê Grafite - Mpozenato
+[14:14:46] Processado: Sofá 3 Lugares 210cm Orgânico Viana B10 Bouclê Menta - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares Living Orgânico Sala de Estar 140cm Conka F05 Boucle Bege - Mpozenato
+[14:14:46] Processado: Sofá Módulo 70cm Sala de Estar Bristol Z32 Linho Cru - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares Living Orgânico Sala de Estar 140cm Conka F05 Boucle Cinza - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Orgânico Viana B10 Bouclê Creme - Mpozenato
+[14:14:46] Processado: Sofá Living 160cm 2 Lugares Kayrós D05 Suede Cinza - Mpozenato
+[14:14:46] Processado: Sofá 150cm 2 Lugares Pés Preto Molino C-416 Linho Cinza - Domi
+[14:14:46] Processado: Sofá Living 145cm 2 Lugares Kayrós D05 Suede Cinza - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Korah Z08 Boucle Verde Água - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Tamar Z08 Boucle Terracota - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Living Pés Curvos Santi D05 Linho Cru - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Pés Aço Preto Tamar Z08 Linho Bege - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Pés Aço Dourado Tamar Veludo Preto Z08 - Mpozenato
+[14:14:46] Processado: Sofá Cama Solteiro Berlim B10 Suede Bege - Mpozenato
+[14:14:46] Processado: Sofá Living 145cm 2 Lugares Kayrós D05 Suede Azul - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Korah Z08 Boucle Cinza Escuro - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Korah Z08 Linho Cinza - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Korah Z08 Boucle Bege - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Pés Aço Dourado Tamar Boucle Bege Z08 - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares 160cm Pés Aço Preto Tamar Z08 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Sofá 2 Lugares para Sala Living 135cm Pés Palito Korah Z08 Veludo Rosê - Mpozenato
+[14:14:46] Processado: Sofá 230cm 3 Lugares Pés Preto Molino C-117 Linho Verde Musgo - Domi
+[14:14:46] Processado: Sofá 210cm 3 Lugares Base Madeira Império C-300 Veludo Preto - Domi
+[14:14:46] Processado: Sofá 230 Cm 3 Lugares Sandero C-304 Veludo Azul Marinho - Domi
+[14:14:46] Processado: Sofá Living 180cm 3 Lugares Kayrós D05 Suede Bege - Mpozenato
+[14:14:46] Processado: Sofá Living 180cm 3 Lugares Kayrós D05 Suede Cinza - Mpozenato
+[14:14:46] Processado: Sofá 210cm 3 Lugares Base Gold Molino D06 Pu B-159 Preto - Mpozenato
+[14:14:46] Processado: Sofá 3 Lugares 200cm Living Pés Curvos Santi D05 Linho Cru - Mpozenato
+[14:14:46] Processado: Sofá Atenas 3 Lugares 230cm C26 Corano Bege - Domi
+[14:14:46] Processado: Sofá 3 Lugares 210cm Orgânico Quito Z08 Veludo Preto - Mpozenato
+[14:14:46] Processado: Sofá 260 Cm 4 Lugares Sandero C-309 Veludo Bege Claro - Domi
+[14:14:46] Processado: Sofá Living 4 Lugares 300cm Braço Esquerdo Mozart D06 Sintético Bege - Mpozenato
+[14:14:46] Processado: Sofá 4 Lugares 290cm Orgânico Quito Z08 Boucle Verde - Mpozenato
+[14:14:46] Processado: Sofá Módulo Chaise 70cm Sala de Estar Bristol Z32 Linho Cru - Mpozenato
+[14:14:46] Processado: Sofá Módulo Mesa de Canto 85cm Sala de Estar Bristol Z32 Linho Cru - Mpozenato
+[14:14:46] Processado: Sofá Retrátil Reclinável 3 Lugares 200cm Blanches F05 Veludo Grafite - Mpozenato
+[14:14:46] Processado: Sofá Cama Retrátil 180cm Essence D05 Linho Grafite/Preto - Mpozenato
+[14:14:46] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Off/Castanho - Mpozenato
+[14:14:46] Processado: Mesa de Centro para Sala Pés de Aço Alane H01 Pistache/Castanho - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Cinamomo - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Cinamomo - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Off White - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Pés Metálicos Mindy H01 Castanho - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Off White - Mpozenato
+[14:14:46] Processado: Mesa de Centro Redonda Tampo de Vidro Mindy H01 Castanho - Mpozenato
+[14:14:46] Processado: Nicho Decorativo Porta Toalha Barbearia Preto - Ajl Móveis
+[14:14:46] Processado: Nicho Decorativo Porta Toalha para Salão Branco - Ajl Móveis
+[14:14:46] Processado: Nicho Decorativo Porta Toalha para Salão Preto - Ajl Móveis
+[14:14:46] Processado: Prateleira Flutuante Multiuso com Suporte Invisível 91x20cm Yara Preto - Lumil
+[14:14:46] Processado: Prateleira Flutuante Multiuso com Suporte Invisível 68x20cm Yara Preto - Lumil
+[14:14:46] Processado: Prateleira Decorativa Multiuso 218cm 1 Peça Prime L06 Nature Fosco - Mpozenato
+[14:14:46] Processado: Prateleira Flutuante Multiuso com Suporte Invisível 68x20cm Yara Branco - Lumil
+[14:14:46] Processado: Prateleira Flutuante Multiuso com Suporte Invisível 91x20cm Yara Branco - Lumil
+[14:14:46] Processado: Nicho Decorativo Porta Toalha Barbearia Branco - Ajl Móveis
+[14:14:46] Processado: Painel para Tv 55 Polegadas Suspenso Ripado Jully L06 Freijó/Off White - Mpozenato
+[14:14:46] Processado: Painel Suspenso para Tv até 55 Pol. Denver Off White/Cinamomo - Bechara
+[14:14:46] Processado: Painel Tv 60 Pol e Bancada Suspensa Madrid Off White/Freijó C05 - Mpozenato
+[14:14:46] Processado: Estante Painel para Tv 75 Pol. Monzane H01 Off White/Cinamomo - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso Ripado 70 Pol. 200cm Like H01 Cinamomo - Mpozenato
+[14:14:46] Processado: Painel para Tv 70 Polegadas Extensível 180cm Amélie C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 75 Pol 180cm Marina Off/Cinamomo B02 - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 47 Pol. com Nicho Format H01 Off White/Cinamomo - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol e Bancada Suspensa Sintra Off White/Freijó C05 - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 75 Pol 218cm World D04 Off White - Mpozenato
+[14:14:46] Processado: Painel para Tv até 47 Polegadas 1 Prateleira Maia Noce Milano/Preto Fosco - Colibri
+[14:14:46] Processado: Painel Home Suspenso para Tv 70 Pol. 180cm Buriti C05 Noce Milano/Preto Fosco - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 75 Pol 200cm Chile C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol e Bancada Suspensa Illumi Tauari/Off L06 - Mpozenato
+[14:14:46] Processado: Painel para Tv 55 Pol com Bancada Suspensa 136cm Brasil Buriti/Off White - Caemmun
+[14:14:46] Processado: Painel para Tv Suspenso 55 Pol. Helen C01 Buriti/Fendi - Mpozenato
+[14:14:46] Processado: Painel Ripado para Tv 70 Pol com Bancada Suspensa 210cm Trevis D04 Off White/Freijó - Mpozenato
+[14:14:46] Processado: Painel para Tv 55 Pol com Bancada Suspensa 136cm Brasil Freijó/Off White - Caemmun
+[14:14:46] Processado: Painel para Tv 55 Pol com Bancada Madrid C05 Amêndoa/Off White Matte - Mpozenato
+[14:14:46] Processado: Painel para Tv 45 Pol com Bancada Suspensa 120cm Jade Buriti/Fendi - Caemmun
+[14:14:46] Processado: Painel Tv 65 Pol Extensível 136cm até 180cm Lucca Areia C01 - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol 181cm Bancada Suspensa Walle Castanho/Off H01 - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol 181cm Bancada Suspensa Walle Cinamomo/Off H01 - Mpozenato
+[14:14:46] Processado: Painel Home Suspenso para Tv 65 Pol. 150cm Buriti C05 Noce Milano/Preto Fosco - Mpozenato
+[14:14:46] Processado: Painel para Tv 65 Pol com Bancada Suspensa 150cm Jade Freijó/Off White - Caemmun
+[14:14:46] Processado: Painel para Tv 55 Pol com Bancada Madrid C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Painel para Tv 45 Pol com Bancada Suspensa 120cm Jade Freijó/Off White - Caemmun
+[14:14:46] Processado: Painel Tv 65 Pol Extensível 136cm até 180cm Lucca Off White C01 - Mpozenato
+[14:14:46] Processado: Painel Home Suspenso para Tv 65 Pol. 150cm Buriti C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação e Descanso Base Madeira Balanço Brenda G05 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar Base Giratória Madeira Opla Suede Grafite - Ibiza
+[14:14:46] Processado: Poltrona Namoradeira 2 Lugares Pés Palito Opla Suede Cinza - Ibiza
+[14:14:46] Processado: Poltrona de Amamentação e Descanso Base Madeira Balanço Brenda G05 Veludo Cinza - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação e Descanso com Balanço e Puff Laís G05 Linho Cinza - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Base Industrial Dourado Ana Veludo Luxo Verde - Ibiza
+[14:14:46] Processado: Poltrona Reclinável para Cinema 2 Lugares Praddo Fh9 Veludo Azul Marinho - Mpozenato
+[14:14:46] Processado: Poltrona de Cinema Reclinável 3 Lugares Baú Usb Mallie Fh9 Pu Bege - Mpozenato
+[14:14:46] Processado: Poltrona para Sala Pés Metálicos Preto Ana Boucle Bege - Ibiza
+[14:14:46] Processado: Poltrona Decorativa Base Industrial Preto Maressa A79 Linho Preto - Ibiza
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar e Recepção Vitória W01 Linho Verde - Mpozenato
+[14:14:46] Processado: Poltrona para Sala Pés Metálicos Preto Ana Linho Cinza - Ibiza
+[14:14:46] Processado: Poltrona de Amamentação Fixa com Puff Lucy Z39 Sintético Branco - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Fixa com Puff Lucy Z39 Suede Bege - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Sintético Bege - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Sintético Branco - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação e Descanso Base Madeira Balanço Brenda G05 Linho Areia - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação e Descanso Base Madeira com Balanço Brenda G05 Linho Creme - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Maju Veludo Cinza F03 - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço Lucy Z39 Linho Bege Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Fixa Lucy Z39 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Sintético Cinza - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Linho Bege Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Veludo Rosê - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço e Puff Lívia Linho Bege - Phoenix
+[14:14:46] Processado: Poltrona Amamentação Base Madeira Balanço e Puff Lucy Z39 Sintético Bege - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Veludo Rosê - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Maju Veludo Off F03 - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço e Puff Lívia Linho Cinza - Phoenix
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Maju Linho Bege F03 - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Sintético Azul Marinho - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa para Sala Pé Madeira Gabi Corino Branco - Phoenix
+[14:14:46] Processado: Poltrona de Amamentação Balanço e Puff Lucy Z39 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Pés Madeira e Puff Lucy Z39 Linho Off White - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Linho Bege Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço e Puff Lívia Linho Chumbo - Phoenix
+[14:14:46] Processado: Poltrona de Amamentação Fixa Lucy Z39 Sintético Rosa - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Suede Bege - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Vick Veludo Cinza F03 - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação com Pés de Madeira Lucy Z39 Linho Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço Lucy Z39 Linho Off White - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Vick Linho Cinza F03 - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Vick Veludo Off F03 - Mpozenato
+[14:14:46] Processado: Poltrona de Amamentação Balanço e Puff Lívia Linho Cinza Escuro - Phoenix
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Vick Linho Bege F03 - Mpozenato
+[14:14:46] Processado: Poltrona Amamentação Base Balanço e Puff Vick Bouclê Off F03 - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Pés Palito Madeira Diva Veludo C-300 Preto - Domi
+[14:14:46] Processado: Poltrona Decorativa Base Madeira Milena Composê B-98/C-68 - Domi
+[14:14:46] Processado: Poltrona Giratória Decorativa para Sala Isa Z08 Boucle Cinza Escuro - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Base Manu Madeira Juliet Veludo C-260 Mostarda - Domi
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar Melissa Base Xis Giratória Veludo C-309 Bege - Domi
+[14:14:46] Processado: Poltrona Namoradeira 2 Lugares Base Industrial Dourada Maressa A19 Linho Grosso Bege - Ibiza
+[14:14:46] Processado: Poltrona Decorativa para Sala de Estar Jane D05 Linho Bege - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar e Recepção Vitória W01 Corano Marrom Escuro - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar e Recepção Vitória W01 Corano Preto - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Base Aço Betina C-107 Linho Bege Claro - Domi
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar Melli Base Giromad Giratória Linho D-465 Chumbo - Domi
+[14:14:46] Processado: Poltrona Decorativa Sala de Estar Melli Pés Palito Madeira Linho D-465 Chumbo - Domi
+[14:14:46] Processado: Poltrona Decorativa Base Madeira Angel Veludo C-170 Azul - Domi
+[14:14:46] Processado: Poltrona Giratória Decorativa para Sala Dandara Z08 Linho Cinza - Mpozenato
+[14:14:46] Processado: Poltrona Decorativa Base Gold Molino D06 Pu B-159 Preto - Mpozenato
+[14:14:46] Processado: Poltrona Giratória Decorativa para Sala Dandara Z08 Veludo Cinza - Mpozenato
+[14:14:46] Processado: Sofá Cama Solteiro Londres Suede Cinza Escuro - D'Monegatto
+[14:14:46] Processado: Poltrona Reclinável Elétrica Lift com Elevação Niara Linho Soft Marrom C01 - Mpozenato
+[14:14:46] Processado: Poltrona Reclinável Elétrica Lift com Elevação Niara Linho Soft Bege C01 - Mpozenato
+[14:14:46] Processado: Poltrona Reclinável Elétrica Lift com Elevação Niara Linho Soft Cinza C01 - Mpozenato
+[14:14:46] Processado: Puff Decorativo Sala de Estar Pés Palito Opla Suede Cinza - Ibiza
+[14:14:46] Processado: Puff Decorativo Sala de Estar Base Giratória Giromad Opla Suede Grafite - Ibiza
+[14:14:46] Processado: Rack Bancada com Painel para Tv 65 Pol. Ripado Krome C01 Fendi/Havana - Mpozenato
+[14:14:46] Processado: Painel para Tv 50 Pol Bancada Suspensa 120cm Perfect L06 Nature/Off White - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 50 Polegadas 135cm Saira C14 Cedro - Mpozenato
+[14:14:46] Processado: Rack para Sala Bancada de Tv 75 Pol 220cm Collie D04 Off White/Freijó - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 55 Polegadas Glossy L06 Nature/Off White - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 75 Pol. Martires C05 Off White - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol 183cm Suspenso Ripado Noah D04 Freijó - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol 150cm Bancada Suspensa James D04 Cedro/Bali - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol e Bancada Suspensa Neris Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Estante Painel para Tv 65 Pol 160cm Anny Z10 Cumaru - Mpozenato
+[14:14:46] Processado: Estante Painel para Tv 65 Pol 160cm Anny Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol e Bancada Suspensa Neris Z10 Cumaru - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol 150cm Bancada Suspensa James D04 Freijó/Off - Mpozenato
+[14:14:46] Processado: Painel Tv 60 Pol 160cm Bancada Suspensa Trego D04 Cedro/Bali - Mpozenato
+[14:14:46] Processado: Painel Tv 70 Pol e Bancada Suspensa 180cm Yany Off/Nature Z49 - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 65 Pol. Helen C01 Fendi/Havana - Mpozenato
+[14:14:46] Processado: Painel Tv 50 Pol 136cm Bancada Suspensa Vetra D04 Cedro - Mpozenato
+[14:14:46] Processado: Estante Painel de Tv 55 Pol 136cm Urbe H01 Cinamomo/Off White - Mpozenato
+[14:14:46] Processado: Painel Tv 65 Pol e Bancada Suspensa Neris Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Painel Tv 55 Pol 134cm Ripado David D04 Freijó/Off White - Mpozenato
+[14:14:46] Processado: Estante Painel de Tv 85 Pol 220cm Évora H01 Castanho/Off White - Mpozenato
+[14:14:46] Processado: Estante Painel de Tv 70 Pol 180cm Luma H01 Cinamomo/Off White - Mpozenato
+[14:14:46] Processado: Estante Painel de Tv 70 Pol 180cm Luma H01 Castanho/Off White - Mpozenato
+[14:14:46] Processado: Painel para Tv Suspenso 55 Pol. Helen C01 Fendi/Havana - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv até 55 Polegadas 136cm Yara Noce Milano/Preto Fosco - Colibri
+[14:14:46] Processado: Rack para Sala Bancada de Tv 55 Pol 139cm Flow Off White/Freijó - Ej Móveis
+[14:14:46] Processado: Rack para Sala Bancada de Tv 72 Pol Ripado 184cm Tannen Freijó/Off White - Caemmun
+[14:14:46] Processado: Rack Bancada para Tv 47 Pol 136cm Pavia Freijó/Off White C05 - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 50 Pol 136cm Analu H01 Cinamomo/Off White - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 50 Pol 121cm Rute Z10 Naturale/Off - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 50 Pol 115cm Roby Off/Nature Z49 - Mpozenato
+[14:14:46] Processado: Rack Tv 75 Pol 200cm com Led 1 Porta Sira Mel/Grafite A05 - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 55 Pol 136cm Alana Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 70 Pol 180cm Briz H01 Castanho/Off White - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 50 Pol 136cm Analu H01 Castanho/Off White - Mpozenato
+[14:14:46] Processado: Bancada Suspensa Rack para Sala 218cm Prime L06 Nature/Off White - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 75 Pol 200cm Celina Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 60 Pol 160cm Diana Off White/Freijó C05 - Mpozenato
+[14:14:46] Processado: Rack para Sala Bancada de Tv 75 Pol 180cm Madrid C05 Freijó/Off White Matte - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 65 Pol 180cm Lucca Off White/Freijó C01 - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 70 Pol 164cm Gaia Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 60 Pol 160cm Diana Freijó C05 - Mpozenato
+[14:14:46] Processado: Rack Bancada de Tv 70 Pol 164cm Gaia Z10 Cumaru - Mpozenato
+[14:14:46] Processado: Rack para Sala Bancada de Tv 75 Pol 180cm Simetria Nogueira/Fendi - Caemmun
+[14:14:46] Processado: Rack para Sala Bancada de Tv 75 Pol 180cm Simetria Freijó/Off White - Caemmun
+[14:14:46] Processado: Rack Bancada de Tv 50 Pol 121cm Rute Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 65 Pol 180cm Lucca Areia/Freijó C01 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 55 Pol 150cm Lucca Off White/Freijó C01 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 45 Pol 136cm Lucca Off White/Freijó C01 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 75 Pol 180cm Sia Nature/Off Z49 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 55 Pol 150cm Lucca Areia/Freijó C01 - Mpozenato
+[14:14:46] Processado: Rack para Sala Bancada de Tv 65 Pol 150cm Madrid C05 Freijó/Off White Matte - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 75 Pol 180cm Sia Off/Nature Z49 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 65 Pol 160cm Sia Nature/Off Z49 - Mpozenato
+[14:14:46] Processado: Rack Bancada para Tv 65 Pol 160cm Sia Off/Nature Z49 - Mpozenato
+[14:14:46] Processado: Bancada Suspensa e Prateleira 99cm Slat M20 Cinamomo/Off - Mpozenato
+[14:14:46] Processado: Bancada Suspensa e Prateleira 197cm Slat Z49 Branco - Mpozenato
+[14:14:46] Processado: Rack Tv 65 Pol. Suspenso 160cm 2 Portas Lila Cinamomo/Branco Z49 - Mpozenato
+[14:14:46] Processado: Rack Tv 65 Pol. Suspenso 160cm 2 Portas Lila Cinamomo Z49 - Mpozenato
+[14:14:46] Processado: Rack Tv 55 Pol. Suspenso 136cm 1 Porta Lila Off/Nature Z49 - Mpozenato
+[14:14:46] Processado: Rack Tv 75 Pol. Suspenso 180cm 2 Portas Lila Cinamomo/Branco Z49 - Mpozenato
+[14:14:46] Processado: Rack Tv 75 Pol. Suspenso 180cm 2 Portas Lila Cinamomo Z49 - Mpozenato
+[14:14:46] Processado: Bancada Suspensa e Prateleira 197cm Slat Z49 Cinamomo/Off - Mpozenato
+[14:14:46] Processado: Sofá Cama para Sala de Estar Lisboa Linho Bege - Ibiza
+[14:14:46] Processado: Suporte Fixo Universal para Tv Lcd Led Cromado - Mpdecor
+[14:14:46] Processado: Balcão Buffet Cantinho do Café Bianca Preto/Freijó Z34 - Mpozenato
+[14:14:46] Processado: Balcão Aparador Buffet 3 Portas Madrid C14 Cedro/Off White - Mpozenato
+[14:14:46] Processado: Balcão Buffet Cantinho do Café Bianca Branco/Freijó Z34 - Mpozenato
+[14:14:46] Processado: Balcão Aparador Buffet Rebeca C05 Off White/Freijó - Mpozenato
+[14:14:46] Processado: Balcão Buffet Copacabana Off White/Nogueira - Colibri
+[14:14:46] Processado: Balcão Buffet Sala de Jantar 169cm 4 Portas 4 Gavetas Rubia F07 - Mpozenato
+[14:14:46] Processado: Balcão Aparador Buffet 4 Portas Sinfonia H01 Castanho/Off - Mpozenato
+[14:14:46] Processado: Balcão Aparador Buffet 2 Portas Pé Metal Benvy H01 Cinamomo/Off - Mpozenato
+[14:14:46] Processado: Buffet Aparador Sala de Estar 180cm Zayn Off/Naturalle B02 - Mpozenato
+[14:14:46] Processado: Balcão Aparador Buffet Vicky C05 Freijó/Off White - Mpozenato
+[14:14:46] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Grafite Z34 - Mpozenato
+[14:14:46] Processado: Balcão Buffet Cantinho do Café Bianca Freijó/Branco Z34 - Mpozenato
+[14:14:46] Processado: Balcão Buffet Sala de Jantar 179cm Lucca Areia/Freijó C01 - Mpozenato
+[14:14:46] Processado: Balcão Buffet Sala de Jantar 179cm Lucca Off/Freijó C01 - Mpozenato
+[14:14:46] Processado: Cristaleira Adega com Gaveta Órfeo H01 Off White/Cinamomo - Mpozenato
+[14:14:46] Processado: Cristaleira Portas de Vidro 129cm Pé Madeira Rubia Café F07 - Mpozenato
+[14:14:46] Processado: Cristaleira 4 Portas com Adega Madrid C05 Off White Matte/Freijó - Mpozenato
+[14:14:46] Processado: Cristaleira de Vidro com Led 67cm Melina Z10 Cumaru/Opala - Mpozenato
+[14:14:46] Processado: Cristaleira de Vidro para Sala de Jantar Nay C14 Branco/Cedro - Mpozenato
+[14:14:46] Processado: Cristaleira Portas de Vidro e Adega Órfeo H01 Off/Castanho - Mpozenato
+[14:14:46] Processado: Cristaleira de Vidro com Espelho Alvora H01 Off White/Cinamomo - Mpozenato
+[14:14:46] Processado: Cristaleira com Portas de Vidro e Led Rebeca C05 Off White/Freijó - Mpozenato
+[14:14:46] Processado: Cristaleira de Vidro com Led 67cm Melina Z10 Off/Cinamomo - Mpozenato
+[14:14:46] Processado: Cristaleira Porta de Vidro com Led 90cm Lucca Areia/Freijó C01 - Mpozenato
+[14:14:46] Processado: Cristaleira Porta de Vidro com Led 90cm Lucca Off/Freijó C01 - Mpozenato
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Base Fixa de Madeira Preto Lia Sintético Premium Preto - Ibiza
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Pés Palito Lia Sintético Premium Preto - Ibiza
+[14:14:46] Processado: Cadeira de Jantar Estofada Milli A14 Veludo Capuccino - Mpozenato
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Base Giratória de Madeira Lia Sintético Premium Nozes - Ibiza
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Pés Palito Lia Veludo Cinza - Ibiza
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Base Fixa de Madeira Castanho Lia Linho Cinza - Ibiza
+[14:14:46] Processado: Cadeira Estofada para Sala de Jantar Base Fixa de Madeira Preto Lia Veludo Bege - Ibiza
+[14:14:46] Processado: Cadeira de Jantar Estofada Milli A14 Linho Caramelo/Areia - Mpozenato
+[14:14:46] Processado: Mesa Bancada Gourmet para Cozinha Salt Preto Z06 - Mpozenato
+[14:14:47] Arquivo gerado: Atributos_Extraidos_SemMarca_20260402_141446.xlsx
+[14:14:47] Processamento concluído - 1056 itens em 5.75s
