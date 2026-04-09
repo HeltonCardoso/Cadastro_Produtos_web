@@ -2,13 +2,11 @@ from collections import defaultdict
 from io import BytesIO
 import sys
 from pathlib import Path
-import uuid
-#from fastapi import responses
 from flask import Flask, abort, current_app, json, make_response, render_template, request, send_file, send_from_directory, redirect, url_for, flash, jsonify
 from gspread import service_account
 import gspread
 import requests
-from models import Processo, db
+from models import Processo, db, Usuario, Perfil, ItemProcessado
 from config import Config
 import os
 from datetime import datetime, timedelta
@@ -33,7 +31,6 @@ from metrics_api import metrics_bp  # Import do novo blueprint
 from processamento.google_sheets import ler_planilha_google
 from google_auth import GoogleSheetsOAuth, GoogleTokenManager
 from functools import wraps
-from models import Usuario
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 
@@ -45,9 +42,6 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 
-# ============================================
-# CONFIGURAÇÃO DO LOGIN MANAGER
-# ============================================
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # Nome da rota de login
@@ -58,6 +52,37 @@ login_manager.login_message_category = 'warning'
 def load_user(user_id):
     """Carrega o usuário da sessão"""
     return Usuario.query.get(int(user_id))
+
+from functools import wraps
+from flask_login import current_user
+
+def master_required(f):
+    """Decorator para rotas que só Master pode acessar"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            flash('Faça login para continuar', 'warning')
+            return redirect(url_for('login'))
+        if not current_user.is_master():
+            flash('Acesso negado. Apenas Master pode acessar.', 'danger')
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def permissao_modulo(modulo):
+    """Decorator para verificar permissão de módulo"""
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash('Faça login para continuar', 'warning')
+                return redirect(url_for('login'))
+            if not current_user.has_permission(modulo):
+                flash(f'Acesso negado. Módulo {modulo} não disponível para seu perfil.', 'danger')
+                return redirect(url_for('home'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 # 🔹 PRIMEIRO: Inicializa o banco de dados
 db.init_app(app)
@@ -82,30 +107,98 @@ with app.app_context():
         print("✅ Banco de dados inicializado com sucesso!")
         
         # ============================================
-        # CRIA USUÁRIO ADMIN PADRÃO (SE NÃO EXISTIR)
+        # CRIA PERFIS PADRÃO
         # ============================================
-        from models import Usuario
+        from models import Perfil, Usuario
         
-        admin = Usuario.query.filter_by(role='admin').first()
-        if not admin:
-            admin = Usuario(
-                username='admin',
-                email='admin@exemplo.com',
-                role='admin',
-                is_active=True
-            )
-            admin.set_password('admin123')  # ⚠️ MUDE A SENHA DEPOIS!
-            db.session.add(admin)
-            db.session.commit()
-            print("✅ Usuário admin criado com sucesso!")
-            print("   📝 Usuário: admin")
-            print("   📝 Senha: admin123")
-            print("   ⚠️  ALTERE A SENHA PELO SISTEMA APÓS O PRIMEIRO LOGIN!")
-        else:
-            print("ℹ️  Usuário admin já existe")
+        # Lista de perfis padrão
+        perfis_padrao = [
+            {'nome': 'Master', 'descricao': 'Acesso total ao sistema'},
+            {'nome': 'SAC', 'descricao': 'Acesso a pedidos e clientes'},
+            {'nome': 'Cadastro', 'descricao': 'Acesso a produtos e atributos'},
+            {'nome': 'Financeiro', 'descricao': 'Acesso a relatórios financeiros'},
+        ]
+        
+        for p in perfis_padrao:
+            perfil = Perfil.query.filter_by(nome=p['nome']).first()
+            if not perfil:
+                perfil = Perfil(nome=p['nome'], descricao=p['descricao'])
+                db.session.add(perfil)
+                print(f"✅ Perfil criado: {p['nome']}")
+        
+        db.session.commit()
+        
+        # ============================================
+        # CRIA USUÁRIOS PADRÃO
+        # ============================================
+        
+        # Usuário Master
+        perfil_master = Perfil.query.filter_by(nome='Master').first()
+        if perfil_master:
+            master = Usuario.query.filter_by(username='master').first()
+            if not master:
+                master = Usuario(
+                    username='master',
+                    email='master@sistema.com',
+                    perfil_id=perfil_master.id,
+                    is_active=True
+                )
+                master.set_password('master123')
+                db.session.add(master)
+                print("✅ Usuário Master criado: master / master123")
+        
+        # Usuário SAC
+        perfil_sac = Perfil.query.filter_by(nome='SAC').first()
+        if perfil_sac:
+            sac = Usuario.query.filter_by(username='sac').first()
+            if not sac:
+                sac = Usuario(
+                    username='sac',
+                    email='sac@sistema.com',
+                    perfil_id=perfil_sac.id,
+                    is_active=True
+                )
+                sac.set_password('sac123')
+                db.session.add(sac)
+                print("✅ Usuário SAC criado: sac / sac123")
+        
+        # Usuário Cadastro
+        perfil_cadastro = Perfil.query.filter_by(nome='Cadastro').first()
+        if perfil_cadastro:
+            cadastro = Usuario.query.filter_by(username='cadastro').first()
+            if not cadastro:
+                cadastro = Usuario(
+                    username='cadastro',
+                    email='cadastro@sistema.com',
+                    perfil_id=perfil_cadastro.id,
+                    is_active=True
+                )
+                cadastro.set_password('cadastro123')
+                db.session.add(cadastro)
+                print("✅ Usuário Cadastro criado: cadastro / cadastro123")
+        
+        db.session.commit()
+        
+        print("\n" + "="*50)
+        print("🎉 SISTEMA INICIALIZADO COM SUCESSO!")
+        print("="*50)
+        print("📝 PERFIS DISPONÍVEIS:")
+        print("   - Master (Acesso total)")
+        print("   - SAC (Pedidos e clientes)")
+        print("   - Cadastro (Produtos e atributos)")
+        print("   - Financeiro (Relatórios)")
+        print("\n🔑 USUÁRIOS PADRÃO:")
+        print("   master / master123 (Master)")
+        print("   sac / sac123 (SAC)")
+        print("   cadastro / cadastro123 (Cadastro)")
+        print("="*50)
+        print("⚠️  ALTERE AS SENHAS PELO SISTEMA APÓS O PRIMEIRO LOGIN!")
+        print("="*50)
         
     except Exception as e:
         print(f"⚠️ Erro ao criar tabelas: {e}")
+        import traceback
+        traceback.print_exc()
         app.logger.error(f"Erro ao criar tabelas: {e}")
 
 def obter_ultima_planilha():
@@ -972,7 +1065,9 @@ def api_atualizar_planilhas():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
      
-@app.route('/pedidos-anymarket')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
+@app.route('/pedidos-anymarket')
+@login_required
+@permissao_modulo('pedidos')  ####Esta rota apenas chama a função abaixo api_pedidos_anymarket
 def pedidos_anymarket():
     """Página principal de pedidos do AnyMarket"""
     return render_template('pedidos_anymarket.html',
@@ -2538,6 +2633,8 @@ def limpar_moeda(valor):
     )
     
 @app.route("/preencher-planilha", methods=["GET", "POST"])
+@login_required
+@permissao_modulo('produtos')
 def preencher_planilha():
     nome_arquivo_saida = None
     config = carregar_configuracao_google_sheets()
@@ -2721,6 +2818,25 @@ def preencher_planilha():
         preview_data=preview_data,
         page_title='Cadastro Produto'
     )
+
+@app.route('/dashboard/master')
+@login_required
+@master_required
+def dashboard_master():
+    return render_template('dashboard_master.html', page_title='Dashboard Master')
+
+@app.route('/dashboard/sac')
+@login_required
+@permissao_modulo('pedidos')
+def dashboard_sac():
+    return render_template('dashboard_sac.html', page_title='Dashboard SAC')
+
+@app.route('/dashboard/cadastro')
+@login_required
+@permissao_modulo('produtos')
+def dashboard_cadastro():
+    return render_template('dashboard_cadastro.html', page_title='Dashboard Cadastro')
+
 
 @app.route("/extrair-atributos", methods=["GET", "POST"])
 def extrair_atributos():
@@ -5135,38 +5251,84 @@ def processar_estatisticas_detalhadas_pedidos(orders):
     }
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Página de login"""
-    # Se já está logado, redireciona para home
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         
-        # Busca usuário no banco
         usuario = Usuario.query.filter_by(username=username).first()
         
-        # Verifica credenciais
         if usuario and usuario.check_password(password):
             if not usuario.is_active:
-                flash('Usuário desativado. Contate o administrador.', 'danger')
+                flash('Usuário desativado.', 'danger')
                 return redirect(url_for('login'))
             
-            # Faz login
             login_user(usuario)
             usuario.last_login = datetime.now()
             db.session.commit()
             
-            flash(f'✅ Bem-vindo, {usuario.username}!', 'success')
+            flash(f'✅ Bem-vindo, {usuario.username}! Perfil: {usuario.perfil}', 'success')
             
-            # Redireciona para página que estava tentando acessar
+            # Redireciona baseado no perfil
             next_page = request.args.get('next')
-            return redirect(next_page or url_for('home'))
+            if next_page:
+                return redirect(next_page)
+            
+            # Dashboard específico por perfil
+            if usuario.is_master():
+                return redirect(url_for('dashboard_master'))
+            elif usuario.perfil == 'SAC':
+                return redirect(url_for('dashboard_sac'))
+            elif usuario.perfil == 'Cadastro':
+                return redirect(url_for('dashboard_cadastro'))
+            else:
+                return redirect(url_for('dashboard'))
         else:
-            flash('❌ Usuário ou senha inválidos', 'danger')
+            flash('Usuário ou senha inválidos', 'danger')
     
     return render_template('login.html', page_title='Login')
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    """Dashboard padrão (redireciona para o específico)"""
+    if current_user.is_master():
+        return redirect(url_for('dashboard_master'))
+    elif current_user.perfil == 'SAC':
+        return redirect(url_for('dashboard_sac'))
+    elif current_user.perfil == 'Cadastro':
+        return redirect(url_for('dashboard_cadastro'))
+    return redirect(url_for('home'))
+
+@app.route('/dashboard/master')
+@login_required
+@master_required
+def dashboard_master():
+    """Dashboard completo para Master"""
+    # Estatísticas gerais do sistema
+    stats = {
+        'total_usuarios': Usuario.query.count(),
+        'total_processos': Processo.query.count(),
+        'processos_hoje': Processo.query.filter(db.func.date(Processo.data) == datetime.now().date()).count(),
+        'total_itens_processados': db.session.query(db.func.sum(ItemProcessado.id)).scalar() or 0
+    }
+    return render_template('dashboard_master.html', stats=stats, page_title='Dashboard Master')
+
+@app.route('/dashboard/sac')
+@login_required
+@permissao_modulo('pedidos')
+def dashboard_sac():
+    """Dashboard para SAC - foco em pedidos"""
+    return render_template('dashboard_sac.html', page_title='Dashboard SAC')
+
+@app.route('/dashboard/cadastro')
+@login_required
+@permissao_modulo('produtos')
+def dashboard_cadastro():
+    """Dashboard para Cadastro - foco em produtos"""
+    return render_template('dashboard_cadastro.html', page_title='Dashboard Cadastro')
 
 @app.route('/logout')
 @login_required

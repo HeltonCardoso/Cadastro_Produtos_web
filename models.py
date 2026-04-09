@@ -7,6 +7,11 @@ import json
 
 db = SQLAlchemy()
 
+
+# ============================================
+# MODELOS EXISTENTES
+# ============================================
+
 class Processo(db.Model):
     __tablename__ = 'processos'
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +23,10 @@ class Processo(db.Model):
     usuario = db.Column(db.String(50), default='Sistema', nullable=False)
     erro_mensagem = db.Column(db.Text)
 
+    def __repr__(self):
+        return f'<Processo {self.modulo} - {self.status}>'
+
+
 class ItemProcessado(db.Model):
     __tablename__ = 'itens_processados'
     id = db.Column(db.Integer, primary_key=True)
@@ -28,9 +37,40 @@ class ItemProcessado(db.Model):
     detalhes = db.Column(db.Text)
     data_processamento = db.Column(db.DateTime, default=datetime.now)
 
+    processo = db.relationship('Processo', backref='itens')
+
+    def __repr__(self):
+        return f'<ItemProcessado {self.nome}>'
+
+
 # ============================================
-# NOVOS MODELOS PARA AUTENTICAÇÃO E PERMISSÕES
+# MODELOS PARA AUTENTICAÇÃO E PERMISSÕES
 # ============================================
+
+class Perfil(db.Model):
+    """Perfis predefinidos do sistema"""
+    __tablename__ = 'perfis'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(50), unique=True, nullable=False)  # Master, SAC, Cadastro, Financeiro
+    descricao = db.Column(db.String(200))
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relacionamentos
+    usuarios = db.relationship('Usuario', backref='perfil_rel', lazy=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nome': self.nome,
+            'descricao': self.descricao,
+            'is_active': self.is_active
+        }
+    
+    def __repr__(self):
+        return f'<Perfil {self.nome}>'
+
 
 class Usuario(UserMixin, db.Model):
     """Modelo de usuário para autenticação"""
@@ -40,13 +80,13 @@ class Usuario(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    role = db.Column(db.String(20), default='user')  # 'admin', 'user', 'viewer'
+    perfil_id = db.Column(db.Integer, db.ForeignKey('perfis.id'), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
     
     # Relacionamentos
-    permissoes = db.relationship('Permissao', backref='usuario', lazy=True, cascade='all, delete-orphan')
+    permissoes_extras = db.relationship('Permissao', backref='usuario', lazy=True, cascade='all, delete-orphan')
     
     def set_password(self, password):
         """Cria hash da senha"""
@@ -56,25 +96,52 @@ class Usuario(UserMixin, db.Model):
         """Verifica senha"""
         return check_password_hash(self.password_hash, password)
     
-    def is_admin(self):
-        """Verifica se é administrador"""
-        return self.role == 'admin'
+    @property
+    def perfil(self):
+        """Retorna o nome do perfil"""
+        return self.perfil_rel.nome if self.perfil_rel else 'user'
     
-    def has_permission(self, modulo, acao='ler'):
-        """Verifica permissão específica"""
-        if self.is_admin():
+    def is_master(self):
+        """Verifica se é Master (admin total)"""
+        return self.perfil == 'Master'
+    
+    def has_permission(self, modulo):
+        """Verifica se o perfil tem acesso ao módulo"""
+        # Mapeamento de permissões por perfil
+        permissoes = {
+            'Master': ['todos'],
+            'SAC': ['pedidos', 'clientes', 'dashboard'],
+            'Cadastro': ['produtos', 'atributos', 'categorias', 'dashboard'],
+            'Financeiro': ['financeiro', 'relatorios', 'dashboard']
+        }
+        
+        # Master tem acesso a tudo
+        if self.is_master():
             return True
         
-        for permissao in self.permissoes:
-            if permissao.modulo == modulo:
-                if acao == 'ler' and permissao.pode_ler:
-                    return True
-                elif acao == 'escrever' and permissao.pode_escrever:
-                    return True
-                elif acao == 'excluir' and permissao.pode_excluir:
-                    return True
+        # Verifica permissões extras do banco (sobrescreve)
+        for p in self.permissoes_extras:
+            if p.modulo == modulo:
+                return p.pode_ler
         
-        return False
+        # Verifica permissão padrão do perfil
+        perfil_permissoes = permissoes.get(self.perfil, [])
+        return modulo in perfil_permissoes or 'todos' in perfil_permissoes
+    
+    def get_modulos_acessos(self):
+        """Retorna lista de módulos que o usuário pode acessar"""
+        if self.is_master():
+            return ['dashboard', 'pedidos', 'produtos', 'atributos', 'configuracoes', 'usuarios', 'financeiro', 'relatorios']
+        
+        modulos = ['dashboard']
+        if self.has_permission('pedidos'):
+            modulos.append('pedidos')
+        if self.has_permission('produtos'):
+            modulos.extend(['produtos', 'atributos'])
+        if self.has_permission('financeiro'):
+            modulos.append('financeiro')
+        
+        return modulos
     
     def to_dict(self):
         """Converte para dicionário"""
@@ -82,18 +149,20 @@ class Usuario(UserMixin, db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'role': self.role,
+            'perfil': self.perfil,
+            'perfil_id': self.perfil_id,
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'last_login': self.last_login.isoformat() if self.last_login else None
+            'last_login': self.last_login.isoformat() if self.last_login else None,
+            'modulos_acesso': self.get_modulos_acessos()
         }
     
     def __repr__(self):
-        return f'<Usuario {self.username}>'
+        return f'<Usuario {self.username} ({self.perfil})>'
 
 
 class Permissao(db.Model):
-    """Permissões específicas por módulo"""
+    """Permissões específicas por módulo (sobrescreve permissões do perfil)"""
     __tablename__ = 'permissoes'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -135,7 +204,10 @@ class TokenConfig(db.Model):
     
     def get_data(self):
         """Retorna os dados do token como dicionário"""
-        return json.loads(self.token_data)
+        try:
+            return json.loads(self.token_data)
+        except:
+            return {}
     
     def set_data(self, data):
         """Define os dados do token a partir de um dicionário"""
@@ -146,6 +218,7 @@ class TokenConfig(db.Model):
             'id': self.id,
             'service': self.service,
             'data': self.get_data(),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
     
@@ -168,14 +241,72 @@ class LogAcesso(db.Model):
     detalhes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Relacionamento
+    usuario = db.relationship('Usuario', backref='logs')
+    
     def to_dict(self):
         return {
             'id': self.id,
             'usuario_id': self.usuario_id,
             'usuario_nome': self.usuario_nome,
             'ip': self.ip,
+            'user_agent': self.user_agent,
             'acao': self.acao,
             'recurso': self.recurso,
             'sucesso': self.sucesso,
+            'detalhes': self.detalhes,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
+    
+    def __repr__(self):
+        return f'<LogAcesso {self.acao} - {self.usuario_nome}>'
+
+
+# ============================================
+# FUNÇÕES AUXILIARES PARA INICIALIZAÇÃO
+# ============================================
+
+def init_perfis_e_usuarios():
+    """Cria perfis padrão e usuários de exemplo"""
+    from app import app
+    
+    with app.app_context():
+        # Perfis padrão
+        perfis_padrao = [
+            {'nome': 'Master', 'descricao': 'Acesso total ao sistema'},
+            {'nome': 'SAC', 'descricao': 'Acesso a pedidos e clientes'},
+            {'nome': 'Cadastro', 'descricao': 'Acesso a produtos e atributos'},
+            {'nome': 'Financeiro', 'descricao': 'Acesso a relatórios financeiros'},
+        ]
+        
+        for p in perfis_padrao:
+            perfil = Perfil.query.filter_by(nome=p['nome']).first()
+            if not perfil:
+                perfil = Perfil(nome=p['nome'], descricao=p['descricao'])
+                db.session.add(perfil)
+        
+        db.session.commit()
+        
+        # Criar usuários padrão
+        usuarios_padrao = [
+            {'username': 'master', 'email': 'master@sistema.com', 'perfil': 'Master', 'senha': 'master123'},
+            {'username': 'sac', 'email': 'sac@sistema.com', 'perfil': 'SAC', 'senha': 'sac123'},
+            {'username': 'cadastro', 'email': 'cadastro@sistema.com', 'perfil': 'Cadastro', 'senha': 'cadastro123'},
+        ]
+        
+        for u in usuarios_padrao:
+            perfil = Perfil.query.filter_by(nome=u['perfil']).first()
+            if perfil:
+                usuario = Usuario.query.filter_by(username=u['username']).first()
+                if not usuario:
+                    usuario = Usuario(
+                        username=u['username'],
+                        email=u['email'],
+                        perfil_id=perfil.id,
+                        is_active=True
+                    )
+                    usuario.set_password(u['senha'])
+                    db.session.add(usuario)
+        
+        db.session.commit()
+        print("✅ Perfis e usuários padrão criados com sucesso!")
