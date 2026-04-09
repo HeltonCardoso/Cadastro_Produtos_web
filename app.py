@@ -27,7 +27,7 @@ from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_a
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 from routes_intelipost import intelipost_bp
 from flask_caching import Cache, logger
-from metrics_api import metrics_bp
+#from metrics_api import metrics_bp
 from processamento.google_sheets import ler_planilha_google
 from google_auth import GoogleSheetsOAuth, GoogleTokenManager
 from functools import wraps
@@ -63,7 +63,7 @@ def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
 # 🔹 TERCEIRO: Registra os blueprints
-app.register_blueprint(metrics_bp)
+#  app.register_blueprint(metrics_bp)
 app.register_blueprint(intelipost_bp)
 
 # ============================================
@@ -103,7 +103,7 @@ def permissao_modulo(modulo):
     return decorator
 
 # 🔹 SEGUNDO: Registra os blueprints (DEPOIS de init_app)
-app.register_blueprint(metrics_bp)
+#app.register_blueprint(metrics_bp)
 app.register_blueprint(intelipost_bp)
 
 # Configuração de logs
