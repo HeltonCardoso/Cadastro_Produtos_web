@@ -64,7 +64,7 @@ def load_user(user_id):
 
 # 🔹 TERCEIRO: Registra os blueprints
 #  app.register_blueprint(metrics_bp)
-app.register_blueprint(intelipost_bp)
+#app.register_blueprint(intelipost_bp)
 
 # ============================================
 # DECORATORS DE PERMISSÃO (CORRIGIDOS)
