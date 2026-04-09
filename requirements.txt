@@ -45,3 +45,6 @@ gunicorn>=21.2.0
 
 # Logging
 python-json-logger>=2.0.0
+
+Flask-Login>=0.6.3
+Flask-Bcrypt>=1.0.1

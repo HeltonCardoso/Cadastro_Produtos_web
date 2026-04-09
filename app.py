@@ -32,6 +32,10 @@ from flask_caching import Cache, logger
 from metrics_api import metrics_bp  # Import do novo blueprint
 from processamento.google_sheets import ler_planilha_google
 from google_auth import GoogleSheetsOAuth, GoogleTokenManager
+from functools import wraps
+from models import Usuario
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+
 
 
 
@@ -40,8 +44,20 @@ sys.path.append(str(Path(__file__).parent))
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
-# Inicializa OAuth
-google_oauth = GoogleSheetsOAuth(app)
+
+# ============================================
+# CONFIGURAÇÃO DO LOGIN MANAGER
+# ============================================
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # Nome da rota de login
+login_manager.login_message = '⚠️ Faça login para acessar esta página'
+login_manager.login_message_category = 'warning'
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Carrega o usuário da sessão"""
+    return Usuario.query.get(int(user_id))
 
 # 🔹 PRIMEIRO: Inicializa o banco de dados
 db.init_app(app)
@@ -64,6 +80,30 @@ with app.app_context():
     try:
         db.create_all()
         print("✅ Banco de dados inicializado com sucesso!")
+        
+        # ============================================
+        # CRIA USUÁRIO ADMIN PADRÃO (SE NÃO EXISTIR)
+        # ============================================
+        from models import Usuario
+        
+        admin = Usuario.query.filter_by(role='admin').first()
+        if not admin:
+            admin = Usuario(
+                username='admin',
+                email='admin@exemplo.com',
+                role='admin',
+                is_active=True
+            )
+            admin.set_password('admin123')  # ⚠️ MUDE A SENHA DEPOIS!
+            db.session.add(admin)
+            db.session.commit()
+            print("✅ Usuário admin criado com sucesso!")
+            print("   📝 Usuário: admin")
+            print("   📝 Senha: admin123")
+            print("   ⚠️  ALTERE A SENHA PELO SISTEMA APÓS O PRIMEIRO LOGIN!")
+        else:
+            print("ℹ️  Usuário admin já existe")
+        
     except Exception as e:
         print(f"⚠️ Erro ao criar tabelas: {e}")
         app.logger.error(f"Erro ao criar tabelas: {e}")
@@ -96,6 +136,7 @@ def obter_ultima_planilha():
         return None, None
     
 @app.route("/")
+@login_required
 def home():
     """Página inicial simplificada"""
     try:
@@ -150,6 +191,7 @@ def home():
             anymarket_stats={'sucesso': False, 'erro': str(e)},
             page_title='Dashboard'
         )
+
 
 @app.route('/api/google/sheets/list', methods=['GET'])
 def api_listar_google_sheets():
@@ -1120,6 +1162,7 @@ def api_canais_transmissao():
         }), 500
     
 @app.route('/api/anymarket/pedidos')
+@login_required
 def api_pedidos_anymarket():
     """API para buscar pedidos do AnyMarket - CORREÇÃO DO FILTRO DE DATA"""
     try:
@@ -1369,6 +1412,7 @@ def api_forcar_renovacao():
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
     
 @app.route('/api/mercadolivre/excluir-definitivo', methods=['POST'])
+@login_required
 def api_excluir_mlb_definitivo():
     """
     Rota para exclusão definitiva de MLB (2 etapas)
@@ -1531,6 +1575,7 @@ def api_status_mercadolivre():
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
 
 @app.route('/api/mercadolivre/buscar-mlb', methods=['POST'])
+@login_required
 def api_buscar_mlb():
     """API para buscar anúncios por MLB"""
     try:
@@ -1779,6 +1824,7 @@ def baixar_arquivo(filename):
         abort(500)
 
 @app.route('/configuracoes/tokens')
+@login_required
 def configurar_tokens():
     config = carregar_configuracao_google_sheets()
     
@@ -5087,6 +5133,70 @@ def processar_estatisticas_detalhadas_pedidos(orders):
         'marketplace_distribuicao': dict(marketplace_distribuicao),
         'resumo': resumo
     }
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login"""
+    # Se já está logado, redireciona para home
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        # Busca usuário no banco
+        usuario = Usuario.query.filter_by(username=username).first()
+        
+        # Verifica credenciais
+        if usuario and usuario.check_password(password):
+            if not usuario.is_active:
+                flash('Usuário desativado. Contate o administrador.', 'danger')
+                return redirect(url_for('login'))
+            
+            # Faz login
+            login_user(usuario)
+            usuario.last_login = datetime.now()
+            db.session.commit()
+            
+            flash(f'✅ Bem-vindo, {usuario.username}!', 'success')
+            
+            # Redireciona para página que estava tentando acessar
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('home'))
+        else:
+            flash('❌ Usuário ou senha inválidos', 'danger')
+    
+    return render_template('login.html', page_title='Login')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Faz logout do usuário"""
+    logout_user()
+    flash('✅ Logout realizado com sucesso', 'info')
+    return redirect(url_for('login'))
+
+@app.route('/perfil')
+@login_required
+def perfil():
+    """Página de perfil do usuário"""
+    return render_template('perfil.html', page_title='Meu Perfil')
+
+@app.route('/alterar-senha', methods=['POST'])
+@login_required
+def alterar_senha():
+    """Altera a senha do usuário"""
+    data = request.get_json()
+    senha_atual = data.get('senha_atual')
+    nova_senha = data.get('nova_senha')
+    
+    if not current_user.check_password(senha_atual):
+        return jsonify({'sucesso': False, 'erro': 'Senha atual incorreta'}), 401
+    
+    current_user.set_password(nova_senha)
+    db.session.commit()
+    
+    return jsonify({'sucesso': True, 'mensagem': 'Senha alterada com sucesso!'})
 
 @app.route('/api/anymarket/diagnosticar-produto', methods=['POST'])
 def api_diagnosticar_produto():
