@@ -2819,24 +2819,6 @@ def preencher_planilha():
         page_title='Cadastro Produto'
     )
 
-@app.route('/dashboard/master')
-@login_required
-@master_required
-def dashboard_master():
-    return render_template('dashboard_master.html', page_title='Dashboard Master')
-
-@app.route('/dashboard/sac')
-@login_required
-@permissao_modulo('pedidos')
-def dashboard_sac():
-    return render_template('dashboard_sac.html', page_title='Dashboard SAC')
-
-@app.route('/dashboard/cadastro')
-@login_required
-@permissao_modulo('produtos')
-def dashboard_cadastro():
-    return render_template('dashboard_cadastro.html', page_title='Dashboard Cadastro')
-
 
 @app.route("/extrair-atributos", methods=["GET", "POST"])
 def extrair_atributos():
