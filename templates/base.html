@@ -87,7 +87,6 @@
                   </div>
                   <span class="menu-text">FOTOS</span>
               </a>
-              <!-- NOVO: Canais de Transmissão -->
               <a href="{{ url_for('canais_transmissao') }}" class="menu-item {% if active_page == 'canais_transmissao' %}active{% endif %}">
                   <div class="menu-icon">
                       <i class="fas fa-broadcast-tower"></i>
@@ -125,7 +124,6 @@
             </div>
             <span class="menu-text">ANÚNCIOS</span>
         </a>
-        <!-- Alterar Modo de Envio -->
         <a href="{{ url_for('alterar_modo_envio') }}" class="menu-item {% if active_page == 'alterar_modo_envio' %}active{% endif %}">
             <div class="menu-icon">
                 <i class="fas fa-truck"></i>
@@ -133,7 +131,6 @@
             <span class="menu-text">LOGISTICA ME1/ME2</span>
             <span class="badge bg-primary ms-2">Novo</span>
         </a>
-        <!-- CORRIGIDO: Link para Campanhas -->
         <a href="{{ url_for('campanhas_ativas') }}" class="menu-item {% if active_page == 'campanhas_mercadolivre' %}active{% endif %}">
             <div class="menu-icon">
                 <i class="fas fa-bullhorn"></i>
@@ -150,33 +147,28 @@
     </div>
 </div>
 
-          <!-- =============================================== -->
-          <!-- 🔹 MÓDULO INTELIPOST (NOVO) -->
-          <!-- =============================================== -->
+          <!-- Módulo Intelipost -->
           <div class="menu-group" data-module="intelipost">
             <div class="menu-title">
               <i class="fas fa-caret-down module-toggle"></i>
               <span class="menu-title-text">INTELIPOST</span>
             </div>
             <div class="menu-subitems">
-              <!-- Rastreamento por Pedido -->
               <a href="{{ url_for('intelipost.rastrear') }}" class="menu-item {% if active_page == 'intelipost_rastrear' %}active{% endif %}">
                 <div class="menu-icon">
                   <i class="fas fa-search-location"></i>
                 </div>
-                <span class="menu-text">RATREAMENTO</span>
+                <span class="menu-text">RASTREAMENTO</span>
               </a>
               
-              <!-- Rastreamento por Nota Fiscal (NOVO) -->
               <a href="{{ url_for('intelipost.rastrear_nf') }}" class="menu-item {% if active_page == 'intelipost_rastrear_nf' %}active{% endif %}">
                 <div class="menu-icon">
                   <i class="fas fa-file-invoice"></i>
                 </div>
-                <span class="menu-text">RATREAR POR NF</span>
+                <span class="menu-text">RASTREAR POR NF</span>
                 <span class="badge badge-info badge-pill">Novo</span>
               </a>
               
-              <!-- Histórico -->
               <a href="{{ url_for('intelipost.historico') }}" class="menu-item {% if active_page == 'intelipost_historico' %}active{% endif %}">
                 <div class="menu-icon">
                   <i class="fas fa-history"></i>
@@ -184,7 +176,6 @@
                 <span class="menu-text">HISTORICO</span>
               </a>
               
-              <!-- Configurações -->
               <a href="#" class="menu-item">
                 <div class="menu-icon">
                   <i class="fas fa-cog"></i>
@@ -233,6 +224,17 @@
               <span class="menu-text">CONFIGURAÇÕES</span>
             </a>
             
+            <!-- Link para Gerenciar Usuários (apenas Master logado vê) -->
+            {% if current_user.is_authenticated and current_user.is_master() %}
+            <a href="{{ url_for('admin_usuarios') }}" class="menu-item {% if active_page == 'admin_usuarios' %}active{% endif %}">
+              <div class="menu-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <span class="menu-text">USUÁRIOS</span>
+              <span class="badge bg-primary ms-2">Admin</span>
+            </a>
+            {% endif %}
+            
             <a href="#" data-route="sobre" onclick="mostrarSobre()" class="menu-item">
               <div class="menu-icon">
                 <i class="fas fa-info-circle"></i>
@@ -246,17 +248,21 @@
       <!-- Footer do Sidebar -->
       <div class="sidebar-footer">
         <button class="menu-item" id="darkModeToggle">
-              <div class="menu-icon">
-                <i class="fas fa-moon"></i>
-              </div>
-              <span class="menu-text">MODO ESCURO</span>
-            </button>
-        <a href="#" class="menu-item logout-item" id="logoutBtn">
+          <div class="menu-icon">
+            <i class="fas fa-moon"></i>
+          </div>
+          <span class="menu-text">MODO ESCURO</span>
+        </button>
+        
+        <!-- Botão SAIR (apenas aparece se estiver logado) -->
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}" class="menu-item logout-item">
           <div class="menu-icon">
             <i class="fas fa-sign-out-alt"></i>
           </div>
           <span class="menu-text">SAIR</span>
         </a>
+        {% endif %}
       </div>
     </nav>
   </div>
@@ -276,7 +282,29 @@
       </div>
       <div class="top-bar-actions">
         <div class="user-info">
-          <span>Bem-vindo, Usuário</span>
+          <i class="fas fa-user-circle"></i>
+          <span>Bem-vindo, 
+            <strong>
+              {% if current_user.is_authenticated %}
+                {{ current_user.username }}
+              {% else %}
+                Visitante
+              {% endif %}
+            </strong>
+          </span>
+          {% if current_user.is_authenticated %}
+          <span class="user-perfil" style="margin-left: 10px;">
+            {% if current_user.is_master() %}
+              <span class="badge bg-danger">Master</span>
+            {% elif current_user.perfil == 'SAC' %}
+              <span class="badge bg-success">SAC</span>
+            {% elif current_user.perfil == 'Cadastro' %}
+              <span class="badge bg-info">Cadastro</span>
+            {% else %}
+              <span class="badge bg-secondary">{{ current_user.perfil }}</span>
+            {% endif %}
+          </span>
+          {% endif %}
         </div>
       </div>
     </div>

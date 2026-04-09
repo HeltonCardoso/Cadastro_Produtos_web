@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-users"></i> Gerenciar Usuários</h3>
+            <p class="text-muted">Apenas administradores podem gerenciar usuários</p>
+        </div>
+        <div class="card-body">
+            <button class="btn btn-primary mb-3" onclick="abrirModalNovoUsuario()">
+                <i class="fas fa-plus"></i> Novo Usuário
+            </button>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuário</th>
+                            <th>Email</th>
+                            <th>Perfil</th>
+                            <th>Status</th>
+                            <th>Último Acesso</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-usuarios">
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.username }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>
+                                <span class="badge {% if usuario.perfil == 'Master' %}bg-danger{% elif usuario.perfil == 'SAC' %}bg-success{% elif usuario.perfil == 'Cadastro' %}bg-info{% else %}bg-secondary{% endif %}">
+                                    {{ usuario.perfil }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if usuario.is_active %}
+                                    <span class="badge bg-success">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ usuario.last_login.strftime('%d/%m/%Y %H:%M') if usuario.last_login else 'Nunca' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" onclick="editarUsuario({{ usuario.id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="excluirUsuario({{ usuario.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Novo Usuário -->
+<div class="modal fade" id="modalUsuario" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Novo Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUsuario">
+                    <div class="mb-3">
+                        <label>Usuário</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Senha</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Perfil</label>
+                        <select id="perfil" class="form-control">
+                            <option value="SAC">SAC</option>
+                            <option value="Cadastro">Cadastro</option>
+                            <option value="Master">Master</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarUsuario()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalNovoUsuario() {
+    document.getElementById('formUsuario').reset();
+    new bootstrap.Modal(document.getElementById('modalUsuario')).show();
+}
+
+async function salvarUsuario() {
+    const data = {
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        role: document.getElementById('perfil').value
+    };
+    
+    const response = await fetch('/auth/admin/usuario/novo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+        location.reload();
+    } else {
+        alert('Erro: ' + result.error);
+    }
+}
+
+function editarUsuario(id) {
+    // Implementar edição
+    alert('Funcionalidade em desenvolvimento');
+}
+
+function excluirUsuario(id) {
+    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+        fetch(`/auth/admin/usuario/${id}/excluir`, { method: 'DELETE' })
+            .then(() => location.reload());
+    }
+}
+</script>
+{% endblock %}

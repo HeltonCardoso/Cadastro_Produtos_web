@@ -301,6 +301,16 @@ def home():
         )
 
 
+
+@app.route('/admin/usuarios')
+@login_required
+@master_required
+def admin_usuarios():
+    usuarios = Usuario.query.all()
+    perfis = Perfil.query.all()
+    return render_template('admin/usuarios.html', usuarios=usuarios, perfis=perfis, page_title='Gerenciar Usuários')
+
+
 @app.route('/api/google/sheets/list', methods=['GET'])
 def api_listar_google_sheets():
     """Lista planilhas do usuário"""
