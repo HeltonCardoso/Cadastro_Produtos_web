@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Cadastro{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Dashboard Cadastro</h1>
+    <p>Bem-vindo, {{ current_user.username }}! Módulo de Produtos.</p>
+    <div class="alert alert-success">
+        <i class="fas fa-boxes"></i> Aqui você gerencia produtos e atributos.
+    </div>
+</div>
+{% endblock %}

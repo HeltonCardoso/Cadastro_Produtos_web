@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard SAC{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Dashboard SAC</h1>
+    <p>Bem-vindo, {{ current_user.username }}! Módulo de Atendimento.</p>
+    <div class="alert alert-info">
+        <i class="fas fa-headset"></i> Aqui você gerencia pedidos e clientes.
+    </div>
+</div>
+{% endblock %}

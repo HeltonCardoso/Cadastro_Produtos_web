@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Master{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Dashboard Master</h1>
+    <p>Bem-vindo, {{ current_user.username }}! Você tem acesso total.</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Usuários</h5>
+                    <p>Total: {{ stats.total_usuarios }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Processos</h5>
+                    <p>Total: {{ stats.total_processos }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

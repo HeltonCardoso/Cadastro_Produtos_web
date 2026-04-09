@@ -38,23 +38,41 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 
 sys.path.append(str(Path(__file__).parent))
 
+# ============================================
+# CONFIGURAÇÃO DO APP
+# ============================================
+
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 
+# 🔹 PRIMEIRO: Inicializa o banco de dados
+db.init_app(app)
+
+# 🔹 SEGUNDO: Configura o Login Manager (DEPOIS do db.init_app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # Nome da rota de login
+login_manager.login_view = 'login'
 login_manager.login_message = '⚠️ Faça login para acessar esta página'
 login_manager.login_message_category = 'warning'
 
 @login_manager.user_loader
 def load_user(user_id):
     """Carrega o usuário da sessão"""
+    from models import Usuario
     return Usuario.query.get(int(user_id))
+
+# 🔹 TERCEIRO: Registra os blueprints
+app.register_blueprint(metrics_bp)
+app.register_blueprint(intelipost_bp)
+
+# ============================================
+# DECORATORS DE PERMISSÃO (CORRIGIDOS)
+# ============================================
 
 from functools import wraps
 from flask_login import current_user
+from flask import redirect, url_for, flash  # ← IMPORTANTE: adicione estes imports!
 
 def master_required(f):
     """Decorator para rotas que só Master pode acessar"""
@@ -83,9 +101,6 @@ def permissao_modulo(modulo):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
-
-# 🔹 PRIMEIRO: Inicializa o banco de dados
-db.init_app(app)
 
 # 🔹 SEGUNDO: Registra os blueprints (DEPOIS de init_app)
 app.register_blueprint(metrics_bp)
@@ -5253,12 +5268,10 @@ def login():
             
             flash(f'✅ Bem-vindo, {usuario.username}! Perfil: {usuario.perfil}', 'success')
             
-            # Redireciona baseado no perfil
             next_page = request.args.get('next')
             if next_page:
                 return redirect(next_page)
             
-            # Dashboard específico por perfil
             if usuario.is_master():
                 return redirect(url_for('dashboard_master'))
             elif usuario.perfil == 'SAC':
@@ -5289,13 +5302,23 @@ def dashboard():
 @master_required
 def dashboard_master():
     """Dashboard completo para Master"""
+    from models import ItemProcessado  # ← Import dentro da função
+    
     # Estatísticas gerais do sistema
     stats = {
         'total_usuarios': Usuario.query.count(),
         'total_processos': Processo.query.count(),
         'processos_hoje': Processo.query.filter(db.func.date(Processo.data) == datetime.now().date()).count(),
-        'total_itens_processados': db.session.query(db.func.sum(ItemProcessado.id)).scalar() or 0
+        'total_itens_processados': 0  # ← Valor padrão
     }
+    
+    # Tenta buscar total de itens processados (se a tabela existir)
+    try:
+        total = db.session.query(db.func.sum(ItemProcessado.id)).scalar()
+        stats['total_itens_processados'] = total or 0
+    except Exception as e:
+        print(f"Erro ao buscar itens processados: {e}")
+    
     return render_template('dashboard_master.html', stats=stats, page_title='Dashboard Master')
 
 @app.route('/dashboard/sac')
