@@ -800,6 +800,121 @@
     color: #3498db;
 }
 
+
+/* Google OAuth Styles */
+.btn-google {
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-google:hover {
+    background: #357ae8;
+}
+
+.account-info {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.info-success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.info-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.sheet-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sheet-item:hover {
+    background: #f5f5f5;
+    border-color: #4285f4;
+}
+
+.sheet-item i {
+    font-size: 24px;
+    color: #0f9d58;
+}
+
+.sheet-info {
+    flex: 1;
+}
+
+.sheet-info strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.sheet-info small {
+    color: #666;
+    font-size: 11px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.preview-info {
+    margin-top: 15px;
+    padding: 15px;
+    background: #e8f0fe;
+    border-radius: 4px;
+}
+
+.preview-info h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #1a73e8;
+}
+
+.preview-info ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.sheets-list-modal {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.google-auth-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 /* ========================================= */
 /* ANIMAÇÕES SUAVES */
 /* ========================================= */

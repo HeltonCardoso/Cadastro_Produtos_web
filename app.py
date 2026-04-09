@@ -31,13 +31,17 @@ from routes_intelipost import intelipost_bp
 from flask_caching import Cache, logger
 from metrics_api import metrics_bp  # Import do novo blueprint
 from processamento.google_sheets import ler_planilha_google
+from google_auth import GoogleSheetsOAuth, GoogleTokenManager
+
+
 
 sys.path.append(str(Path(__file__).parent))
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
-
+# Inicializa OAuth
+google_oauth = GoogleSheetsOAuth(app)
 
 # 🔹 PRIMEIRO: Inicializa o banco de dados
 db.init_app(app)
@@ -147,7 +151,129 @@ def home():
             page_title='Dashboard'
         )
 
+@app.route('/api/google/sheets/list', methods=['GET'])
+def api_listar_google_sheets():
+    """Lista planilhas do usuário"""
+    try:
+        token_manager = GoogleTokenManager()
+        credentials = token_manager.load_tokens()
+        
+        if not credentials or not credentials.valid:
+            return jsonify({'success': False, 'error': 'Não conectado ao Google'}), 401
+        
+        from googleapiclient.discovery import build
+        service = build('drive', 'v3', credentials=credentials)
+        
+        # Busca arquivos do tipo planilha
+        results = service.files().list(
+            q="mimeType='application/vnd.google-apps.spreadsheet'",
+            pageSize=20,
+            fields="files(id, name, modifiedTime)"
+        ).execute()
+        
+        files = results.get('files', [])
+        
+        return jsonify({
+            'success': True,
+            'sheets': [
+                {'id': f['id'], 'name': f['name'], 'modified': f.get('modifiedTime')}
+                for f in files
+            ]
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/google/sheets/test', methods=['POST'])
+def api_testar_google_sheet():
+    """Testa acesso a uma planilha específica"""
+    try:
+        data = request.get_json()
+        sheet_id = data.get('sheet_id')
+        
+        if not sheet_id:
+            return jsonify({'success': False, 'error': 'ID da planilha obrigatório'}), 400
+        
+        token_manager = GoogleTokenManager()
+        credentials = token_manager.load_tokens()
+        
+        if not credentials or not credentials.valid:
+            return jsonify({'success': False, 'error': 'Não conectado ao Google'}), 401
+        
+        from googleapiclient.discovery import build
+        service = build('sheets', 'v4', credentials=credentials)
+        
+        # Tenta ler informações da planilha
+        spreadsheet = service.spreadsheets().get(spreadsheetId=sheet_id).execute()
+        
+        # Pega nomes das abas
+        sheets = spreadsheet.get('sheets', [])
+        sheet_names = [s['properties']['title'] for s in sheets]
+        
+        # Tenta ler primeiras linhas
+        result = service.spreadsheets().values().get(
+            spreadsheetId=sheet_id,
+            range='A1:E5'
+        ).execute()
+        
+        values = result.get('values', [])
+        
+        return jsonify({
+            'success': True,
+            'message': f'Conexão bem sucedida! Planilha: {spreadsheet["properties"]["title"]}',
+            'preview': {
+                'total_linhas': len(values),
+                'total_colunas': len(values[0]) if values else 0,
+                'abas': sheet_names,
+                'primeiras_linhas': values[:3]
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/google/sheets/config', methods=['POST'])
+def api_salvar_config_google_sheets():
+    """Salva configuração da planilha padrão"""
+    try:
+        data = request.get_json()
+        sheet_id = data.get('sheet_id')
+        sheet_aba = data.get('sheet_aba', '')
+        
+        config_file = Path('config/google_sheets_config.json')
+        config_file.parent.mkdir(exist_ok=True)
+        
+        config = {
+            'sheet_id': sheet_id,
+            'sheet_aba': sheet_aba,
+            'ultima_atualizacao': datetime.now().isoformat()
+        }
+        
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=2)
+        
+        return jsonify({'success': True, 'message': 'Configuração salva!'})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/google/sheets/config', methods=['GET'])
+def api_carregar_config_google_sheets():
+    """Carrega configuração da planilha padrão"""
+    try:
+        config_file = Path('config/google_sheets_config.json')
+        
+        if config_file.exists():
+            with open(config_file, 'r') as f:
+                config = json.load(f)
+        else:
+            config = {'sheet_id': '', 'sheet_aba': ''}
+        
+        return jsonify({'success': True, 'config': config})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    
 @app.route('/api/dashboard/atualizar-metricas')
 def api_atualizar_metricas():
     """API para atualizar métricas do dashboard"""

@@ -214,58 +214,98 @@
 
             <!-- SEÇÃO GOOGLE SHEETS -->
             <div class="settings-section" id="sheets-section">
-                <div class="section-header">
-                    <div class="section-title">
-                        <i class="fas fa-table"></i>
-                        <h2>Google Sheets</h2>
-                    </div>
-                    <div class="section-badge">
-                        <span class="badge badge-success">Conectado</span>
-                    </div>
-                </div>
+    <div class="section-header">
+        <div class="section-title">
+            <i class="fab fa-google"></i>
+            <h2>Google Sheets</h2>
+        </div>
+        <div class="section-badge">
+            <span class="badge" id="googleSheetsBadge">
+                <i class="fas fa-spinner fa-spin"></i> Verificando...
+            </span>
+        </div>
+    </div>
 
-                <div class="section-description">
-                    <p>Configure a conexão com Google Sheets para importação e exportação de dados.</p>
-                </div>
-
-                <!-- CONFIGURAÇÃO -->
-                <div class="simple-form">
-                    <div class="form-group">
-                        <label>
-                            <i class="fas fa-credential"></i> Credenciais
-                        </label>
-                        <div class="info-box">
-                            <i class="fas fa-info-circle"></i>
-                            As credenciais são gerenciadas via arquivo <code>credentials.json</code>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="sheet_id">
-                            <i class="fas fa-id-card"></i> ID da Planilha Padrão
-                        </label>
-                        <input type="text" 
-                               id="sheet_id" 
-                               class="form-control"
-                               value="{{ config.sheet_id }}" 
-                               placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
-                        <small class="form-help">
-                            Encontre no URL: .../spreadsheets/d/<strong>[ID]</strong>/edit
-                        </small>
-                    </div>
-
-                    <div class="form-actions">
-                        <button class="btn-primary" onclick="salvarConfigGoogleSheets()">
-                            <i class="fas fa-save"></i> Salvar Configuração
-                        </button>
-                        <button class="btn-secondary" onclick="testarGoogleSheets()">
-                            <i class="fas fa-vial"></i> Testar Conexão
-                        </button>
-                    </div>
-
-                    <div id="googleSheetsStatus" class="status-message"></div>
-                </div>
+    <div class="section-description">
+        <p>Conecte sua conta do Google para acessar planilhas.</p>
+        <div class="info-box">
+            <i class="fab fa-google"></i>
+            <div>
+                <strong>Autenticação OAuth 2.0</strong>
+                <p>Conecte sua conta do Google de forma segura - sem necessidade de arquivos de credenciais!</p>
             </div>
+        </div>
+    </div>
+
+    <!-- STATUS DA CONEXÃO -->
+    <div class="connection-status" id="googleConnectionStatus">
+        <!-- Status será preenchido via JS -->
+    </div>
+
+    <!-- FORMULÁRIO DE CONFIGURAÇÃO -->
+    <div class="simple-form">
+        <!-- Botão de Conectar Google -->
+        <div class="form-group">
+            <label>
+                <i class="fab fa-google"></i> Conta Google
+            </label>
+            <div id="googleAccountInfo" class="account-info">
+                <!-- Info da conta conectada -->
+            </div>
+            <div class="google-auth-buttons">
+                <button class="btn-google" id="btnConectarGoogle" onclick="conectarGoogleSheets()">
+                    <i class="fab fa-google"></i> Conectar com Google
+                </button>
+                <button class="btn-danger" id="btnDesconectarGoogle" onclick="desconectarGoogleSheets()" style="display: none;">
+                    <i class="fas fa-trash"></i> Desconectar
+                </button>
+            </div>
+            <small class="form-help">
+                O sistema solicitará acesso apenas às planilhas que você permitir
+            </small>
+        </div>
+
+        <!-- ID da Planilha Padrão -->
+        <div class="form-group">
+            <label for="sheet_id">
+                <i class="fas fa-id-card"></i> ID da Planilha Padrão
+            </label>
+            <input type="text" 
+                   id="sheet_id" 
+                   class="form-control"
+                   placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms">
+            <small class="form-help">
+                Encontre no URL da planilha: /spreadsheets/d/<strong>[ID]</strong>/edit
+            </small>
+        </div>
+
+        <!-- Botão para selecionar planilha -->
+        <div class="form-group">
+            <button class="btn-secondary" onclick="selecionarPlanilhaGoogle()" id="btnSelecionarPlanilha" style="display: none;">
+                <i class="fas fa-folder-open"></i> Selecionar Planilha da Lista
+            </button>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary" onclick="salvarConfigGoogleSheets()">
+                <i class="fas fa-save"></i> Salvar Configuração
+            </button>
+            <button class="btn-secondary" onclick="testarGoogleSheets()">
+                <i class="fas fa-vial"></i> Testar Conexão
+            </button>
+        </div>
+
+        <div id="googleSheetsStatus" class="status-message"></div>
+    </div>
+
+    <!-- LISTA DE PLANILHAS RECENTES -->
+    <div class="recent-sheets" id="recentSheets" style="display: none;">
+        <h4><i class="fas fa-history"></i> Planilhas Recentes</h4>
+        <div class="sheets-list" id="sheetsList">
+            <!-- Lista de planilhas -->
+        </div>
+    </div>
+</div>
             <!-- =============================================== -->
 <!-- 🔹 SEÇÃO INTELIPOST (NOVA) -->
 <!-- =============================================== -->
