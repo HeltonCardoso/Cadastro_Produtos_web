@@ -266,7 +266,18 @@ def index():
     else:
         return redirect(url_for('dashboard_master'))
 
-
+@app.route('/home')
+@login_required
+def home():
+    """Página home - redireciona para o dashboard apropriado"""
+    if current_user.is_master():
+        return redirect(url_for('dashboard_master'))
+    elif current_user.perfil == 'SAC':
+        return redirect(url_for('dashboard_sac'))
+    elif current_user.perfil == 'Cadastro':
+        return redirect(url_for('dashboard_cadastro'))
+    else:
+        return redirect(url_for('dashboard_master'))
 
 @app.route('/admin/usuarios')
 @login_required
