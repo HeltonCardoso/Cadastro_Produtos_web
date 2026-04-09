@@ -27,7 +27,7 @@ from processamento.api_anymarket import (consultar_api_anymarket, excluir_foto_a
 from google_sheets_utils import (carregar_configuracao_google_sheets, salvar_configuracao_google_sheets,listar_abas_google_sheets,testar_conexao_google_sheets)
 from routes_intelipost import intelipost_bp
 from flask_caching import Cache, logger
-from metrics_api import metrics_bp  # Import do novo blueprint
+from metrics_api import metrics_bp
 from processamento.google_sheets import ler_planilha_google
 from google_auth import GoogleSheetsOAuth, GoogleTokenManager
 from functools import wraps

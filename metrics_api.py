@@ -12,7 +12,7 @@ import time
 import traceback
 
 # Configuração
-metrics_bp = Blueprint('metrics', __name__)
+metrics_bp = Blueprint('metrics_api', __name__)
 logger = logging.getLogger(__name__)
 
 # Cache simples em memória (dicionário)
