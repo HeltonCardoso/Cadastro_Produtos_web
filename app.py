@@ -242,63 +242,29 @@ def obter_ultima_planilha():
     except Exception as e:
         app.logger.error(f"Erro em obter_ultima_planilha: {str(e)}")
         return None, None
-    
+
+
+@app.route("/sequencia-cadastros")
+@login_required
+@permissao_modulo('produtos')
+def sequencia_cadastros():
+    """Página de sequência de cadastros (antiga home)"""
+    # O mesmo código da home atual
+    return render_template('home.html', page_title='Sequência de Cadastros')
+
+
 @app.route("/")
 @login_required
-def home():
-    """Página inicial simplificada"""
-    try:
-        # Dados básicos - sem consultas pesadas à API
-        processamentos_hoje = 0
-        hoje_sucesso = 0
-        hoje_erro = 0
-        
-        # Verificar última planilha
-        ultima_planilha = None
-        ultima_planilha_data = None
-        
-        # Verificar configuração do AnyMarket (sem fazer consulta real)
-        anymarket_stats = {
-            'sucesso': False,
-            'token_configurado': False,
-            'total_pedidos': 0,
-            'erro': 'Dashboard simplificada - Consulte a página de pedidos para detalhes'
-        }
-        
-        # Verificar se o token está configurado (sem fazer API call)
-        try:
-            from processamento.api_anymarket import obter_token_anymarket_seguro
-            token = obter_token_anymarket_seguro()
-            if token:
-                anymarket_stats['token_configurado'] = True
-                anymarket_stats['sucesso'] = True
-                anymarket_stats['total_pedidos'] = "N/D"
-        except:
-            pass
-        
-        return render_template(
-            'home.html',
-            processamentos_hoje=processamentos_hoje,
-            hoje_sucesso=hoje_sucesso,
-            hoje_erro=hoje_erro,
-            ultima_planilha=ultima_planilha,
-            ultima_planilha_data=ultima_planilha_data,
-            anymarket_stats=anymarket_stats,
-            page_title='Dashboard Simplificada'
-        )
-        
-    except Exception as e:
-        # Em caso de erro, retorna página mínima
-        return render_template(
-            'home.html',
-            processamentos_hoje=0,
-            hoje_sucesso=0,
-            hoje_erro=0,
-            ultima_planilha=None,
-            ultima_planilha_data=None,
-            anymarket_stats={'sucesso': False, 'erro': str(e)},
-            page_title='Dashboard'
-        )
+def index():
+    """Redireciona para o dashboard do perfil"""
+    if current_user.is_master():
+        return redirect(url_for('dashboard_master'))
+    elif current_user.perfil == 'SAC':
+        return redirect(url_for('dashboard_sac'))
+    elif current_user.perfil == 'Cadastro':
+        return redirect(url_for('dashboard_cadastro'))
+    else:
+        return redirect(url_for('dashboard_master'))
 
 
 
