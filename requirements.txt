@@ -1,10 +1,44 @@
+# Framework principal
 Flask>=2.3.0
+Werkzeug>=2.3.0
+Jinja2>=3.1.0
+
+# Banco de dados
 Flask-SQLAlchemy>=3.1.0
+SQLAlchemy>=2.0.0
+
+# Google Sheets
 gspread>=5.12.0
 google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-auth-httplib2>=0.1.0
+
+# Processamento de dados
 pandas>=2.0.0
 openpyxl>=3.1.0
+xlrd>=2.0.0
+
+# Requisições HTTP
 requests>=2.31.0
+
+# Cache (FALTOU!)
+Flask-Caching>=2.1.0
+
+# Web scraping
 beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Utilitários
+python-dateutil>=2.8.0
+pytz>=2023.0
+uuid6>=2023.12.0
+
+# Segurança
 python-dotenv>=1.0.0
+cryptography>=41.0.0
+
+# Servidor para produção
 gunicorn>=21.2.0
+
+# Logging
+python-json-logger>=2.0.0
