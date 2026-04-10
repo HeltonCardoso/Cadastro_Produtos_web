@@ -1,4 +1,4 @@
-// Controle do Sidebar e Funcionalidades
+// Controle do Sidebar e Funcionalidades - UM MÓDULO POR VEZ
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔄 Inicializando sidebar...');
     
@@ -9,207 +9,297 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileToggle = document.querySelector('#mobileToggle');
     const overlay = document.querySelector('.sidebar-overlay');
     const darkModeBtn = document.querySelector('#darkModeToggle');
-    const logoutBtn = document.querySelector('#logoutBtn');
     const moduleToggles = document.querySelectorAll('.module-toggle');
     const menuGroups = document.querySelectorAll('.menu-group');
 
+    // Botão de logout
+    const logoutBtn = document.querySelector('.logout-item, #logoutBtn');
+    
     // Estado inicial
     let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    let expandedModules = JSON.parse(localStorage.getItem('expandedModules') || '["configuracoes"]');
-
-    // Inicializar estado do sidebar
-    function initSidebarState() {
-        console.log('📊 Estado inicial:', { isSidebarCollapsed, expandedModules });
+    
+    // ============================================
+    // 🎯 DESTACAR LINK ATIVO (APENAS COR, SEM EXPANDIR)
+    // ============================================
+    
+    const currentPath = window.location.pathname;
+    console.log(`📍 URL atual: ${currentPath}`);
+    
+    // Função apenas para destacar o link ativo (sem expandir módulo)
+    function highlightActiveLinkOnly() {
+        let activeFound = false;
         
-        if (isSidebarCollapsed) {
-            sidebar.classList.add('collapsed');
-            console.log('📱 Sidebar iniciado como RECOLHIDO → (seta para direita)');
-            // Quando recolhido, força mostrar todos os subitens
-            showAllSubitems();
-        } else {
-            sidebar.classList.remove('collapsed');
-            console.log('💻 Sidebar iniciado como EXPANDIDO ← (seta para esquerda)');
-            // Quando expandido, restaura estado dos módulos
-            restoreModulesState();
-        }
-        updateToggleIcon();
-        addTooltips();
-        forceIconsVisibility();
-    }
-
-    // Função para mostrar todos os subitens quando sidebar recolhido
-    function showAllSubitems() {
-        if (!sidebar.classList.contains('collapsed')) return;
-        
-        console.log('📂 Mostrando todos os subitens (sidebar recolhido)');
-        menuGroups.forEach(group => {
-            const subitems = group.querySelector('.menu-subitems');
-            if (subitems) {
-                subitems.style.display = 'block';
-                subitems.style.opacity = '1';
-                subitems.style.visibility = 'visible';
-                subitems.style.height = 'auto';
+        document.querySelectorAll('.sidebar .menu-item').forEach(link => {
+            const href = link.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript:')) return;
+            
+            // Remove classe active de todos
+            link.classList.remove('active');
+            
+            // Verifica se é o link atual
+            let isActive = false;
+            
+            if (href.startsWith('/')) {
+                // Comparação exata
+                if (currentPath === href) {
+                    isActive = true;
+                }
+                // Home especial
+                else if (href === '/home' && (currentPath === '/' || currentPath === '/home')) {
+                    isActive = true;
+                }
+                // Para rotas com prefixo (ex: /dashboard/master)
+                else if (href !== '/' && currentPath.startsWith(href + '/')) {
+                    isActive = true;
+                }
+                // Para a rota raiz
+                else if (href === '/' && currentPath === '/') {
+                    isActive = true;
+                }
             }
             
-            // Também mostra todos os itens
-            const menuItems = group.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                item.style.display = 'flex';
-                item.style.opacity = '1';
-                item.style.visibility = 'visible';
-                item.style.height = 'auto';
-            });
+            if (isActive) {
+                link.classList.add('active');
+                activeFound = true;
+                console.log(`✅ Link ativo destacado: ${href}`);
+            }
         });
+        
+        return activeFound;
     }
-
-    // Função para restaurar estado dos módulos quando sidebar expandido
-    function restoreModulesState() {
-        if (sidebar.classList.contains('collapsed')) return;
-        
-        console.log('📂 Restaurando estado dos módulos (sidebar expandido)');
-        
-        // Primeiro fecha todos
+    
+    // ============================================
+    // FUNÇÕES PARA EXPANSÃO DE MÓDULOS
+    // ============================================
+    
+    // Fecha TODOS os módulos
+    function closeAllModules() {
         menuGroups.forEach(group => {
-            const moduleName = group.dataset.module;
+            group.classList.remove('expanded');
             const subitems = group.querySelector('.menu-subitems');
             const toggle = group.querySelector('.module-toggle');
             
             if (subitems) {
                 subitems.style.display = 'none';
-                subitems.style.opacity = '0';
             }
             if (toggle) {
-                toggle.style.transform = 'rotate(-90deg)';
-                toggle.style.opacity = '0.5';
+                toggle.classList.remove('fa-caret-down');
+                toggle.classList.add('fa-caret-right');
             }
-            group.classList.remove('expanded');
         });
+        console.log('📂 Todos os módulos fechados');
+    }
+    
+    // Expande um módulo específico e fecha os outros
+    function expandModuleAndCloseOthers(moduleGroup) {
+        if (!moduleGroup) return;
         
-        // Depois expande apenas os salvos
-        expandedModules.forEach(moduleName => {
-            const module = document.querySelector(`[data-module="${moduleName}"]`);
+        // Fecha todos os módulos primeiro
+        closeAllModules();
+        
+        // Expande apenas o módulo selecionado
+        const subitems = moduleGroup.querySelector('.menu-subitems');
+        const toggle = moduleGroup.querySelector('.module-toggle');
+        
+        moduleGroup.classList.add('expanded');
+        if (subitems) {
+            subitems.style.display = 'block';
+        }
+        if (toggle) {
+            toggle.classList.remove('fa-caret-right');
+            toggle.classList.add('fa-caret-down');
+        }
+        
+        const moduleName = moduleGroup.getAttribute('data-module');
+        console.log(`📂 Módulo expandido: ${moduleName} (outros fechados)`);
+        
+        // Salva apenas este módulo no localStorage
+        localStorage.setItem('expandedModules', JSON.stringify([moduleName]));
+    }
+    
+    // Restaura estado dos módulos do localStorage (apenas um módulo)
+    function restoreModulesFromStorage() {
+        if (sidebar.classList.contains('collapsed')) return;
+        
+        // Carrega módulo salvo
+        let savedModules = [];
+        try {
+            const saved = localStorage.getItem('expandedModules');
+            if (saved) {
+                savedModules = JSON.parse(saved);
+            }
+        } catch(e) {}
+        
+        // Fecha todos primeiro
+        closeAllModules();
+        
+        // Expande apenas o primeiro módulo salvo (se houver)
+        if (savedModules.length > 0) {
+            const moduleName = savedModules[0];
+            const module = document.querySelector(`.menu-group[data-module="${moduleName}"]`);
             if (module) {
-                module.classList.add('expanded');
-                const subitems = module.querySelector('.menu-subitems');
-                const toggle = module.querySelector('.module-toggle');
-                if (subitems) {
-                    subitems.style.display = 'block';
-                    subitems.style.opacity = '1';
-                    subitems.style.animation = 'none';
-                    setTimeout(() => {
-                        subitems.style.animation = '';
-                    }, 10);
-                }
-                if (toggle) {
-                    toggle.style.transform = 'rotate(0deg)';
-                    toggle.style.opacity = '1';
-                }
-                console.log(`📂 Módulo "${moduleName}" expandido`);
+                expandModuleAndCloseOthers(module);
+            }
+        }
+    }
+    
+    // Mostrar todos os subitens quando sidebar recolhido
+    function showAllSubitems() {
+        if (!sidebar.classList.contains('collapsed')) return;
+        
+        menuGroups.forEach(group => {
+            const subitems = group.querySelector('.menu-subitems');
+            if (subitems) {
+                subitems.style.display = 'block';
             }
         });
     }
 
-    // Garantir que ícones sejam visíveis
-    function forceIconsVisibility() {
-        const menuIcons = document.querySelectorAll('.menu-icon');
-        menuIcons.forEach(icon => {
-            icon.style.display = 'flex';
-            icon.style.visibility = 'visible';
-            icon.style.opacity = '1';
-        });
-    }
-
-    // Inicializar
-    initSidebarState();
-
-    // Toggle Sidebar Desktop (colapsar/expandir)
-    toggleSidebarBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        isSidebarCollapsed = !isSidebarCollapsed;
-        console.log(`🔄 Toggle sidebar: ${isSidebarCollapsed ? 'RECOLHENDO' : 'EXPANDINDO'}`);
-        
-        sidebar.classList.toggle('collapsed');
-        localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
-        
-        // Se estiver recolhendo, mostra todos os subitens
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
+    
+    function initSidebar() {
+        // Aplica estado de colapso
         if (isSidebarCollapsed) {
+            sidebar.classList.add('collapsed');
+            console.log('📱 Sidebar iniciado como RECOLHIDO');
             showAllSubitems();
         } else {
-            // Se estiver expandindo, restaura estado dos módulos
-            restoreModulesState();
+            sidebar.classList.remove('collapsed');
+            console.log('💻 Sidebar iniciado como EXPANDIDO');
+            // Restaura módulo expandido (se houver)
+            restoreModulesFromStorage();
         }
         
-        updateToggleIcon();
-        addTooltips();
-        forceIconsVisibility();
-    });
-
-    // Toggle Sidebar Mobile
-    sidebarToggler.addEventListener('click', function() {
-        console.log('📱 Toggle mobile clicado');
-        sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('mobile-open');
-        document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+        // Destaca o link ativo (apenas cor, sem expandir)
+        highlightActiveLinkOnly();
         
-        // Em mobile, se abrir o menu, força expandir sidebar
-        if (sidebar.classList.contains('mobile-open')) {
-            sidebar.classList.remove('collapsed');
-            restoreModulesState();
+        // Atualiza ícone do toggle
+        updateToggleIcon();
+        
+        // Adiciona tooltips se necessário
+        addTooltips();
+    }
+    
+    function updateToggleIcon() {
+        const icon = toggleSidebarBtn?.querySelector('i');
+        if (icon) {
+            if (sidebar.classList.contains('collapsed')) {
+                icon.className = 'fas fa-chevron-right';
+                toggleSidebarBtn.title = 'Expandir menu';
+            } else {
+                icon.className = 'fas fa-chevron-left';
+                toggleSidebarBtn.title = 'Recolher menu';
+            }
+        }
+    }
+    
+    function addTooltips() {
+        document.querySelectorAll('[data-tooltip]').forEach(el => {
+            el.removeAttribute('data-tooltip');
+        });
+        
+        if (sidebar.classList.contains('collapsed') && window.innerWidth > 768) {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const textElement = item.querySelector('.menu-text');
+                if (textElement && textElement.textContent.trim()) {
+                    item.setAttribute('data-tooltip', textElement.textContent.trim());
+                }
+            });
+        }
+    }
+    
+    // ============================================
+    // EVENTOS
+    // ============================================
+    
+    // Toggle Sidebar Desktop
+    if (toggleSidebarBtn) {
+        toggleSidebarBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isSidebarCollapsed = !sidebar.classList.contains('collapsed');
+            
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
+            
+            if (isSidebarCollapsed) {
+                showAllSubitems();
+            } else {
+                restoreModulesFromStorage();
+            }
+            
             updateToggleIcon();
             addTooltips();
-        }
-    });
-
-    // Mobile toggle
-    mobileToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        console.log('📱 Mobile toggle clicado');
-        sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('mobile-open');
-        document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
-    });
-
+        });
+    }
+    
+    // Toggle Sidebar Mobile
+    if (sidebarToggler) {
+        sidebarToggler.addEventListener('click', function() {
+            sidebar.classList.toggle('mobile-open');
+            if (overlay) overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+            
+            if (sidebar.classList.contains('mobile-open')) {
+                sidebar.classList.remove('collapsed');
+                restoreModulesFromStorage();
+                updateToggleIcon();
+            }
+        });
+    }
+    
+    // Mobile toggle button
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('mobile-open');
+            if (overlay) overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+        });
+    }
+    
     // Fechar sidebar ao clicar no overlay
-    overlay.addEventListener('click', function() {
-        console.log('❌ Overlay clicado, fechando sidebar');
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('mobile-open');
-        document.body.style.overflow = '';
-    });
-
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    }
+    
     // Dark Mode Toggle
-    darkModeBtn.addEventListener('click', function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        console.log(`🌙 Alternando tema: ${currentTheme} -> ${newTheme}`);
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        // Atualizar ícone
-        const icon = this.querySelector('i');
-        const text = this.querySelector('.menu-text');
-        if (newTheme === 'dark') {
-            icon.className = 'fas fa-sun';
-            text.textContent = 'Modo Claro';
-        } else {
-            icon.className = 'fas fa-moon';
-            text.textContent = 'Modo Escuro';
-        }
-    });
-
+    if (darkModeBtn) {
+        darkModeBtn.addEventListener('click', function() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            
+            const icon = this.querySelector('i');
+            const text = this.querySelector('.menu-text');
+            if (isDark) {
+                icon.className = 'fas fa-sun';
+                if (text) text.textContent = 'MODO CLARO';
+            } else {
+                icon.className = 'fas fa-moon';
+                if (text) text.textContent = 'MODO ESCURO';
+            }
+        });
+    }
+    
     // Logout button
-    logoutBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (confirm('Tem certeza que deseja sair?')) {
-            console.log('🚪 Usuário solicitou logout');
-            // Implementar logout aqui
-            // window.location.href = '/logout';
-        }
-    });
-
-    // Module toggle functionality - APENAS quando sidebar expandido
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Tem certeza que deseja sair?')) {
+                window.location.href = '/logout';
+            }
+        });
+    }
+    
+    // ============================================
+    // CLIQUE NOS MÓDULOS (EXPANDIR UM, FECHAR OUTROS)
+    // ============================================
+    
     moduleToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -221,212 +311,96 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const menuGroup = this.closest('.menu-group');
-            const moduleName = menuGroup.dataset.module;
-            const subitems = menuGroup.querySelector('.menu-subitems');
+            const moduleName = menuGroup.getAttribute('data-module');
+            const isExpanded = menuGroup.classList.contains('expanded');
             
-            console.log(`📂 Toggle módulo: ${moduleName} (sidebar expandido)`);
-            
-            if (menuGroup.classList.contains('expanded')) {
-                // Collapse
-                menuGroup.classList.remove('expanded');
-                if (subitems) {
-                    subitems.style.display = 'none';
-                    subitems.style.opacity = '0';
-                }
-                this.style.transform = 'rotate(-90deg)';
-                this.style.opacity = '0.5';
-                
-                // Remove do localStorage
-                expandedModules = expandedModules.filter(m => m !== moduleName);
-                console.log(`📂 Módulo "${moduleName}" recolhido`);
+            if (isExpanded) {
+                // Se já está expandido, RECOLHE (fecha este módulo)
+                closeAllModules();
+                // Salva lista vazia (nenhum módulo expandido)
+                localStorage.setItem('expandedModules', JSON.stringify([]));
+                console.log(`📂 Módulo "${moduleName}" recolhido - nenhum módulo expandido`);
             } else {
-                // Fecha todos os outros módulos primeiro
-                menuGroups.forEach(group => {
-                    const otherModuleName = group.dataset.module;
-                    if (otherModuleName !== moduleName) {
-                        group.classList.remove('expanded');
-                        const otherSubitems = group.querySelector('.menu-subitems');
-                        const otherToggle = group.querySelector('.module-toggle');
-                        if (otherSubitems) {
-                            otherSubitems.style.display = 'none';
-                            otherSubitems.style.opacity = '0';
-                        }
-                        if (otherToggle) {
-                            otherToggle.style.transform = 'rotate(-90deg)';
-                            otherToggle.style.opacity = '0.5';
-                        }
-                        
-                        // Remove do array de módulos expandidos
-                        expandedModules = expandedModules.filter(m => m !== otherModuleName);
-                    }
-                });
-                
-                // Expand este módulo
-                menuGroup.classList.add('expanded');
-                if (subitems) {
-                    subitems.style.display = 'block';
-                    subitems.style.opacity = '1';
-                }
-                this.style.transform = 'rotate(0deg)';
-                this.style.opacity = '1';
-                
-                // Adicionar ao localStorage (será o único)
-                expandedModules = [moduleName];
-                console.log(`📂 Módulo "${moduleName}" expandido (únicos)`);
+                // Expande este módulo e fecha os outros
+                expandModuleAndCloseOthers(menuGroup);
             }
-            
-            localStorage.setItem('expandedModules', JSON.stringify(expandedModules));
         });
     });
-
-    // Toggle modules on title click (apenas quando expandido)
+    
+    // Clique no título do módulo também expande/recolhe
     document.querySelectorAll('.menu-title').forEach(title => {
         title.addEventListener('click', function(e) {
-            // Só permite toggle se não estiver em modo colapsado
             if (!sidebar.classList.contains('collapsed')) {
                 const toggle = this.querySelector('.module-toggle');
                 if (toggle) {
-                    console.log('📂 Clicou no título do módulo');
+                    e.preventDefault();
                     toggle.click();
                 }
             }
         });
     });
-
-    // Carregar tema salvo
+    
+    // ============================================
+    // TEMA E RELÓGIO
+    // ============================================
+    
     function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        console.log(`🎨 Carregando tema: ${savedTheme}`);
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        
-        // Atualizar ícone do dark mode conforme tema salvo
-        if (darkModeBtn) {
-            const icon = darkModeBtn.querySelector('i');
-            const text = darkModeBtn.querySelector('.menu-text');
-            if (savedTheme === 'dark') {
-                icon.className = 'fas fa-sun';
-                text.textContent = 'Modo Claro';
-            } else {
-                icon.className = 'fas fa-moon';
-                text.textContent = 'Modo Escuro';
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            if (darkModeBtn) {
+                const icon = darkModeBtn.querySelector('i');
+                const text = darkModeBtn.querySelector('.menu-text');
+                if (icon) icon.className = 'fas fa-sun';
+                if (text) text.textContent = 'MODO CLARO';
             }
         }
     }
-
     initTheme();
-
-    // Relógio
+    
     function updateClock() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('pt-BR', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit' 
-        });
-        const dateString = now.toLocaleDateString('pt-BR');
         const clockElement = document.getElementById('clock');
         if (clockElement) {
-            clockElement.textContent = `${dateString} ${timeString}`;
+            const now = new Date();
+            clockElement.textContent = now.toLocaleTimeString('pt-BR');
         }
     }
-    
     setInterval(updateClock, 1000);
     updateClock();
-
-    // Fechar sidebar ao redimensionar para desktop
+    
+    // ============================================
+    // RESPONSIVIDADE
+    // ============================================
+    
     window.addEventListener('resize', function() {
-        if (window.innerWidth > 1024) {
+        if (window.innerWidth > 992) {
             if (sidebar.classList.contains('mobile-open')) {
-                console.log('📱 Redimensionou para desktop, fechando menu mobile');
                 sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('mobile-open');
+                if (overlay) overlay.classList.remove('active');
                 document.body.style.overflow = '';
-                
-                // Restaura estado do sidebar
-                if (isSidebarCollapsed) {
-                    sidebar.classList.add('collapsed');
-                    showAllSubitems();
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    restoreModulesState();
-                }
-                updateToggleIcon();
-                addTooltips();
-                forceIconsVisibility();
             }
         }
     });
-
-    // Helper functions
-    function updateToggleIcon() {
-        const icon = toggleSidebarBtn.querySelector('i');
-        if (icon) {
-            if (isSidebarCollapsed) {
-                // Sidebar RECOLHIDO: seta para DIREITA →
-                icon.className = 'fas fa-chevron-right';
-                toggleSidebarBtn.title = 'Expandir menu';
-                toggleSidebarBtn.style.fontSize = '1.4rem';
-                console.log('➡️ Seta definida para DIREITA (sidebar recolhido)');
-            } else {
-                // Sidebar EXPANDIDO: seta para ESQUERDA ←
-                icon.className = 'fas fa-chevron-left';
-                toggleSidebarBtn.title = 'Recolher menu';
-                toggleSidebarBtn.style.fontSize = '1.2rem';
-                console.log('⬅️ Seta definida para ESQUERDA (sidebar expandido)');
-            }
-        }
-    }
-
-    function addTooltips() {
-        // Remove tooltips antigos
-        document.querySelectorAll('[data-tooltip]').forEach(el => {
-            el.removeAttribute('data-tooltip');
-        });
-
-        // Adiciona tooltips se sidebar estiver colapsado E não estiver em mobile
-        if (sidebar.classList.contains('collapsed') && window.innerWidth > 1024) {
-            console.log('🛠️ Adicionando tooltips para sidebar colapsado');
-            
-            // Tooltips para itens de menu
-            document.querySelectorAll('.menu-item').forEach(item => {
-                const textElement = item.querySelector('.menu-text');
-                if (textElement) {
-                    const text = textElement.textContent;
-                    item.setAttribute('data-tooltip', text);
-                }
-            });
-            
-            // Tooltips para títulos de módulos
-            document.querySelectorAll('.menu-title').forEach(title => {
-                const textElement = title.querySelector('.menu-title-text');
-                if (textElement) {
-                    const text = textElement.textContent;
-                    title.setAttribute('data-tooltip', text);
-                }
-            });
-            
-            // Tooltip para logo
-            const logoContainer = document.querySelector('.logo-container');
-            if (logoContainer) {
-                logoContainer.setAttribute('data-tooltip', 'MPOZENATO Sistema');
-            }
-            
-            // Tooltip para botão de toggle
-            toggleSidebarBtn.setAttribute('data-tooltip', isSidebarCollapsed ? 'Expandir menu' : 'Recolher menu');
-        }
-    }
-
-    // Fechar sidebar ao clicar fora (apenas mobile)
+    
     document.addEventListener('click', function(e) {
-        if (window.innerWidth <= 1024 && 
+        if (window.innerWidth <= 992 && 
             sidebar.classList.contains('mobile-open') && 
             !sidebar.contains(e.target) && 
-            !sidebarToggler.contains(e.target)) {
+            sidebarToggler && !sidebarToggler.contains(e.target) &&
+            mobileToggle && !mobileToggle.contains(e.target)) {
             sidebar.classList.remove('mobile-open');
-            overlay.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('active');
             document.body.style.overflow = '';
         }
     });
-
-    console.log('✅ Sidebar inicializado com sucesso');
+    
+    // INICIALIZA
+    initSidebar();
+    
+    console.log('✅ Sidebar inicializada - Um módulo por vez');
 });
+
+// Função global para o modal Sobre
+window.mostrarSobre = function() {
+    alert('Sistema MPOZENATO - Versão 2.0\nDesenvolvido por Helton Cardoso');
+};

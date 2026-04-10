@@ -244,15 +244,6 @@ def obter_ultima_planilha():
         return None, None
 
 
-@app.route("/sequencia-cadastros")
-@login_required
-@permissao_modulo('produtos')
-def sequencia_cadastros():
-    """Página de sequência de cadastros (antiga home)"""
-    # O mesmo código da home atual
-    return render_template('home.html', page_title='Sequência de Cadastros')
-
-
 @app.route("/")
 @login_required
 def index():
@@ -278,6 +269,15 @@ def home():
         return redirect(url_for('dashboard_cadastro'))
     else:
         return redirect(url_for('dashboard_master'))
+
+@app.route('/sequencia-cadastros')
+@login_required
+#@permissao_modulo('produtos')
+def sequencia_cadastros():
+    """Página de sequência de cadastros"""
+    return render_template('sequencia_cadastros.html', 
+                         active_page='sequencia_cadastros',
+                         page_title='Sequência de Cadastros')
 
 @app.route('/admin/usuarios')
 @login_required

@@ -56,7 +56,7 @@
           </div>
           <div class="menu-subitems">
             <!-- Home/Sequência de Cadastros -->
-            <a href="{{ url_for('home') }}" class="menu-item {% if active_page == 'home' %}active{% endif %}">
+            <a href="{{ url_for('sequencia_cadastros') }}" class="menu-item {% if active_page == 'sequencia_cadastros' %}active{% endif %}">
               <div class="menu-icon">
                 <i class="fas fa-clipboard-list"></i>
               </div>
@@ -156,7 +156,8 @@
         </div>
         {% endif %}
 
-        <!-- Módulo Intelipost (todos os perfis) -->
+        <!-- Módulo Intelipost (master e SAC) -->
+        {% if current_user.is_master() or current_user.perfil == 'SAC' %}
         <div class="menu-group" data-module="intelipost">
           <div class="menu-title">
             <i class="fas fa-caret-down module-toggle"></i>
@@ -183,6 +184,7 @@
             </a>
           </div>
         </div>
+        {% endif %}
 
         <!-- Módulo Configurações (apenas Master) -->
         {% if current_user.is_master() %}
