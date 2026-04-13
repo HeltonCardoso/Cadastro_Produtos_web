@@ -1,152 +1,758 @@
 {% extends 'base.html' %}
 
-{% block title %}Alterar Modelo - Mercado Livre{% endblock %}
+{% block title %}Campo Modelo - Mercado Livre{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-tag"></i> Alterar Modelo do Produto</h3>
-                    <p class="text-muted">Altere o atributo "Modelo" dos seus anúncios do Mercado Livre</p>
+<style>
+/* ============================================
+   RESET E CONTAINER PRINCIPAL - TELA CHEIA
+============================================ */
+.modelo-container {
+    min-height: calc(100vh - 120px);
+    padding: 0;
+    margin: 0;
+    background: #f5f7fa;
+}
+
+.modelo-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+}
+
+/* ============================================
+   HEADER
+============================================ */
+.modelo-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.header-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.header-text h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.header-text p {
+    margin: 8px 0 0;
+    opacity: 0.9;
+    font-size: 15px;
+}
+
+/* ============================================
+   TABS
+============================================ */
+.modelo-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    background: white;
+    padding: 6px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #6c757d;
+}
+
+.tab-btn i {
+    font-size: 18px;
+}
+
+.tab-btn:hover {
+    background: #f1f3f5;
+    color: #495057;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   CARDS PRINCIPAIS
+============================================ */
+.card-search {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Grid de 2 colunas */
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+/* ============================================
+   SEARCH AREA
+============================================ */
+.search-section {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.section-title i {
+    color: #667eea;
+    font-size: 20px;
+}
+
+/* ============================================
+   INPUTS
+============================================ */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.input-group label i {
+    color: #667eea;
+    margin-right: 8px;
+}
+
+.input-moderno {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    background: white;
+}
+
+.input-moderno:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.textarea-moderno {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.textarea-moderno:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-group small {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #718096;
+}
+
+/* ============================================
+   BOTÕES
+============================================ */
+.btn-search {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-success {
+    padding: 14px 28px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-success:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+    padding: 14px 28px;
+    background: #64748b;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
+
+.btn-batch {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-batch:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+/* ============================================
+   PRODUCT CARD
+============================================ */
+.product-card {
+    background: #f8fafc;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    height: fit-content;
+}
+
+.product-header {
+    background: #e2e8f0;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-header i {
+    color: #667eea;
+    font-size: 20px;
+}
+
+.product-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.product-body {
+    padding: 24px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.info-label {
+    width: 100px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.info-value {
+    flex: 1;
+    color: #1e293b;
+    word-break: break-word;
+}
+
+.badge-modelo {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e0e7ff;
+    color: #4338ca;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ============================================
+   ALTERACAO AREA
+============================================ */
+.alteracao-section {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    margin-top: 24px;
+}
+
+/* ============================================
+   RESULT AREA
+============================================ */
+.result-area {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid #e2e8f0;
+}
+
+.alert-success {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    padding: 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-table {
+    margin-top: 20px;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.result-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.result-table th {
+    background: #f1f5f9;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+}
+
+.result-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.result-table .success-row {
+    background: #f0fdf4;
+}
+
+.result-table .error-row {
+    background: #fef2f2;
+}
+
+/* ============================================
+   LOADING OVERLAY
+============================================ */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+    margin: 0;
+    color: #475569;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* ============================================
+   RESPONSIVIDADE
+============================================ */
+@media (max-width: 1024px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .modelo-wrapper {
+        padding: 20px;
+    }
+    
+    .modelo-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .modelo-wrapper {
+        padding: 16px;
+    }
+    
+    .card-search {
+        padding: 20px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-success, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .info-row {
+        flex-direction: column;
+    }
+    
+    .info-label {
+        width: auto;
+        margin-bottom: 6px;
+    }
+    
+    .tab-btn span {
+        display: none;
+    }
+    
+    .tab-btn i {
+        margin: 0;
+        font-size: 20px;
+    }
+}
+</style>
+
+<div class="modelo-container">
+    <div class="modelo-wrapper">
+        <!-- TABS -->
+        <div class="modelo-tabs">
+            <button class="tab-btn active" data-tab="single">
+                <i class="fas fa-search"></i>
+                <span>MLB</span>
+            </button>
+            <button class="tab-btn" data-tab="batch">
+                <i class="fas fa-layer-group"></i>
+                <span>Múltiplos MLBs</span>
+            </button>
+        </div>
+
+        <!-- TAB ÚNICO MLB -->
+        <div class="tab-content active" id="tab-single">
+            <div class="card-search">
+                <div class="two-columns">
+                    <!-- Coluna Esquerda - Busca -->
+                    <div class="search-section">
+                        <div class="section-title">
+                            <i class="fas fa-search"></i>
+                            <span>Buscar Produto</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="mlb_single">
+                                <i class="fas fa-barcode"></i> MLB do Produto
+                            </label>
+                            <input type="text" 
+                                   id="mlb_single" 
+                                   class="input-moderno" 
+                                   placeholder="Ex: MLB1234567890">
+                            <small>Digite o MLB do produto que deseja alterar</small>
+                        </div>
+                        <button class="btn-search" onclick="buscarProduto()">
+                            <i class="fas fa-search"></i> Buscar Produto
+                        </button>
+                    </div>
+
+                    <!-- Coluna Direita - Informações do Produto -->
+                    <div id="produtoInfo" style="display: none;">
+                        <div class="product-card">
+                            <div class="product-header">
+                                <i class="fas fa-box"></i>
+                                <h3>Informações do Produto</h3>
+                            </div>
+                            <div class="product-body">
+                                <div class="info-row">
+                                    <span class="info-label">Título:</span>
+                                    <span class="info-value" id="produtoTitulo">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">MLB:</span>
+                                    <span class="info-value" id="produtoMLB">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Modelo:</span>
+                                    <span class="info-value">
+                                        <span class="badge-modelo" id="modeloAtual">-</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    
-                    <!-- Abas -->
-                    <ul class="nav nav-tabs mb-4" id="modeloTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">
-                                <i class="fas fa-search"></i> Único MLB
+
+                <!-- Área de Alteração -->
+                <div id="formAlteracao" style="display: none;">
+                    <div class="alteracao-section">
+                        <div class="section-title">
+                            <i class="fas fa-pen"></i>
+                            <span>Alterar Modelo</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="novo_modelo">
+                                <i class="fas fa-tag"></i> Novo Modelo
+                            </label>
+                            <input type="text" 
+                                   id="novo_modelo" 
+                                   class="input-moderno" 
+                                   placeholder="Digite o modelo desejado">
+                            <small>Ex: Esportivo, Luxo, Básico, Daisy, Rose, etc.</small>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-success" onclick="alterarModelo()">
+                                <i class="fas fa-save"></i> Salvar
                             </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
-                                <i class="fas fa-layer-group"></i> Múltiplos MLBs
+                            <button class="btn-secondary" onclick="limparForm()">
+                                <i class="fas fa-eraser"></i> Limpar
                             </button>
-                        </li>
-                    </ul>
-                    
-                    <div class="tab-content" id="modeloTabContent">
-                        
-                        <!-- ABA 1: Único MLB -->
-                        <div class="tab-pane fade show active" id="single" role="tabpanel">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="mlb_single">MLB do Produto</label>
-                                        <input type="text" id="mlb_single" class="form-control" placeholder="Ex: MLB1234567890">
-                                        <small class="text-muted">Digite o MLB do produto que deseja alterar</small>
-                                    </div>
-                                    <button class="btn btn-primary" onclick="buscarProduto()">
-                                        <i class="fas fa-search"></i> Buscar Produto
-                                    </button>
-                                </div>
-                                <div class="col-md-6">
-                                    <div id="produtoInfo" style="display: none;">
-                                        <div class="card bg-light">
-                                            <div class="card-body">
-                                                <h5><i class="fas fa-box"></i> Informações do Produto</h5>
-                                                <p><strong>Título:</strong> <span id="produtoTitulo"></span></p>
-                                                <p><strong>MLB:</strong> <span id="produtoMLB"></span></p>
-                                                <p><strong>Modelo Atual:</strong> 
-                                                    <span id="modeloAtual" class="badge bg-info"></span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row mt-4" id="formAlteracao" style="display: none;">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="novo_modelo">Novo Modelo</label>
-                                        <input type="text" id="novo_modelo" class="form-control" 
-                                               placeholder="Digite o modelo desejado (ex: Esportivo, Luxo, Básico, Daisy, Rose)">
-                                        <small class="text-muted">Digite qualquer valor - será salvo exatamente como digitado</small>
-                                    </div>
-                                    
-                                    <div class="mt-3">
-                                        <button class="btn btn-success" onclick="alterarModelo()">
-                                            <i class="fas fa-save"></i> Alterar Modelo
-                                        </button>
-                                        <button class="btn btn-secondary" onclick="limparForm()">
-                                            <i class="fas fa-eraser"></i> Limpar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                        
-                        <!-- ABA 2: Múltiplos MLBs -->
-                        <div class="tab-pane fade" id="batch" role="tabpanel">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="mlbs_lista">Lista de MLBs</label>
-                                        <textarea id="mlbs_lista" class="form-control" rows="5" 
-                                            placeholder="MLB1234567890&#10;MLB0987654321&#10;MLB1122334455"></textarea>
-                                        <small class="text-muted">Digite um MLB por linha</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="novo_modelo_batch">Novo Modelo (para todos)</label>
-                                        <input type="text" id="novo_modelo_batch" class="form-control" 
-                                               placeholder="Digite o modelo desejado (ex: Esportivo, Luxo, Básico, Daisy, Rose)">
-                                        <small class="text-muted">Digite qualquer valor - será aplicado a todos os MLBs</small>
-                                    </div>
-                                    
-                                    <div class="mt-3">
-                                        <button class="btn btn-warning" onclick="alterarMultiplosModelos()">
-                                            <i class="fas fa-layer-group"></i> Alterar em Lote
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div id="resultadoLote" style="display: none;">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5>Resultado da Operação</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div id="resultadoLoteContent"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
-                    
-                    <!-- Loading -->
-                    <div id="loading" class="text-center mt-4" style="display: none;">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Carregando...</span>
+                </div>
+
+                <!-- Resultado -->
+                <div id="resultado" class="result-area" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- TAB MÚLTIPLOS MLBs -->
+        <div class="tab-content" id="tab-batch">
+            <div class="card-search">
+                <div class="two-columns">
+                    <!-- Coluna Esquerda - Lista de MLBs -->
+                    <div class="search-section">
+                        <div class="section-title">
+                            <i class="fas fa-list"></i>
+                            <span>Lista de Produtos</span>
                         </div>
-                        <p class="mt-2">Processando...</p>
+                        <div class="input-group">
+                            <label for="mlbs_lista">
+                                <i class="fas fa-barcode"></i> MLBs (um por linha)
+                            </label>
+                            <textarea id="mlbs_lista" 
+                                      class="textarea-moderno" 
+                                      rows="8" 
+                                      placeholder="MLB1234567890&#10;MLB0987654321&#10;MLB1122334455"></textarea>
+                            <small>Digite um MLB por linha</small>
+                        </div>
                     </div>
-                    
-                    <!-- Mensagem de resultado -->
-                    <div id="resultado" class="mt-4" style="display: none;"></div>
-                    
+
+                    <!-- Coluna Direita - Configuração do Modelo -->
+                    <div class="search-section">
+                        <div class="section-title">
+                            <i class="fas fa-cog"></i>
+                            <span>Configuração</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="novo_modelo_batch">
+                                <i class="fas fa-tag"></i> Novo Modelo (para todos)
+                            </label>
+                            <input type="text" 
+                                   id="novo_modelo_batch" 
+                                   class="input-moderno" 
+                                   placeholder="Digite o modelo desejado">
+                            <small>Será aplicado a todos os MLBs da lista</small>
+                        </div>
+                        <button class="btn-batch" onclick="alterarMultiplosModelos()">
+                            <i class="fas fa-layer-group"></i> Alterar em Lote
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resultado Lote -->
+                <div id="resultadoLote" class="result-area" style="display: none;">
+                    <div id="resultadoLoteContent"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loading" class="loading-overlay" style="display: none;">
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Processando...</p>
+    </div>
+</div>
+
 <script>
+// Alternância de abas
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+        
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        
+        // Limpa resultados ao trocar de aba
+        limparResultados();
+    });
+});
+
+function limparResultados() {
+    document.getElementById('resultado').style.display = 'none';
+    document.getElementById('resultadoLote').style.display = 'none';
+    document.getElementById('resultado').innerHTML = '';
+    document.getElementById('resultadoLoteContent').innerHTML = '';
+}
+
 function buscarProduto() {
     const mlb = document.getElementById('mlb_single').value.trim();
     
     if (!mlb) {
-        alert('Digite um MLB válido');
+        mostrarAlerta('Digite um MLB válido', 'warning');
         return;
     }
     
@@ -172,12 +778,12 @@ function buscarProduto() {
             document.getElementById('novo_modelo').value = '';
             document.getElementById('novo_modelo').focus();
         } else {
-            alert('Erro: ' + data.erro);
+            mostrarAlerta(data.erro, 'error');
         }
     })
     .catch(error => {
         mostrarLoading(false);
-        alert('Erro: ' + error);
+        mostrarAlerta('Erro ao buscar produto: ' + error, 'error');
     });
 }
 
@@ -186,12 +792,12 @@ function alterarModelo() {
     const novoModelo = document.getElementById('novo_modelo').value.trim();
     
     if (!mlb) {
-        alert('MLB é obrigatório');
+        mostrarAlerta('MLB é obrigatório', 'warning');
         return;
     }
     
     if (!novoModelo) {
-        alert('Digite o novo modelo');
+        mostrarAlerta('Digite o novo modelo', 'warning');
         return;
     }
     
@@ -216,29 +822,29 @@ function alterarModelo() {
         const resultadoDiv = document.getElementById('resultado');
         if (data.sucesso) {
             resultadoDiv.innerHTML = `
-                <div class="alert alert-success">
+                <div class="alert-success">
                     <i class="fas fa-check-circle"></i> 
                     <strong>Sucesso!</strong> ${data.mensagem}
-                    <br>MLB: ${data.mlb}
-                    <br>Novo modelo: <strong>${data.modelo_novo}</strong>
                 </div>
             `;
-            // Atualiza o modelo atual na tela
-            document.getElementById('modeloAtual').innerText = data.modelo_novo;
+            document.getElementById('modeloAtual').innerText = novoModelo;
             document.getElementById('novo_modelo').value = '';
         } else {
             resultadoDiv.innerHTML = `
-                <div class="alert alert-danger">
+                <div class="alert-danger">
                     <i class="fas fa-exclamation-triangle"></i> 
                     <strong>Erro!</strong> ${data.erro}
                 </div>
             `;
         }
         resultadoDiv.style.display = 'block';
+        setTimeout(() => {
+            resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
     })
     .catch(error => {
         mostrarLoading(false);
-        alert('Erro: ' + error);
+        mostrarAlerta('Erro: ' + error, 'error');
     });
 }
 
@@ -247,12 +853,12 @@ function alterarMultiplosModelos() {
     const novoModelo = document.getElementById('novo_modelo_batch').value.trim();
     
     if (!mlbsText.trim()) {
-        alert('Digite pelo menos um MLB');
+        mostrarAlerta('Digite pelo menos um MLB', 'warning');
         return;
     }
     
     if (!novoModelo) {
-        alert('Digite o novo modelo');
+        mostrarAlerta('Digite o novo modelo', 'warning');
         return;
     }
     
@@ -261,7 +867,7 @@ function alterarMultiplosModelos() {
         .filter(m => m.length > 0);
     
     if (mlbs.length === 0) {
-        alert('Nenhum MLB válido encontrado');
+        mostrarAlerta('Nenhum MLB válido encontrado', 'warning');
         return;
     }
     
@@ -288,14 +894,14 @@ function alterarMultiplosModelos() {
         
         if (data.sucesso) {
             let html = `
-                <div class="alert alert-success">
+                <div class="alert-success">
                     <i class="fas fa-check-circle"></i> 
                     <strong>Operação concluída!</strong>
-                    <br>Total: ${data.total} | Sucessos: ${data.sucessos} | Erros: ${data.erros}
+                    <br>Total: ${data.total} | ✅ Sucessos: ${data.sucessos} | ❌ Erros: ${data.erros}
                     <br>Modelo aplicado: <strong>${novoModelo}</strong>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-sm">
+                <div class="result-table">
+                    <table>
                         <thead>
                             <tr>
                                 <th>MLB</th>
@@ -308,7 +914,7 @@ function alterarMultiplosModelos() {
             
             data.resultados.forEach(r => {
                 html += `
-                    <tr class="${r.sucesso ? 'table-success' : 'table-danger'}">
+                    <tr class="${r.sucesso ? 'success-row' : 'error-row'}">
                         <td>${r.mlb}</td>
                         <td>${r.sucesso ? '✅ Sucesso' : '❌ Erro'}</td>
                         <td>${r.sucesso ? r.mensagem : r.erro}</td>
@@ -316,11 +922,11 @@ function alterarMultiplosModelos() {
                 `;
             });
             
-            html += `</tbody> </table></div>`;
+            html += `</tbody></table></div>`;
             contentDiv.innerHTML = html;
         } else {
             contentDiv.innerHTML = `
-                <div class="alert alert-danger">
+                <div class="alert-danger">
                     <i class="fas fa-exclamation-triangle"></i> 
                     <strong>Erro!</strong> ${data.erro}
                 </div>
@@ -328,10 +934,13 @@ function alterarMultiplosModelos() {
         }
         
         resultadoDiv.style.display = 'block';
+        setTimeout(() => {
+            resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
     })
     .catch(error => {
         mostrarLoading(false);
-        alert('Erro: ' + error);
+        mostrarAlerta('Erro: ' + error, 'error');
     });
 }
 
@@ -344,33 +953,21 @@ function limparForm() {
 }
 
 function mostrarLoading(show) {
-    document.getElementById('loading').style.display = show ? 'block' : 'none';
+    document.getElementById('loading').style.display = show ? 'flex' : 'none';
+}
+
+function mostrarAlerta(mensagem, tipo) {
+    const resultadoDiv = document.getElementById('resultado');
+    resultadoDiv.innerHTML = `
+        <div class="alert-${tipo === 'error' ? 'danger' : 'success'}" style="background:${tipo === 'warning' ? '#fef3c7' : (tipo === 'error' ? '#fee2e2' : '#d1fae5')}; border-color:${tipo === 'warning' ? '#f59e0b' : (tipo === 'error' ? '#ef4444' : '#10b981')}; color:${tipo === 'warning' ? '#92400e' : (tipo === 'error' ? '#991b1b' : '#065f46')}">
+            <i class="fas fa-${tipo === 'warning' ? 'exclamation-triangle' : (tipo === 'error' ? 'times-circle' : 'check-circle')}"></i> 
+            ${mensagem}
+        </div>
+    `;
+    resultadoDiv.style.display = 'block';
+    setTimeout(() => {
+        resultadoDiv.style.display = 'none';
+    }, 3000);
 }
 </script>
-
-<style>
-.card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-.nav-tabs .nav-link {
-    color: #495057;
-    font-weight: 500;
-}
-.nav-tabs .nav-link.active {
-    color: #667eea;
-    font-weight: 600;
-}
-.btn-primary {
-    background: #667eea;
-    border: none;
-}
-.btn-primary:hover {
-    background: #5a67d8;
-}
-.form-control:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-</style>
 {% endblock %}

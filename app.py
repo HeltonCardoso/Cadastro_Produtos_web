@@ -1561,6 +1561,7 @@ def api_buscar_modelos_disponiveis():
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
 
+        
 @app.route('/api/mercadolivre/alterar-modelo', methods=['POST'])
 @login_required
 def api_alterar_modelo():
