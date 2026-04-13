@@ -5,6 +5,11 @@ from typing import Dict, Any
 import logging
 from datetime import datetime
 
+# ======================================================
+# NOVA IMPORT: Usando token manager do banco de dados
+# ======================================================
+from utils.token_manager_db import salvar_token, obter_token, remover_token
+
 logger = logging.getLogger(__name__)
 
 
@@ -121,7 +126,7 @@ class AnyMarketAPI:
         return fotos_processadas
 
     # ======================================================
-    # NOVO MÉTODO: Buscar canais de transmissão
+    # MÉTODO: Buscar canais de transmissão
     # ======================================================
     
     def buscar_canais_transmissao(self, partner_id: str = None) -> Dict[str, Any]:
@@ -276,16 +281,76 @@ class AnyMarketAPI:
 
 
 # ======================================================
-# FUNÇÕES GLOBAIS (ACESSÍVEIS PARA IMPORT)
+# FUNÇÕES GLOBAIS (MODIFICADAS PARA USAR BANCO DE DADOS)
 # ======================================================
+
+def salvar_token_anymarket(token: str) -> bool:
+    """Salva token do AnyMarket no BANCO DE DADOS"""
+    return salvar_token('anymarket', {'token': token})
+
+
+def obter_token_anymarket_seguro() -> str:
+    """
+    Obtém token do AnyMarket do BANCO DE DADOS.
+    Levanta exceção se não encontrar.
+    """
+    # 1. Tenta do banco de dados primeiro (PERSISTENTE!)
+    data = obter_token('anymarket')
+    if data and data.get('token'):
+        print(f"✅ Token AnyMarket obtido do BANCO DE DADOS")
+        return data['token']
+    
+    # 2. Fallback para variável de ambiente (desenvolvimento local)
+    token = os.environ.get('ANYMARKET_TOKEN')
+    if token:
+        print(f"⚠️ Token AnyMarket obtido da VARIÁVEL DE AMBIENTE")
+        # Migra para o banco
+        salvar_token_anymarket(token)
+        return token
+    
+    # 3. Fallback para arquivo antigo (migração única)
+    tokens_file = 'tokens_secure.json'
+    if os.path.exists(tokens_file):
+        try:
+            with open(tokens_file, 'r', encoding='utf-8') as f:
+                tokens = json.load(f)
+            
+            # Tenta estrutura nova
+            token_data = tokens.get('anymarket')
+            if token_data and token_data.get('token'):
+                token = token_data['token']
+                print(f"🔄 Migrando token do arquivo para o banco de dados")
+                salvar_token_anymarket(token)
+                return token
+            
+            # Tenta estrutura antiga
+            for key, value in tokens.items():
+                if isinstance(value, dict) and value.get('tipo') == 'anymarket' and value.get('token'):
+                    token = value['token']
+                    print(f"🔄 Migrando token do arquivo antigo para o banco")
+                    salvar_token_anymarket(token)
+                    return token
+        except Exception as e:
+            print(f"⚠️ Erro ao ler arquivo antigo: {e}")
+    
+    raise ValueError("Token do AnyMarket não configurado. Configure em /configuracoes/tokens")
+
+
+def remover_token_anymarket() -> bool:
+    """Remove token do AnyMarket do BANCO DE DADOS"""
+    return remover_token('anymarket')
+
+
+def token_anymarket_configurado() -> bool:
+    """Verifica se o token AnyMarket está configurado no banco"""
+    data = obter_token('anymarket')
+    return data is not None and data.get('token') is not None
+
 
 def consultar_api_anymarket(product_id: str, token: str = None) -> Dict[str, Any]:
     """Consulta fotos do produto na API AnyMarket"""
     if not token:
-        try:
-            token = obter_token_anymarket_seguro()
-        except:
-            raise ValueError("Token do AnyMarket não configurado. Configure em /configuracoes/tokens")
+        token = obter_token_anymarket_seguro()
     
     api = AnyMarketAPI(token)
     return api.buscar_fotos_produto(product_id)
@@ -297,12 +362,8 @@ def consultar_canais_transmissao(partner_id: str = None, token: str = None) -> D
     Endpoint: /skus/marketplaces
     """
     if not token:
-        try:
-            token = obter_token_anymarket_seguro()
-            print(f"✅ Token obtido com sucesso: {token[:20]}...")
-        except Exception as e:
-            print(f"❌ Erro ao obter token: {str(e)}")
-            raise ValueError("Token do AnyMarket não configurado. Configure em /configuracoes/tokens")
+        token = obter_token_anymarket_seguro()
+        print(f"✅ Token obtido com sucesso: {token[:20]}...")
     
     api = AnyMarketAPI(token)
     return api.buscar_canais_transmissao(partner_id)
@@ -324,39 +385,6 @@ def excluir_fotos_planilha_anymarket(caminho_planilha: str, token: str = None) -
     
     api = AnyMarketAPI(token)
     return api.excluir_fotos_planilha(caminho_planilha)
-
-
-def obter_token_anymarket_seguro() -> str:
-    """
-    Obtém token do AnyMarket de forma segura do arquivo tokens_secure.json
-    Levanta exceção se não encontrar
-    """
-    try:
-        tokens_file = 'tokens_secure.json'
-        if not os.path.exists(tokens_file):
-            raise ValueError("Arquivo de tokens não encontrado. Configure o token primeiro.")
-        
-        with open(tokens_file, 'r', encoding='utf-8') as f:
-            tokens = json.load(f)
-        
-        # Primeiro tenta a estrutura nova: {"anymarket": {"token": ...}}
-        token_data = tokens.get('anymarket')
-        if token_data and token_data.get('token'):
-            print(f"✅ Token encontrado na estrutura nova")
-            return token_data['token']
-        
-        # Se não encontrar, procura em estrutura antiga com IDs aleatórios
-        for key, value in tokens.items():
-            if isinstance(value, dict) and value.get('tipo') == 'anymarket' and value.get('token'):
-                print(f"✅ Token encontrado na estrutura antiga (ID: {key})")
-                return value['token']
-        
-        raise ValueError("Token do AnyMarket não configurado no arquivo seguro.")
-        
-    except json.JSONDecodeError:
-        raise ValueError("Arquivo de tokens corrompido.")
-    except Exception as e:
-        raise ValueError(f"Erro ao obter token: {str(e)}")
 
 
 def buscar_produto_por_sku(sku: str, token: str = None) -> Dict[str, Any]:

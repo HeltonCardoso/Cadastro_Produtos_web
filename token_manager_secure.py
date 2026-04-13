@@ -1,62 +1,120 @@
-# token_manager_secure.py - VERSÃO COMPLETA COM TODOS OS MÉTODOS
+# token_manager_secure.py
 import os
 import json
 import time
 import requests
 from datetime import datetime
 
+# ======================================================
+# NOVA IMPORT: Usando token manager do banco de dados
+# ======================================================
+from utils.token_manager_db import salvar_token, obter_token, remover_token
+
 class MercadoLivreTokenManager:
     def __init__(self):
-        self.tokens_file = 'tokens_secure.json'
         self.current_account_id = None
         self.accounts = {}
+        self.client_id = None
+        self.client_secret = None
         self.load_accounts()
     
     def load_accounts(self):
-        """Carrega contas preservando a conta atual"""
+        """Carrega contas do BANCO DE DADOS (persistente)"""
         try:
-            if not os.path.exists(self.tokens_file):
-                print("⚠️  Arquivo de tokens não encontrado")
+            # 1. Tenta carregar do BANCO DE DADOS primeiro (PERSISTENTE!)
+            data = obter_token('mercadolivre')
+            
+            if data:
+                self.accounts = data.get('accounts', {})
+                self.current_account_id = data.get('current_account_id')
+                self.client_id = data.get('client_id')
+                self.client_secret = data.get('client_secret')
+                print(f"✅ {len(self.accounts)} conta(s) carregada(s) do BANCO DE DADOS")
+                
+                # Define conta atual (primeira que tiver token)
+                if not self.current_account_id and self.accounts:
+                    for account_id, account in self.accounts.items():
+                        if account.get('access_token'):
+                            self.current_account_id = account_id
+                            break
+                    if not self.current_account_id:
+                        self.current_account_id = list(self.accounts.keys())[0]
+                
+                print(f"📊 Total de contas: {len(self.accounts)}")
+                print(f"📌 Conta atual: {self.current_account_id}")
                 return
             
-            with open(self.tokens_file, 'r', encoding='utf-8') as f:
+            # 2. Fallback: Tenta migrar do arquivo antigo (migração única)
+            print("🔄 Banco de dados vazio. Verificando arquivo antigo...")
+            self.migrar_do_arquivo_antigo()
+            
+        except Exception as e:
+            print(f"❌ Erro ao carregar contas do banco: {str(e)}")
+            import traceback
+            traceback.print_exc()
+    
+    def migrar_do_arquivo_antigo(self):
+        """Migra contas do arquivo tokens_secure.json para o banco de dados"""
+        tokens_file = 'tokens_secure.json'
+        
+        if not os.path.exists(tokens_file):
+            print("ℹ️  Nenhum arquivo antigo encontrado. Iniciando com contas vazias.")
+            return
+        
+        try:
+            with open(tokens_file, 'r', encoding='utf-8') as f:
                 tokens_data = json.load(f)
             
-            # VERIFICA ESTRUTURA ATUAL
-            print("📂 Estrutura atual do tokens_secure.json:")
-            for key in tokens_data.keys():
-                print(f"  - {key}")
+            print("📂 Migrando dados do arquivo antigo...")
             
             # Se já tem a nova estrutura multi-contas
             if 'mercadolivre_accounts' in tokens_data:
                 self.accounts = tokens_data['mercadolivre_accounts']
-                print(f"✅ {len(self.accounts)} conta(s) na nova estrutura")
+                print(f"✅ {len(self.accounts)} conta(s) migradas da nova estrutura")
             
             # Se tem estrutura antiga (sua conta atual)
             elif 'mercadolivre' in tokens_data:
                 print("🔄 Convertendo estrutura antiga para multi-contas...")
                 self.converter_conta_atual(tokens_data['mercadolivre'])
             
-            else:
-                print("ℹ️  Nenhuma conta do Mercado Livre encontrada")
-                self.accounts = {}
+            # Se tem client_id/secret no config
+            elif 'config' in tokens_data:
+                self.client_id = tokens_data['config'].get('client_id')
+                self.client_secret = tokens_data['config'].get('client_secret')
             
-            # Define conta atual (primeira que tiver token)
-            for account_id, account in self.accounts.items():
-                if account.get('access_token'):
-                    self.current_account_id = account_id
-                    print(f"📌 Conta atual definida: {account.get('account_name', account_id)}")
-                    break
-            
+            # Define conta atual
             if not self.current_account_id and self.accounts:
-                self.current_account_id = list(self.accounts.keys())[0]
+                for account_id, account in self.accounts.items():
+                    if account.get('access_token'):
+                        self.current_account_id = account_id
+                        break
+                if not self.current_account_id and self.accounts:
+                    self.current_account_id = list(self.accounts.keys())[0]
             
-            print(f"📊 Total de contas: {len(self.accounts)}")
-                
+            # Salva no banco de dados
+            self.save_to_database()
+            print(f"✅ Dados migrados para o banco de dados com sucesso!")
+            
+            # Backup do arquivo antigo
+            backup_file = f"{tokens_file}.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            os.rename(tokens_file, backup_file)
+            print(f"📁 Arquivo antigo renomeado para: {backup_file}")
+            
         except Exception as e:
-            print(f"❌ Erro ao carregar contas: {str(e)}")
+            print(f"❌ Erro na migração: {str(e)}")
             import traceback
             traceback.print_exc()
+    
+    def save_to_database(self):
+        """Salva as contas no BANCO DE DADOS"""
+        data = {
+            'accounts': self.accounts,
+            'current_account_id': self.current_account_id,
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'updated_at': datetime.now().isoformat()
+        }
+        return salvar_token('mercadolivre', data)
     
     def converter_conta_atual(self, ml_data):
         """Converte sua conta atual para a nova estrutura"""
@@ -82,42 +140,14 @@ class MercadoLivreTokenManager:
                 'migrado_em': datetime.now().isoformat()
             }
             
-            # Salva mantendo outras seções (anymarket, etc.)
-            self.save_accounts()
+            self.current_account_id = account_id
+            self.save_to_database()
             print(f"✅ Sua conta atual foi convertida para: {account_id}")
             print(f"   Access Token: {ml_data.get('access_token', '')[:20]}...")
             print(f"   Refresh Token: {ml_data.get('refresh_token', '')[:20]}...")
             
         except Exception as e:
             print(f"❌ Erro na conversão: {str(e)}")
-    
-    def save_accounts(self):
-        """Salva mantendo outras seções do arquivo"""
-        try:
-            # Carrega TODO o arquivo atual
-            tokens_data = {}
-            if os.path.exists(self.tokens_file):
-                with open(self.tokens_file, 'r', encoding='utf-8') as f:
-                    tokens_data = json.load(f)
-            
-            # Atualiza APENAS a seção de contas do ML
-            tokens_data['mercadolivre_accounts'] = self.accounts
-            
-            # Remove seção antiga se existir
-            if 'mercadolivre' in tokens_data:
-                print("🗑️  Removendo seção 'mercadolivre' antiga")
-                del tokens_data['mercadolivre']
-            
-            # Salva
-            with open(self.tokens_file, 'w', encoding='utf-8') as f:
-                json.dump(tokens_data, f, indent=2, ensure_ascii=False)
-            
-            print(f"💾 {len(self.accounts)} conta(s) salva(s)")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Erro ao salvar: {str(e)}")
-            return False
     
     # =========================================
     # MÉTODOS COMPATIBILIDADE (ANTIGOS)
@@ -156,7 +186,8 @@ class MercadoLivreTokenManager:
             account['app_id'] = client_id
             account['secret_key'] = client_secret
             
-            self.save_accounts()
+            # Salva no banco de dados
+            self.save_to_database()
             print(f"✅ Configuração salva para conta: {self.current_account_id}")
             return True
             
@@ -180,13 +211,61 @@ class MercadoLivreTokenManager:
             account['nickname'] = None
             account['user_id'] = None
             
-            self.save_accounts()
+            self.save_to_database()
             print(f"✅ Tokens removidos da conta: {self.current_account_id}")
             return True
             
         except Exception as e:
             print(f"❌ Erro em remove_tokens: {str(e)}")
             return False
+    
+    def save_tokens(self, token_data):
+        """Compatibilidade: salva tokens (método antigo)"""
+        try:
+            if not self.current_account_id:
+                self.current_account_id = 'conta_principal'
+                self.accounts[self.current_account_id] = {
+                    'account_name': 'Conta Principal',
+                    'created_at': datetime.now().isoformat()
+                }
+            
+            account = self.accounts[self.current_account_id]
+            account['access_token'] = token_data.get('access_token')
+            account['refresh_token'] = token_data.get('refresh_token')
+            account['expires_in'] = token_data.get('expires_in', 21600)
+            account['updated_at'] = datetime.now().isoformat()
+            
+            # Tenta obter dados do usuário
+            self.atualizar_dados_usuario(self.current_account_id)
+            
+            self.save_to_database()
+            print(f"✅ Tokens salvos para conta: {self.current_account_id}")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Erro em save_tokens: {str(e)}")
+            return False
+    
+    def load_tokens(self):
+        """Compatibilidade: carrega tokens (método antigo)"""
+        try:
+            if not self.current_account_id:
+                return None
+            
+            account = self.accounts.get(self.current_account_id)
+            if not account:
+                return None
+            
+            return {
+                'access_token': account.get('access_token'),
+                'refresh_token': account.get('refresh_token'),
+                'expires_in': account.get('expires_in', 21600),
+                'created_at': account.get('created_at')
+            }
+            
+        except Exception as e:
+            print(f"❌ Erro em load_tokens: {str(e)}")
+            return None
     
     # =========================================
     # MÉTODO PARA ADICIONAR NOVA CONTA
@@ -213,7 +292,7 @@ class MercadoLivreTokenManager:
                 'status': 'pending_tokens'
             }
             
-            self.save_accounts()
+            self.save_to_database()
             print(f"✅ Conta '{account_name}' criada. Agora obtendo tokens...")
             
             # Tenta obter tokens automaticamente
@@ -222,7 +301,6 @@ class MercadoLivreTokenManager:
             if tokens_obtidos:
                 return account_id, True, "Conta adicionada e autenticada com sucesso!"
             else:
-                # Mesmo sem tokens, mantém a conta para tentar depois
                 return account_id, False, "Conta criada, mas não foi possível obter tokens automaticamente. Você pode adicioná-los manualmente."
             
         except Exception as e:
@@ -299,7 +377,7 @@ class MercadoLivreTokenManager:
                 # Obtém dados do usuário
                 self.atualizar_dados_usuario(account_id)
                 
-                self.save_accounts()
+                self.save_to_database()
                 print(f"🎉 Tokens obtidos AUTOMATICAMENTE para: {account['account_name']}")
                 
                 return True
@@ -333,6 +411,7 @@ class MercadoLivreTokenManager:
                 account['nickname'] = user_data.get('nickname')
                 account['last_api_check'] = datetime.now().isoformat()
                 print(f"👤 Usuário identificado: {account['nickname']} (ID: {account['user_id']})")
+                self.save_to_database()
                 return True
             
             return False
@@ -361,7 +440,7 @@ class MercadoLivreTokenManager:
             # Obtém dados do usuário
             self.atualizar_dados_usuario(account_id)
             
-            self.save_accounts()
+            self.save_to_database()
             print(f"✅ Tokens adicionados manualmente à conta: {account['account_name']}")
             return True, "Tokens adicionados com sucesso!"
             
@@ -439,7 +518,7 @@ class MercadoLivreTokenManager:
                 account['expires_in'] = token_data.get('expires_in', 21600)
                 account['updated_at'] = datetime.now().isoformat()
                 
-                self.save_accounts()
+                self.save_to_database()
                 print(f"✅ Token renovado para: {account.get('account_name')}")
                 return token_data['access_token']
             else:
@@ -474,7 +553,7 @@ class MercadoLivreTokenManager:
             accounts_info.append({
                 'id': account_id,
                 'name': account.get('account_name', 'Sem nome'),
-                'app_id': account.get('app_id', '')[:8] + '...',
+                'app_id': account.get('app_id', '')[:8] + '...' if account.get('app_id') else '',
                 'has_token': bool(account.get('access_token')),
                 'is_default': (account_id == self.current_account_id),
                 'nickname': account.get('nickname', 'Não autenticada'),
@@ -487,6 +566,7 @@ class MercadoLivreTokenManager:
         """Define conta atual"""
         if account_id in self.accounts:
             self.current_account_id = account_id
+            self.save_to_database()
             print(f"✅ Conta atual: {self.accounts[account_id].get('account_name')}")
             return True
         return False
@@ -501,7 +581,7 @@ class MercadoLivreTokenManager:
             account_name = self.accounts[account_id].get('account_name')
             del self.accounts[account_id]
             
-            self.save_accounts()
+            self.save_to_database()
             print(f"✅ Conta '{account_name}' removida")
             return True, f"Conta '{account_name}' removida"
         

@@ -6,7 +6,7 @@ from datetime import datetime
 import logging
 import json
 import os
-
+from utils.token_manager_db import salvar_token, obter_token, remover_token
 import requests
 
 # Criação do blueprint
@@ -18,6 +18,26 @@ logger = logging.getLogger(__name__)
 
 # Armazenamento simples para histórico
 _historico_consultas = []
+
+
+def salvar_token_intelipost(api_key):
+    """Salva API Key do Intelipost no banco"""
+    return salvar_token('intelipost', {'api_key': api_key})
+
+
+def obter_token_intelipost():
+    """Obtém API Key do Intelipost do banco"""
+    data = obter_token('intelipost')
+    if data and data.get('api_key'):
+        return data['api_key']
+    
+    # Fallback para variável de ambiente
+    return os.environ.get('INTELIPOST_API_KEY')
+
+def remover_token_intelipost():
+    """Remove token do Intelipost do banco"""
+    return remover_token('intelipost')
+
 
 def carregar_token_intelipost():
     """Carrega o token Intelipost do arquivo seguro - VERSÃO DEBUG"""
