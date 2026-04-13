@@ -1507,7 +1507,91 @@ def api_forcar_renovacao():
             
     except Exception as e:
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
-    
+
+# ============================================
+# ROTAS PARA ALTERAR MODELO DO PRODUTO
+# ============================================
+
+@app.route('/mercadolivre/alterar-modelo')
+@login_required
+@permissao_modulo('produtos')
+def alterar_modelo_ml():
+    """Página para alterar modelo de produtos ML"""
+    return render_template(
+        'mercadolivre/alterar_modelo.html',
+        active_page='alterar_modelo_ml',
+        active_module='mercadolivre',
+        page_title='Alterar Modelo - Mercado Livre'
+    )
+
+@app.route('/api/mercadolivre/buscar-modelo', methods=['POST'])
+@login_required
+def api_buscar_modelo():
+    """Busca o modelo atual de um produto"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+        
+        data = request.get_json()
+        mlb = data.get('mlb')
+        
+        if not mlb:
+            return jsonify({'sucesso': False, 'erro': 'MLB é obrigatório'}), 400
+        
+        resultado = ml_api_secure.buscar_atributo_modelo(mlb)
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/buscar-modelos-disponiveis', methods=['POST'])
+@login_required
+def api_buscar_modelos_disponiveis():
+    """Busca os modelos disponíveis para um produto"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+        
+        data = request.get_json()
+        mlb = data.get('mlb')
+        
+        resultado = ml_api_secure.buscar_modelos_disponiveis(mlb)
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/api/mercadolivre/alterar-modelo', methods=['POST'])
+@login_required
+def api_alterar_modelo():
+    """Altera o modelo de um produto"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+        
+        data = request.get_json()
+        mlb = data.get('mlb')
+        mlbs = data.get('mlbs')
+        novo_modelo_id = data.get('modelo_id')
+        novo_modelo_nome = data.get('modelo_nome')
+        
+        if not novo_modelo_id or not novo_modelo_nome:
+            return jsonify({'sucesso': False, 'erro': 'Modelo é obrigatório'}), 400
+        
+        if mlbs and len(mlbs) > 0:
+            # Alteração em lote
+            resultado = ml_api_secure.alterar_modelo_multiplos(mlbs, novo_modelo_id, novo_modelo_nome)
+        elif mlb:
+            # Alteração única
+            resultado = ml_api_secure.alterar_modelo_produto(mlb, novo_modelo_id, novo_modelo_nome)
+        else:
+            return jsonify({'sucesso': False, 'erro': 'MLB ou lista de MLBs é obrigatória'}), 400
+        
+        return jsonify(resultado)
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+      
 @app.route('/api/mercadolivre/excluir-definitivo', methods=['POST'])
 @login_required
 def api_excluir_mlb_definitivo():
@@ -2494,89 +2578,7 @@ def remover_token_anymarket():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-# ============================================
-# ROTAS PARA ALTERAR MODELO DO PRODUTO
-# ============================================
 
-@app.route('/mercadolivre/alterar-modelo')
-@login_required
-@permissao_modulo('produtos')
-def alterar_modelo_ml():
-    """Página para alterar modelo de produtos ML"""
-    return render_template(
-        'mercadolivre/alterar_modelo.html',
-        active_page='alterar_modelo_ml',
-        active_module='mercadolivre',
-        page_title='Alterar Modelo - Mercado Livre'
-    )
-
-@app.route('/api/mercadolivre/buscar-modelo', methods=['POST'])
-@login_required
-def api_buscar_modelo():
-    """Busca o modelo atual de um produto"""
-    try:
-        if not ml_token_manager.is_authenticated():
-            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
-        
-        data = request.get_json()
-        mlb = data.get('mlb')
-        
-        if not mlb:
-            return jsonify({'sucesso': False, 'erro': 'MLB é obrigatório'}), 400
-        
-        resultado = ml_api_secure.buscar_atributo_modelo(mlb)
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
-
-@app.route('/api/mercadolivre/buscar-modelos-disponiveis', methods=['POST'])
-@login_required
-def api_buscar_modelos_disponiveis():
-    """Busca os modelos disponíveis para um produto"""
-    try:
-        if not ml_token_manager.is_authenticated():
-            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
-        
-        data = request.get_json()
-        mlb = data.get('mlb')
-        
-        resultado = ml_api_secure.buscar_modelos_disponiveis(mlb)
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
-
-@app.route('/api/mercadolivre/alterar-modelo', methods=['POST'])
-@login_required
-def api_alterar_modelo():
-    """Altera o modelo de um produto"""
-    try:
-        if not ml_token_manager.is_authenticated():
-            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
-        
-        data = request.get_json()
-        mlb = data.get('mlb')
-        mlbs = data.get('mlbs')
-        novo_modelo_id = data.get('modelo_id')
-        novo_modelo_nome = data.get('modelo_nome')
-        
-        if not novo_modelo_id or not novo_modelo_nome:
-            return jsonify({'sucesso': False, 'erro': 'Modelo é obrigatório'}), 400
-        
-        if mlbs and len(mlbs) > 0:
-            # Alteração em lote
-            resultado = ml_api_secure.alterar_modelo_multiplos(mlbs, novo_modelo_id, novo_modelo_nome)
-        elif mlb:
-            # Alteração única
-            resultado = ml_api_secure.alterar_modelo_produto(mlb, novo_modelo_id, novo_modelo_nome)
-        else:
-            return jsonify({'sucesso': False, 'erro': 'MLB ou lista de MLBs é obrigatória'}), 400
-        
-        return jsonify(resultado)
-        
-    except Exception as e:
-        return jsonify({'sucesso': False, 'erro': str(e)}), 500
     
 @app.route('/verificar-status-mlb/<mlb>')
 def verificar_status_mlb(mlb):
