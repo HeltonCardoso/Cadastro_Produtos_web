@@ -1572,18 +1572,17 @@ def api_alterar_modelo():
         data = request.get_json()
         mlb = data.get('mlb')
         mlbs = data.get('mlbs')
-        novo_modelo_id = data.get('modelo_id')
         novo_modelo_nome = data.get('modelo_nome')
         
-        if not novo_modelo_id or not novo_modelo_nome:
-            return jsonify({'sucesso': False, 'erro': 'Modelo é obrigatório'}), 400
+        if not novo_modelo_nome:
+            return jsonify({'sucesso': False, 'erro': 'Nome do modelo é obrigatório'}), 400
         
         if mlbs and len(mlbs) > 0:
             # Alteração em lote
-            resultado = ml_api_secure.alterar_modelo_multiplos(mlbs, novo_modelo_id, novo_modelo_nome)
+            resultado = ml_api_secure.alterar_modelo_multiplos(mlbs, novo_modelo_nome)
         elif mlb:
             # Alteração única
-            resultado = ml_api_secure.alterar_modelo_produto(mlb, novo_modelo_id, novo_modelo_nome)
+            resultado = ml_api_secure.alterar_modelo_produto(mlb, novo_modelo_nome)
         else:
             return jsonify({'sucesso': False, 'erro': 'MLB ou lista de MLBs é obrigatória'}), 400
         

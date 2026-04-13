@@ -1236,17 +1236,15 @@ class MercadoLivreAPISecure:
                 'erro': str(e)
             }
 
-    def alterar_modelo_produto(self, mlb, novo_modelo_id, novo_modelo_nome):
+    def alterar_modelo_produto(self, mlb, novo_modelo_nome):
         """
         Altera o atributo MODELO de um produto
         
         Args:
             mlb: ID do produto (ex: MLB1234567890)
-            novo_modelo_id: ID do novo modelo (ex: 2833029)
-            novo_modelo_nome: Nome do novo modelo (ex: Daisy)
+            novo_modelo_nome: Nome do novo modelo (ex: Esportivo, Luxo, Daisy)
         """
         try:
-            # Primeiro, busca o produto atual para manter outros atributos
             headers = self._get_headers()
             url = f"https://api.mercadolibre.com/items/{mlb}"
             
@@ -1270,9 +1268,8 @@ class MercadoLivreAPISecure:
                     atributos[i] = {
                         'id': 'MODEL',
                         'name': 'Modelo',
-                        'value_id': novo_modelo_id,
                         'value_name': novo_modelo_nome,
-                        'values': [{'id': novo_modelo_id, 'name': novo_modelo_nome}]
+                        'value_struct': None
                     }
                     modelo_encontrado = True
                     break
@@ -1281,9 +1278,8 @@ class MercadoLivreAPISecure:
                 atributos.append({
                     'id': 'MODEL',
                     'name': 'Modelo',
-                    'value_id': novo_modelo_id,
                     'value_name': novo_modelo_nome,
-                    'values': [{'id': novo_modelo_id, 'name': novo_modelo_nome}]
+                    'value_struct': None
                 })
             
             # Prepara o payload para atualização
@@ -1316,7 +1312,7 @@ class MercadoLivreAPISecure:
                 'mlb': mlb
             }
 
-    def alterar_modelo_multiplos(self, mlbs, novo_modelo_id, novo_modelo_nome):
+    def alterar_modelo_multiplos(self, mlbs, novo_modelo_nome):
         """
         Altera o modelo de múltiplos produtos em lote
         """
@@ -1326,7 +1322,7 @@ class MercadoLivreAPISecure:
         erros = 0
         
         for mlb in mlbs:
-            resultado = self.alterar_modelo_produto(mlb, novo_modelo_id, novo_modelo_nome)
+            resultado = self.alterar_modelo_produto(mlb, novo_modelo_nome)
             resultados.append(resultado)
             
             if resultado.get('sucesso'):
@@ -1334,7 +1330,6 @@ class MercadoLivreAPISecure:
             else:
                 erros += 1
             
-            # Delay para evitar rate limit
             time.sleep(1)
         
         return {
