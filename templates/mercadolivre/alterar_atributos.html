@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Alterar Atributos - Mercado Livre{% endblock %}
+
+{% block extra_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mercadolivre_alterar.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="atributos-container">
+    <div class="header">
+        <h1><i class="fas fa-edit"></i> Alterar Atributos do Produto</h1>
+        <p>Altere múltiplos campos do seu anúncio de uma só vez</p>
+    </div>
+
+    <div class="form-card">
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="mlb_input"><i class="fas fa-barcode"></i> MLB do Produto</label>
+            <input type="text" id="mlb_input" class="form-control" 
+                   placeholder="Ex: MLB1234567890" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+        </div>
+        <button class="btn-primary" onclick="carregarAtributos()">
+            <i class="fas fa-search"></i> Carregar Produto
+        </button>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Carregando dados do produto...</p>
+    </div>
+
+    <div id="resultado" style="display: none;"></div>
+
+    <div id="atributos-form" style="display: none;">
+        <div class="form-card">
+            <h3><i class="fas fa-box"></i> <span id="produto_titulo"></span></h3>
+            <p><strong>MLB:</strong> <span id="produto_mlb"></span></p>
+            <div id="catalog-warning" style="display: none;" class="alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <strong>Atenção:</strong> Este é um produto de catálogo. As alterações podem levar até 48h para serem validadas pelo Mercado Livre.
+            </div>
+            
+            <div id="atributos-list"></div>
+            
+            <button class="btn-primary" onclick="salvarAlteracoes()">
+                <i class="fas fa-save"></i> Salvar Todas as Alterações
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+let mlbAtual = '';
+let atributosOriginais = {};
+
+async function carregarAtributos() {
+    const mlb = document.getElementById('mlb_input').value.trim();
+    
+    if (!mlb) {
+        alert('Digite um MLB válido');
+        return;
+    }
+    
+    if (!mlb.toUpperCase().startsWith('MLB')) {
+        alert('O MLB deve começar com "MLB". Exemplo: MLB1234567890');
+        return;
+    }
+    
+    mlbAtual = mlb;
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('atributos-form').style.display = 'none';
+    document.getElementById('resultado').style.display = 'none';
+    
+    try {
+        const response = await fetch(`/api/mercadolivre/atributos-disponiveis/${mlb}`);
+        const data = await response.json();
+        
+        document.getElementById('loading').style.display = 'none';
+        
+        if (!data.sucesso) {
+            mostrarResultado('error', data.erro);
+            return;
+        }
+        
+        document.getElementById('produto_titulo').textContent = data.titulo;
+        document.getElementById('produto_mlb').textContent = data.mlb;
+        
+        if (data.is_catalog) {
+            document.getElementById('catalog-warning').style.display = 'block';
+        } else {
+            document.getElementById('catalog-warning').style.display = 'none';
+        }
+        
+        // Monta o formulário de atributos
+        const atributosList = document.getElementById('atributos-list');
+        atributosList.innerHTML = '';
+        
+        atributosOriginais = {};
+        
+        data.atributos.forEach(attr => {
+            const div = document.createElement('div');
+            div.className = 'atributo-item';
+            div.innerHTML = `
+                <label for="attr_${attr.id}">
+                    <i class="fas fa-tag"></i> ${attr.name}
+                </label>
+                <input type="text" 
+                       id="attr_${attr.id}" 
+                       value="${attr.current_value || ''}"
+                       placeholder="Digite o ${attr.name.toLowerCase()}">
+                <div class="current-value">
+                    ${attr.current_value ? `Valor atual: <strong>${attr.current_value}</strong>` : '⚠️ Não definido'}
+                </div>
+            `;
+            atributosList.appendChild(div);
+            atributosOriginais[attr.id] = attr.current_value || '';
+        });
+        
+        document.getElementById('atributos-form').style.display = 'block';
+        
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        mostrarResultado('error', 'Erro ao carregar: ' + error.message);
+    }
+}
+
+async function salvarAlteracoes() {
+    const atributos = {};
+    let temAlteracao = false;
+    
+    // Coleta os valores alterados
+    for (const [id, valorOriginal] of Object.entries(atributosOriginais)) {
+        const input = document.getElementById(`attr_${id}`);
+        if (input) {
+            const novoValor = input.value.trim();
+            if (novoValor !== valorOriginal) {
+                atributos[id] = novoValor;
+                temAlteracao = true;
+            }
+        }
+    }
+    
+    if (!temAlteracao) {
+        alert('Nenhuma alteração foi feita!');
+        return;
+    }
+    
+    const confirmMsg = `Tem certeza que deseja alterar ${Object.keys(atributos).length} campo(s)?\n\n` +
+                       Object.entries(atributos).map(([id, val]) => `- ${id}: ${val}`).join('\n');
+    
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+    
+    document.getElementById('loading').style.display = 'block';
+    
+    try {
+        const response = await fetch('/api/mercadolivre/alterar-atributos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mlb: mlbAtual,
+                atributos: atributos
+            })
+        });
+        
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.sucesso) {
+            mostrarResultado('success', `
+                <strong>✅ Sucesso!</strong><br>
+                ${data.mensagem}<br>
+                Atributos alterados: ${data.atributos_alterados.join(', ')}
+            `);
+            // Recarrega os dados após 2 segundos
+            setTimeout(() => carregarAtributos(), 2000);
+        } else {
+            mostrarResultado('error', data.erro);
+        }
+        
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        mostrarResultado('error', 'Erro ao salvar: ' + error.message);
+    }
+}
+
+function mostrarResultado(tipo, mensagem) {
+    const resultadoDiv = document.getElementById('resultado');
+    const classe = tipo === 'success' ? 'alert-success' : 'alert-danger';
+    resultadoDiv.innerHTML = `<div class="${classe}">${mensagem}</div>`;
+    resultadoDiv.style.display = 'block';
+    
+    setTimeout(() => {
+        resultadoDiv.style.display = 'none';
+    }, 5000);
+}
+</script>
+{% endblock %}

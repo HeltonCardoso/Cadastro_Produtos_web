@@ -1696,7 +1696,201 @@ def api_excluir_mlb_definitivo():
             'erro': f'Erro interno: {str(e)}',
             'codigo': 'erro_interno'
         }), 500
+################################################################ ATRIBUTOS ##############################################################################
+
+@app.route('/api/mercadolivre/atributos-disponiveis/<mlb>')
+@login_required
+@permissao_modulo('produtos')
+def api_atributos_disponiveis(mlb):
+    """Retorna todos os atributos que podem ser alterados no produto"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado'}), 401
+        
+        token = ml_token_manager.get_valid_token()
+        headers = {'Authorization': f'Bearer {token}'}
+        
+        # Busca o produto
+        response = requests.get(
+            f'https://api.mercadolibre.com/items/{mlb}',
+            headers=headers,
+            timeout=15
+        )
+        
+        if response.status_code != 200:
+            return jsonify({'sucesso': False, 'erro': 'Produto não encontrado'}), 404
+        
+        dados = response.json()
+        
+        # Lista de atributos que queremos permitir alterar
+        atributos_permitidos = [
+            'MODEL', 'BRAND', 'COLOR', 'MATERIAL', 'WARRANTY_TIME',
+            'SELLER_SKU', 'GTIN', 'HEIGHT', 'WIDTH', 'DEPTH', 'WEIGHT'
+        ]
+        
+        atributos_encontrados = []
+        for attr in dados.get('attributes', []):
+            if attr.get('id') in atributos_permitidos:
+                atributos_encontrados.append({
+                    'id': attr.get('id'),
+                    'name': attr.get('name'),
+                    'current_value': attr.get('value_name'),
+                    'current_id': attr.get('value_id'),
+                    'value_type': attr.get('value_type')
+                })
+        
+        # Adiciona atributos que não existem no produto (para criar)
+        ids_encontrados = [a['id'] for a in atributos_encontrados]
+        for attr_id in atributos_permitidos:
+            if attr_id not in ids_encontrados:
+                nome_map = {
+                    'MODEL': 'Modelo', 'BRAND': 'Marca', 'COLOR': 'Cor',
+                    'MATERIAL': 'Material', 'WARRANTY_TIME': 'Garantia',
+                    'SELLER_SKU': 'SKU', 'GTIN': 'GTIN/EAN',
+                    'HEIGHT': 'Altura', 'WIDTH': 'Largura',
+                    'DEPTH': 'Profundidade', 'WEIGHT': 'Peso'
+                }
+                atributos_encontrados.append({
+                    'id': attr_id,
+                    'name': nome_map.get(attr_id, attr_id),
+                    'current_value': None,
+                    'current_id': None,
+                    'value_type': 'string',
+                    'not_exists': True
+                })
+        
+        return jsonify({
+            'sucesso': True,
+            'mlb': mlb,
+            'titulo': dados.get('title'),
+            'atributos': atributos_encontrados,
+            'is_catalog': dados.get('catalog_listing', False)
+        })
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
     
+@app.route('/api/mercadolivre/alterar-atributos', methods=['POST'])
+@login_required
+@permissao_modulo('produtos')
+def api_alterar_atributos():
+    """Altera múltiplos atributos de um produto de uma vez"""
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado'}), 401
+        
+        data = request.get_json()
+        mlb = data.get('mlb')
+        atributos = data.get('atributos', {})  # Dict com {id: value}
+        
+        if not mlb:
+            return jsonify({'sucesso': False, 'erro': 'MLB é obrigatório'}), 400
+        
+        if not atributos:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum atributo para alterar'}), 400
+        
+        token = ml_token_manager.get_valid_token()
+        headers = {'Authorization': f'Bearer {token}'}
+        
+        # Busca o produto atual
+        response = requests.get(
+            f'https://api.mercadolibre.com/items/{mlb}',
+            headers=headers,
+            timeout=15
+        )
+        
+        if response.status_code != 200:
+            return jsonify({'sucesso': False, 'erro': 'Produto não encontrado'}), 404
+        
+        dados = response.json()
+        
+        # Verifica se é produto de catálogo
+        if dados.get('catalog_listing', False):
+            return jsonify({
+                'sucesso': False,
+                'erro': '⚠️ Produto de CATÁLOGO! As alterações podem levar até 48h para serem validadas pelo Mercado Livre.'
+            }), 400
+        
+        # Atualiza os atributos
+        atributos_atuais = dados.get('attributes', [])
+        atributos_alterados = []
+        
+        for attr in atributos_atuais:
+            attr_id = attr.get('id')
+            if attr_id in atributos:
+                novo_valor = atributos[attr_id]
+                if novo_valor:  # Só altera se tiver valor
+                    attr['value_name'] = novo_valor
+                    attr['value_id'] = None  # Limpa o ID quando usa nome personalizado
+                    atributos_alterados.append(attr_id)
+        
+        # Adiciona atributos que não existiam
+        for attr_id, novo_valor in atributos.items():
+            if novo_valor:
+                existe = False
+                for attr in atributos_atuais:
+                    if attr.get('id') == attr_id:
+                        existe = True
+                        break
+                
+                if not existe:
+                    nome_map = {
+                        'MODEL': 'Modelo', 'BRAND': 'Marca', 'COLOR': 'Cor',
+                        'MATERIAL': 'Material', 'WARRANTY_TIME': 'Garantia',
+                        'SELLER_SKU': 'SKU', 'GTIN': 'GTIN/EAN',
+                        'HEIGHT': 'Altura', 'WIDTH': 'Largura',
+                        'DEPTH': 'Profundidade', 'WEIGHT': 'Peso'
+                    }
+                    atributos_atuais.append({
+                        'id': attr_id,
+                        'name': nome_map.get(attr_id, attr_id),
+                        'value_name': novo_valor,
+                        'value_id': None,
+                        'value_struct': None
+                    })
+                    atributos_alterados.append(attr_id)
+        
+        # Envia a atualização
+        payload = {'attributes': atributos_atuais}
+        
+        response_put = requests.put(
+            f'https://api.mercadolibre.com/items/{mlb}',
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        
+        if response_put.status_code == 200:
+            return jsonify({
+                'sucesso': True,
+                'mlb': mlb,
+                'atributos_alterados': atributos_alterados,
+                'mensagem': f'{len(atributos_alterados)} atributo(s) alterado(s) com sucesso!'
+            })
+        else:
+            return jsonify({
+                'sucesso': False,
+                'erro': f'Erro ao atualizar: {response_put.status_code}',
+                'detalhes': response_put.text[:500]
+            }), response_put.status_code
+        
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
+
+@app.route('/mercadolivre/alterar-atributos')
+@login_required
+@permissao_modulo('produtos')
+def alterar_atributos_ml():
+    """Página para alterar múltiplos atributos do produto"""
+    return render_template(
+        'mercadolivre/alterar_atributos.html',
+        active_page='alterar_atributos_ml',
+        active_module='mercadolivre',
+        page_title='Alterar Atributos - Mercado Livre'
+    )
+    
+    #####################################################################################################################
 @app.route('/api/mercadolivre/autenticar', methods=['POST'])
 def api_autenticar_mercadolivre():
     """API para autenticar no Mercado Livre"""
