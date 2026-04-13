@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+
+{% block title %}Alterar Modelo - Mercado Livre{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-tag"></i> Alterar Modelo do Produto</h3>
+                    <p class="text-muted">Altere o atributo "Modelo" dos seus anúncios do Mercado Livre</p>
+                </div>
+                <div class="card-body">
+                    
+                    <!-- Abas -->
+                    <ul class="nav nav-tabs mb-4" id="modeloTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">
+                                <i class="fas fa-search"></i> Único MLB
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
+                                <i class="fas fa-layer-group"></i> Múltiplos MLBs
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="modeloTabContent">
+                        
+                        <!-- ABA 1: Único MLB -->
+                        <div class="tab-pane fade show active" id="single" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="mlb_single">MLB do Produto</label>
+                                        <input type="text" id="mlb_single" class="form-control" placeholder="Ex: MLB1234567890">
+                                        <small class="text-muted">Digite o MLB do produto que deseja alterar</small>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="buscarProduto()">
+                                        <i class="fas fa-search"></i> Buscar Produto
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <div id="produtoInfo" style="display: none;">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h5><i class="fas fa-box"></i> Informações do Produto</h5>
+                                                <p><strong>Título:</strong> <span id="produtoTitulo"></span></p>
+                                                <p><strong>MLB:</strong> <span id="produtoMLB"></span></p>
+                                                <p><strong>Modelo Atual:</strong> 
+                                                    <span id="modeloAtual" class="badge bg-info"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4" id="formAlteracao" style="display: none;">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="modelo_id">Novo Modelo</label>
+                                        <select id="modelo_id" class="form-control" onchange="atualizarNomeModelo()">
+                                            <option value="">Selecione um modelo...</option>
+                                        </select>
+                                    </div>
+                                    <input type="hidden" id="modelo_nome">
+                                    <button class="btn btn-success" onclick="alterarModelo()">
+                                        <i class="fas fa-save"></i> Alterar Modelo
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="limparForm()">
+                                        <i class="fas fa-eraser"></i> Limpar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ABA 2: Múltiplos MLBs -->
+                        <div class="tab-pane fade" id="batch" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="mlbs_lista">Lista de MLBs</label>
+                                        <textarea id="mlbs_lista" class="form-control" rows="5" 
+                                            placeholder="MLB1234567890&#10;MLB0987654321&#10;MLB1122334455"></textarea>
+                                        <small class="text-muted">Digite um MLB por linha</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="modelo_id_batch">Modelo para todos</label>
+                                        <select id="modelo_id_batch" class="form-control" onchange="atualizarNomeModeloBatch()">
+                                            <option value="">Selecione um modelo...</option>
+                                        </select>
+                                        <input type="hidden" id="modelo_nome_batch">
+                                    </div>
+                                    <button class="btn btn-warning" onclick="alterarMultiplosModelos()">
+                                        <i class="fas fa-layer-group"></i> Alterar em Lote
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div id="resultadoLote" style="display: none;">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Resultado da Operação</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="resultadoLoteContent"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Loading -->
+                    <div id="loading" class="text-center mt-4" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <p class="mt-2">Processando...</p>
+                    </div>
+                    
+                    <!-- Mensagem de resultado -->
+                    <div id="resultado" class="mt-4" style="display: none;"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Carrega modelos disponíveis ao iniciar
+document.addEventListener('DOMContentLoaded', function() {
+    carregarModelosDisponiveis();
+});
+
+function carregarModelosDisponiveis() {
+    fetch('/api/mercadolivre/buscar-modelos-disponiveis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.sucesso && data.modelos_disponiveis) {
+            const selectSingle = document.getElementById('modelo_id');
+            const selectBatch = document.getElementById('modelo_id_batch');
+            
+            let options = '<option value="">Selecione um modelo...</option>';
+            data.modelos_disponiveis.forEach(modelo => {
+                options += `<option value="${modelo.id}">${modelo.name}</option>`;
+            });
+            
+            selectSingle.innerHTML = options;
+            selectBatch.innerHTML = options;
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+
+function buscarProduto() {
+    const mlb = document.getElementById('mlb_single').value.trim();
+    
+    if (!mlb) {
+        alert('Digite um MLB válido');
+        return;
+    }
+    
+    mostrarLoading(true);
+    
+    fetch('/api/mercadolivre/buscar-modelo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mlb: mlb })
+    })
+    .then(response => response.json())
+    .then(data => {
+        mostrarLoading(false);
+        
+        if (data.sucesso) {
+            document.getElementById('produtoInfo').style.display = 'block';
+            document.getElementById('produtoTitulo').innerText = data.titulo || 'N/A';
+            document.getElementById('produtoMLB').innerText = data.mlb;
+            document.getElementById('modeloAtual').innerText = data.modelo_valor || 'Não definido';
+            
+            document.getElementById('formAlteracao').style.display = 'block';
+            document.getElementById('resultado').style.display = 'none';
+        } else {
+            alert('Erro: ' + data.erro);
+        }
+    })
+    .catch(error => {
+        mostrarLoading(false);
+        alert('Erro: ' + error);
+    });
+}
+
+function atualizarNomeModelo() {
+    const select = document.getElementById('modelo_id');
+    const option = select.options[select.selectedIndex];
+    document.getElementById('modelo_nome').value = option.text;
+}
+
+function atualizarNomeModeloBatch() {
+    const select = document.getElementById('modelo_id_batch');
+    const option = select.options[select.selectedIndex];
+    document.getElementById('modelo_nome_batch').value = option.text;
+}
+
+function alterarModelo() {
+    const mlb = document.getElementById('mlb_single').value.trim();
+    const modeloId = document.getElementById('modelo_id').value;
+    const modeloNome = document.getElementById('modelo_nome').value;
+    
+    if (!mlb) {
+        alert('MLB é obrigatório');
+        return;
+    }
+    
+    if (!modeloId) {
+        alert('Selecione um modelo');
+        return;
+    }
+    
+    mostrarLoading(true);
+    
+    fetch('/api/mercadolivre/alterar-modelo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mlb: mlb,
+            modelo_id: modeloId,
+            modelo_nome: modeloNome
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        mostrarLoading(false);
+        
+        const resultadoDiv = document.getElementById('resultado');
+        if (data.sucesso) {
+            resultadoDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Sucesso!</strong> ${data.mensagem}
+                    <br>MLB: ${data.mlb}
+                    <br>Novo modelo: ${data.modelo_novo}
+                </div>
+            `;
+        } else {
+            resultadoDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Erro!</strong> ${data.erro}
+                </div>
+            `;
+        }
+        resultadoDiv.style.display = 'block';
+    })
+    .catch(error => {
+        mostrarLoading(false);
+        alert('Erro: ' + error);
+    });
+}
+
+function alterarMultiplosModelos() {
+    const mlbsText = document.getElementById('mlbs_lista').value;
+    const modeloId = document.getElementById('modelo_id_batch').value;
+    const modeloNome = document.getElementById('modelo_nome_batch').value;
+    
+    if (!mlbsText.trim()) {
+        alert('Digite pelo menos um MLB');
+        return;
+    }
+    
+    if (!modeloId) {
+        alert('Selecione um modelo');
+        return;
+    }
+    
+    const mlbs = mlbsText.split('\n')
+        .map(m => m.trim())
+        .filter(m => m.length > 0);
+    
+    if (mlbs.length === 0) {
+        alert('Nenhum MLB válido encontrado');
+        return;
+    }
+    
+    if (!confirm(`Tem certeza que deseja alterar ${mlbs.length} produto(s) para o modelo "${modeloNome}"?`)) {
+        return;
+    }
+    
+    mostrarLoading(true);
+    
+    fetch('/api/mercadolivre/alterar-modelo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mlbs: mlbs,
+            modelo_id: modeloId,
+            modelo_nome: modeloNome
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        mostrarLoading(false);
+        
+        const resultadoDiv = document.getElementById('resultadoLote');
+        const contentDiv = document.getElementById('resultadoLoteContent');
+        
+        if (data.sucesso) {
+            let html = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Operação concluída!</strong>
+                    <br>Total: ${data.total} | Sucessos: ${data.sucessos} | Erros: ${data.erros}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>MLB</th>
+                                <th>Status</th>
+                                <th>Mensagem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            data.resultados.forEach(r => {
+                html += `
+                    <tr class="${r.sucesso ? 'table-success' : 'table-danger'}">
+                        <td>${r.mlb}</td>
+                        <td>${r.sucesso ? '✅ Sucesso' : '❌ Erro'}</td>
+                        <td>${r.sucesso ? r.mensagem : r.erro}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table></div>`;
+            contentDiv.innerHTML = html;
+        } else {
+            contentDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Erro!</strong> ${data.erro}
+                </div>
+            `;
+        }
+        
+        resultadoDiv.style.display = 'block';
+    })
+    .catch(error => {
+        mostrarLoading(false);
+        alert('Erro: ' + error);
+    });
+}
+
+function limparForm() {
+    document.getElementById('mlb_single').value = '';
+    document.getElementById('produtoInfo').style.display = 'none';
+    document.getElementById('formAlteracao').style.display = 'none';
+    document.getElementById('resultado').style.display = 'none';
+    document.getElementById('modelo_id').value = '';
+}
+
+function mostrarLoading(show) {
+    document.getElementById('loading').style.display = show ? 'block' : 'none';
+}
+</script>
+
+<style>
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+.nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+}
+.nav-tabs .nav-link.active {
+    color: #667eea;
+    font-weight: 600;
+}
+.btn-primary {
+    background: #667eea;
+    border: none;
+}
+.btn-primary:hover {
+    background: #5a67d8;
+}
+</style>
+{% endblock %}

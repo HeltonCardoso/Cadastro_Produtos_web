@@ -1616,6 +1616,222 @@ class MercadoLivreAPISecure:
         except Exception as e:
             print(f"❌ Erro na migração em massa: {str(e)}")
             return {'sucesso': False, 'erro': str(e)}
+        
+########################################  ALTERAÇÂO DO CAMPO MODELO #############################################
+
+    def buscar_atributo_modelo(self, mlb):
+        """
+        Busca o valor atual do atributo MODELO de um produto
+        """
+        try:
+            headers = self._get_headers()
+            url = f"https://api.mercadolibre.com/items/{mlb}"
+            
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code != 200:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao buscar produto: {response.status_code}',
+                    'mlb': mlb
+                }
+            
+            dados = response.json()
+            
+            # Procura o atributo MODEL
+            modelo_atual = None
+            for atributo in dados.get('attributes', []):
+                if atributo.get('id') == 'MODEL':
+                    modelo_atual = {
+                        'id': atributo.get('id'),
+                        'name': atributo.get('name'),
+                        'value_id': atributo.get('value_id'),
+                        'value_name': atributo.get('value_name'),
+                        'values': atributo.get('values', [])
+                    }
+                    break
+            
+            return {
+                'sucesso': True,
+                'mlb': mlb,
+                'titulo': dados.get('title'),
+                'modelo_atual': modelo_atual,
+                'modelo_valor': modelo_atual.get('value_name') if modelo_atual else 'Não definido'
+            }
+            
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e),
+                'mlb': mlb
+            }
+
+    def buscar_modelos_disponiveis(self, mlb=None):
+        """
+        Busca os modelos disponíveis para um produto (valores possíveis)
+        Se não informar MLB, busca categorias ou usa cache
+        """
+        try:
+            # Opção 1: Buscar por um produto existente para obter a categoria
+            if mlb:
+                headers = self._get_headers()
+                url = f"https://api.mercadolibre.com/items/{mlb}"
+                response = requests.get(url, headers=headers, timeout=15)
+                
+                if response.status_code == 200:
+                    dados = response.json()
+                    category_id = dados.get('category_id')
+                    
+                    # Busca atributos disponíveis para a categoria
+                    if category_id:
+                        url_cat = f"https://api.mercadolibre.com/categories/{category_id}/attributes"
+                        response_cat = requests.get(url_cat, headers=headers, timeout=15)
+                        
+                        if response_cat.status_code == 200:
+                            atributos = response_cat.json()
+                            for attr in atributos:
+                                if attr.get('id') == 'MODEL':
+                                    valores = []
+                                    for valor in attr.get('values', []):
+                                        valores.append({
+                                            'id': valor.get('id'),
+                                            'name': valor.get('name')
+                                        })
+                                    return {
+                                        'sucesso': True,
+                                        'modelos_disponiveis': valores,
+                                        'category_id': category_id
+                                    }
+            
+            # Opção 2: Retorna lista comum de modelos (fallback)
+            modelos_comuns = [
+                {'id': '2833029', 'name': 'Daisy'},
+                {'id': '2833030', 'name': 'Lily'},
+                {'id': '2833031', 'name': 'Rose'},
+                {'id': '2833032', 'name': 'Tulip'},
+                {'id': '2833033', 'name': 'Sunflower'},
+            ]
+            
+            return {
+                'sucesso': True,
+                'modelos_disponiveis': modelos_comuns,
+                'observacao': 'Lista de modelos comuns (verifique se o modelo desejado existe)'
+            }
+            
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e)
+            }
+
+    def alterar_modelo_produto(self, mlb, novo_modelo_id, novo_modelo_nome):
+        """
+        Altera o atributo MODELO de um produto
+        
+        Args:
+            mlb: ID do produto (ex: MLB1234567890)
+            novo_modelo_id: ID do novo modelo (ex: 2833029)
+            novo_modelo_nome: Nome do novo modelo (ex: Daisy)
+        """
+        try:
+            # Primeiro, busca o produto atual para manter outros atributos
+            headers = self._get_headers()
+            url = f"https://api.mercadolibre.com/items/{mlb}"
+            
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code != 200:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao buscar produto: {response.status_code}',
+                    'mlb': mlb
+                }
+            
+            dados = response.json()
+            
+            # Atualiza ou adiciona o atributo MODELO
+            atributos = dados.get('attributes', [])
+            modelo_encontrado = False
+            
+            for i, attr in enumerate(atributos):
+                if attr.get('id') == 'MODEL':
+                    atributos[i] = {
+                        'id': 'MODEL',
+                        'name': 'Modelo',
+                        'value_id': novo_modelo_id,
+                        'value_name': novo_modelo_nome,
+                        'values': [{'id': novo_modelo_id, 'name': novo_modelo_nome}]
+                    }
+                    modelo_encontrado = True
+                    break
+            
+            if not modelo_encontrado:
+                atributos.append({
+                    'id': 'MODEL',
+                    'name': 'Modelo',
+                    'value_id': novo_modelo_id,
+                    'value_name': novo_modelo_nome,
+                    'values': [{'id': novo_modelo_id, 'name': novo_modelo_nome}]
+                })
+            
+            # Prepara o payload para atualização
+            payload = {
+                'attributes': atributos
+            }
+            
+            # Envia a atualização
+            url_update = f"https://api.mercadolibre.com/items/{mlb}"
+            response_update = requests.put(url_update, headers=headers, json=payload, timeout=30)
+            
+            if response_update.status_code == 200:
+                return {
+                    'sucesso': True,
+                    'mlb': mlb,
+                    'modelo_anterior': dados.get('attributes', {}),
+                    'modelo_novo': novo_modelo_nome,
+                    'mensagem': f'Modelo alterado para "{novo_modelo_nome}" com sucesso!'
+                }
+            else:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao atualizar: {response_update.status_code} - {response_update.text[:200]}',
+                    'mlb': mlb
+                }
+                
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e),
+                'mlb': mlb
+            }
+
+    def alterar_modelo_multiplos(self, mlbs, novo_modelo_id, novo_modelo_nome):
+        """
+        Altera o modelo de múltiplos produtos em lote
+        """
+        resultados = []
+        sucessos = 0
+        erros = 0
+        
+        for mlb in mlbs:
+            resultado = self.alterar_modelo_produto(mlb, novo_modelo_id, novo_modelo_nome)
+            resultados.append(resultado)
+            
+            if resultado.get('sucesso'):
+                sucessos += 1
+            else:
+                erros += 1
+            
+            # Delay para evitar rate limit
+            time.sleep(1)
+        
+        return {
+            'sucesso': sucessos > 0,
+            'total': len(mlbs),
+            'sucessos': sucessos,
+            'erros': erros,
+            'resultados': resultados
+        }
    
 # Instância global
 ml_api_secure = MercadoLivreAPISecure()
