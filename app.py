@@ -321,6 +321,12 @@ def api_listar_google_sheets():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@app.route("/keepalive", methods=["GET", "POST"])
+def keepalive():
+    return {"status": "alive"}, 200
+
+    
 @app.route('/api/google/sheets/test', methods=['POST'])
 def api_testar_google_sheet():
     """Testa acesso a uma planilha específica"""
@@ -6093,6 +6099,8 @@ def obter_dados_completos_perfil():
         import traceback
         traceback.print_exc()
         return {'erro': f'Erro interno: {str(e)}'}
+
+
     
 if __name__ == "__main__":
     app.run(debug=True)
