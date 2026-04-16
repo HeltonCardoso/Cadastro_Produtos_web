@@ -1124,6 +1124,39 @@ class MercadoLivreAPISecure:
     
     ########################################  ALTERAÇÂO DO CAMPO MODELO #############################################
 
+    def _buscar_opcoes_atributo(self, atributo_id, category_id):
+        """
+        Busca todas as opções válidas para um atributo, incluindo "Não se aplica"
+        """
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/categories/{category_id}/attributes"
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                atributos_cat = response.json()
+                for attr in atributos_cat:
+                    if attr.get('id') == atributo_id:
+                        valores = []
+                        for valor in attr.get('values', []):
+                            valores.append({
+                                'id': valor.get('id'),
+                                'nome': valor.get('name')
+                            })
+                        
+                        # Verifica se tem a opção "Não se aplica"
+                        tem_na = any(v['nome'].lower() in ['não se aplica', 'nao se aplica', 'not applicable', 'n/a'] 
+                                    for v in valores)
+                        
+                        return {
+                            'valores': valores,
+                            'tem_nao_se_aplica': tem_na
+                        }
+                return {'valores': [], 'tem_nao_se_aplica': False}
+            return {'valores': [], 'tem_nao_se_aplica': False}
+        except:
+            return {'valores': [], 'tem_nao_se_aplica': False}
+    
     def buscar_atributo_modelo(self, mlb):
         """
         Busca o valor atual do atributo MODELO de um produto
@@ -1835,7 +1868,545 @@ class MercadoLivreAPISecure:
             print(f"❌ Erro na migração em massa: {str(e)}")
             return {'sucesso': False, 'erro': str(e)}
         
+    def _get_headers(self):
+        """Retorna headers com token atualizado"""
+        token = ml_token_manager.get_valid_token()
+        return {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+    
+    def _determinar_tipo_atributo(self, atributo):
+        """Determina o tipo do atributo para renderização dinâmica"""
+        # Verifica se tem valores estruturados (números com unidade)
+        if atributo.get('value_struct'):
+            return 'numero'
+        
+        # Verifica se é booleano
+        valor = atributo.get('value_name')
+        if valor in ['Sim', 'Não', 'true', 'false', 'Sí', 'No', 'Yes', 'No']:
+            return 'booleano'
+        
+        # Verifica se tem value_id (lista de opções)
+        if atributo.get('value_id') and atributo.get('values'):
+            return 'selecao'
+        
+        # Texto padrão
+        return 'texto'
+    
+    def _buscar_valores_possiveis_atributo(self, atributo_id, category_id):
+        """Busca os valores possíveis para um atributo na categoria"""
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/categories/{category_id}/attributes"
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                atributos_cat = response.json()
+                for attr in atributos_cat:
+                    if attr.get('id') == atributo_id:
+                        valores = []
+                        for valor in attr.get('values', []):
+                            if isinstance(valor, dict):
+                                valores.append({
+                                    'id': valor.get('id'),
+                                    'nome': valor.get('name')
+                                })
+                        return valores
+                return []
+            return []
+        except Exception as e:
+            print(f"Erro ao buscar valores para {atributo_id}: {e}")
+            return []
+    
+    def _calcular_qualidade_anuncio(self, dados_produto, atributos):
+        """Calcula o score de qualidade do anúncio baseado nos atributos preenchidos"""
+        # Total de atributos vs preenchidos
+        total_atributos = len(atributos)
+        atributos_preenchidos = sum(1 for attr in atributos if attr.get('valor'))
+        
+        # Verifica se tem fotos
+        tem_fotos = len(dados_produto.get('pictures', [])) > 0
+        
+        # Verifica se tem vídeo
+        tem_video = bool(dados_produto.get('video_id'))
+        
+        # Verifica se tem descrição
+        tem_descricao = bool(dados_produto.get('descriptions'))
+        
+        # Verifica se tem estoque
+        tem_estoque = dados_produto.get('available_quantity', 0) > 0
+        
+        # Verifica se tem variações
+        tem_variacoes = len(dados_produto.get('variations', [])) > 0
+        
+        # Cálculo do score (0-100)
+        score = 0
+        
+        # Atributos preenchidos (peso 0.5)
+        if total_atributos > 0:
+            score += (atributos_preenchidos / total_atributos) * 50
+        
+        # Fotos (20 pontos)
+        qtd_fotos = len(dados_produto.get('pictures', []))
+        score += min(qtd_fotos * 4, 20)
+        
+        # Vídeo (15 pontos)
+        if tem_video:
+            score += 15
+        
+        # Descrição (10 pontos)
+        if tem_descricao:
+            score += 10
+        
+        # Estoque (5 pontos)
+        if tem_estoque:
+            score += 5
+        
+        # Variações (bônus)
+        if tem_variacoes:
+            score = min(score + 5, 100)
+        
+        # Determina nível e cor
+        if score >= 80:
+            nivel = "Profissional"
+            cor = "verde"
+        elif score >= 60:
+            nivel = "Padrão"
+            cor = "amarelo"
+        else:
+            nivel = "Básico"
+            cor = "vermelho"
+        
+        # Gera dicas de melhoria
+        dicas = []
+        if atributos_preenchidos < total_atributos:
+            faltantes = [attr['nome'] for attr in atributos if not attr.get('valor')]
+            if faltantes:
+                dicas.append(f"Preencha os atributos: {', '.join(faltantes[:3])}")
+        
+        if not tem_video:
+            dicas.append("Adicione um vídeo ao anúncio (+15 pontos)")
+        
+        if qtd_fotos < 5:
+            dicas.append(f"Adicione mais {5 - qtd_fotos} foto(s) (mínimo 5 recomendado)")
+        
+        if not tem_descricao:
+            dicas.append("Adicione uma descrição detalhada do produto")
+        
+        return {
+            'pontuacao': round(score, 1),
+            'nivel': nivel,
+            'cor': cor,
+            'dicas': dicas,
+            'metricas': {
+                'atributos_preenchidos': atributos_preenchidos,
+                'total_atributos': total_atributos,
+                'tem_fotos': tem_fotos,
+                'qtd_fotos': qtd_fotos,
+                'tem_video': tem_video,
+                'tem_descricao': tem_descricao,
+                'tem_estoque': tem_estoque,
+                'tem_variacoes': tem_variacoes
+            }
+        }
+    def alterar_atributo_com_nao_se_aplica(self, mlb, atributo_id, valor, is_nao_se_aplica=False):
+        """
+        Altera um atributo, com suporte para "Não se aplica"
+        
+        Args:
+            mlb: ID do produto
+            atributo_id: ID do atributo
+            valor: Valor do atributo (texto ou None para N/A)
+            is_nao_se_aplica: Se True, marca como "Não se aplica"
+        """
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/items/{mlb}"
+            
+            # Busca dados atuais
+            response = requests.get(url, headers=headers, timeout=15)
+            if response.status_code != 200:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao buscar produto: {response.status_code}',
+                    'mlb': mlb
+                }
+            
+            dados = response.json()
+            atributos = dados.get('attributes', [])
+            
+            # Busca o value_id para "Não se aplica" se necessário
+            value_id = None
+            value_name = valor
+            
+            if is_nao_se_aplica:
+                value_name = "Não se aplica"
+                # Tenta encontrar o value_id correto para "Não se aplica"
+                opcoes = self._buscar_opcoes_atributo(atributo_id, dados.get('category_id'))
+                for opt in opcoes.get('valores', []):
+                    if opt['nome'].lower() in ['não se aplica', 'nao se aplica']:
+                        value_id = opt['id']
+                        break
+            
+            # Atualiza o atributo
+            atributo_encontrado = False
+            for i, attr in enumerate(atributos):
+                if attr.get('id') == atributo_id:
+                    atributos[i] = {
+                        'id': atributo_id,
+                        'name': attr.get('name'),
+                        'value_name': value_name,
+                        'value_id': value_id
+                    }
+                    atributo_encontrado = True
+                    break
+            
+            if not atributo_encontrado:
+                atributos.append({
+                    'id': atributo_id,
+                    'name': self._buscar_nome_atributo(atributo_id, dados.get('category_id')),
+                    'value_name': value_name,
+                    'value_id': value_id
+                })
+            
+            # Envia atualização
+            payload = {'attributes': atributos}
+            response_update = requests.put(url, headers=headers, json=payload, timeout=30)
+            
+            if response_update.status_code == 200:
+                return {
+                    'sucesso': True,
+                    'mlb': mlb,
+                    'atributo': atributo_id,
+                    'valor': value_name,
+                    'e_nao_se_aplica': is_nao_se_aplica,
+                    'mensagem': f'Atributo alterado para "{value_name}" com sucesso!'
+                }
+            else:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao atualizar: {response_update.status_code}',
+                    'mlb': mlb
+                }
+                
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e),
+                'mlb': mlb
+            }
+    
+    def buscar_todos_atributos_produto(self, mlb):
+        """Busca os atributos que o produto realmente possui"""
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/items/{mlb}"
+            
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code != 200:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao buscar produto: {response.status_code}',
+                    'mlb': mlb
+                }
+            
+            dados = response.json()
+            
+            # Extrai apenas os atributos que o produto TEM
+            atributos = []
+            for attr in dados.get('attributes', []):
+                attr_id = attr.get('id')
+                attr_name = attr.get('name')
+                value_name = attr.get('value_name')
+                value_id = attr.get('value_id')
+                
+                # Verifica se é "Não se aplica"
+                e_nao_se_aplica = (value_name == "Não se aplica")
+                
+                # Verifica se está vazio
+                esta_vazio = (value_name is None or value_name == '' or value_id == '-1')
+                
+                # Busca valores possíveis para este atributo (para o dropdown)
+                valores_possiveis = self._buscar_valores_possiveis_atributo(attr_id, dados.get('category_id'))
+                
+                # Verifica se tem opção "Não se aplica"
+                tem_nao_se_aplica = False
+                if isinstance(valores_possiveis, list):
+                    tem_nao_se_aplica = any(
+                        v.get('nome') and v['nome'].lower() in ['não se aplica', 'nao se aplica', 'n/a']
+                        for v in valores_possiveis if isinstance(v, dict)
+                    )
+                
+                atributos.append({
+                    'id': attr_id,
+                    'nome': attr_name,
+                    'valor': value_name if not e_nao_se_aplica else "Não se aplica",
+                    'value_id': value_id,
+                    'valores_possiveis': valores_possiveis if isinstance(valores_possiveis, list) else [],
+                    'tem_nao_se_aplica': tem_nao_se_aplica,
+                    'e_nao_se_aplica': e_nao_se_aplica,
+                    'esta_vazio': esta_vazio
+                })
+            
+            # Ordena: MODELO primeiro, depois vazios, depois preenchidos
+            atributos.sort(key=lambda x: (
+                0 if x['id'] == 'MODEL' else 1,
+                0 if x['esta_vazio'] else 2,
+                x['nome']
+            ))
+            
+            # Calcula qualidade de forma simples (baseada em quantos atributos estão preenchidos)
+            total = len(atributos)
+            preenchidos = sum(1 for a in atributos if not a['esta_vazio'] and not a['e_nao_se_aplica'])
+            score = int((preenchidos / total) * 100) if total > 0 else 0
+            
+            # Determina nível
+            if score >= 80:
+                nivel = "Profissional"
+                cor = "verde"
+            elif score >= 60:
+                nivel = "Padrão"
+                cor = "amarelo"
+            else:
+                nivel = "Básico"
+                cor = "vermelho"
+            
+            qualidade = {
+                'pontuacao': score,
+                'nivel': nivel,
+                'cor': cor,
+                'metricas': {
+                    'atributos_preenchidos': preenchidos,
+                    'total_atributos': total
+                }
+            }
+            
+            return {
+                'sucesso': True,
+                'mlb': mlb,
+                'titulo': dados.get('title'),
+                'categoria_id': dados.get('category_id'),
+                'atributos': atributos,
+                'qualidade': qualidade
+            }
+            
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e),
+                'mlb': mlb
+            }
+    
+    def _buscar_qualidade_oficial(self, mlb):
+        """Busca a qualidade oficial do Mercado Livre"""
+        try:
+            headers = self._get_headers()
+            
+            # Tenta o endpoint de qualidade do anúncio
+            url = f"{self.base_url}/items/{mlb}/listing_quality"
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                dados = response.json()
+                return {
+                    'pontuacao': dados.get('quality_score', 0),
+                    'nivel': dados.get('quality_level', 'Básico'),
+                    'dicas': dados.get('tips', [])
+                }
+        except:
+            pass
+        
+        # Fallback: calcula baseado nos atributos (simplificado)
+        return None
 
+    def alterar_multiplos_atributos(self, mlb, atributos_dict):
+        """
+        Altera múltiplos atributos de uma vez - VERSÃO CORRIGIDA
+        """
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/items/{mlb}"
+            
+            # Busca dados atuais do produto
+            response = requests.get(url, headers=headers, timeout=15)
+            if response.status_code != 200:
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao buscar produto: {response.status_code}',
+                    'mlb': mlb
+                }
+            
+            dados = response.json()
+            atributos_existentes = dados.get('attributes', [])
+            
+            # Converte o dicionário recebido para o formato correto
+            # atributos_dict pode vir como: {"MODEL": "valor"} ou {"MODEL": {"valor": "x", "is_nao_se_aplica": false}}
+            
+            for attr_id, attr_data in atributos_dict.items():
+                # Normaliza o formato
+                if isinstance(attr_data, dict):
+                    valor = attr_data.get('valor')
+                    is_nao_se_aplica = attr_data.get('is_nao_se_aplica', False)
+                else:
+                    valor = attr_data
+                    is_nao_se_aplica = False
+                
+                # Busca o nome do atributo na categoria
+                nome_atributo = self._buscar_nome_atributo(attr_id, dados.get('category_id'))
+                
+                # Prepara o novo atributo no formato correto do ML
+                novo_atributo = {
+                    'id': attr_id,
+                    'name': nome_atributo
+                }
+                
+                if is_nao_se_aplica:
+                    # Para "Não se aplica", usamos value_name como null e value_id como null
+                    novo_atributo['value_name'] = None
+                    novo_atributo['value_id'] = None
+                elif valor:
+                    # Para valores normais
+                    novo_atributo['value_name'] = valor
+                    # IMPORTANTE: Não enviar value_id se não tiver certeza
+                    # Deixar o ML determinar
+                else:
+                    # Pular se não tem valor e não é N/A
+                    continue
+                
+                # Atualiza ou adiciona o atributo
+                encontrado = False
+                for i, attr in enumerate(atributos_existentes):
+                    if attr.get('id') == attr_id:
+                        # Remove campos que podem causar erro
+                        attr_clean = {k: v for k, v in novo_atributo.items() if v is not None}
+                        atributos_existentes[i] = attr_clean
+                        encontrado = True
+                        break
+                
+                if not encontrado and (valor or is_nao_se_aplica):
+                    attr_clean = {k: v for k, v in novo_atributo.items() if v is not None}
+                    atributos_existentes.append(attr_clean)
+            
+            # Prepara o payload FINAL - apenas o que o ML espera
+            payload = {
+                'attributes': atributos_existentes
+            }
+            
+            # Log para debug (remove em produção)
+            print(f"Payload sendo enviado: {json.dumps(payload, ensure_ascii=False)[:500]}")
+            
+            # Envia a atualização
+            response_update = requests.put(url, headers=headers, json=payload, timeout=30)
+            
+            if response_update.status_code == 200:
+                return {
+                    'sucesso': True,
+                    'mlb': mlb,
+                    'atributos_alterados': list(atributos_dict.keys()),
+                    'mensagem': f'{len(atributos_dict)} atributo(s) alterado(s) com sucesso!'
+                }
+            else:
+                # Log do erro detalhado
+                erro_texto = response_update.text[:500]
+                print(f"Erro resposta ML: {response_update.status_code} - {erro_texto}")
+                
+                return {
+                    'sucesso': False,
+                    'erro': f'Erro ao atualizar: {response_update.status_code} - {erro_texto}',
+                    'mlb': mlb
+                }
+                
+        except Exception as e:
+            return {
+                'sucesso': False,
+                'erro': str(e),
+                'mlb': mlb
+            }
+    
+    def _buscar_nome_atributo(self, atributo_id, category_id):
+        """Busca o nome amigável de um atributo"""
+        try:
+            headers = self._get_headers()
+            url = f"{self.base_url}/categories/{category_id}/attributes"
+            response = requests.get(url, headers=headers, timeout=15)
+            
+            if response.status_code == 200:
+                atributos = response.json()
+                for attr in atributos:
+                    if attr.get('id') == atributo_id:
+                        return attr.get('name')
+            return atributo_id
+        except:
+            return atributo_id
+    
+    def otimizar_qualidade_produto(self, mlb, auto_corrigir=True):
+        """
+        Analisa e otimiza a qualidade do anúncio
+        
+        Args:
+            mlb: ID do produto
+            auto_corrigir: Se True, tenta corrigir automaticamente atributos faltantes
+        """
+        # Primeiro busca o estado atual
+        resultado = self.buscar_todos_atributos_produto(mlb)
+        
+        if not resultado['sucesso']:
+            return resultado
+        
+        qualidade = resultado['qualidade']
+        atributos = resultado['atributos']
+        
+        # Se já está boa, retorna
+        if qualidade['pontuacao'] >= 80:
+            return {
+                'sucesso': True,
+                'mlb': mlb,
+                'qualidade': qualidade,
+                'acao_tomada': 'nenhuma',
+                'mensagem': 'Produto já possui qualidade profissional'
+            }
+        
+        # Otimização automática (se solicitado)
+        correcoes = []
+        
+        if auto_corrigir:
+            # Tenta preencher atributos vazios que têm valores possíveis
+            for attr in atributos:
+                if not attr.get('valor') and attr.get('valores_possiveis'):
+                    # Se tem valores possíveis, usa o primeiro como padrão
+                    primeiro_valor = attr['valores_possiveis'][0]['nome']
+                    self.alterar_multiplos_atributos(mlb, {attr['id']: primeiro_valor})
+                    correcoes.append({
+                        'atributo': attr['nome'],
+                        'valor_antigo': None,
+                        'valor_novo': primeiro_valor
+                    })
+        
+        # Recalcula qualidade após correções
+        if correcoes:
+            resultado_atualizado = self.buscar_todos_atributos_produto(mlb)
+            qualidade_atualizada = resultado_atualizado['qualidade']
+            
+            return {
+                'sucesso': True,
+                'mlb': mlb,
+                'qualidade_anterior': qualidade,
+                'qualidade_atual': qualidade_atualizada,
+                'correcoes_aplicadas': correcoes,
+                'melhoria_pontos': qualidade_atualizada['pontuacao'] - qualidade['pontuacao'],
+                'mensagem': f'Qualidade melhorou de {qualidade["pontuacao"]} para {qualidade_atualizada["pontuacao"]} pontos'
+            }
+        
+        return {
+            'sucesso': True,
+            'mlb': mlb,
+            'qualidade': qualidade,
+            'acao_tomada': 'nenhuma',
+            'mensagem': 'Produto precisa de melhorias manuais',
+            'dicas': qualidade['dicas']
+        }
    
 # Instância global
 ml_api_secure = MercadoLivreAPISecure()
