@@ -1,0 +1,771 @@
+{% extends 'base.html' %}
+
+{% block title %}Qualidade do Produto - Mercado Livre{% endblock %}
+
+{% block extra_css %}
+{{ super() }}
+<style>
+    :root {
+        --ml-blue: #3483fa;
+        --ml-green: #00a650;
+        --ml-orange: #f5a623;
+        --ml-red: #ff3333;
+        --ml-gray: #ededed;
+        --ml-dark-gray: #666;
+        --ml-border: #e5e5e5;
+    }
+    
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    /* Card de Busca */
+    .search-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .search-card input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid var(--ml-border);
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .btn-search {
+        background: var(--ml-blue);
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    
+    /* Loading */
+    .loading-overlay {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 12px;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--ml-gray);
+        border-top-color: var(--ml-blue);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 12px;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Quality Card */
+    .quality-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .quality-score-area {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .quality-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #ffd700;
+        color: #1a1a2e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+    .quality-info h3 {
+        margin: 0;
+        color: white;
+        font-size: 14px;
+        font-weight: normal;
+    }
+    
+    .quality-info .score {
+        font-size: 28px;
+        font-weight: bold;
+        color: #ffd700;
+    }
+    
+    .warning-badge {
+        background: rgba(255,255,255,0.1);
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: white;
+        font-size: 13px;
+    }
+    
+    /* Info Produto */
+    .info-card {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        font-size: 13px;
+    }
+    
+    /* Seções Expansíveis */
+    .atributos-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+    
+    .section-header {
+        padding: 14px 20px;
+        background: #fafafa;
+        border-bottom: 1px solid var(--ml-border);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
+    }
+    
+    .section-header:hover {
+        background: #f0f0f0;
+    }
+    
+    .section-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-header h3 i {
+        color: var(--ml-blue);
+    }
+    
+    .section-badge {
+        background: var(--ml-blue);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: normal;
+    }
+    
+    .section-badge.warning {
+        background: var(--ml-orange);
+    }
+    
+    .section-badge.success {
+        background: var(--ml-green);
+    }
+    
+    .chevron {
+        transition: transform 0.2s;
+        color: var(--ml-dark-gray);
+        font-size: 14px;
+    }
+    
+    .chevron.expanded {
+        transform: rotate(180deg);
+    }
+    
+    .section-content {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    
+    .section-content.expanded {
+        max-height: 5000px;
+        transition: max-height 0.5s ease-in;
+        padding: 20px;
+    }
+    
+    /* Grid 3 colunas */
+    .atributos-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    
+    /* Card de Atributo */
+    .atributo-card {
+        border: 1px solid var(--ml-border);
+        border-radius: 10px;
+        padding: 14px;
+        background: white;
+        transition: all 0.2s;
+    }
+    
+    .atributo-card.vazio {
+        border-left: 3px solid var(--ml-red);
+        background: #fff9f9;
+    }
+    
+    .atributo-card.preenchido {
+        border-left: 3px solid var(--ml-green);
+    }
+    
+    .atributo-card.nao-aplica {
+        border-left: 3px solid var(--ml-dark-gray);
+        background: #f9f9f9;
+    }
+    
+    .atributo-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    
+    .atributo-nome {
+        font-weight: 600;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .atributo-nome i {
+        color: var(--ml-blue);
+        font-size: 12px;
+    }
+    
+    .star {
+        color: #ffc107;
+        font-size: 11px;
+    }
+    
+    .status-badge {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 600;
+    }
+    
+    .status-badge.success {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-badge.danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-badge.info {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .atributo-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--ml-border);
+        border-radius: 8px;
+        font-size: 13px;
+        transition: all 0.2s;
+        margin-top: 5px;
+    }
+    
+    .atributo-input:focus {
+        outline: none;
+        border-color: var(--ml-blue);
+        box-shadow: 0 0 0 2px rgba(52,131,250,0.1);
+    }
+    
+    .nao-aplica-checkbox {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--ml-dark-gray);
+        cursor: pointer;
+    }
+    
+    .nao-aplica-checkbox input {
+        width: 14px;
+        height: 14px;
+        cursor: pointer;
+        margin: 0;
+    }
+    
+    .btn-salvar {
+        background: var(--ml-blue);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        transition: all 0.2s;
+    }
+    
+    .btn-salvar:hover {
+        background: #2968c8;
+        transform: translateY(-1px);
+    }
+    
+    .contador-vazios {
+        background: var(--ml-orange);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    /* Responsivo */
+    @media (max-width: 1000px) {
+        .atributos-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .atributos-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Busca -->
+    <div class="search-card">
+        <input type="text" id="mlb_input" placeholder="Digite o MLB do produto (ex: MLB1234567890)">
+        <button class="btn-search" onclick="carregarProduto()">
+            <i class="fas fa-search"></i> Buscar
+        </button>
+    </div>
+    
+    <!-- Loading -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Carregando dados do produto...</p>
+    </div>
+    
+    <!-- Conteúdo -->
+    <div id="produto-content" style="display: none;">
+        <!-- Quality Card -->
+        <div id="quality-card"></div>
+        
+        <!-- Info Produto -->
+        <div class="info-card">
+            <strong id="produto-titulo"></strong> | 
+            MLB: <span id="produto-mlb"></span> |
+            Categoria: <span id="produto-categoria"></span>
+        </div>
+        
+        <!-- Contador de Vazios -->
+        <div id="contador-vazios" class="contador-vazios" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="contador-texto"></span>
+        </div>
+        
+        <!-- Seção Primária -->
+        <div class="atributos-section">
+            <div class="section-header" onclick="toggleSection('primaria')">
+                <h3>
+                    <i class="fas fa-star"></i>
+                    Características Principais
+                    <span class="section-badge" id="primaria-badge">Essenciais</span>
+                </h3>
+                <i class="fas fa-chevron-down chevron expanded" id="chevron-primaria"></i>
+            </div>
+            <div class="section-content expanded" id="content-primaria">
+                <div id="primaria-grid" class="atributos-grid"></div>
+            </div>
+        </div>
+        
+        <!-- Seção Secundária -->
+        <div class="atributos-section">
+            <div class="section-header" onclick="toggleSection('secundaria')">
+                <h3>
+                    <i class="fas fa-tag"></i>
+                    Características Complementares
+                    <span class="section-badge warning" id="secundaria-badge">Opcionais</span>
+                </h3>
+                <i class="fas fa-chevron-down chevron" id="chevron-secundaria"></i>
+            </div>
+            <div class="section-content" id="content-secundaria">
+                <div id="secundaria-grid" class="atributos-grid"></div>
+            </div>
+        </div>
+        
+        <!-- Botão Salvar -->
+        <button class="btn-salvar" onclick="salvarTodosAtributos()">
+            <i class="fas fa-save"></i> Salvar todas as alterações
+        </button>
+    </div>
+</div>
+
+<script>
+let mlbAtual = '';
+let atributosOriginais = {};
+
+// IDs de atributos considerados primários
+const PRIMARY_IDS = ['MODEL', 'BRAND', 'COLOR', 'SIZE', 'WEIGHT', 'MATERIAL', 'LINE'];
+
+async function carregarProduto() {
+    const mlb = document.getElementById('mlb_input').value.trim();
+    if (!mlb || !mlb.toUpperCase().startsWith('MLB')) {
+        alert('Digite um MLB válido (ex: MLB1234567890)');
+        return;
+    }
+    
+    mlbAtual = mlb;
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('produto-content').style.display = 'none';
+    
+    try {
+        const response = await fetch(`/api/mercadolivre/produto-completo/${mlb}`);
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (!data.sucesso) {
+            alert('Erro: ' + data.erro);
+            return;
+        }
+        
+        document.getElementById('produto-titulo').textContent = data.titulo || 'N/A';
+        document.getElementById('produto-mlb').textContent = data.mlb;
+        document.getElementById('produto-categoria').textContent = data.categoria_id || 'N/A';
+        
+        renderizarQualidade(data.qualidade);
+        renderizarAtributos(data.atributos || []);
+        
+        document.getElementById('produto-content').style.display = 'block';
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        alert('Erro: ' + error.message);
+    }
+}
+
+function renderizarQualidade(qualidade) {
+    const qualityCard = document.getElementById('quality-card');
+    const score = qualidade?.pontuacao || 0;
+    const nivel = qualidade?.nivel || 'Básico';
+    const metricas = qualidade?.metricas || {};
+    const preenchidos = metricas.atributos_preenchidos || 0;
+    const total = metricas.total_atributos || 0;
+    
+    qualityCard.innerHTML = `
+        <div class="quality-score-area">
+            <div class="quality-circle">${score}</div>
+            <div class="quality-info">
+                <h3>Qualidade do Anúncio</h3>
+                <div class="score">${score} pontos</div>
+                <div style="font-size: 12px; opacity: 0.8;">${preenchidos}/${total} atributos preenchidos</div>
+            </div>
+        </div>
+        <div class="warning-badge">
+            <i class="fas fa-chart-line"></i> Nível: ${nivel}
+        </div>
+    `;
+}
+
+function renderizarAtributos(atributos) {
+    // Separa primários e secundários
+    const primarios = [];
+    const secundarios = [];
+    
+    atributos.forEach(attr => {
+        if (PRIMARY_IDS.includes(attr.id) || attr.id === 'MODEL') {
+            primarios.push(attr);
+        } else {
+            secundarios.push(attr);
+        }
+    });
+    
+    // Ordena: vazios primeiro em cada seção
+    primarios.sort((a, b) => {
+        if (a.id === 'MODEL') return -1;
+        if (b.id === 'MODEL') return 1;
+        const aVazio = a.esta_vazio && !a.e_nao_se_aplica;
+        const bVazio = b.esta_vazio && !b.e_nao_se_aplica;
+        if (aVazio && !bVazio) return -1;
+        if (!aVazio && bVazio) return 1;
+        return a.nome.localeCompare(b.nome);
+    });
+    
+    secundarios.sort((a, b) => {
+        const aVazio = a.esta_vazio && !a.e_nao_se_aplica;
+        const bVazio = b.esta_vazio && !b.e_nao_se_aplica;
+        if (aVazio && !bVazio) return -1;
+        if (!aVazio && bVazio) return 1;
+        return a.nome.localeCompare(b.nome);
+    });
+    
+    renderizarGrid('primaria', primarios);
+    renderizarGrid('secundaria', secundarios);
+    
+    // Atualiza badges
+    const primVazios = primarios.filter(a => a.esta_vazio && !a.e_nao_se_aplica).length;
+    const secVazios = secundarios.filter(a => a.esta_vazio && !a.e_nao_se_aplica).length;
+    const totalVazios = primVazios + secVazios;
+    
+    const primBadge = document.getElementById('primaria-badge');
+    if (primVazios > 0) {
+        primBadge.innerHTML = `⚠️ ${primVazios} pendente(s)`;
+        primBadge.classList.add('warning');
+        primBadge.classList.remove('success');
+    } else {
+        primBadge.innerHTML = '✓ Completas';
+        primBadge.classList.remove('warning');
+        primBadge.classList.add('success');
+    }
+    
+    const secBadge = document.getElementById('secundaria-badge');
+    if (secVazios > 0) {
+        secBadge.innerHTML = `⚠️ ${secVazios} pendente(s)`;
+    } else {
+        secBadge.innerHTML = '✓ Completas';
+        secBadge.classList.remove('warning');
+        secBadge.classList.add('success');
+    }
+    
+    // Contador geral
+    const contadorDiv = document.getElementById('contador-vazios');
+    if (totalVazios > 0) {
+        contadorDiv.style.display = 'flex';
+        document.getElementById('contador-texto').innerHTML = 
+            `${totalVazios} campo(s) pendente(s). Preencha ou marque como "Não se aplica" para melhorar a qualidade.`;
+    } else {
+        contadorDiv.style.display = 'none';
+    }
+}
+
+function renderizarGrid(gridId, atributos) {
+    const grid = document.getElementById(`${gridId}-grid`);
+    grid.innerHTML = '';
+    
+    if (!atributos || atributos.length === 0) {
+        grid.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Nenhum atributo disponível</div>';
+        return;
+    }
+    
+    atributos.forEach(attr => {
+        const estaVazio = attr.esta_vazio === true;
+        const eNaoAplica = attr.e_nao_se_aplica === true;
+        const isModelo = (attr.id === 'MODEL');
+        
+        let cardClass = 'atributo-card';
+        if (eNaoAplica) cardClass += ' nao-aplica';
+        else if (estaVazio) cardClass += ' vazio';
+        else cardClass += ' preenchido';
+        
+        let statusText = '';
+        let statusClass = 'status-badge';
+        if (eNaoAplica) {
+            statusText = 'Não se aplica';
+            statusClass += ' info';
+        } else if (!estaVazio) {
+            statusText = 'Preenchido';
+            statusClass += ' success';
+        } else {
+            statusText = 'Pendente';
+            statusClass += ' danger';
+        }
+        
+        // Input texto livre para todos
+        const inputStyle = isModelo ? 'font-weight: bold; background: #fff8e1; border-color: #ffc107;' : '';
+        
+        const inputHtml = `
+            <input type="text" 
+                   id="attr_${attr.id}" 
+                   class="atributo-input" 
+                   value="${escapeHtml(attr.valor || '')}"
+                   placeholder="Digite o ${attr.nome.toLowerCase()}"
+                   style="${inputStyle}"
+                   ${eNaoAplica ? 'disabled' : ''}
+                   onchange="marcarAlteracao('${attr.id}')">
+        `;
+        
+        // Checkbox "Não se aplica"
+        const naoAplicaHtml = `
+            <label class="nao-aplica-checkbox">
+                <input type="checkbox" 
+                       id="nao_aplica_${attr.id}" 
+                       ${eNaoAplica ? 'checked' : ''}
+                       onchange="toggleNaoSeAplica('${attr.id}', this.checked)">
+                <i class="fas fa-ban"></i> Não se aplica
+            </label>
+        `;
+        
+        const card = document.createElement('div');
+        card.className = cardClass;
+        card.innerHTML = `
+            <div class="atributo-header">
+                <div class="atributo-nome">
+                    <i class="fas ${isModelo ? 'fa-star' : 'fa-tag'}"></i>
+                    <span>${escapeHtml(attr.nome)}</span>
+                    ${isModelo ? '<span class="star">★</span>' : ''}
+                </div>
+                <span class="${statusClass}">${statusText}</span>
+            </div>
+            ${inputHtml}
+            ${naoAplicaHtml}
+        `;
+        
+        grid.appendChild(card);
+        
+        atributosOriginais[attr.id] = {
+            valor: attr.valor || '',
+            is_nao_se_aplica: eNaoAplica
+        };
+    });
+}
+
+function toggleNaoSeAplica(attrId, checked) {
+    const input = document.getElementById(`attr_${attrId}`);
+    const card = input.closest('.atributo-card');
+    
+    if (checked) {
+        input.disabled = true;
+        input.value = '';
+        card.classList.remove('vazio', 'preenchido');
+        card.classList.add('nao-aplica');
+        
+        const statusSpan = card.querySelector('.status-badge');
+        statusSpan.className = 'status-badge info';
+        statusSpan.textContent = 'Não se aplica';
+        
+        atributosOriginais[attrId].is_nao_se_aplica = true;
+    } else {
+        input.disabled = false;
+        card.classList.remove('nao-aplica', 'preenchido');
+        card.classList.add('vazio');
+        
+        const statusSpan = card.querySelector('.status-badge');
+        statusSpan.className = 'status-badge danger';
+        statusSpan.textContent = 'Pendente';
+        
+        atributosOriginais[attrId].is_nao_se_aplica = false;
+    }
+    
+    marcarAlteracao(attrId);
+}
+
+function marcarAlteracao(attrId) {
+    const input = document.getElementById(`attr_${attrId}`);
+    if (input) {
+        input.style.borderColor = '#f5a623';
+        setTimeout(() => input.style.borderColor = '', 1000);
+    }
+}
+
+function toggleSection(section) {
+    const content = document.getElementById(`content-${section}`);
+    const chevron = document.getElementById(`chevron-${section}`);
+    content.classList.toggle('expanded');
+    chevron.classList.toggle('expanded');
+}
+
+async function salvarTodosAtributos() {
+    const atributosModificados = {};
+    
+    for (const [id, original] of Object.entries(atributosOriginais)) {
+        const input = document.getElementById(`attr_${id}`);
+        const naoAplicaCheck = document.getElementById(`nao_aplica_${id}`);
+        
+        if (!input) continue;
+        
+        let isNaoSeAplica = naoAplicaCheck ? naoAplicaCheck.checked : false;
+        
+        if (isNaoSeAplica && !original.is_nao_se_aplica) {
+            atributosModificados[id] = { valor: null, is_nao_se_aplica: true };
+        } else if (!isNaoSeAplica && original.is_nao_se_aplica) {
+            atributosModificados[id] = { valor: null, is_nao_se_aplica: false };
+        } else if (!isNaoSeAplica) {
+            let novoValor = input.value.trim();
+            if (novoValor !== original.valor && novoValor !== '') {
+                atributosModificados[id] = { valor: novoValor, is_nao_se_aplica: false };
+            }
+        }
+    }
+    
+    if (Object.keys(atributosModificados).length === 0) {
+        alert('Nenhuma alteração foi feita!');
+        return;
+    }
+    
+    if (!confirm(`Confirmar alteração de ${Object.keys(atributosModificados).length} campo(s)?`)) return;
+    
+    document.getElementById('loading').style.display = 'block';
+    
+    try {
+        const response = await fetch('/api/mercadolivre/alterar-multiplos-atributos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mlb: mlbAtual, atributos: atributosModificados })
+        });
+        
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.sucesso) {
+            alert('✅ ' + data.mensagem);
+            await carregarProduto();
+        } else {
+            alert('❌ ' + data.erro);
+        }
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        alert('Erro: ' + error.message);
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return text;
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Enter para buscar
+document.getElementById('mlb_input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') carregarProduto();
+});
+</script>
+{% endblock %}

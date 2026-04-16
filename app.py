@@ -36,6 +36,8 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 
 
 
+
+
 sys.path.append(str(Path(__file__).parent))
 
 # ============================================
@@ -5952,6 +5954,98 @@ def processar_estatisticas_pedidos(orders):
         'pedidos_cancelados': sum(1 for o in orders if o.get('status') == 'CANCELED')
     }
 
+# ROTA 1: Produto completo (atributos + qualidade)
+@app.route('/api/mercadolivre/produto-completo/<mlb>')
+def api_produto_completo(mlb):
+    """Retorna produto com todos atributos + qualidade"""
+    try:
+        # Usa a instância global já configurada
+        resultado = ml_api_secure.buscar_todos_atributos_produto(mlb)
+        return jsonify(resultado)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+
+# ROTA 2: Atributos da categoria
+@app.route('/api/mercadolivre/atributos-categoria/<category_id>')
+def api_atributos_categoria(category_id):
+    """Retorna todos os atributos possíveis de uma categoria"""
+    try:
+        headers = ml_api_secure._get_headers()
+        url = f"https://api.mercadolibre.com/categories/{category_id}/attributes"
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            atributos = response.json()
+            atributos_filtrados = []
+            for attr in atributos:
+                atributos_filtrados.append({
+                    'id': attr.get('id'),
+                    'name': attr.get('name'),
+                    'type': attr.get('type'),
+                    'required': attr.get('required', False),
+                    'values': [
+                        {'id': v.get('id'), 'name': v.get('name')}
+                        for v in attr.get('values', [])
+                    ]
+                })
+            return jsonify({
+                'sucesso': True,
+                'atributos': atributos_filtrados
+            })
+        return jsonify({'sucesso': False, 'erro': 'Erro ao buscar categoria'})
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)})
+
+# ROTA 3: Otimizar qualidade
+@app.route('/api/mercadolivre/otimizar-qualidade', methods=['POST'])
+def api_otimizar_qualidade():
+    """Otimiza a qualidade do anúncio automaticamente"""
+    try:
+        data = request.json
+        mlb = data.get('mlb')
+        auto_corrigir = data.get('auto_corrigir', True)
+        
+        resultado = ml_api_secure.otimizar_qualidade_produto(mlb, auto_corrigir)
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+
+# ROTA 4: Alterar múltiplos atributos
+@app.route('/api/mercadolivre/alterar-multiplos-atributos', methods=['POST'])
+def api_alterar_multiplos_atributos():
+    """Altera múltiplos atributos de uma vez"""
+    try:
+        data = request.json
+        mlb = data.get('mlb')
+        atributos = data.get('atributos', {})
+        
+        if not mlb:
+            return jsonify({'sucesso': False, 'erro': 'MLB não informado'})
+        
+        if not atributos:
+            return jsonify({'sucesso': False, 'erro': 'Nenhum atributo para alterar'})
+        
+        resultado = ml_api_secure.alterar_multiplos_atributos(mlb, atributos)
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({
+            'sucesso': False,
+            'erro': str(e)
+        }), 500
+
+# ROTA 5: Dashboard do produto (HTML)
+@app.route('/produto/dashboard')
+def produto_dashboard():
+    """Tela de dashboard do produto"""
+    return render_template('mercadolivre/produto_dashboard.html')
 
 def obter_dados_completos_perfil():
     """Obtém dados básicos do perfil - VERSÃO CORRIGIDA"""
