@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 import time
 from token_manager_secure import ml_token_manager
+import unicodedata
+import difflib
 
 class MercadoLivreAPISecure:
     def __init__(self):
@@ -1928,16 +1930,26 @@ class MercadoLivreAPISecure:
                 attr_id = cat_attr.get('id')
                 item_attr = item_attrs.get(attr_id, {})
 
-                value_name = item_attr.get('value_name')
-                value_id = item_attr.get('value_id')
+                original_value_name = item_attr.get('value_name')
+                original_value_id = item_attr.get('value_id')
+                
+                valores_possiveis = cat_attr.get('values', [])
+
+                # RESOLVE VALUE_ID ORFÃO
+                matched_value_id, matched_value_name = self._find_dropdown_value(
+                    valores_possiveis, original_value_id, original_value_name
+                )
+
+                # Usar o valor resolvido se encontrado, senão manter original
+                value_id = matched_value_id if matched_value_id is not None else original_value_id
+                value_name = matched_value_name if matched_value_name is not None else original_value_name
 
                 e_nao_se_aplica = self._eh_nao_se_aplica(value_id, value_name)
-                esta_vazio      = self._esta_vazio(value_id, value_name)and not e_nao_se_aplica
+                esta_vazio      = self._esta_vazio(value_id, value_name) and not e_nao_se_aplica
 
                 tags = cat_attr.get('tags', [])
                 obrigatorio = 'required' in tags
                 recomendado = 'recommended' in tags
-
                 relevance = cat_attr.get('relevance', 0)
 
                 if attr_id in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
@@ -1951,18 +1963,15 @@ class MercadoLivreAPISecure:
                 else:
                     categoria = 'ignorar'
 
-                valores = cat_attr.get('values', [])
-
                 atributos.append({
                     'id': attr_id,
                     'nome': cat_attr.get('name'),
-                    'valor':      value_name if (value_name and not e_nao_se_aplica) else None,
+                    'valor': value_name if (value_name and not e_nao_se_aplica) else None,
                     'esta_vazio': esta_vazio,
                     'value_id': value_id,
-                    'valores_possiveis': valores,
-                    'tem_nao_se_aplica': any(v.get('id') == "-1" for v in valores),
+                    'valores_possiveis': valores_possiveis,
+                    'tem_nao_se_aplica': any(v.get('id') == "-1" for v in valores_possiveis),
                     'e_nao_se_aplica': e_nao_se_aplica,
-                    'esta_vazio': esta_vazio,
                     'obrigatorio': obrigatorio,
                     'recomendado': recomendado,
                     'categoria': categoria,
@@ -2354,7 +2363,53 @@ class MercadoLivreAPISecure:
             'mensagem': 'Produto precisa de melhorias manuais',
             'dicas': qualidade['dicas']
         }
+    
+    def _normalize_text(self, text):
+        if not isinstance(text, str):
+            return ""
+        text = text.lower()
+        text = unicodedata.normalize('NFD', text)
+        text = ''.join(char for char in text if unicodedata.category(char) != 'Mn')
+        return text.strip()  
+
+    def _find_dropdown_value(self, possible_values, item_value_id, item_value_name):
+        if not possible_values:
+            return None, None
         
+        # 1. Match exato por ID
+        if item_value_id:
+            for pv in possible_values:
+                if pv.get('id') == item_value_id:
+                    return pv.get('id'), pv.get('name')
+        
+        # 2. Match exato por nome (normalizado)
+        if item_value_name:
+            normalized_item_name = self._normalize_text(item_value_name)
+            for pv in possible_values:
+                normalized_pv_name = self._normalize_text(pv.get('name', ''))
+                if normalized_item_name == normalized_pv_name:
+                    return pv.get('id'), pv.get('name')
+        
+        # 3. Fuzzy match por nome
+        if item_value_name:
+            normalized_item_name = self._normalize_text(item_value_name)
+            best_match_id = None
+            best_match_name = None
+            best_ratio = 0
+            
+            for pv in possible_values:
+                normalized_pv_name = self._normalize_text(pv.get('name', ''))
+                ratio = difflib.SequenceMatcher(None, normalized_item_name, normalized_pv_name).ratio()
+                if ratio > best_ratio:
+                    best_ratio = ratio
+                    best_match_id = pv.get('id')
+                    best_match_name = pv.get('name')
+            
+            if best_ratio >= 0.8:
+                return best_match_id, best_match_name
+        
+        return None, None
+     
    
 # Instância global
 ml_api_secure = MercadoLivreAPISecure()
