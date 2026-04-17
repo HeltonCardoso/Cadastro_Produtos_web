@@ -1877,6 +1877,22 @@ class MercadoLivreAPISecure:
         }
     
     def buscar_todos_atributos_produto(self, mlb):
+        ATRIBUTOS_INTERNOS_ML = {
+            'HAZMAT_TRANSPORTABILITY', 'IS_KIT', 'DESCRIPTIVE_TAGS',
+            'PRODUCT_CHEMICAL_FEATURES', 'FOODS_AND_DRINKS', 'MEDICINES',
+            'BATTERIES_FEATURES', 'SHIPMENT_PACKING', 'ADDITIONAL_INFO_REQUIRED',
+            'EXCLUDED_PLATFORMS', 'IS_SUITABLE_FOR_SHIPMENT', 'PRODUCT_DATA_SOURCE',
+            'LIMITED_MARKETPLACE_VISIBILITY_REASONS', 'HAS_COMPATIBILITIES',
+            'CATALOG_TITLE', 'SEARCH_ENHANCEMENT_FIELDS', 'PRODUCT_FEATURES',
+            'IS_NEW_OFFER', 'SYI_PYMES_ID', 'IS_FLAMMABLE', 'WITH_POSITIVE_IMPACT',
+            'PACKAGE_DATA_SOURCE', 'SELLER_PACKAGE_DATA_SOURCE', 'VERTICAL_TAGS',
+            'EMPTY_GTIN_REASON', 'VALUE_ADDED_TAX', 'IMPORT_DUTY',
+            'IS_TOM_BRAND', 'INSTALLATION_SERVICE', 'MPN','MAIN_COLOR',
+            'FILTRABLE_COLOR','PACKAGE_HEIGHT','PACKAGE_WIDTH','PACKAGE_LENGTH',
+            'PACKAGE_WEIGHT','LINE','DETAILED_MODEL','PIECES_NUMBER','PATTERN_NAME','FINISH',
+            'INCLUDES_ASSEMBLY_ACCESSORIES','COLOR',
+        }
+        ATRIBUTOS_PRINCIPAIS_ADICIONAIS = {'GTIN', 'SKU', 'SELLER_SKU','MODEL'}
         try:
             headers = self._get_headers()
 
@@ -1916,12 +1932,7 @@ class MercadoLivreAPISecure:
                 value_id = item_attr.get('value_id')
 
                 e_nao_se_aplica = self._eh_nao_se_aplica(value_id, value_name)
-
-                esta_vazio = (
-                    not value_name and
-                    not value_id and
-                    not e_nao_se_aplica
-                )
+                esta_vazio      = self._esta_vazio(value_id, value_name)and not e_nao_se_aplica
 
                 tags = cat_attr.get('tags', [])
                 obrigatorio = 'required' in tags
@@ -1929,19 +1940,24 @@ class MercadoLivreAPISecure:
 
                 relevance = cat_attr.get('relevance', 0)
 
-                if obrigatorio or relevance >= 2:
+                if attr_id in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
+                    categoria = 'principal'
+                elif attr_id in ATRIBUTOS_INTERNOS_ML:
+                    categoria = 'ignorar'
+                elif obrigatorio:
                     categoria = 'principal'
                 elif recomendado or relevance == 1:
                     categoria = 'recomendado'
                 else:
-                    categoria = 'secundario'
+                    categoria = 'ignorar'
 
                 valores = cat_attr.get('values', [])
 
                 atributos.append({
                     'id': attr_id,
                     'nome': cat_attr.get('name'),
-                    'valor': None if e_nao_se_aplica else value_name,
+                    'valor':      value_name if (value_name and not e_nao_se_aplica) else None,
+                    'esta_vazio': esta_vazio,
                     'value_id': value_id,
                     'valores_possiveis': valores,
                     'tem_nao_se_aplica': any(v.get('id') == "-1" for v in valores),
@@ -1963,13 +1979,13 @@ class MercadoLivreAPISecure:
                     'dicas': ['Score calculado localmente — ML não retornou dados oficiais'],
                     'origem': 'calculado'
                 }
-
+            
             return {
                 'sucesso': True,
                 'mlb': mlb,
                 'titulo': item.get('title'),
                 'categoria_id': category_id,
-                'atributos': atributos,
+                'atributos': self._filtrar_atributos_relevantes(atributos),
                 'qualidade': qualidade
             }
 
@@ -1980,20 +1996,43 @@ class MercadoLivreAPISecure:
                 'mlb': mlb
             }
 
-
+    def _filtrar_atributos_relevantes(self, atributos):
+        return [
+            a for a in atributos
+            if a.get('categoria') in ('principal', 'recomendado')
+        ]
+    
     def _eh_nao_se_aplica(self, value_id, value_name):
-        if value_id == "-1":
-            return True
-
+        """
+        Retorna True quando o VALOR ATUAL é "não se aplica".
+        
+        Casos que indicam NÃO SE APLICA:
+        1. value_name textual contém "não se aplica"
+        2. value_id é "-1" E a categoria TEM essa opção como "não se aplica"
+        (mas value_name vazio)
+        3. value_id é "null" ou None E value_name é "Não se aplica"
+        """
+        # Caso 1: value_name já diz "não se aplica"
         if value_name:
-            return value_name.strip().lower() in [
-                "não se aplica",
-                "nao se aplica",
-                "n/a",
-                "not applicable"
-            ]
-
+            nome_limpo = value_name.strip().lower()
+            if nome_limpo in ["não se aplica", "nao se aplica", "n/a", "not applicable"]:
+                return True
+        
+        # Caso 2: value_id é "-1" e value_name está vazio
+        # (isso indica que o usuário selecionou "Não se aplica" em um dropdown)
+        if value_id == "-1" and (not value_name or value_name.strip() == ""):
+            return True
+        
         return False
+    
+    def _esta_vazio(self, value_id, value_name):
+        """
+        Campo vazio = sem value_name E sem value_id positivo.
+        value_id == "-1" do ML indica ausência de valor selecionado.
+        """
+        sem_nome = not value_name or value_name.strip() == ""
+        sem_id   = not value_id or value_id == "-1"
+        return sem_nome and sem_id
 
 
     def _buscar_qualidade_oficial(self, mlb):
@@ -2044,23 +2083,37 @@ class MercadoLivreAPISecure:
 
 
     def calcular_score_inteligente(self, atributos):
-        obrigatorios = [a for a in atributos if a.get('obrigatorio')]
+        """
+        Score 0-100 ponderado por categoria de atributo.
 
-        if not obrigatorios:
-            return 0
+        Pesos:
+        - Obrigatório preenchido  → 60 % do score base (proporcional)
+        - Recomendado preenchido  → 25 % do score base (proporcional)
+        - Secundário preenchido   → 15 % do score base (proporcional)
 
-        preenchidos = [
-            a for a in obrigatorios
-            if a.get('valor') and not a.get('e_nao_se_aplica')
-        ]
+        "Não se aplica" LEGÍTIMO (value_name reconhecido) conta como preenchido.
+        value_id == "-1" sem value_name = campo vazio, NÃO conta.
+        """
 
-        base = (len(preenchidos) / len(obrigatorios)) * 60
+        def preenchido(a):
+            # Tem valor de texto OU é explicitamente "não se aplica"
+            return bool(a.get('valor')) or a.get('e_nao_se_aplica', False)
 
-        extras = 0
-        extras += min(sum(1 for a in atributos if a.get('valor')), 10) * 3
-        extras += min(sum(1 for a in atributos if a.get('e_nao_se_aplica')), 5) * 1
+        obrigatorios  = [a for a in atributos if a.get('categoria') == 'principal']
+        recomendados  = [a for a in atributos if a.get('categoria') == 'recomendado']
+        secundarios   = [a for a in atributos if a.get('categoria') == 'secundario']
 
-        score = base + extras
+        def ratio(lista):
+            if not lista:
+                return 1.0          # sem atributos nessa categoria = não penaliza
+            p = sum(1 for a in lista if preenchido(a))
+            return p / len(lista)
+
+        score = (
+            ratio(obrigatorios) * 60 +
+            ratio(recomendados) * 25 +
+            ratio(secundarios)  * 15
+        )
 
         return round(min(score, 100), 1)
 
@@ -2069,93 +2122,155 @@ class MercadoLivreAPISecure:
         try:
             headers = self._get_headers()
             url = f"{self.base_url}/items/{mlb}"
-
+    
             response = requests.get(url, headers=headers, timeout=15)
-
+    
             if response.status_code != 200:
                 return {
                     'sucesso': False,
                     'erro': f'Erro ao buscar produto: {response.status_code}',
                     'mlb': mlb
                 }
-
+    
             dados = response.json()
             atributos_existentes = dados.get('attributes', [])
             category_id = dados.get('category_id')
-
+    
             url_cat = f"{self.base_url}/categories/{category_id}/attributes"
             resp_cat = requests.get(url_cat, headers=headers, timeout=15)
-
+    
             if resp_cat.status_code != 200:
                 return {
                     'sucesso': False,
                     'erro': f'Erro categoria: {resp_cat.status_code}',
                     'mlb': mlb
                 }
-
+    
             cat_attrs = resp_cat.json()
             cat_map = {a['id']: a for a in cat_attrs}
-
+    
             for attr_id, attr_data in atributos_dict.items():
-
-                if isinstance(attr_data, dict):
-                    valor = attr_data.get('valor')
-                    is_nao_se_aplica = attr_data.get('is_nao_se_aplica', False)
-                else:
-                    valor = attr_data
-                    is_nao_se_aplica = False
-
+    
                 cat_attr = cat_map.get(attr_id, {})
-                valores = cat_attr.get('values', [])
-
-                novo = {
-                    'id': attr_id,
-                    'name': cat_attr.get('name', attr_id)
-                }
-
-                if is_nao_se_aplica:
-                    if any(v.get('id') == "-1" for v in valores):
-                        novo['value_id'] = "-1"
-                    else:
-                        continue
-                elif valor:
-                    novo['value_name'] = valor
-                else:
+    
+                # ─── AQUI está a mudança: usa o novo método no lugar do bloco antigo ───
+                novo = self._montar_payload_atributo(attr_id, attr_data, cat_attr)
+    
+                if novo is None:        # nada a enviar para esse atributo
                     continue
-
+                # ─────────────────────────────────────────────────────────────────────
+    
                 encontrado = False
                 for i, a in enumerate(atributos_existentes):
                     if a.get('id') == attr_id:
                         atributos_existentes[i] = novo
                         encontrado = True
                         break
-
+    
                 if not encontrado:
                     atributos_existentes.append(novo)
-
+    
             payload = {'attributes': atributos_existentes}
-
+    
             response_update = requests.put(url, headers=headers, json=payload, timeout=30)
-
+    
             if response_update.status_code == 200:
                 return {
                     'sucesso': True,
                     'mlb': mlb,
                     'mensagem': 'Atributos atualizados com sucesso'
                 }
-
+    
             return {
                 'sucesso': False,
                 'erro': response_update.text,
                 'mlb': mlb
             }
-
+    
         except Exception as e:
             return {
                 'sucesso': False,
                 'erro': str(e),
                 'mlb': mlb
             }
+    
+    
+    # ============================================================
+    # Adicione este método auxiliar logo abaixo do anterior
+    # ============================================================
+    
+    def _montar_payload_atributo(self, attr_id, attr_data, cat_attr):
+        """
+        Decide o que enviar para a API do ML para um atributo.
+    
+        Casos tratados:
+        1. Usuário marcou "não se aplica"
+            a) Categoria tem opção id=="-1"  → envia value_id="-1"
+            b) Categoria tem opção "Não"     → envia o id/name dessa opção
+            c) Não tem nenhuma das duas      → ignora (retorna None)
+    
+        2. Usuário digitou um valor de texto
+            a) Existe na lista de valores possíveis → envia id + name (correto para o ML)
+            b) Não existe (campo livre)             → envia só value_name
+    
+        3. Nada para enviar → retorna None
+        """
+    
+        if isinstance(attr_data, dict):
+            valor            = attr_data.get('valor')
+            is_nao_se_aplica = attr_data.get('is_nao_se_aplica', False)
+        else:
+            valor            = attr_data
+            is_nao_se_aplica = False
+    
+        valores = cat_attr.get('values', [])
+    
+        novo = {
+            'id':   attr_id,
+            'name': cat_attr.get('name', attr_id),
+        }
+    
+        # ── Caso 1: usuário quer marcar "não se aplica" ──────────────────────────
+        if is_nao_se_aplica:
+    
+            # 1a) Categoria aceita o id especial "-1"
+            if any(v.get('id') == "-1" for v in valores):
+                novo['value_id'] = "-1"
+    
+            # 1b) Categoria tem uma opção de texto equivalente a "Não"
+            else:
+                opcao_nao = next(
+                    (v for v in valores
+                    if v.get('name', '').strip().lower() in
+                        ['não', 'nao', 'não se aplica', 'nao se aplica', 'n/a', 'no']),
+                    None
+                )
+                if opcao_nao:
+                    novo['value_id']   = opcao_nao['id']
+                    novo['value_name'] = opcao_nao['name']
+                else:
+                    return None     # 1c) sem forma de marcar N/A → ignora
+    
+        # ── Caso 2: usuário digitou um valor ────────────────────────────────────
+        elif valor:
+    
+            # 2a) Valor bate exatamente com uma opção pré-definida
+            opcao_exata = next(
+                (v for v in valores
+                if v.get('name', '').strip().lower() == valor.strip().lower()),
+                None
+            )
+            if opcao_exata:
+                novo['value_id']   = opcao_exata['id']
+                novo['value_name'] = opcao_exata['name']
+            else:
+                novo['value_name'] = valor      # 2b) campo de texto livre
+    
+        # ── Caso 3: nada a enviar ────────────────────────────────────────────────
+        else:
+            return None
+    
+        return novo
 
 
     def _buscar_nome_atributo(self, atributo_id, category_id):

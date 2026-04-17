@@ -15,47 +15,69 @@
         --ml-border: #e5e5e5;
     }
 
-    .dashboard-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 0;
     }
 
-    .search-card {
+    /* ── Barra de pesquisa fixa ── */
+    .search-bar-sticky {
+        position: sticky;
+        top: 0;
+        z-index: 100;
         background: white;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-bottom: 1px solid var(--ml-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 12px 20px;
         display: flex;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
-        flex-wrap: wrap;
     }
 
-    .search-card input {
+    .search-bar-sticky input {
         flex: 1;
-        padding: 12px 16px;
+        padding: 10px 16px;
         border: 1px solid var(--ml-border);
         border-radius: 8px;
         font-size: 14px;
+        max-width: 500px;
+    }
+
+    .search-bar-sticky input:focus {
+        outline: none;
+        border-color: var(--ml-blue);
+        box-shadow: 0 0 0 2px rgba(52,131,250,0.1);
     }
 
     .btn-search {
         background: var(--ml-blue);
         color: white;
         border: none;
-        padding: 12px 28px;
+        padding: 10px 24px;
         border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
+        font-size: 14px;
+        white-space: nowrap;
     }
 
+    .btn-search:hover { background: #2968c8; }
+
+    /* ── Container principal sem padding excessivo ── */
+    .dashboard-container {
+        max-width: 100%;
+        padding: 16px 20px;
+    }
+
+    /* ── Loading ── */
     .loading-overlay {
         text-align: center;
         padding: 40px;
         background: white;
         border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .spinner {
@@ -68,58 +90,59 @@
         margin: 0 auto 12px;
     }
 
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Quality card ── */
     .quality-card {
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         border-radius: 12px;
-        padding: 20px 24px;
-        margin-bottom: 20px;
+        padding: 18px 24px;
+        margin-bottom: 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 12px;
     }
 
     .quality-score-area {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 18px;
     }
 
     .quality-circle {
-        width: 70px;
-        height: 70px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         background: #ffd700;
         color: #1a1a2e;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 22px;
         font-weight: bold;
+        flex-shrink: 0;
     }
 
     .quality-info h3 {
-        margin: 0;
+        margin: 0 0 2px;
         color: white;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: normal;
     }
 
     .quality-info .score {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: bold;
         color: #ffd700;
+        line-height: 1;
     }
 
     .quality-origem {
         font-size: 11px;
         color: rgba(255,255,255,0.5);
-        margin-top: 2px;
+        margin-top: 4px;
     }
 
     .warning-badge {
@@ -130,24 +153,53 @@
         font-size: 13px;
     }
 
+    /* ── Info card com título maior ── */
     .info-card {
         background: #f5f5f5;
         border-radius: 8px;
         padding: 12px 16px;
-        margin-bottom: 20px;
-        font-size: 13px;
+        margin-bottom: 14px;
+        font-size: 14px;
+        line-height: 1.5;
     }
 
+    .info-card .produto-titulo-texto {
+        font-size: 17px;
+        font-weight: 700;
+        color: #222;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .info-card .produto-meta {
+        font-size: 13px;
+        color: #555;
+    }
+
+    /* ── Contador vazios ── */
+    .contador-vazios {
+        background: var(--ml-orange);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* ── Seções accordion ── */
     .atributos-section {
         background: white;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        margin-bottom: 16px;
+        margin-bottom: 10px;
         overflow: hidden;
     }
 
     .section-header {
-        padding: 14px 20px;
+        padding: 13px 18px;
         background: #fafafa;
         border-bottom: 1px solid var(--ml-border);
         cursor: pointer;
@@ -155,24 +207,21 @@
         justify-content: space-between;
         align-items: center;
         transition: background 0.2s;
+        user-select: none;
     }
 
-    .section-header:hover {
-        background: #f0f0f0;
-    }
+    .section-header:hover { background: #f0f0f0; }
 
     .section-header h3 {
         margin: 0;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .section-header h3 i {
-        color: var(--ml-blue);
-    }
+    .section-header h3 i { color: var(--ml-blue); }
 
     .section-badge {
         background: var(--ml-blue);
@@ -183,100 +232,97 @@
         font-weight: normal;
     }
 
-    .section-badge.warning { background: var(--ml-orange); }
-    .section-badge.success { background: var(--ml-green); }
     .section-badge.recommended { background: #7b2ff7; }
 
     .chevron {
-        transition: transform 0.2s;
+        transition: transform 0.25s;
         color: var(--ml-dark-gray);
-        font-size: 14px;
+        font-size: 13px;
     }
 
-    .chevron.expanded {
-        transform: rotate(180deg);
-    }
+    .chevron.expanded { transform: rotate(180deg); }
 
     .section-content {
-        padding: 0;
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease-out;
+        transition: max-height 0.35s ease;
+        padding: 0 18px;
     }
 
     .section-content.expanded {
-        max-height: 5000px;
-        transition: max-height 0.5s ease-in;
-        padding: 20px;
+        max-height: 9000px;
+        padding: 16px 18px;
     }
 
+    /* ── Grid de atributos ── */
     .atributos-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
     }
 
+    @media (max-width: 1200px) { .atributos-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 900px)  { .atributos-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px)  { .atributos-grid { grid-template-columns: 1fr; } }
+
+    /* ── Cards de atributo ── */
     .atributo-card {
         border: 1px solid var(--ml-border);
         border-radius: 10px;
-        padding: 14px;
+        padding: 12px;
         background: white;
-        transition: all 0.2s;
+        transition: box-shadow 0.2s;
     }
 
-    .atributo-card.vazio {
-        border-left: 3px solid var(--ml-red);
-        background: #fff9f9;
-    }
-
-    .atributo-card.preenchido {
-        border-left: 3px solid var(--ml-green);
-    }
-
-    .atributo-card.nao-aplica {
-        border-left: 3px solid var(--ml-dark-gray);
-        background: #f9f9f9;
-    }
+    .atributo-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);       background: #fff9f9; }
+    .atributo-card.preenchido { border-left: 3px solid var(--ml-green); }
+    .atributo-card.nao-aplica { border-left: 3px solid var(--ml-dark-gray); background: #f9f9f9; }
 
     .atributo-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        gap: 6px;
     }
 
     .atributo-nome {
         font-weight: 600;
-        font-size: 13px;
+        font-size: 12px;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
+        flex: 1;
+        line-height: 1.3;
     }
 
-    .atributo-nome i { color: var(--ml-blue); font-size: 12px; }
-
+    .atributo-nome i { color: var(--ml-blue); font-size: 11px; flex-shrink: 0; }
     .star { color: #ffc107; font-size: 11px; }
 
     .status-badge {
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 12px;
         font-size: 10px;
         font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .status-badge.success { background: #d4edda; color: #155724; }
     .status-badge.danger  { background: #f8d7da; color: #721c24; }
     .status-badge.info    { background: #d1ecf1; color: #0c5460; }
 
+    /* ── Inputs e selects ── */
     .atributo-input {
         width: 100%;
-        padding: 10px 12px;
+        padding: 8px 10px;
         border: 1px solid var(--ml-border);
-        border-radius: 8px;
+        border-radius: 7px;
         font-size: 13px;
-        transition: all 0.2s;
-        margin-top: 5px;
-        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        background: white;
+        appearance: auto;
     }
 
     .atributo-input:focus {
@@ -291,36 +337,42 @@
         cursor: not-allowed;
     }
 
+    select.atributo-input {
+        cursor: pointer;
+    }
+
+    /* ── Checkbox Não se aplica ── */
     .nao-aplica-checkbox {
-        margin-top: 10px;
+        margin-top: 8px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         font-size: 11px;
         color: var(--ml-dark-gray);
         cursor: pointer;
     }
 
     .nao-aplica-checkbox input {
-        width: 14px;
-        height: 14px;
+        width: 13px;
+        height: 13px;
         cursor: pointer;
         margin: 0;
         accent-color: var(--ml-blue);
     }
 
+    /* ── Botão salvar ── */
     .btn-salvar {
         background: var(--ml-blue);
         color: white;
         border: none;
         padding: 14px 28px;
         border-radius: 10px;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         cursor: pointer;
         width: 100%;
-        margin-top: 20px;
-        transition: all 0.2s;
+        margin-top: 16px;
+        transition: background 0.2s, transform 0.15s;
     }
 
     .btn-salvar:hover {
@@ -328,54 +380,119 @@
         transform: translateY(-1px);
     }
 
-    .contador-vazios {
-        background: var(--ml-orange);
-        color: white;
-        padding: 10px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 13px;
-        display: flex;
+    /* ── MODAL ── */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 9999;
         align-items: center;
+        justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+        background: white;
+        border-radius: 14px;
+        padding: 28px 32px;
+        max-width: 420px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        text-align: center;
+        animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.92) translateY(10px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-icon {
+        font-size: 48px;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: #1a1a2e;
+    }
+
+    .modal-message {
+        font-size: 14px;
+        color: #555;
+        margin: 0 0 22px;
+        line-height: 1.5;
+    }
+
+    .modal-actions {
+        display: flex;
         gap: 10px;
+        justify-content: center;
     }
 
-    @media (max-width: 1000px) {
-        .atributos-grid { grid-template-columns: repeat(2, 1fr); }
+    .modal-btn {
+        padding: 10px 24px;
+        border-radius: 8px;
+        border: none;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.2s;
     }
 
-    @media (max-width: 600px) {
-        .atributos-grid { grid-template-columns: 1fr; }
-    }
+    .modal-btn:hover { opacity: 0.85; }
+    .modal-btn.primary   { background: var(--ml-blue);  color: white; }
+    .modal-btn.secondary { background: #eee; color: #333; }
+    .modal-btn.success   { background: var(--ml-green); color: white; }
+    .modal-btn.danger    { background: var(--ml-red);   color: white; }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box" id="modal-box">
+        <span class="modal-icon" id="modal-icon">✅</span>
+        <div class="modal-title"   id="modal-title">Título</div>
+        <div class="modal-message" id="modal-message">Mensagem</div>
+        <div class="modal-actions" id="modal-actions"></div>
+    </div>
+</div>
+
+<!-- Barra de pesquisa FIXA -->
+<div class="search-bar-sticky">
+    <input type="text" id="mlb_input" placeholder="Digite o MLB do produto (ex: MLB1234567890)">
+    <button class="btn-search" onclick="carregarProduto()">
+        <i class="fas fa-search"></i> Buscar
+    </button>
+</div>
+
 <div class="dashboard-container">
 
-    <div class="search-card">
-        <input type="text" id="mlb_input" placeholder="Digite o MLB do produto (ex: MLB1234567890)">
-        <button class="btn-search" onclick="carregarProduto()">
-            <i class="fas fa-search"></i> Buscar
-        </button>
-    </div>
-
-    <div id="loading" class="loading-overlay" style="display: none;">
+    <div id="loading" class="loading-overlay" style="display:none;">
         <div class="spinner"></div>
         <p>Carregando dados do produto...</p>
     </div>
 
-    <div id="produto-content" style="display: none;">
+    <div id="produto-content" style="display:none;">
 
         <div id="quality-card"></div>
 
         <div class="info-card">
-            <strong id="produto-titulo"></strong> |
-            MLB: <span id="produto-mlb"></span> |
-            Categoria: <span id="produto-categoria"></span>
+            <span class="produto-titulo-texto" id="produto-titulo"></span>
+            <span class="produto-meta">
+                MLB: <strong id="produto-mlb"></strong> &nbsp;|&nbsp;
+                Categoria: <strong id="produto-categoria"></strong>
+            </span>
         </div>
 
-        <div id="contador-vazios" class="contador-vazios" style="display: none;">
+        <div id="contador-vazios" class="contador-vazios" style="display:none;">
             <i class="fas fa-exclamation-triangle"></i>
             <span id="contador-texto"></span>
         </div>
@@ -410,41 +527,77 @@
             </div>
         </div>
 
-        <!-- Seção Secundária -->
-        <div class="atributos-section">
-            <div class="section-header" onclick="toggleSection('secundaria')">
-                <h3>
-                    <i class="fas fa-tag"></i>
-                    Características Complementares
-                    <span class="section-badge warning" id="secundaria-badge">Opcionais</span>
-                </h3>
-                <i class="fas fa-chevron-down chevron" id="chevron-secundaria"></i>
-            </div>
-            <div class="section-content" id="content-secundaria">
-                <div id="secundaria-grid" class="atributos-grid"></div>
-            </div>
-        </div>
-
         <button class="btn-salvar" onclick="salvarTodosAtributos()">
             <i class="fas fa-save"></i> Salvar todas as alterações
         </button>
+
     </div>
 </div>
 
 <script>
 let mlbAtual = '';
-let atributosOriginais = {};
+// Guarda o estado original DE CADA CAMPO (separado do estado atual da UI)
+let estadoCampos = {};
 
+// ─────────────────────────────────────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────────────────────────────────────
+function mostrarModal({ icone = '✅', titulo, mensagem, botoes = [] }) {
+    document.getElementById('modal-icon').textContent    = icone;
+    document.getElementById('modal-title').textContent   = titulo;
+    document.getElementById('modal-message').textContent = mensagem;
+
+    const actionsEl = document.getElementById('modal-actions');
+    actionsEl.innerHTML = '';
+
+    botoes.forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = `modal-btn ${b.classe || 'primary'}`;
+        btn.textContent = b.texto;
+        btn.onclick = () => {
+            fecharModal();
+            if (b.acao) b.acao();
+        };
+        actionsEl.appendChild(btn);
+    });
+
+    document.getElementById('modal-overlay').classList.add('show');
+}
+
+function fecharModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+}
+
+function confirmarModal({ icone, titulo, mensagem, textoCancelar = 'Cancelar', textoConfirmar = 'Confirmar' }) {
+    return new Promise(resolve => {
+        mostrarModal({
+            icone, titulo, mensagem,
+            botoes: [
+                { texto: textoCancelar,  classe: 'secondary', acao: () => resolve(false) },
+                { texto: textoConfirmar, classe: 'primary',   acao: () => resolve(true)  }
+            ]
+        });
+    });
+}
+
+// Fecha modal ao clicar fora
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) fecharModal();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CARREGAMENTO DO PRODUTO
+// ─────────────────────────────────────────────────────────────────────────────
 async function carregarProduto() {
     const mlb = document.getElementById('mlb_input').value.trim().toUpperCase();
 
     if (!mlb || !mlb.startsWith('MLB')) {
-        alert('Digite um MLB válido (ex: MLB1234567890)');
+        mostrarModal({ icone: '⚠️', titulo: 'MLB inválido', mensagem: 'Digite um MLB válido (ex: MLB1234567890)', botoes: [{ texto: 'OK', classe: 'primary' }] });
         return;
     }
 
     mlbAtual = mlb;
-    atributosOriginais = {};
+    estadoCampos = {};
 
     document.getElementById('loading').style.display = 'block';
     document.getElementById('produto-content').style.display = 'none';
@@ -456,12 +609,12 @@ async function carregarProduto() {
         document.getElementById('loading').style.display = 'none';
 
         if (!data.sucesso) {
-            alert('Erro: ' + data.erro);
+            mostrarModal({ icone: '❌', titulo: 'Erro', mensagem: data.erro, botoes: [{ texto: 'OK', classe: 'danger' }] });
             return;
         }
 
-        document.getElementById('produto-titulo').textContent = data.titulo || 'N/A';
-        document.getElementById('produto-mlb').textContent = data.mlb;
+        document.getElementById('produto-titulo').textContent   = data.titulo    || 'N/A';
+        document.getElementById('produto-mlb').textContent      = data.mlb;
         document.getElementById('produto-categoria').textContent = data.categoria_id || 'N/A';
 
         renderizarQualidade(data.qualidade);
@@ -471,12 +624,14 @@ async function carregarProduto() {
 
     } catch (error) {
         document.getElementById('loading').style.display = 'none';
-        alert('Erro: ' + error.message);
+        mostrarModal({ icone: '❌', titulo: 'Erro de conexão', mensagem: error.message, botoes: [{ texto: 'OK', classe: 'danger' }] });
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// QUALIDADE
+// ─────────────────────────────────────────────────────────────────────────────
 function renderizarQualidade(qualidade) {
-    const qualityCard = document.getElementById('quality-card');
     const score  = qualidade?.pontuacao ?? 0;
     const nivel  = qualidade?.nivel    ?? 'Básico';
     const origem = qualidade?.origem   ?? 'calculado';
@@ -485,7 +640,7 @@ function renderizarQualidade(qualidade) {
         ? '<span style="color:#00ff88;font-size:11px;">● Score oficial do Mercado Livre</span>'
         : '<span style="color:#ffa500;font-size:11px;">⚠ Score calculado localmente</span>';
 
-    qualityCard.innerHTML = `
+    document.getElementById('quality-card').innerHTML = `
         <div class="quality-card">
             <div class="quality-score-area">
                 <div class="quality-circle">${score}</div>
@@ -495,22 +650,20 @@ function renderizarQualidade(qualidade) {
                     <div class="quality-origem">${origemLabel}</div>
                 </div>
             </div>
-            <div class="warning-badge">
-                <i class="fas fa-chart-line"></i> Nível: ${nivel}
-            </div>
+            <div class="warning-badge"><i class="fas fa-chart-line"></i> Nível: ${nivel}</div>
         </div>
     `;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDERIZAÇÃO DOS ATRIBUTOS
+// ─────────────────────────────────────────────────────────────────────────────
 function renderizarAtributos(atributos) {
     const primarios    = atributos.filter(a => a.categoria === 'principal');
     const recomendados = atributos.filter(a => a.categoria === 'recomendado');
-    const secundarios  = atributos.filter(a => a.categoria === 'secundario');
 
     renderizarGrid('primaria',    primarios);
     renderizarGrid('recomendada', recomendados);
-    renderizarGrid('secundaria',  secundarios);
-
     atualizarContadores();
 }
 
@@ -519,78 +672,171 @@ function renderizarGrid(gridId, atributos) {
     grid.innerHTML = '';
 
     if (!atributos || atributos.length === 0) {
-        grid.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">Nenhum atributo disponível</div>';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#999;">Nenhum atributo disponível</div>';
         return;
     }
 
-    atributos.forEach(attr => {
-        const estaVazio   = attr.esta_vazio === true;
-        const eNaoAplica  = attr.e_nao_se_aplica === true;
-        const isModelo    = attr.id === 'MODEL';
+    atributos.forEach(attr => buildAtributoCard(grid, attr));
+}
 
-        let cardClass = 'atributo-card';
-        if (eNaoAplica)    cardClass += ' nao-aplica';
-        else if (estaVazio) cardClass += ' vazio';
-        else                cardClass += ' preenchido';
+function buildAtributoCard(container, attr) {
+    const valoresPossiveis = attr.valores_possiveis || [];
+    const temDropdown      = valoresPossiveis.length > 0;
+    const isModelo         = attr.id === 'MODEL';
 
-        let statusText  = '';
-        let statusClass = 'status-badge';
-        if (eNaoAplica) {
-            statusText  = 'Não se aplica';
-            statusClass += ' info';
-        } else if (!estaVazio) {
-            statusText  = 'Preenchido';
-            statusClass += ' success';
-        } else {
-            statusText  = 'Pendente';
-            statusClass += ' danger';
+    // ── Detecta se o campo atual é "Não se aplica" ──
+    let eNaoAplica = attr.e_nao_se_aplica === true;
+    if (!eNaoAplica && attr.value_id === "-1" && !attr.valor) eNaoAplica = true;
+
+    // ── Detecta se o campo suporta "Não se aplica" como opção ──
+    // 1) O ML retornou tem_nao_se_aplica=true  OU
+    // 2) Tem opção textual "Não" / "Não se aplica" na lista
+    const temOpcaoNaoNaLista = valoresPossiveis.some(v =>
+        ['não', 'nao', 'não se aplica', 'nao se aplica', 'n/a', 'no'].includes((v.name || '').trim().toLowerCase())
+    );
+    const suportaNaoAplica = attr.tem_nao_se_aplica || temOpcaoNaoNaLista;
+
+    const estaVazio = !eNaoAplica && !attr.valor && !(attr.value_id && attr.value_id !== "-1");
+
+    // ── Classes do card ──
+    let cardClass = 'atributo-card';
+    if (eNaoAplica)      cardClass += ' nao-aplica';
+    else if (estaVazio)  cardClass += ' vazio';
+    else                 cardClass += ' preenchido';
+
+    // ── Badge de status ──
+    let statusText = '', statusClass = 'status-badge';
+    if (eNaoAplica)      { statusText = 'Não se aplica'; statusClass += ' info'; }
+    else if (!estaVazio) { statusText = 'Preenchido';    statusClass += ' success'; }
+    else                 { statusText = 'Pendente';      statusClass += ' danger'; }
+
+    // ── Determina placeholder / unidade ──
+    function getUnidade(id, nome) {
+        const EXCLUIR_UNIDADE = ['PACKAGE_WEIGHT', 'SELLER_PACKAGE_WEIGHT'];
+        if (EXCLUIR_UNIDADE.includes(id)) return '';
+        if (id.includes('WEIGHT') || nome.includes('Peso'))    return 'kg';
+        if (id.includes('HEIGHT') || nome.includes('Altura'))  return 'cm';
+        if (id.includes('WIDTH')  || nome.includes('Largura')) return 'cm';
+        if (id.includes('DEPTH')  || nome.includes('Profundidade')) return 'cm';
+        if (id.includes('LENGTH') || nome.includes('Comprimento')) return 'cm';
+        return '';
+    }
+    const unidade = getUnidade(attr.id, attr.nome || '');
+
+    // ── Monta o input/select ──
+    let inputHtml = '';
+
+    if (eNaoAplica) {
+        // Campo já está como N/A — mostra texto desabilitado
+        inputHtml = `
+            <input type="text" id="attr_${attr.id}" class="atributo-input"
+                   value="Não se aplica" disabled
+                   style="background:#f0f0f0;color:#888;">
+        `;
+    } else if (temDropdown && !isModelo) {
+        // SELECT com valor atual do ML já selecionado
+        let options = '<option value="">Selecione...</option>';
+
+        valoresPossiveis.forEach(opt => {
+            const nome = escapeHtml(opt.name || opt.nome || '');
+            const optId = escapeHtml(opt.id || '');
+            // Compara pelo id (mais confiável) ou pelo nome
+            const selected = (attr.value_id && attr.value_id === opt.id) || (!attr.value_id && opt.name === attr.valor) ? 'selected' : '';
+            options += `<option value="${optId}" data-name="${nome}" ${selected}>${nome}</option>`;
+        });
+
+        inputHtml = `
+            <select id="attr_${attr.id}" class="atributo-input"
+                    onchange="handleSelectChange('${attr.id}', this)">
+                ${options}
+            </select>
+        `;
+    } else {
+        // INPUT texto com valor atual
+        let valorAtual = attr.valor || '';
+        // Garante unidade se o valor veio sem ela
+        if (unidade && valorAtual && !valorAtual.includes(unidade)) {
+            const numeros = valorAtual.replace(/[^0-9.,]/g, '');
+            if (numeros) valorAtual = `${numeros} ${unidade}`;
         }
 
-        const inputStyle = isModelo
-            ? 'font-weight:bold;background:#fff8e1;border-color:#ffc107;'
-            : '';
+        const placeholder = unidade ? `Ex: 10 ${unidade}` : `Digite o ${(attr.nome || '').toLowerCase()}`;
 
-        const naoAplicaHtml = attr.tem_nao_se_aplica ? `
+        inputHtml = `
+            <input type="text" id="attr_${attr.id}" class="atributo-input"
+                   value="${escapeHtml(valorAtual)}"
+                   placeholder="${escapeHtml(placeholder)}"
+                   ${isModelo ? 'style="font-weight:bold;background:#fff8e1;border-color:#ffc107;"' : ''}
+                   data-unidade="${unidade}"
+                   onblur="aplicarUnidade('${attr.id}')"
+                   oninput="marcarAlteracao('${attr.id}')">
+        `;
+    }
+
+    // ── Checkbox "Não se aplica" ──
+    // Aparece SEMPRE que o atributo suporta N/A (tem a opção) e não é modal
+    let naoAplicaHtml = '';
+    if (!isModelo && suportaNaoAplica) {
+        naoAplicaHtml = `
             <label class="nao-aplica-checkbox">
-                <input type="checkbox"
-                    id="nao_aplica_${attr.id}"
-                    ${eNaoAplica ? 'checked' : ''}
-                    onchange="toggleNaoSeAplica('${attr.id}', this.checked)">
+                <input type="checkbox" id="nao_aplica_${attr.id}"
+                       ${eNaoAplica ? 'checked' : ''}
+                       onchange="toggleNaoSeAplica('${attr.id}', this.checked)">
                 <i class="fas fa-ban"></i> Não se aplica
             </label>
-        ` : '';
-
-        const card = document.createElement('div');
-        card.className = cardClass;
-        card.id = `card_${attr.id}`;
-        card.innerHTML = `
-            <div class="atributo-header">
-                <div class="atributo-nome">
-                    <i class="fas ${isModelo ? 'fa-star' : 'fa-tag'}"></i>
-                    <span>${escapeHtml(attr.nome)}</span>
-                    ${isModelo ? '<span class="star">★</span>' : ''}
-                </div>
-                <span class="${statusClass}" id="status_${attr.id}">${statusText}</span>
-            </div>
-            <input type="text"
-                   id="attr_${attr.id}"
-                   class="atributo-input"
-                   value="${eNaoAplica ? '' : escapeHtml(attr.valor || '')}"
-                   placeholder="Digite o ${escapeHtml(attr.nome.toLowerCase())}"
-                   style="${inputStyle}"
-                   ${eNaoAplica ? 'disabled' : ''}
-                   onchange="marcarAlteracao('${attr.id}')">
-            ${naoAplicaHtml}
         `;
+    }
 
-        grid.appendChild(card);
+    const card = document.createElement('div');
+    card.className = cardClass;
+    card.id = `card_${attr.id}`;
+    card.innerHTML = `
+        <div class="atributo-header">
+            <div class="atributo-nome">
+                <i class="fas ${isModelo ? 'fa-star' : 'fa-tag'}"></i>
+                <span>${escapeHtml(attr.nome || attr.id)}</span>
+                ${isModelo ? '<span class="star">★</span>' : ''}
+            </div>
+            <span class="${statusClass}" id="status_${attr.id}">${statusText}</span>
+        </div>
+        ${inputHtml}
+        ${naoAplicaHtml}
+    `;
 
-        // Registra estado original APÓS criação do card
-        atributosOriginais[attr.id] = {
-            valor: attr.valor || '',
-            is_nao_se_aplica: eNaoAplica
-        };
-    });
+    container.appendChild(card);
+
+    // Salva estado original
+    estadoCampos[attr.id] = {
+        valorOriginal:      attr.valor || '',
+        valueIdOriginal:    attr.value_id || '',
+        naoAplicaOriginal:  eNaoAplica,
+        temDropdown,
+        suportaNaoAplica,
+        unidade,
+        nome: attr.nome
+    };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INTERAÇÕES
+// ─────────────────────────────────────────────────────────────────────────────
+
+function handleSelectChange(attrId, selectEl) {
+    const card       = document.getElementById(`card_${attrId}`);
+    const statusSpan = document.getElementById(`status_${attrId}`);
+    const val        = selectEl.value;
+
+    if (val === '') {
+        setCardEstado(card, statusSpan, 'vazio');
+    } else {
+        setCardEstado(card, statusSpan, 'preenchido');
+    }
+
+    // Se tinha checkbox N/A, desmarca
+    const chk = document.getElementById(`nao_aplica_${attrId}`);
+    if (chk) chk.checked = false;
+
+    atualizarContadores();
 }
 
 function toggleNaoSeAplica(attrId, checked) {
@@ -599,107 +845,156 @@ function toggleNaoSeAplica(attrId, checked) {
     const statusSpan = document.getElementById(`status_${attrId}`);
 
     if (checked) {
-        input.disabled = true;
-        input.value    = '';
-        card.className = card.className.replace(/\b(vazio|preenchido)\b/g, '').trim();
-        if (!card.classList.contains('nao-aplica')) card.classList.add('nao-aplica');
-        statusSpan.className = 'status-badge info';
-        statusSpan.textContent = 'Não se aplica';
+        if (input) { input.disabled = true; input.value = ''; }
+        setCardEstado(card, statusSpan, 'nao-aplica');
     } else {
-        input.disabled = false;
-        card.classList.remove('nao-aplica', 'preenchido');
-        card.classList.add('vazio');
-        statusSpan.className = 'status-badge danger';
-        statusSpan.textContent = 'Pendente';
+        if (input) input.disabled = false;
+        setCardEstado(card, statusSpan, 'vazio');
     }
 
     atualizarContadores();
 }
 
-function marcarAlteracao(attrId) {
-    const input = document.getElementById(`attr_${attrId}`);
-    if (!input) return;
-    input.style.borderColor = '#f5a623';
-    setTimeout(() => { input.style.borderColor = ''; }, 1000);
+function setCardEstado(card, statusSpan, estado) {
+    card.classList.remove('vazio', 'preenchido', 'nao-aplica');
+    card.classList.add(estado);
+    const map = {
+        'vazio':      { cls: 'danger',  txt: 'Pendente' },
+        'preenchido': { cls: 'success', txt: 'Preenchido' },
+        'nao-aplica': { cls: 'info',    txt: 'Não se aplica' }
+    };
+    const m = map[estado] || map['vazio'];
+    statusSpan.className   = `status-badge ${m.cls}`;
+    statusSpan.textContent = m.txt;
+}
 
-    // Atualiza visual do card ao digitar
+function aplicarUnidade(attrId) {
+    const input = document.getElementById(`attr_${attrId}`);
+    if (!input || input.disabled) return;
+    const unidade = input.dataset.unidade;
+    if (!unidade) return;
+
+    let val = input.value.trim();
+    if (!val) return;
+
+    const numeros = val.replace(/[^0-9.,]/g, '');
+    if (numeros && !val.toLowerCase().includes(unidade)) {
+        input.value = `${numeros} ${unidade}`;
+    }
+}
+
+function marcarAlteracao(attrId) {
+    const input      = document.getElementById(`attr_${attrId}`);
     const card       = document.getElementById(`card_${attrId}`);
     const statusSpan = document.getElementById(`status_${attrId}`);
-    if (!card || !statusSpan) return;
+    if (!input || !card || !statusSpan) return;
+
+    input.style.borderColor = '#f5a623';
+    clearTimeout(input._borderTimer);
+    input._borderTimer = setTimeout(() => { input.style.borderColor = ''; }, 800);
+
+    const chk = document.getElementById(`nao_aplica_${attrId}`);
+    if (chk && chk.checked) return; // está como N/A, não altera visual
 
     if (input.value.trim()) {
-        card.classList.remove('vazio');
-        card.classList.add('preenchido');
-        statusSpan.className   = 'status-badge success';
-        statusSpan.textContent = 'Preenchido';
+        setCardEstado(card, statusSpan, 'preenchido');
     } else {
-        card.classList.remove('preenchido');
-        card.classList.add('vazio');
-        statusSpan.className   = 'status-badge danger';
-        statusSpan.textContent = 'Pendente';
+        setCardEstado(card, statusSpan, 'vazio');
     }
 
     atualizarContadores();
 }
 
 function atualizarContadores() {
-    const cards     = document.querySelectorAll('.atributo-card');
-    const vazios    = [...cards].filter(c => c.classList.contains('vazio')).length;
-    const el        = document.getElementById('contador-vazios');
-    const textoEl   = document.getElementById('contador-texto');
-
-    if (!el || !textoEl) return;
+    const cards  = document.querySelectorAll('.atributo-card');
+    const vazios = [...cards].filter(c => c.classList.contains('vazio')).length;
+    const el     = document.getElementById('contador-vazios');
+    const txtEl  = document.getElementById('contador-texto');
+    if (!el || !txtEl) return;
 
     if (vazios > 0) {
-        el.style.display = 'flex';
-        textoEl.textContent = `${vazios} campo(s) pendente(s) de ${cards.length} atributos`;
+        el.style.display    = 'flex';
+        txtEl.textContent   = `${vazios} campo(s) pendente(s) de ${cards.length} atributos`;
     } else {
         el.style.display = 'none';
     }
 }
 
+// ── Accordion — abre uma seção e fecha a outra ──
 function toggleSection(section) {
-    const content = document.getElementById(`content-${section}`);
-    const chevron = document.getElementById(`chevron-${section}`);
-    content.classList.toggle('expanded');
-    chevron.classList.toggle('expanded');
+    const sections = ['primaria', 'recomendada'];
+    sections.forEach(s => {
+        const content = document.getElementById(`content-${s}`);
+        const chevron = document.getElementById(`chevron-${s}`);
+        if (s === section) {
+            content.classList.toggle('expanded');
+            chevron.classList.toggle('expanded');
+        } else {
+            content.classList.remove('expanded');
+            chevron.classList.remove('expanded');
+        }
+    });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SALVAR
+// ─────────────────────────────────────────────────────────────────────────────
 async function salvarTodosAtributos() {
     const atributosModificados = {};
 
-    for (const [id, original] of Object.entries(atributosOriginais)) {
-        const input        = document.getElementById(`attr_${id}`);
-        const naoAplicaChk = document.getElementById(`nao_aplica_${id}`);
-
+    for (const [id, estado] of Object.entries(estadoCampos)) {
+        const input = document.getElementById(`attr_${id}`);
+        const chk   = document.getElementById(`nao_aplica_${id}`);
         if (!input) continue;
 
-        const isNaoSeAplica = naoAplicaChk ? naoAplicaChk.checked : false;
-        const novoValor     = input.value.trim();
+        const isNaoAgoraChk   = chk ? chk.checked : false;
+        const isNaoAgoraInput = input.disabled && input.value === '' && estado.suportaNaoAplica;
+        const isNaoAgora      = isNaoAgoraChk || isNaoAgoraInput;
 
-        // Mudança no estado "não se aplica" (marcar OU desmarcar)
-        if (isNaoSeAplica !== original.is_nao_se_aplica) {
-            atributosModificados[id] = {
-                valor: null,
-                is_nao_se_aplica: isNaoSeAplica
-            };
+        if (isNaoAgora !== estado.naoAplicaOriginal) {
+            atributosModificados[id] = { valor: null, is_nao_se_aplica: isNaoAgora };
+            continue;
         }
-        // Valor de texto alterado (e não é N/A)
-        else if (!isNaoSeAplica && novoValor !== original.valor && novoValor !== '') {
-            atributosModificados[id] = {
-                valor: novoValor,
-                is_nao_se_aplica: false
-            };
+
+        if (isNaoAgora) continue; // não mudou e é N/A
+
+        if (estado.temDropdown) {
+            // Para dropdowns, compara o value_id selecionado
+            const novoValueId = input.value;
+            if (novoValueId && novoValueId !== estado.valueIdOriginal) {
+                // Recupera o nome do option selecionado
+                const optSelecionada = input.options[input.selectedIndex];
+                const novoNome = optSelecionada ? (optSelecionada.dataset.name || optSelecionada.text) : '';
+                atributosModificados[id] = { valor: novoNome, value_id: novoValueId, is_nao_se_aplica: false };
+            }
+        } else {
+            const novoValor = input.value.trim();
+            if (novoValor !== estado.valorOriginal && novoValor !== '') {
+                atributosModificados[id] = { valor: novoValor, is_nao_se_aplica: false };
+            }
         }
     }
 
     if (Object.keys(atributosModificados).length === 0) {
-        alert('Nenhuma alteração foi feita!');
+        mostrarModal({
+            icone: 'ℹ️',
+            titulo: 'Sem alterações',
+            mensagem: 'Nenhum campo foi modificado.',
+            botoes: [{ texto: 'OK', classe: 'secondary' }]
+        });
         return;
     }
 
     const total = Object.keys(atributosModificados).length;
-    if (!confirm(`Confirmar alteração de ${total} campo(s)?`)) return;
+    const confirmado = await confirmarModal({
+        icone: '💾',
+        titulo: 'Confirmar salvamento',
+        mensagem: `Deseja salvar ${total} campo(s) alterado(s)?`,
+        textoCancelar: 'Cancelar',
+        textoConfirmar: 'Salvar'
+    });
+
+    if (!confirmado) return;
 
     document.getElementById('loading').style.display = 'block';
     document.getElementById('produto-content').style.display = 'none';
@@ -712,32 +1007,48 @@ async function salvarTodosAtributos() {
         });
 
         const data = await response.json();
-
         document.getElementById('loading').style.display = 'none';
 
         if (data.sucesso) {
-            alert('✅ ' + data.mensagem);
-            await carregarProduto();
+            mostrarModal({
+                icone: '✅',
+                titulo: 'Salvo com sucesso!',
+                mensagem: data.mensagem || 'Atributos atualizados com sucesso.',
+                botoes: [{ texto: 'OK', classe: 'success', acao: () => carregarProduto() }]
+            });
         } else {
             document.getElementById('produto-content').style.display = 'block';
-            alert('❌ ' + data.erro);
+            mostrarModal({
+                icone: '❌',
+                titulo: 'Erro ao salvar',
+                mensagem: data.erro || 'Ocorreu um erro inesperado.',
+                botoes: [{ texto: 'Fechar', classe: 'danger' }]
+            });
         }
 
     } catch (error) {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('produto-content').style.display = 'block';
-        alert('Erro: ' + error.message);
+        mostrarModal({
+            icone: '❌',
+            titulo: 'Erro de conexão',
+            mensagem: error.message,
+            botoes: [{ texto: 'Fechar', classe: 'danger' }]
+        });
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────────────────────
 function escapeHtml(text) {
-    if (!text) return '';
+    if (text == null) return '';
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = String(text);
     return div.innerHTML;
 }
 
-document.getElementById('mlb_input').addEventListener('keypress', function(e) {
+document.getElementById('mlb_input').addEventListener('keypress', e => {
     if (e.key === 'Enter') carregarProduto();
 });
 </script>
