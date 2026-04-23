@@ -697,8 +697,8 @@ class MercadoLivreAPISecure:
     def _mapear_tipo_anuncio(self, listing_type_id):
         """Mapeia o listing_type_id para um nome mais amigável"""
         mapeamento = {
-            'gold_special': 'Gold Special',
-            'gold_pro': 'Gold Pro', 
+            'gold_special': 'Clássico',  # Alterado de 'Gold Special' para 'Clássico'
+            'gold_pro': 'Premium',        # Alterado de 'Gold Pro' para 'Premium'
             'gold_premium': 'Gold Premium',
             'gold': 'Gold',
             'silver': 'Silver',
@@ -721,7 +721,7 @@ class MercadoLivreAPISecure:
         elif 'gold' in listing_lower:
             return 'Gold'
         elif 'classic' in listing_lower or 'clássico' in listing_lower:
-            return 'Classic'
+            return 'Clássico'  # Alterado de 'Classic' para 'Clássico'
         elif 'silver' in listing_lower:
             return 'Silver'
         elif 'bronze' in listing_lower:
@@ -734,7 +734,7 @@ class MercadoLivreAPISecure:
         elif 'gold' in tags_str:
             return 'Gold'
         elif 'classic' in tags_str or 'clássico' in tags_str:
-            return 'Classic'
+            return 'Clássico'  # Alterado de 'Classic' para 'Clássico'
         
         return 'Standard'
 
@@ -1124,6 +1124,247 @@ class MercadoLivreAPISecure:
                 'etapa': 'exception'
             }
     
+  
+    def buscar_todos_anuncios(
+        self,
+        status='active',
+        data_criacao_de=None,
+        data_criacao_ate=None,
+        limite_total=None,
+        delay_entre_lotes=0.1,
+        progresso_callback=None
+    ):
+    
+        """
+        Busca TODOS os anúncios da conta usando scroll/scan.
+        Contorna o limite de offset=1000 da API do ML.
+        progresso_callback(msg, pct) é chamado a cada etapa para atualizar o frontend.
+        """
+        import time
+        from datetime import datetime
+
+        def _prog(msg, pct):
+            if progresso_callback:
+                try:
+                    progresso_callback(msg, pct)
+                except Exception:
+                    pass
+ 
+        try:
+            headers = self._get_headers()
+ 
+            resp_me = requests.get(f"{self.base_url}/users/me", headers=headers, timeout=10)
+            if resp_me.status_code != 200:
+                return {'sucesso': False, 'erro': 'Erro ao obter dados do usuário'}
+ 
+            user_id  = resp_me.json()['id']
+            nickname = resp_me.json().get('nickname', '')
+            print(f"👤 Usuário: {nickname} (ID: {user_id})")
+
+            _prog('Conectado. Coletando IDs da conta...', 3)
+ 
+            status_list = ['active', 'paused', 'closed'] if status == 'all' else [status]
+            todos_ids   = []
+ 
+            for st in status_list:
+                print(f"\n🔍 Buscando IDs — status '{st}' (scroll)...")
+                scroll_id = None
+                pagina    = 1
+ 
+                while True:
+                    params = {'status': st, 'search_type': 'scan', 'limit': 100}
+                    if scroll_id:
+                        params['scroll_id'] = scroll_id
+                    else:
+                        params['offset'] = 0
+ 
+                    resp = requests.get(
+                        f"{self.base_url}/users/{user_id}/items/search",
+                        headers=headers, params=params, timeout=30
+                    )
+ 
+                    if resp.status_code != 200:
+                        print(f"  ❌ Erro HTTP {resp.status_code}: {resp.text[:200]}")
+                        break
+ 
+                    data_page  = resp.json()
+                    ids_pagina = data_page.get('results', [])
+ 
+                    if not ids_pagina:
+                        print(f"  ✅ Fim dos resultados para '{st}'")
+                        break
+ 
+                    todos_ids.extend(ids_pagina)
+                    print(f"  Página {pagina}: +{len(ids_pagina)} IDs (total acumulado: {len(todos_ids)})")
+                    _prog(f"Coletando IDs '{st}'... {len(todos_ids)} encontrados", 5)
+ 
+                    if limite_total and len(todos_ids) >= limite_total:
+                        print(f"  ⏹ Limite de {limite_total} atingido")
+                        break
+ 
+                    scroll_id = data_page.get('scroll_id')
+                    if not scroll_id:
+                        print(f"  ✅ Sem scroll_id — fim da busca para '{st}'")
+                        break
+ 
+                    pagina += 1
+                    time.sleep(0.3)
+ 
+                if limite_total and len(todos_ids) >= limite_total:
+                    break
+ 
+            todos_ids = list(dict.fromkeys(todos_ids))
+            if limite_total:
+                todos_ids = todos_ids[:limite_total]
+ 
+            print(f"\n📦 Total de IDs únicos coletados: {len(todos_ids)}")
+            _prog(f'{len(todos_ids)} IDs coletados. Iniciando detalhamento...', 10)
+ 
+            if not todos_ids:
+                return {
+                    'sucesso': True,
+                    'total_encontrado': 0,
+                    'total_nao_encontrado': 0,
+                    'resultados': [],
+                    'timestamp': datetime.now().isoformat()
+                }
+ 
+            return self._detalhar_anuncios_completo(
+                todos_ids, data_criacao_de, data_criacao_ate, delay_entre_lotes,
+                progresso_callback=progresso_callback
+            )
+ 
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return {'sucesso': False, 'erro': str(e)}
+
+    
+
+    def _detalhar_anuncios_completo(self, todos_ids, data_criacao_de, data_criacao_ate, delay_entre_lotes, progresso_callback=None):
+        import time
+        from datetime import datetime
+
+        def _prog(msg, pct):
+            if progresso_callback:
+                try:
+                    progresso_callback(msg, pct)
+                except Exception:
+                    pass
+ 
+        resultados      = []
+        encontrados     = 0
+        nao_encontrados = 0
+ 
+        dt_de  = datetime.strptime(data_criacao_de,  '%Y-%m-%d').date() if data_criacao_de  else None
+        dt_ate = datetime.strptime(data_criacao_ate, '%Y-%m-%d').date() if data_criacao_ate else None
+ 
+        LOTE        = 20  # API do ML aceita no máximo 20 IDs por requisição no multi-get
+        total_lotes = (len(todos_ids) - 1) // LOTE + 1
+ 
+        print(f"\n📋 Detalhando {len(todos_ids)} anúncios em {total_lotes} lotes de {LOTE}...")
+ 
+        for i in range(0, len(todos_ids), LOTE):
+            lote   = todos_ids[i:i + LOTE]
+            lote_n = i // LOTE + 1
+ 
+            if lote_n % 10 == 1 or lote_n == total_lotes:
+                pct = round(lote_n / total_lotes * 100)
+                print(f"  [{pct:3d}%] Lote {lote_n}/{total_lotes} — {encontrados} detalhados...")
+
+            # Progresso real enviado ao frontend: de 10% a 95%
+            pct_frontend = 10 + round((lote_n / total_lotes) * 85)
+            _prog(f'Detalhando anúncios... {encontrados} de ~{len(todos_ids)} ({lote_n}/{total_lotes} lotes)', pct_frontend)
+ 
+            for tentativa in range(3):
+                resp = requests.get(
+                    f"{self.base_url}/items?ids={','.join(lote)}",
+                    headers=self._get_headers(),
+                    timeout=30
+                )
+                if resp.status_code == 200:
+                    break
+                wait = 5 if resp.status_code == 429 else 2
+                print(f"  ⚠️  HTTP {resp.status_code} — aguardando {wait}s (tentativa {tentativa+1}/3)")
+                time.sleep(wait)
+            else:
+                print(f"  ❌ Lote {lote_n} falhou — pulando")
+                continue
+ 
+            for item_wrapper in resp.json():
+                mlb_id = item_wrapper.get('id', 'DESCONHECIDO')
+                if item_wrapper.get('code') == 200 and 'body' in item_wrapper:
+                    item = item_wrapper['body']
+ 
+                    if dt_de or dt_ate:
+                        try:
+                            item_date = datetime.fromisoformat(
+                                item.get('date_created', '').replace('Z', '+00:00')
+                            ).date()
+                            if dt_de  and item_date < dt_de:  continue
+                            if dt_ate and item_date > dt_ate: continue
+                        except Exception:
+                            pass
+ 
+                    resultados.append(self._processar_anuncio_completo(item))
+                    encontrados += 1
+                else:
+                    resultados.append({'id': mlb_id, 'error': 'Não encontrado', 'status': 'error'})
+                    nao_encontrados += 1
+ 
+            time.sleep(delay_entre_lotes)
+ 
+        print(f"\n✅ {encontrados} detalhados | {nao_encontrados} com erro")
+ 
+        return {
+            'sucesso': True,
+            'total_ids_coletados':  len(todos_ids),
+            'total_encontrado':     encontrados,
+            'total_nao_encontrado': nao_encontrados,
+            'resultados':           resultados,
+            'timestamp': __import__('datetime').datetime.now().isoformat()
+        }
+ 
+ 
+    def _processar_anuncio_completo(self, item):
+        shipping   = item.get('shipping', {})
+        sale_terms = item.get('sale_terms', [])
+ 
+        manufacturing_time = next(
+            (t.get('value_name', '') for t in sale_terms if t.get('id') == 'MANUFACTURING_TIME'),
+            item.get('manufacturing_time', '')
+        )
+ 
+        return {
+            'id':                  item.get('id'),
+            'meu_sku':             item.get('seller_custom_field', ''),
+            'title':               item.get('title'),
+            'status':              item.get('status'),
+            'condition':           item.get('condition'),
+            'price':               item.get('price'),
+            'currency_id':         item.get('currency_id'),
+            'available_quantity':  item.get('available_quantity'),
+            'sold_quantity':       item.get('sold_quantity'),
+            'shipping_mode':       shipping.get('mode', ''),
+            'frete_gratis':        'Sim' if shipping.get('free_shipping') else 'Não',
+            'shipping':            shipping,
+            'manufacturing_time':  manufacturing_time,
+            'sale_terms':          sale_terms,
+            'tipo_anuncio':        item.get('listing_type_id', ''),
+            'eh_catalogo':         'Sim' if item.get('catalog_product_id') else 'Não',
+            'catalog_product_id':  item.get('catalog_product_id'),
+            'quantidade_variacoes': len(item.get('variations', [])),
+            'variations':          item.get('variations', []),
+            'attributes':          item.get('attributes', []),
+            'category_id':         item.get('category_id'),
+            'warranty':            item.get('warranty', ''),
+            'date_created':        item.get('date_created'),
+            'last_updated':        item.get('last_updated'),
+            'permalink':           item.get('permalink'),
+            'thumbnail':           item.get('thumbnail'),
+        }
+
+
     ########################################  ALTERAÇÂO DO CAMPO MODELO #############################################
 
     def _buscar_opcoes_atributo(self, atributo_id, category_id):

@@ -58,7 +58,10 @@
                style="font-family: monospace;">
         <div class="search-buttons">
             <button class="btn btn-primary" onclick="buscarMLBs()">
-                <i class="fas fa-search"></i> Buscar
+                <i class="fas fa-search"></i> Consultar
+            </button>
+            <button class="btn btn-outline-warning" onclick="abrirModalBuscarTodos()" title="Buscar todos os anúncios da conta com filtros">
+                <i class="fas fa-layer-group"></i> Buscar Lote
             </button>
             
             <!-- NOVO BOTÃO DE EXPORTAÇÃO DIRETA (sempre visível) -->
@@ -146,19 +149,29 @@
                             <option value="closed">Fechado</option>
                         </select>
                     </div>
+
+                    <!-- NOVOS FILTROS DE DATA PARA BUSCA EM LOTE -->
+                    <div class="filter-group">
+                        <label>DATA CRIAÇÃO (DE)</label>
+                        <input type="date" class="filter-select" id="filtroDataDe">
+                    </div>
+                    <div class="filter-group">
+                        <label>DATA CRIAÇÃO (ATÉ)</label>
+                        <input type="date" class="filter-select" id="filtroDataAte">
+                    </div>
                 </div>
             </div>
             
             <!-- LINHA DE AÇÕES (NÃO RECOLHE) -->
             <div class="filter-actions">
-                <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
+               <!-- <button class="btn btn-outline-success" onclick="atualizarManufacturingEmMassa()">
                     <i class="fas fa-clock"></i> Atualizar Lote
-                </button>
+                </button>-->
                 <button class="btn btn-outline-info" onclick="abrirModalPlanilha()">
-                    <i class="fas fa-file-excel"></i> Prazo Via Planilha
+                    <i class="fas fa-file-excel"></i> Alterar Prazo Planilha
                 </button>
                 <button class="btn btn-outline-danger" onclick="abrirModalExclusaoPlanilha()">
-                    <i class="fas fa-file-excel"></i> Excluir MLB Via Planilha
+                    <i class="fas fa-file-excel"></i> Excluir MLB Planilha
                 </button>
                  <button class="btn btn-outline-secondary" onclick="limparCampos()">
                     <i class="fas fa-broom"></i> Limpar Filtros
@@ -570,6 +583,75 @@
     </div>
 </div>
 
+<!-- =========================================================
+     MODAL — BUSCAR LOTE (todos os anúncios da conta)
+     ========================================================= -->
+<div id="modalBuscarTodos" class="modal">
+    <div class="modal-content" style="max-width:520px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-layer-group"></i> Buscar Todos os Anúncios</h2>
+            <button class="close-modal" onclick="fecharModalBuscarTodos()">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <p class="text-muted mb-3" style="font-size:13px;">
+                Busca <strong>todos</strong> os anúncios da conta autenticada sem precisar digitar MLBs.
+                Use os filtros abaixo para refinar os resultados.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold" style="font-size:12px;">SITUAÇÃO DOS ANÚNCIOS</label>
+                    <select id="modalBuscarTodosStatus" class="form-select">
+                        <option value="active">Ativos</option>
+                        <option value="paused">Pausados</option>
+                        <option value="closed">Fechados</option>
+                        <option value="all">Todos (ativo + pausado + fechado)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold" style="font-size:12px;">LIMITE DE ANÚNCIOS</label>
+                    <select id="modalBuscarTodosLimite" class="form-select">
+                        <option value="">Sem limite (todos)</option>
+                        <option value="100">Até 100</option>
+                        <option value="500">Até 500</option>
+                        <option value="1000">Até 1.000</option>
+                        <option value="5000">Até 5.000</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold" style="font-size:12px;">CRIADO A PARTIR DE</label>
+                    <input type="date" id="modalBuscarTodosDe" class="form-control">
+                    <small class="text-muted">Deixe vazio para não filtrar</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold" style="font-size:12px;">CRIADO ATÉ</label>
+                    <input type="date" id="modalBuscarTodosAte" class="form-control">
+                    <small class="text-muted">Deixe vazio para não filtrar</small>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3" style="font-size:12px;">
+                <i class="fas fa-info-circle"></i>
+                O filtro de data é aplicado localmente após buscar os IDs.
+                Contas com muitos anúncios podem levar mais tempo.
+            </div>
+
+            <div id="buscarTodosProgresso" style="display:none; margin-top:12px;"></div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="fecharModalBuscarTodos()">Cancelar</button>
+            <button class="btn btn-warning text-dark fw-bold" id="buscarTodosBtnIniciar" onclick="iniciarBuscarTodos()">
+                <i class="fas fa-layer-group"></i> Buscar Anúncios
+            </button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -577,6 +659,228 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <!-- ADICIONE ESTA LINHA -->
 <script src="{{ url_for('static', filename='js/mlb_exclusao.js') }}"></script>
+
+<script>
+/* =========================================================
+   BUSCAR LOTE — abre modal com filtros e chama a API
+   ========================================================= */
+
+
+function abrirModalBuscarTodos() {
+    // Pré-preenche os selects do modal com os valores já escolhidos nos filtros
+    const statusAtual = document.getElementById('filtroStatus').value;
+    const el = document.getElementById('modalBuscarTodosStatus');
+    if (el && statusAtual !== 'todos') el.value = statusAtual;
+
+    const de  = document.getElementById('filtroDataDe').value;
+    const ate = document.getElementById('filtroDataAte').value;
+    if (de)  document.getElementById('modalBuscarTodosDe').value  = de;
+    if (ate) document.getElementById('modalBuscarTodosAte').value = ate;
+
+    // Abre igual aos outros modais do projeto (style.display em vez de classe)
+    document.getElementById('modalBuscarTodos').style.display = 'block';
+    document.getElementById('buscarTodosProgresso').style.display = 'none';
+    document.getElementById('buscarTodosBtnIniciar').disabled = false;
+    document.getElementById('buscarTodosBtnIniciar').style.display = '';
+
+    // Log de debug no console para confirmar que o botão foi clicado
+    console.log('[BuscarTodos] Modal aberto');
+}
+
+function fecharModalBuscarTodos() {
+    document.getElementById('modalBuscarTodos').style.display = 'none';
+}
+
+async function iniciarBuscarTodos() {
+    const status  = document.getElementById('modalBuscarTodosStatus').value;
+    const data_de = document.getElementById('modalBuscarTodosDe').value || null;
+    const data_ate= document.getElementById('modalBuscarTodosAte').value || null;
+    const limite  = parseInt(document.getElementById('modalBuscarTodosLimite').value) || null;
+
+    // Mostra progresso no modal
+    const progDiv = document.getElementById('buscarTodosProgresso');
+    progDiv.style.display = 'block';
+    progDiv.innerHTML = `<div style="display:flex;align-items:center;gap:10px;color:#f5a623;">
+        <span class="spinner-border spinner-border-sm"></span>
+        <span>Buscando MLBs na conta... isso pode levar alguns inutos.</span>
+    </div>`;
+    document.getElementById('buscarTodosBtnIniciar').disabled = true;
+
+    try {
+        const resp = await fetch('/api/mercadolivre/buscar-todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status, data_de, data_ate, limite })
+        });
+
+        const data = await resp.json();
+
+        if (!data.sucesso) {
+            progDiv.innerHTML = `<div class="alert alert-danger">❌ ${data.erro}</div>`;
+            document.getElementById('buscarTodosBtnIniciar').disabled = false;
+            return;
+        }
+
+        const total    = data.total_encontrado    || 0;
+        const comErro  = data.total_nao_encontrado || 0;
+        const filtros  = [
+            `Status: <strong>${status}</strong>`,
+            data_de  ? `De: <strong>${data_de}</strong>`  : null,
+            data_ate ? `Até: <strong>${data_ate}</strong>` : null,
+        ].filter(Boolean).join(' &nbsp;·&nbsp; ');
+
+        // Guarda resultados globalmente para o download
+        window._buscarTodosResultados = data.resultados;
+
+        progDiv.innerHTML = `
+            <div class="alert alert-success mb-2">
+                ✅ <strong>${total}</strong> anúncio(s) encontrado(s)
+                ${comErro ? `&nbsp;·&nbsp; <span class="text-warning">${comErro} com erro</span>` : ''}
+                <br><small class="text-muted">${filtros}</small>
+            </div>
+            <button class="btn btn-success w-100 mt-1" onclick="baixarBuscarTodosXLSX()">
+                <i class="fas fa-file-excel"></i> &nbsp;Baixar resultado em Excel (.xlsx)
+            </button>`;
+
+        document.getElementById('buscarTodosBtnIniciar').style.display = 'none';
+
+    } catch (err) {
+        progDiv.innerHTML = `<div class="alert alert-danger">❌ Erro de conexão: ${err.message}</div>`;
+        document.getElementById('buscarTodosBtnIniciar').disabled = false;
+    }
+}
+
+function baixarBuscarTodosXLSX() {
+    const resultados = window._buscarTodosResultados || [];
+    if (!resultados.length) { alert('Nenhum dado para exportar.'); return; }
+
+    // Formata data ISO → DD/MM/AAAA HH:MM
+    function fmtData(raw) {
+        if (!raw) return '';
+        try {
+            const d = new Date(raw);
+            if (isNaN(d)) return raw;
+            const pad = n => String(n).padStart(2,'0');
+            return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        } catch { return raw; }
+    }
+
+    // Extrai atributo pelo id da lista attributes[]
+    function attr(attributes, id) {
+        if (!Array.isArray(attributes)) return '';
+        const a = attributes.find(x => x.id === id);
+        return a ? (a.value_name || '') : '';
+    }
+
+    // Extrai sale_term pelo id
+    function saleTerm(terms, id) {
+        if (!Array.isArray(terms)) return '';
+        const t = terms.find(x => x.id === id);
+        return t ? (t.value_name || '') : '';
+    }
+
+    const linhas = resultados
+        .filter(r => !r.error)
+        .map(r => {
+            // Suporte a _processar_anuncio (original) e _processar_anuncio_completo (novo)
+            const shipping  = r.shipping  || {};
+            const attributes = r.attributes || [];
+            const sale_terms = r.attributes ? [] : []; // sale_terms não vem no completo
+
+            // Manufacturing time: tenta campo direto, depois sale_terms, depois attributes
+            const prazo = r.manufacturing_time
+                || saleTerm(r.sale_terms, 'MANUFACTURING_TIME')
+                || attr(attributes, 'MANUFACTURING_TIME')
+                || '';
+
+            // SKU: tenta meu_sku (original), depois seller_custom_field
+            const sku = r.meu_sku || r.seller_custom_field || attr(attributes, 'SELLER_SKU') || '';
+
+            // Shipping mode
+            const envio = r.shipping_mode || shipping.mode || '';
+
+            // Frete grátis
+            const frete = r.frete_gratis
+                || (shipping.free_shipping === true  ? 'Sim'
+                  : shipping.free_shipping === false ? 'Não' : '');
+
+            // Catálogo
+            const catalogo = r.eh_catalogo
+                || (r.catalog_product_id ? 'Sim' : 'Não');
+
+            // Variações
+            const qtdVar = r.quantidade_variacoes
+                ?? (Array.isArray(r.variations) ? r.variations.length : 0);
+
+            // Tipo anúncio
+            //const tipo = r.tipo_anuncio || r.listing_type_id || '';
+            
+            let tipo = r.tipo_anuncio || r.listing_type_id || '';
+
+                if (tipo === 'gold_pro') {
+                    tipo = 'Premium';
+                } else if (tipo === 'gold_special') {
+                    tipo = 'Clássico';
+                }
+
+            // Condição
+            const cond = r.condition === 'new' ? 'Novo'
+                       : r.condition === 'used' ? 'Usado' : (r.condition || '');
+
+            // Garantia
+            const garantia = attr(attributes, 'WARRANTY_TIME') || r.warranty || '';
+
+            // Marca
+            const marca = attr(attributes, 'BRAND') || '';
+
+            // Modelo
+            const modelo = attr(attributes, 'MODEL') || '';
+
+            return {
+                'MLB':               r.id            || '',
+                'SKU':               sku,
+                'Título':            r.title         || '',
+                'Status':            r.status        || '',
+                'Condição':          cond,
+                'Preço (R$)':        r.price         ?? '',
+                'Estoque':           r.available_quantity ?? '',
+                'Vendidos':          r.sold_quantity  ?? '',
+                'Modo Envio':        envio,
+                'Frete Grátis':      frete,
+                'Prazo Fabricação':  prazo,
+                'Tipo Anúncio':      tipo,
+                'Catálogo':          catalogo,
+                'Qtd Variações':     qtdVar,
+                'Marca':             marca,
+                'Modelo':            modelo,
+                'Garantia':          garantia,
+                'Categoria':         r.category_id   || '',
+                'Criado em':         fmtData(r.date_created),
+                'Atualizado em':     fmtData(r.last_updated || r.date_updated || ''),
+                'Link':              r.permalink      || '',
+            };
+        });
+
+    if (!linhas.length) { alert('Nenhum anúncio válido para exportar.'); return; }
+
+    const ws = XLSX.utils.json_to_sheet(linhas);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Anúncios');
+
+    // Largura das colunas baseada no conteúdo real
+    const chaves = Object.keys(linhas[0]);
+    ws['!cols'] = chaves.map(k => {
+        const maxConteudo = linhas.reduce((max, l) => {
+            const v = String(l[k] ?? '').length;
+            return v > max ? v : max;
+        }, k.length);
+        return { wch: Math.min(Math.max(maxConteudo + 2, 12), 60) };
+    });
+
+    const ts = new Date().toISOString().slice(0,16).replace('T','_').replace(':','-');
+    XLSX.writeFile(wb, `anuncios_ml_${ts}.xlsx`);
+}
+</script>
 {% endblock %}
 
 <!-- ADICIONE ESTA SEÇÃO NO FINAL DO BODY -->

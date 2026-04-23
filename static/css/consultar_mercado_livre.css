@@ -517,16 +517,18 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(30, 41, 59, 0.95);
+    background: var(--bg-container); /* Usa a cor do container ao invés de fixa */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100;
     border-radius: 8px;
+    backdrop-filter: blur(2px);
 }
 
+/* Remove o fundo escuro fixo que estava causando o problema */
 [data-theme="dark"] .table-loading {
-    background: rgba(15, 23, 42, 0.95);
+    background: var(--bg-container); /* Usa a mesma variável do tema escuro */
 }
 
 .loading-spinner {
@@ -1425,6 +1427,145 @@
     }
 }
 
+/* Estilos para elementos copiáveis */
+.copyable-sku,
+.copyable-mlb {
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.copyable-sku:hover,
+.copyable-mlb:hover {
+    background-color: #e3f2fd;
+    transform: translateX(2px);
+}
+
+.copyable-sku:active,
+.copyable-mlb:active {
+    transform: scale(0.98);
+}
+
+/* Estilos para botões de ação */
+.actions-cell {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.btn-view-details,
+.btn-edit-manufacturing,
+.btn-view-variations,
+.btn-link-ml {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 6px 8px;
+    margin: 0 2px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.btn-view-details {
+    color: #007bff;
+}
+.btn-view-details:hover {
+    background-color: #007bff20;
+    transform: scale(1.1);
+}
+
+.btn-edit-manufacturing {
+    color: #ffc107;
+}
+.btn-edit-manufacturing:hover {
+    background-color: #ffc10720;
+    transform: scale(1.1);
+}
+
+.btn-view-variations {
+    color: #17a2b8;
+}
+.btn-view-variations:hover {
+    background-color: #17a2b820;
+    transform: scale(1.1);
+}
+
+.btn-link-ml {
+    color: #28a745;
+}
+.btn-link-ml:hover {
+    background-color: #28a74520;
+    transform: scale(1.1);
+}
+
+/* Tooltip para indicar que é clicável */
+.copyable-sku::after,
+.copyable-mlb::after {
+    content: " (clique para copiar)";
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-family: system-ui;
+    font-weight: normal;
+    color: #6c757d;
+}
+
+.copyable-sku:hover::after,
+.copyable-mlb:hover::after {
+    opacity: 0.7;
+}
+
+/* Animações centralizadas */
+@keyframes fadeInCenter {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOutCenter {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* Estilo para os elementos copiáveis */
+.copyable-sku, .copyable-mlb {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.copyable-sku:hover, .copyable-mlb:hover {
+    background-color: #e3f2fd;
+    transform: translateX(2px);
+}
+
+.copyable-sku:active, .copyable-mlb:active {
+    transform: scale(0.98);
+}
 /* ============================================ */
 /* ACESSIBILIDADE */
 /* ============================================ */
@@ -1447,4 +1588,34 @@
     .btn:hover {
         transform: none !important;
     }
+}
+
+/* ============================================ */
+/* CORREÇÃO DO SCROLL INICIAL */
+/* ============================================ */
+
+/* Remove height fixa do container principal */
+.mercado-livre-container {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+}
+
+/* Aplica altura SOMENTE quando a tabela é carregada */
+.mercado-livre-container:has(#ordersContainer:not(.hidden)) {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Garante que o estado vazio não crie scroll */
+.empty-state {
+    margin: 20px;
+    min-height: auto;
+}
+
+/* Ajuste para quando a tabela está visível */
+#ordersContainer:not(.hidden) {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }

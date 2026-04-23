@@ -2001,6 +2001,43 @@ def api_buscar_mlb():
         print(f"❌ Erro ao buscar MLBs: {str(e)}")
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
 
+
+@app.route('/api/mercadolivre/buscar-todos', methods=['POST'])
+@login_required
+def api_buscar_todos_anuncios():
+    """
+    Busca TODOS os anúncios do usuário com filtros opcionais.
+ 
+    Body JSON esperado:
+    {
+        "status": "active",          // "active" | "paused" | "closed" | "all"
+        "data_de": "2024-01-01",     // opcional, YYYY-MM-DD
+        "data_ate": "2024-12-31",    // opcional, YYYY-MM-DD
+        "limite": 500                // opcional, máximo de anúncios
+    }
+    """
+    try:
+        if not ml_token_manager.is_authenticated():
+            return jsonify({'sucesso': False, 'erro': 'Não autenticado no Mercado Livre'}), 401
+ 
+        data = request.get_json() or {}
+ 
+        status    = data.get('status', 'active')
+        data_de   = data.get('data_de')    # 'YYYY-MM-DD' ou None
+        data_ate  = data.get('data_ate')   # 'YYYY-MM-DD' ou None
+        limite    = data.get('limite')     # int ou None
+ 
+        resultado = ml_api_secure.buscar_todos_anuncios(
+            status=status,
+            data_criacao_de=data_de,
+            data_criacao_ate=data_ate,
+            limite_total=int(limite) if limite else None
+        )
+ 
+        return jsonify(resultado)
+ 
+    except Exception as e:
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
 @app.route('/api/mercadolivre/analisar-envio-manufacturing', methods=['POST'])
 def api_analisar_envio_manufacturing():
     """API para análise específica de envio e manufacturing time"""

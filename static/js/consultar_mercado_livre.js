@@ -1,4 +1,4 @@
-// static/js/consultar_mercado_livre.js - VERSÃO COM PAGINAÇÃO E EXPORTAÇÃO DIRETA
+// static/js/consultar_mercado_livre.js - VERSÃO COM CÓPIA E MODAL NO ÍCONE
 
 // =========================================
 // VARIÁVEIS GLOBAIS
@@ -25,6 +25,108 @@ let processoAtualizacao = {
     atualizacoes: [],
     cancelar: false
 };
+
+// =========================================
+// FUNÇÕES DE COPIA
+// =========================================
+
+function getToastContainer() {
+    let container = document.getElementById('toast-container-custom');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container-custom';
+        container.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            pointer-events: none;
+        `;
+        document.body.appendChild(container);
+    }
+    return container;
+}
+
+// Função para mostrar toast centralizado
+function showToast(mensagem, tipo = 'success') {
+    const container = getToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${tipo}`;
+    toast.style.cssText = `
+        background: ${tipo === 'success' ? '#28a745' : '#dc3545'};
+        color: white;
+        padding: 14px 28px;
+        border-radius: 50px;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        animation: fadeInCenter 0.3s ease;
+        pointer-events: auto;
+        cursor: default;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        white-space: nowrap;
+        backdrop-filter: blur(4px);
+    `;
+    
+    const icon = tipo === 'success' ? '✓' : '⚠️';
+    toast.innerHTML = `${icon} ${mensagem}`;
+    
+    // Remover toast anterior se existir
+    const existingToasts = container.children;
+    for (let i = 0; i < existingToasts.length; i++) {
+        existingToasts[i].remove();
+    }
+    
+    container.appendChild(toast);
+    
+    // Remover após 1.5 segundos com animação
+    setTimeout(() => {
+        toast.style.animation = 'fadeOutCenter 0.3s ease';
+        setTimeout(() => {
+            if (toast.parentNode) toast.remove();
+        }, 300);
+    }, 1500);
+}
+
+// Função principal de copiar
+function copiarTexto(texto, tipo) {
+    // Garantir que texto é string
+    texto = String(texto || '');
+    
+    if (!texto || texto === 'N/A' || texto === '-') {
+        showToast(`⚠️ ${tipo} inválido`, 'error');
+        return;
+    }
+    
+    // Copiar para clipboard
+    navigator.clipboard.writeText(texto).then(() => {
+        // Mostrar toast centralizado
+        showToast(`📋 ${tipo} copiado!`, 'success');
+        
+        // Efeito visual no elemento clicado
+        const elementoAtivo = window.event?.currentTarget;
+        if (elementoAtivo) {
+            elementoAtivo.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                elementoAtivo.style.transform = '';
+            }, 150);
+        }
+    }).catch(err => {
+        console.error('Erro ao copiar:', err);
+        showToast(`❌ Erro ao copiar`, 'error');
+    });
+}
 
 // =========================================
 // FUNÇÕES DE CONFIGURAÇÃO E AUTENTICAÇÃO
@@ -309,6 +411,7 @@ function mostrarResultadosPaginados() {
     atualizarPaginacao();
 }
 
+// FUNÇÃO MODIFICADA - Removido onclick da linha, adicionado onclick apenas nos elementos clicáveis
 function mostrarResultados(resultados) {
     const ordersContainer = document.getElementById('ordersContainer');
     const emptyState = document.getElementById('emptyState');
@@ -336,44 +439,80 @@ function mostrarResultados(resultados) {
     resultados.forEach(item => {
         const temErro = item.error || item.status === 'error';
         
+        // Valores para SKU e MLB
+        const skuValue = !temErro ? (item.meu_sku || item.seller_custom_field || 'N/A') : '-';
+        const mlbValue = item.id || 'N/A';
+        
+        // Escapar valores para HTML
+        const skuEscaped = escapeHtml(String(skuValue));
+        const mlbEscaped = escapeHtml(String(mlbValue));
+        const titleEscaped = escapeHtml(!temErro ? (item.title ? item.title.substring(0, 40) + (item.title.length > 40 ? '...' : '') : 'N/A') : '-');
+        
         const linha = `
-            <tr onclick="abrirDetalhes('${item.id}')">
-                <td><strong>${!temErro ? (item.meu_sku || 'N/A') : '-'}</strong></td>
+            <tr>
+                <!-- SKU - CLICÁVEL PARA COPIAR -->
                 <td>
-                    <strong>${item.id || 'N/A'}</strong>
-                    ${temErro ? '<br><small class="text-danger">' + item.error + '</small>' : ''}
+                    <div class="copyable-sku" onclick="copiarTexto('${skuEscaped.replace(/'/g, "\\'")}', 'SKU')" title="Clique para copiar SKU">
+                        <i class="fas fa-copy" style="font-size: 11px; margin-right: 4px; opacity: 0.6;"></i>
+                        <strong>${skuEscaped}</strong>
+                    </div>
                 </td>
-                <td>${!temErro ? (item.title ? item.title.substring(0, 40) + (item.title.length > 40 ? '...' : '') : 'N/A') : '-'}</td>
+                
+                <!-- MLB - CLICÁVEL PARA COPIAR -->
+                <td>
+                    <div class="copyable-mlb" onclick="copiarTexto('${mlbEscaped.replace(/'/g, "\\'")}', 'MLB')" title="Clique para copiar MLB">
+                        <i class="fas fa-copy" style="font-size: 11px; margin-right: 4px; opacity: 0.6;"></i>
+                        <strong>${mlbEscaped}</strong>
+                    </div>
+                    ${temErro ? '<br><small class="text-danger">' + escapeHtml(item.error) + '</small>' : ''}
+                </td>
+                
+                <!-- Título -->
+                <td>${titleEscaped}</td>
+                
+                <!-- Preço -->
                 <td>${!temErro ? ('R$ ' + (item.price || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})) : '-'}</td>
+                
+                <!-- Estoque -->
                 <td>${!temErro ? (item.available_quantity || 0) : '-'}</td>
+                
+                <!-- Envio -->
                 <td>
                     ${!temErro ? `<span class="badge ${item.shipping_mode === 'me2' ? 'badge-me2' : 'badge-me1'}">${item.shipping_mode || 'N/A'}</span>` : '-'}
                 </td>
+                
+                <!-- Prazo -->
                 <td>
                     ${!temErro ? (item.manufacturing_time && item.manufacturing_time !== 'N/A' ? 
                         `<span class="badge bg-info">${item.manufacturing_time}</span>` : 
                         '<span class="badge bg-warning">Sem prazo</span>') : '-'}
                 </td>
+                
+                <!-- Status -->
                 <td>
                     ${!temErro ? `<span class="badge ${getStatusBadgeClass(item.status)}">${item.status || 'N/A'}</span>` : '-'}
                 </td>
+                
+                <!-- Frete -->
                 <td>
                     ${!temErro ? `<span class="badge ${item.frete_gratis === 'Sim' ? 'bg-success' : 'bg-secondary'}">${item.frete_gratis || 'Não'}</span>` : '-'}
                 </td>
-                <td>
+                
+                <!-- Ações - SOMENTE ÍCONE OLHINHO abre o modal -->
+                <td class="actions-cell">
                     ${!temErro ? `
-                        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); abrirDetalhes('${item.id}')" title="Ver detalhes">
+                        <button class="btn-view-details" onclick="abrirDetalhes('${item.id}')" title="Visualizar detalhes">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-info" onclick="event.stopPropagation(); abrirModalManufacturing('${item.id}')" title="Editar prazo">
+                        <button class="btn-edit-manufacturing" onclick="event.stopPropagation(); abrirModalManufacturing('${item.id}')" title="Editar prazo">
                             <i class="fas fa-edit"></i>
                         </button>
-                        ${item.tem_variacoes === 'Sim' ? `
-                            <button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation(); abrirDetalhes('${item.id}')" title="Tem ${item.quantidade_variacoes} variações">
+                        ${item.variacoes_detalhes && item.variacoes_detalhes.length > 0 ? `
+                            <button class="btn-view-variations" onclick="abrirDetalhes('${item.id}')" title="Ver variações (${item.variacoes_detalhes.length})">
                                 <i class="fas fa-layer-group"></i>
                             </button>
                         ` : ''}
-                        <a href="${item.permalink || '#'}" target="_blank" class="btn btn-sm btn-outline-secondary" onclick="event.stopPropagation()" title="Abrir no ML">
+                        <a href="${item.permalink || '#'}" target="_blank" class="btn-link-ml" onclick="event.stopPropagation()" title="Abrir no Mercado Livre">
                             <i class="fas fa-external-link-alt"></i>
                         </a>
                     ` : '-'}
@@ -386,6 +525,14 @@ function mostrarResultados(resultados) {
     mostrarLoading(false);
 }
 
+// Função auxiliar para escapar HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function getStatusBadgeClass(status) {
     switch (status) {
         case 'active': return 'bg-success';
@@ -393,6 +540,75 @@ function getStatusBadgeClass(status) {
         case 'closed': return 'bg-secondary';
         default: return 'bg-light text-dark';
     }
+}
+
+// =========================================
+// FUNÇÃO MODIFICADA - Agora chamada APENAS pelo botão olhinho
+// =========================================
+
+function abrirDetalhes(mlbId) {
+    console.log('Abrindo detalhes do MLB:', mlbId);
+    
+    const item = ultimosResultados.find(r => r.id === mlbId);
+    
+    if (!item || item.error) {
+        mostrarMensagem('Item não encontrado ou com erro', 'error');
+        return;
+    }
+
+    // Preencher modal com dados
+    document.getElementById('detalheMlb').textContent = item.id || 'N/A';
+    document.getElementById('detalheSku').textContent = item.meu_sku || item.seller_custom_field || 'N/A';
+    document.getElementById('detalheStatus').innerHTML = `<span class="badge ${getStatusBadgeClass(item.status)}">${item.status || 'N/A'}</span>`;
+    document.getElementById('detalheTipo').textContent = `${item.tipo_anuncio || 'N/A'} (${item.tipo_premium || 'Standard'})`;
+    document.getElementById('detalheCatalogo').innerHTML = `<span class="badge ${item.eh_catalogo === 'Sim' ? 'bg-info' : 'bg-secondary'}">${item.eh_catalogo || 'Não'}</span>`;
+    
+    document.getElementById('detalhePreco').textContent = item.price ? 'R$ ' + item.price.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A';
+    document.getElementById('detalheEstoque').textContent = item.available_quantity || 0;
+    document.getElementById('detalheVendidos').textContent = item.sold_quantity || 0;
+    document.getElementById('detalheEnvio').innerHTML = `<span class="badge ${item.shipping_mode === 'me2' ? 'badge-me2' : 'badge-me1'}">${item.shipping_mode || 'N/A'}</span>`;
+    document.getElementById('detalheFrete').innerHTML = `<span class="badge ${item.frete_gratis === 'Sim' ? 'bg-success' : 'bg-secondary'}">${item.frete_gratis || 'Não'}</span>`;
+    
+    document.getElementById('linkAnuncioML').href = item.permalink || '#';
+
+    const temVariacoes = item.variacoes_detalhes && item.variacoes_detalhes.length > 0;
+    const secaoVariacoes = document.getElementById('secaoVariacoes');
+    const semVariacoes = document.getElementById('semVariacoes');
+    const corpoTabela = document.getElementById('corpoTabelaVariacoes');
+    
+    if (temVariacoes) {
+        secaoVariacoes.style.display = 'block';
+        semVariacoes.style.display = 'none';
+        corpoTabela.innerHTML = '';
+        
+        item.variacoes_detalhes.forEach(variacao => {
+            const atributos = variacao.attribute_combinations.map(attr => 
+                `${attr.name}: ${attr.value_name}`
+            ).join(', ');
+            
+            const linha = `
+                <tr>
+                    <td><small>${variacao.id || 'N/A'}</small></td>
+                    <td>${atributos || 'Sem atributos'}</td>
+                    <td>R$ ${variacao.price ? variacao.price.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00'}</td>
+                    <td>${variacao.available_quantity || 0}</td>
+                    <td>${variacao.sold_quantity || 0}</td>
+                    <td>
+                        ${variacao.manufacturing_time && variacao.manufacturing_time !== 'N/A' ? 
+                            `<span class="badge bg-info">${variacao.manufacturing_time}</span>` : 
+                            '<span class="badge bg-warning">Sem prazo</span>'}
+                    </td>
+                    <td><small>${variacao.seller_custom_field || 'N/A'}</small></td>
+                </tr>
+            `;
+            corpoTabela.innerHTML += linha;
+        });
+    } else {
+        secaoVariacoes.style.display = 'none';
+        semVariacoes.style.display = 'block';
+    }
+
+    document.getElementById('modalDetalhesMLB').style.display = 'block';
 }
 
 // =========================================
@@ -438,33 +654,26 @@ function exportarDiretoParaExcel() {
             });
         } else {
             // CALCULAR VENDAS CORRETAMENTE
-            const vendidosAPI = item.sold_quantity || 0;  // O que vem no campo sold_quantity do principal
-            let vendidosReal = 0;  // Soma REAL das variações
-            let vendidosVariacoes = 0;  // Detalhe das variações
+            const vendidosAPI = item.sold_quantity || 0;
+            let vendidosReal = 0;
+            let vendidosVariacoes = 0;
             
-            // Verificar se tem variações
             if (item.variacoes_detalhes && item.variacoes_detalhes.length > 0) {
-                // SOMAR as vendas de TODAS as variações
                 vendidosVariacoes = item.variacoes_detalhes.reduce((total, variacao) => {
                     return total + (variacao.sold_quantity || 0);
                 }, 0);
-                
-                // O valor REAL é a soma das variações
                 vendidosReal = vendidosVariacoes;
                 
-                // DEBUG: Mostrar quando há diferença
                 if (vendidosAPI !== vendidosReal) {
-                    console.log(`⚠️ MLB ${item.id}: API=${vendidosAPI}, Real=${vendidosReal} (diferença: ${vendidosAPI - vendidosReal})`);
+                    console.log(`⚠️ MLB ${item.id}: API=${vendidosAPI}, Real=${vendidosReal}`);
                 }
             } else {
-                // Anúncio SEM variações - usar o sold_quantity do principal
                 vendidosReal = vendidosAPI;
             }
             
             totalVendasAPI += vendidosAPI;
             totalVendasReal += vendidosReal;
             
-            // Item principal
             dadosExportacao.push({
                 'MLB Principal': item.id || 'N/A',
                 'MLB Variação': '-',
@@ -488,7 +697,6 @@ function exportarDiretoParaExcel() {
                 'Erro': ''
             });
 
-            // Adicionar variações INDIVIDUALMENTE
             if (item.variacoes_detalhes && item.variacoes_detalhes.length > 0) {
                 item.variacoes_detalhes.forEach((variacao, index) => {
                     const atributos = variacao.attribute_combinations.map(attr => 
@@ -522,7 +730,6 @@ function exportarDiretoParaExcel() {
         }
     });
 
-    // Fazer requisição para exportação
     fetch('/api/mercadolivre/exportar-excel', {
         method: 'POST',
         headers: {
@@ -559,17 +766,11 @@ function exportarDiretoParaExcel() {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
         
-        // Mostrar estatísticas detalhadas
         const diff = totalVendasAPI - totalVendasReal;
-        const diffPercentual = totalVendasReal > 0 ? ((diff / totalVendasReal) * 100).toFixed(1) : 0;
-        
-        let mensagem = `✅ Exportação concluída!\n`;
-        mensagem += `📊 Total itens: ${dadosExportacao.length}\n`;
-        mensagem += `📈 Vendas (API Principal): ${totalVendasAPI.toLocaleString()}\n`;
-        mensagem += `✅ Vendas (Real - Soma Variações): ${totalVendasReal.toLocaleString()}\n`;
+        let mensagem = `✅ Exportação concluída! Total itens: ${dadosExportacao.length}`;
         
         if (diff !== 0) {
-            mensagem += `⚠️ Diferença: ${diff > 0 ? '+' : ''}${diff.toLocaleString()} (${diffPercentual}%)`;
+            mensagem += ` ⚠️ Diferença vendas: ${diff > 0 ? '+' : ''}${diff.toLocaleString()}`;
         }
         
         mostrarMensagem(mensagem, diff === 0 ? 'success' : 'warning');
@@ -584,7 +785,7 @@ function exportarDiretoParaExcel() {
 }
 
 // =========================================
-// FUNÇÕES DE FILTROS
+// FUNÇÕES DE FILTROS (mantidas iguais)
 // =========================================
 
 function inicializarFiltros() {
@@ -649,7 +850,7 @@ function atualizarBadgesFiltrosAtivos() {
                 displayValor = valor === 'me2' ? 'Apenas ME2' : 'Apenas ME1';
                 break;
             case 'filtroManufacturing':
-                label = 'Manufacturing:';
+                label = 'Prazo:';
                 displayValor = valor === 'com' ? 'Com prazo' : 'Sem prazo';
                 break;
             case 'filtroStatus':
@@ -704,7 +905,6 @@ function aplicarFiltros() {
     paginaAtual = 1;
     mostrarResultadosPaginados();
     
-    // Atualizar estatísticas
     const statsDiv = document.getElementById('stats');
     if (statsDiv && !statsDiv.classList.contains('hidden')) {
         const totalEncontrado = ultimosResultados.filter(item => !item.error && item.status !== 'error').length;
@@ -883,8 +1083,8 @@ function confirmarAtualizacaoManufacturing() {
 function atualizarLinhaTabela(mlbId, novosDias) {
     const linhas = document.querySelectorAll('#ordersTableBody tr');
     linhas.forEach(linha => {
-        const mlbCell = linha.querySelector('td:nth-child(2) strong');
-        if (mlbCell && mlbCell.textContent === mlbId) {
+        const mlbCell = linha.querySelector('td:nth-child(2) .copyable-mlb');
+        if (mlbCell && mlbCell.textContent.trim() === mlbId) {
             const prazoCell = linha.querySelector('td:nth-child(7)');
             if (prazoCell) {
                 if (novosDias === '0') {
@@ -923,72 +1123,6 @@ function atualizarManufacturingEmMassa() {
     }));
     
     abrirModalProgresso(atualizacoes);
-}
-
-// =========================================
-// FUNÇÕES DE MODAL DE DETALHES
-// =========================================
-
-function abrirDetalhes(mlbId) {
-    const item = ultimosResultados.find(r => r.id === mlbId);
-    
-    if (!item || item.error) {
-        mostrarMensagem('Item não encontrado ou com erro', 'error');
-        return;
-    }
-
-    document.getElementById('detalheMlb').textContent = item.id || 'N/A';
-    document.getElementById('detalheSku').textContent = item.meu_sku || 'N/A';
-    document.getElementById('detalheStatus').innerHTML = `<span class="badge ${getStatusBadgeClass(item.status)}">${item.status || 'N/A'}</span>`;
-    document.getElementById('detalheTipo').textContent = `${item.tipo_anuncio || 'N/A'} (${item.tipo_premium || 'Standard'})`;
-    document.getElementById('detalheCatalogo').innerHTML = `<span class="badge ${item.eh_catalogo === 'Sim' ? 'bg-info' : 'bg-secondary'}">${item.eh_catalogo || 'Não'}</span>`;
-    
-    document.getElementById('detalhePreco').textContent = item.price ? 'R$ ' + item.price.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : 'N/A';
-    document.getElementById('detalheEstoque').textContent = item.available_quantity || 0;
-    document.getElementById('detalheVendidos').textContent = item.sold_quantity || 0;
-    document.getElementById('detalheEnvio').innerHTML = `<span class="badge ${item.shipping_mode === 'me2' ? 'badge-me2' : 'badge-me1'}">${item.shipping_mode || 'N/A'}</span>`;
-    document.getElementById('detalheFrete').innerHTML = `<span class="badge ${item.frete_gratis === 'Sim' ? 'bg-success' : 'bg-secondary'}">${item.frete_gratis || 'Não'}</span>`;
-    
-    document.getElementById('linkAnuncioML').href = item.permalink || '#';
-
-    const temVariacoes = item.variacoes_detalhes && item.variacoes_detalhes.length > 0;
-    const secaoVariacoes = document.getElementById('secaoVariacoes');
-    const semVariacoes = document.getElementById('semVariacoes');
-    const corpoTabela = document.getElementById('corpoTabelaVariacoes');
-    
-    if (temVariacoes) {
-        secaoVariacoes.style.display = 'block';
-        semVariacoes.style.display = 'none';
-        corpoTabela.innerHTML = '';
-        
-        item.variacoes_detalhes.forEach(variacao => {
-            const atributos = variacao.attribute_combinations.map(attr => 
-                `${attr.name}: ${attr.value_name}`
-            ).join(', ');
-            
-            const linha = `
-                <tr>
-                    <td><small>${variacao.id || 'N/A'}</small></td>
-                    <td>${atributos || 'Sem atributos'}</td>
-                    <td>R$ ${variacao.price ? variacao.price.toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00'}</td>
-                    <td>${variacao.available_quantity || 0}</td>
-                    <td>${variacao.sold_quantity || 0}</td>
-                    <td>
-                        ${variacao.manufacturing_time && variacao.manufacturing_time !== 'N/A' ? 
-                            `<span class="badge bg-info">${variacao.manufacturing_time}</span>` : 
-                            '<span class="badge bg-warning">Sem prazo</span>'}
-                    </td>
-                    <td><small>${variacao.seller_custom_field || 'N/A'}</small></td>
-                </tr>
-            `;
-            corpoTabela.innerHTML += linha;
-        });
-    } else {
-        secaoVariacoes.style.display = 'none';
-        semVariacoes.style.display = 'block';
-    }
-
-    document.getElementById('modalDetalhesMLB').style.display = 'block';
 }
 
 // =========================================
@@ -1640,7 +1774,7 @@ function trocarContaConsulta(accountId) {
 // =========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inicializando sistema com paginação e exportação direta...');
+    console.log('Inicializando sistema com cópia de SKU/MLB e modal no ícone...');
     
     // Configurar estado inicial
     const tableLoading = document.getElementById('tableLoading');
