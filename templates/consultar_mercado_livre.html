@@ -4,6 +4,14 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/consultar_mercado_livre.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/mlb_exclusao.css') }}">
+<style>
+    .titulo-anuncio {
+        font-size: 13px;
+        cursor: default;
+        word-break: break-word;
+        line-height: 1.4;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -205,6 +213,19 @@
         <!-- Tabela de Resultados -->
         <div class="table-container">
             <table class="orders-table">
+                <colgroup>
+                    <col style="width: 90px;">  <!-- SKU -->
+                    <col style="width: 110px;"> <!-- MLB -->
+                    <col style="min-width: 200px; max-width: 340px;"> <!-- Título -->
+                    <col style="width: 90px;">  <!-- Preço -->
+                    <col style="width: 65px;">  <!-- Estoque -->
+                    <col style="width: 60px;">  <!-- Envio -->
+                    <col style="width: 80px;">  <!-- Prazo -->
+                    <col style="width: 80px;">  <!-- Tipo -->
+                    <col style="width: 75px;">  <!-- Status -->
+                    <col style="width: 60px;">  <!-- Frete -->
+                    <col style="width: 90px;">  <!-- Ações -->
+                </colgroup>
                 <thead>
                     <tr>
                         <th>SKU</th>
@@ -214,6 +235,7 @@
                         <th>Estoque</th>
                         <th>Envio</th>
                         <th>Prazo</th>
+                        <th>Tipo</th>
                         <th>Status</th>
                         <th>Frete</th>
                         <th>Ações</th>
@@ -301,6 +323,10 @@
                 <div class="col-md-6">
                     <h6>Informações Básicas</h6>
                     <table class="table table-sm">
+                        <tr><td colspan="2" id="detalheTituloRow" style="padding-bottom:10px;">
+                            <strong>Título:</strong><br>
+                            <span id="detalheTitulo" style="font-size:14px; line-height:1.4; word-break:break-word;">-</span>
+                        </td></tr>
                         <tr><td><strong>MLB:</strong></td><td id="detalheMlb">-</td></tr>
                         <tr><td><strong>SKU:</strong></td><td id="detalheSku">-</td></tr>
                         <tr><td><strong>Status:</strong></td><td id="detalheStatus">-</td></tr>

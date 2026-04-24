@@ -634,12 +634,16 @@ async function iniciarExclusaoEmMassa() {
         mostrarMensagem('Nenhum MLB para excluir', 'error');
         return;
     }
-    
-    if (!confirm(`EXCLUIR ${mlbsParaExcluir.length} ANÚNCIOS?\n\nEsta ação é irreversível!`)) {
-        console.log('Exclusão cancelada pelo usuário');
-        return;
-    }
-    
+
+    confirmarExclusao(
+        `Deseja excluir permanentemente <strong>${mlbsParaExcluir.length} anúncio(s)</strong>? Esta operação não pode ser desfeita.`,
+        async function() {
+            await executarExclusaoEmMassa();
+        }
+    );
+}
+
+async function executarExclusaoEmMassa() {
     const total = mlbsParaExcluir.length;
     let sucessos = 0;
     let erros = 0;
@@ -735,53 +739,92 @@ async function iniciarExclusaoEmMassa() {
 }
 
 // =========================================
+// MODAL DE CONFIRMAÇÃO (substitui confirm())
+// =========================================
+
+function confirmarExclusao(texto, onConfirm) {
+    const modal = document.getElementById('modalConfirmacaoExclusao');
+    const textoEl = document.getElementById('modalConfirmacaoTexto');
+    const btnSim = document.getElementById('btnConfirmacaoSim');
+    const btnNao = document.getElementById('btnConfirmacaoNao');
+
+    textoEl.innerHTML = texto;
+    modal.style.display = 'flex';
+
+    // Foco no "Não" — Enter cancela
+    setTimeout(() => btnNao.focus(), 50);
+
+    function fechar() {
+        modal.style.display = 'none';
+        btnSim.onclick = null;
+        btnNao.onclick = null;
+        document.removeEventListener('keydown', onKeyDown);
+    }
+
+    function onKeyDown(e) {
+        if (e.key === 'Escape') fechar();
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    btnNao.onclick = fechar;
+    btnSim.onclick = function() {
+        fechar();
+        onConfirm();
+    };
+
+    // Clique fora fecha
+    modal.onclick = function(e) {
+        if (e.target === modal) fechar();
+    };
+}
+
+// =========================================
 // EXCLUSÃO INDIVIDUAL (MANTIDA)
 // =========================================
 
 function excluirMLB(mlb) {
     mlbAtual = limparMLB(mlb);
-    
+
     if (!mlbAtual) {
         mostrarMensagem('MLB inválido', 'error');
         return;
     }
-    
-    if (!confirm(`EXCLUIR ANÚNCIO?\n\nMLB: ${mlbAtual}\n\nEsta ação é irreversível!`)) {
-        return;
-    }
-    
-    const btn = event.target;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    btn.disabled = true;
-    
-    console.log(`Excluindo MLB: ${mlbAtual}`);
-    
-    fetch('/api/mercadolivre/excluir-definitivo', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ mlb: mlbAtual })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.sucesso) {
-            mostrarMensagem(`✅ MLB ${mlbAtual} excluído com sucesso!`, 'success');
-            
-            // Remove da tabela
-            removerDaTabela(mlbAtual);
-            
-        } else {
-            mostrarMensagem(`❌ Erro: ${data.erro || 'Erro desconhecido'}`, 'error');
+
+    const btn = event.currentTarget || event.target;
+
+    confirmarExclusao(
+        `Deseja excluir permanentemente o anúncio <strong>${mlbAtual}</strong>?`,
+        function() {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            console.log(`Excluindo MLB: ${mlbAtual}`);
+
+            fetch('/api/mercadolivre/excluir-definitivo', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ mlb: mlbAtual })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.sucesso) {
+                    mostrarMensagem(`✅ MLB ${mlbAtual} excluído com sucesso!`, 'success');
+                    removerDaTabela(mlbAtual);
+                } else {
+                    mostrarMensagem(`❌ Erro: ${data.erro || 'Erro desconhecido'}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                mostrarMensagem('Erro de conexão', 'error');
+            })
+            .finally(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
         }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        mostrarMensagem('Erro de conexão', 'error');
-    })
-    .finally(() => {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-    });
+    );
 }
 
 // =========================================

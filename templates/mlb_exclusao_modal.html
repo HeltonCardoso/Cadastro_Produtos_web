@@ -129,3 +129,46 @@
         </div> <!-- FECHA modal-footer -->
     </div> <!-- FECHA modal-content -->
 </div> <!-- FECHA modalExclusaoPlanilha -->
+
+<!-- ========================================= -->
+<!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO          -->
+<!-- ========================================= -->
+<div id="modalConfirmacaoExclusao" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="
+        background: #fff;
+        border-radius: 10px;
+        max-width: 420px;
+        width: 90%;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        overflow: hidden;
+        animation: modalSlideIn 0.2s ease;
+    ">
+        <div style="background: #dc3545; padding: 16px 20px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-exclamation-triangle" style="color:#fff; font-size:20px;"></i>
+            <h5 style="margin:0; color:#fff; font-size:16px; font-weight:600;">Confirmar Exclusão</h5>
+        </div>
+        <div style="padding: 20px;">
+            <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:6px; padding:12px; margin-bottom:14px; font-size:13px;">
+                <i class="fas fa-exclamation-circle" style="color:#856404;"></i>
+                <strong style="color:#856404;"> Atenção:</strong> Esta ação é <strong>irreversível</strong>. O(s) anúncio(s) será(ão) excluído(s) permanentemente do Mercado Livre.
+            </div>
+            <p id="modalConfirmacaoTexto" style="margin:0; font-size:14px; color:#212529; line-height:1.5;"></p>
+        </div>
+        <div style="padding: 14px 20px; border-top: 1px solid #dee2e6; display:flex; justify-content:flex-end; gap:10px;">
+            <button id="btnConfirmacaoNao" autofocus style="padding:8px 20px; border:1px solid #6c757d; background:#6c757d; color:#fff; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer;">
+                <i class="fas fa-times"></i> Não, cancelar
+            </button>
+            <button id="btnConfirmacaoSim" style="padding:8px 20px; border:none; background:#dc3545; color:#fff; border-radius:6px; font-size:14px; font-weight:600; cursor:pointer;">
+                <i class="fas fa-trash-alt"></i> Sim, excluir
+            </button>
+        </div>
+    </div>
+</div>

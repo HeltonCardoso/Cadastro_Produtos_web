@@ -436,6 +436,30 @@
     transition: var(--transition);
 }
 
+/* SKU: largura compacta */
+.orders-table td:nth-child(1),
+.orders-table th:nth-child(1) {
+    width: 80px;
+    max-width: 80px;
+}
+
+/* MLB: largura compacta */
+.orders-table td:nth-child(2),
+.orders-table th:nth-child(2) {
+    width: 105px;
+    max-width: 105px;
+}
+
+/* Título: largura generosa, permite quebra de linha */
+.orders-table td:nth-child(3),
+.orders-table th:nth-child(3) {
+    width: 240px;
+    min-width: 180px;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
 .orders-table tbody tr {
     transition: background-color 0.15s ease;
     cursor: pointer;

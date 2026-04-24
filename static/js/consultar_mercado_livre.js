@@ -446,7 +446,9 @@ function mostrarResultados(resultados) {
         // Escapar valores para HTML
         const skuEscaped = escapeHtml(String(skuValue));
         const mlbEscaped = escapeHtml(String(mlbValue));
-        const titleEscaped = escapeHtml(!temErro ? (item.title ? item.title.substring(0, 40) + (item.title.length > 40 ? '...' : '') : 'N/A') : '-');
+        const titleRaw = !temErro ? (item.title || 'N/A') : '-';
+        const titleFull = escapeHtml(titleRaw);
+        const titleEscaped = escapeHtml(titleRaw.length > 60 ? titleRaw.substring(0, 60) + '...' : titleRaw);
         
         const linha = `
             <tr>
@@ -468,7 +470,9 @@ function mostrarResultados(resultados) {
                 </td>
                 
                 <!-- Título -->
-                <td>${titleEscaped}</td>
+                <td>
+                    <div class="titulo-anuncio" title="${titleFull}">${titleEscaped}</div>
+                </td>
                 
                 <!-- Preço -->
                 <td>${!temErro ? ('R$ ' + (item.price || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})) : '-'}</td>
@@ -486,6 +490,21 @@ function mostrarResultados(resultados) {
                     ${!temErro ? (item.manufacturing_time && item.manufacturing_time !== 'N/A' ? 
                         `<span class="badge bg-info">${item.manufacturing_time}</span>` : 
                         '<span class="badge bg-warning">Sem prazo</span>') : '-'}
+                </td>
+                
+                <!-- Tipo de Anúncio -->
+                <td>
+                    ${!temErro ? (() => {
+                        const raw = item.tipo_anuncio || item.listing_type_id || '';
+                        if (raw === 'gold_pro' || raw === 'Premium') {
+                            return '<span class="badge" style="background:#f5a623;color:#fff;">⭐ Premium</span>';
+                        } else if (raw === 'gold_special' || raw === 'Clássico') {
+                            return '<span class="badge bg-secondary">Clássico</span>';
+                        } else if (raw) {
+                            return `<span class="badge bg-light text-dark">${raw}</span>`;
+                        }
+                        return '<span class="badge bg-light text-dark">N/A</span>';
+                    })() : '-'}
                 </td>
                 
                 <!-- Status -->
@@ -557,6 +576,7 @@ function abrirDetalhes(mlbId) {
     }
 
     // Preencher modal com dados
+    document.getElementById('detalheTitulo').textContent = item.title || 'N/A';
     document.getElementById('detalheMlb').textContent = item.id || 'N/A';
     document.getElementById('detalheSku').textContent = item.meu_sku || item.seller_custom_field || 'N/A';
     document.getElementById('detalheStatus').innerHTML = `<span class="badge ${getStatusBadgeClass(item.status)}">${item.status || 'N/A'}</span>`;
