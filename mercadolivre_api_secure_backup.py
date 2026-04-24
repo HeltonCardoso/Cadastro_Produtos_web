@@ -2139,16 +2139,8 @@ class MercadoLivreAPISecure:
         try:
             headers = self._get_headers()
 
-            # BUG FIX: include_internal_attributes=true é obrigatório para
-            # receber atributos marcados como N/A (value_id="-1") que o ML
-            # omite por padrão na resposta normal do item.
             url_item = f"{self.base_url}/items/{mlb}"
-            response_item = requests.get(
-                url_item,
-                headers=headers,
-                params={"include_internal_attributes": "true"},
-                timeout=15
-            )
+            response_item = requests.get(url_item, headers=headers, timeout=15)
 
             if response_item.status_code != 200:
                 return {
@@ -2196,17 +2188,10 @@ class MercadoLivreAPISecure:
                 e_nao_se_aplica = self._eh_nao_se_aplica(value_id, value_name)
                 esta_vazio      = self._esta_vazio(value_id, value_name) and not e_nao_se_aplica
 
-                # BUG FIX: o ML retorna tags como DICT (ex: {"required": True}),
-                # não como lista. Usar .get() é obrigatório aqui.
-                tags = cat_attr.get('tags', {})
-                if isinstance(tags, list):
-                    # Fallback: se por algum motivo vier como lista, converte
-                    tags = {t: True for t in tags}
-
-                obrigatorio = bool(tags.get('required', False) or tags.get('catalog_required', False))
-                recomendado = bool(tags.get('recommended', False))
-                eh_readonly = bool(tags.get('read_only', False))
-                relevance   = cat_attr.get('relevance', 0)
+                tags = cat_attr.get('tags', [])
+                obrigatorio = 'required' in tags
+                recomendado = 'recommended' in tags
+                relevance = cat_attr.get('relevance', 0)
 
                 if attr_id in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
                     categoria = 'principal'
@@ -2219,11 +2204,6 @@ class MercadoLivreAPISecure:
                 else:
                     categoria = 'ignorar'
 
-                # BUG FIX: qualquer atributo editável aceita N/A no ML.
-                # Antes só mostrava o checkbox se a categoria listasse value_id=="-1"
-                # nos valores possíveis, o que é raro — o ML aceita N/A mesmo sem isso.
-                tem_nao_se_aplica = not eh_readonly
-
                 atributos.append({
                     'id': attr_id,
                     'nome': cat_attr.get('name'),
@@ -2231,11 +2211,10 @@ class MercadoLivreAPISecure:
                     'esta_vazio': esta_vazio,
                     'value_id': value_id,
                     'valores_possiveis': valores_possiveis,
-                    'tem_nao_se_aplica': tem_nao_se_aplica,
+                    'tem_nao_se_aplica': any(v.get('id') == "-1" for v in valores_possiveis),
                     'e_nao_se_aplica': e_nao_se_aplica,
                     'obrigatorio': obrigatorio,
                     'recomendado': recomendado,
-                    'readonly': eh_readonly,
                     'categoria': categoria,
                     'relevance': relevance
                 })
@@ -2243,21 +2222,13 @@ class MercadoLivreAPISecure:
             qualidade = self._buscar_qualidade_oficial(mlb)
 
             if not qualidade:
-                # Endpoint de qualidade falhou completamente — calcula tudo localmente
                 score_calculado = self.calcular_score_inteligente(atributos)
                 qualidade = {
                     'pontuacao': score_calculado,
                     'nivel': self._nivel_por_score(score_calculado),
                     'dicas': ['Score calculado localmente — ML não retornou dados oficiais'],
-                    'missing_ids': [],
                     'origem': 'calculado'
                 }
-            elif qualidade.get('pontuacao') is None:
-                # ML confirmou que está incompleto (quality_level=0) mas não deu score numérico
-                # Calculamos localmente com base nos atributos
-                score_calculado = self.calcular_score_inteligente(atributos)
-                qualidade['pontuacao'] = score_calculado
-                qualidade['nivel']     = self._nivel_por_score(score_calculado)
             
             return {
                 'sucesso': True,
@@ -2315,72 +2286,40 @@ class MercadoLivreAPISecure:
 
 
     def _buscar_qualidade_oficial(self, mlb):
-        """
-        Busca qualidade oficial do ML.
-
-        O endpoint /items/{mlb}/quality retorna:
-          - quality_level: 0 (incompleto) ou 1 (completo)
-          - missing_attributes: lista de atributos faltando
-
-        BUG FIX: o código anterior buscava os campos 'quality_score' e 'score'
-        que NÃO existem nessa resposta. O campo correto é 'quality_level'.
-        """
         try:
             headers = self._get_headers()
 
-            url = f"{self.base_url}/items/{mlb}/quality"
-            response = requests.get(url, headers=headers, timeout=15)
+            endpoints = [
+                f"{self.base_url}/items/{mlb}/quality",
+                f"{self.base_url}/items/{mlb}/listing_quality"
+            ]
 
-            if response.status_code != 200:
-                print(f"⚠️ Quality endpoint retornou {response.status_code} para {mlb}")
-                return None
+            for url in endpoints:
+                response = requests.get(url, headers=headers, timeout=15)
 
-            dados = response.json()
-
-            # quality_level: 1 = completo, 0 = incompleto
-            quality_level = dados.get('quality_level')
-
-            if quality_level is None:
-                print(f"⚠️ quality_level não encontrado na resposta: {dados}")
-                return None
-
-            # Extrai IDs dos atributos faltando para exibir dicas
-            missing_raw = dados.get('missing_attributes', [])
-            dicas = []
-            missing_ids = []
-            for m in missing_raw:
-                if isinstance(m, dict):
-                    nome = m.get('name') or m.get('id', '')
-                    missing_ids.append(m.get('id', ''))
-                elif isinstance(m, str):
-                    nome = m
-                    missing_ids.append(m)
-                else:
+                if response.status_code != 200:
                     continue
-                if nome:
-                    dicas.append(f'Preencher: {nome}')
 
-            # Converte quality_level para um score percentual
-            # 1 = 100% (completo), 0 = incompleto (score calculado fora)
-            if quality_level == 1:
-                score = 100.0
-                nivel = 'Completo'
-            else:
-                # Deixa None para o chamador calcular com base nos atributos
-                score = None
-                nivel = 'Incompleto'
+                dados = response.json()
 
-            return {
-                'pontuacao':     score,       # None quando incompleto (calculado fora)
-                'nivel':         nivel,
-                'dicas':         dicas,
-                'missing_ids':   missing_ids,
-                'quality_level': quality_level,
-                'origem':        'oficial'
-            }
+                score = dados.get('quality_score') or dados.get('score')
+
+                if score is None:
+                    continue
+
+                score = float(score)
+
+                return {
+                    'pontuacao': score,
+                    'nivel': self._nivel_por_score(score),
+                    'dicas': dados.get('tips', []),
+                    'origem': 'oficial'
+                }
+
+            return None
 
         except Exception as e:
-            print(f"Erro qualidade: {e}")
+            print("Erro qualidade:", e)
             return None
 
 
@@ -2516,70 +2455,72 @@ class MercadoLivreAPISecure:
     
         Casos tratados:
         1. Usuário marcou "não se aplica"
-            → Envia sempre value_id="-1" e value_name=null
-              (o ML aceita isso em qualquer atributo editável,
-               independente de ter ou não a opção listada em values)
+            a) Categoria tem opção id=="-1"  → envia value_id="-1"
+            b) Categoria tem opção "Não"     → envia o id/name dessa opção
+            c) Não tem nenhuma das duas      → ignora (retorna None)
     
-        2. Usuário selecionou um value_id de dropdown
-            → Envia id + value_id
+        2. Usuário digitou um valor de texto
+            a) Existe na lista de valores possíveis → envia id + name (correto para o ML)
+            b) Não existe (campo livre)             → envia só value_name
     
-        3. Usuário digitou um valor de texto livre
-            a) Existe na lista de valores possíveis → envia id + value_id + value_name
-            b) Não existe (campo livre)             → envia id + value_name
-    
-        4. Nada para enviar → retorna None
+        3. Nada para enviar → retorna None
         """
-
+    
         if isinstance(attr_data, dict):
             valor            = attr_data.get('valor')
-            value_id_enviado = attr_data.get('value_id')
             is_nao_se_aplica = attr_data.get('is_nao_se_aplica', False)
         else:
             valor            = attr_data
-            value_id_enviado = None
             is_nao_se_aplica = False
-
+    
         valores = cat_attr.get('values', [])
-
-        # ── Caso 1: usuário quer marcar "não se aplica" ──────────────────────
-        # BUG FIX: o ML aceita value_id="-1" em qualquer campo editável.
-        # Antes o código tentava encontrar uma opção "Não" na lista e
-        # retornava None quando não achava — deixando o N/A sem efeito.
+    
+        novo = {
+            'id':   attr_id,
+            'name': cat_attr.get('name', attr_id),
+        }
+    
+        # ── Caso 1: usuário quer marcar "não se aplica" ──────────────────────────
         if is_nao_se_aplica:
-            return {
-                'id':         attr_id,
-                'value_id':   '-1',
-                'value_name': None,
-            }
-
-        # ── Caso 2: dropdown com value_id já resolvido pelo frontend ────────
-        if value_id_enviado and value_id_enviado not in ('', '-1', None):
-            return {
-                'id':       attr_id,
-                'value_id': value_id_enviado,
-            }
-
-        # ── Caso 3: texto digitado pelo usuário ──────────────────────────────
-        if valor:
+    
+            # 1a) Categoria aceita o id especial "-1"
+            if any(v.get('id') == "-1" for v in valores):
+                novo['value_id'] = "-1"
+    
+            # 1b) Categoria tem uma opção de texto equivalente a "Não"
+            else:
+                opcao_nao = next(
+                    (v for v in valores
+                    if v.get('name', '').strip().lower() in
+                        ['não', 'nao', 'não se aplica', 'nao se aplica', 'n/a', 'no']),
+                    None
+                )
+                if opcao_nao:
+                    novo['value_id']   = opcao_nao['id']
+                    novo['value_name'] = opcao_nao['name']
+                else:
+                    return None     # 1c) sem forma de marcar N/A → ignora
+    
+        # ── Caso 2: usuário digitou um valor ────────────────────────────────────
+        elif valor:
+    
+            # 2a) Valor bate exatamente com uma opção pré-definida
             opcao_exata = next(
                 (v for v in valores
-                 if v.get('name', '').strip().lower() == str(valor).strip().lower()),
+                if v.get('name', '').strip().lower() == valor.strip().lower()),
                 None
             )
             if opcao_exata:
-                return {
-                    'id':         attr_id,
-                    'value_id':   opcao_exata['id'],
-                    'value_name': opcao_exata['name'],
-                }
+                novo['value_id']   = opcao_exata['id']
+                novo['value_name'] = opcao_exata['name']
             else:
-                return {
-                    'id':         attr_id,
-                    'value_name': str(valor),
-                }
-
-        # ── Caso 4: nada a enviar ────────────────────────────────────────────
-        return None
+                novo['value_name'] = valor      # 2b) campo de texto livre
+    
+        # ── Caso 3: nada a enviar ────────────────────────────────────────────────
+        else:
+            return None
+    
+        return novo
 
 
     def _buscar_nome_atributo(self, atributo_id, category_id):
