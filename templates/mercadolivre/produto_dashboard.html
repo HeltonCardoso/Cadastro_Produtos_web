@@ -1030,6 +1030,7 @@ function renderizarQualidade(q) {
 // ─── RENDERIZAR ATRIBUTOS ─────────────────────────────────────────────────────
 function renderizarAtributos(atributos) {
     // Principais = 'principal' | Secundárias = 'recomendado' + 'secundario'
+    const atributosFiltrados = atributos.filter(attr => attr.id !== 'STYLE');
     const principais   = atributos.filter(a => a.categoria === 'principal');
     const secundarias  = atributos.filter(a => ['recomendado','secundario'].includes(a.categoria));
 
@@ -1353,11 +1354,114 @@ function atualizarContadores() {
     document.getElementById('contador-total').textContent = `${total} atributos no total`;
 }
 
+
+// ─── TRATAMENTO DE ERROS DO MERCADO LIVRE ─────────────────────────────────────
+function tratarErroMercadoLivre(data) {
+    // Se não for erro de validação, retorna mensagem padrão
+    if (!data.erro && !data.detalhes) {
+        return data.mensagem || 'Erro inesperado ao salvar. Tente novamente.';
+    }
+    
+    // Extrai o erro da estrutura do Mercado Livre
+    const errorData = data.detalhes || data.erro;
+    
+    // Verifica se é o erro específico de product_identifier duplicado
+    if (errorData && typeof errorData === 'object') {
+        // Caso 1: O erro vem no formato do ML (dentro de 'cause')
+        if (errorData.cause && Array.isArray(errorData.cause)) {
+            for (const cause of errorData.cause) {
+                if (cause.cause_id === 7716 || 
+                    cause.code === 'item.attribute.product_identifier.invalid_by_seller_category') {
+                    
+                    return `⚠️ **Código universal duplicado**\n\n` +
+                           `O código de produto (EAN/GTIN/UPC) que você está tentando usar já pertence a ` +
+                           `um anúncio seu em outra categoria.\n\n` +
+                           `🔧 **Soluções possíveis:**\n` +
+                           `• Verifique se este produto já está anunciado em outra categoria\n` +
+                           `• Utilize um código diferente para este anúncio\n` +
+                           `• Se o produto não possui código, marque a opção "Não se aplica" no campo correspondente`;
+                }
+            }
+        }
+        
+        // Caso 2: Verifica se o campo problemático é algum product_identifier
+        if (errorData.field === 'attributes' || errorData.message?.includes('product_identifier')) {
+            const attrId = extrairAttributeIdDoErro(errorData);
+            if (attrId) {
+                return `⚠️ **Problema no identificador do produto**\n\n` +
+                       `O campo "${attrId}" contém um código que já está sendo usado em ` +
+                       `outro anúncio seu em uma categoria diferente.\n\n` +
+                       `🔧 **Como resolver:**\n` +
+                       `• Verifique se o código EAN/GTIN está correto\n` +
+                       `• Se o produto não tem código, marque "Não se aplica"\n` +
+                       `• Ou utilize um código diferente para este produto`;
+            }
+        }
+    }
+    
+    // Caso 3: Mensagem de erro genérica do ML
+    if (data.message && data.message.includes('validation_error')) {
+        return `❌ **Erro de validação do Mercado Livre**\n\n` +
+               `O Mercado Livre rejeitou as alterações. Verifique se todos os campos obrigatórios ` +
+               `estão preenchidos corretamente e tente novamente.\n\n` +
+               `**Detalhe técnico:** ${data.message}`;
+    }
+    
+    // Fallback: retorna a mensagem original
+    return data.mensagem || data.erro || 'Erro ao salvar atributos. Tente novamente.';
+}
+
+function extrairAttributeIdDoErro(errorData) {
+    // Tenta extrair qual atributo causou o erro
+    if (errorData.cause && Array.isArray(errorData.cause)) {
+        for (const cause of errorData.cause) {
+            if (cause.references && cause.references.length > 0) {
+                const ref = cause.references[0];
+                const match = ref.match(/attributes\[(\d+)\]/);
+                if (match) {
+                    return `atributo na posição ${match[1]}`;
+                }
+            }
+        }
+    }
+    
+    if (errorData.field === 'attributes') {
+        return 'identificador do produto (GTIN/EAN/UPC)';
+    }
+    
+    return null;
+}
+
+function destacarCampoComErro(errorData) {
+    if (!errorData || !errorData.cause) return;
+    
+    for (const cause of errorData.cause) {
+        if (cause.references && cause.references.length > 0) {
+            const ref = cause.references[0];
+            // Exemplo: "item.attributes[18].values" -> extrai o índice 18
+            const match = ref.match(/attributes\[(\d+)\]/);
+            if (match) {
+                // Você precisaria mapear o índice para o ID do atributo
+                // Isso depende de como seus atributos são organizados
+                console.log(`Erro no atributo índice ${match[1]}`);
+                
+                // Exemplo: Adicionar uma classe CSS no card do atributo problemático
+                // document.getElementById(`card_${attrId}`)?.classList.add('attr-error');
+            }
+        }
+    }
+}
 // ─── SALVAR ───────────────────────────────────────────────────────────────────
 async function salvarTodosAtributos() {
     const modificados = {};
 
     for (const [id, est] of Object.entries(estadoCampos)) {
+
+        if (id === 'STYLE'){
+            console.log('Ignorando Atributo STYLE');
+            continue;
+
+        }
         const chk   = document.getElementById(`na_${id}`);
         const isNA  = chk ? chk.checked : false;
 
@@ -1429,7 +1533,16 @@ async function salvarTodosAtributos() {
                 botoes:[{texto:'OK', classe:'success', acao: () => carregarProduto()}] });
         } else {
             document.getElementById('produto-content').style.display = 'block';
-            mostrarModal({ icone:'❌', titulo:'Erro ao salvar', mensagem: data.erro||'Erro inesperado.', botoes:[{texto:'Fechar', classe:'danger'}] });
+            
+            // 🔥 TRATAMENTO ESPECIAL PARA O ERRO 7716
+            const mensagemAmigavel = tratarErroMercadoLivre(data);
+            
+            mostrarModal({ 
+                icone:'⚠️', 
+                titulo:'Erro ao salvar', 
+                mensagem: mensagemAmigavel, 
+                botoes:[{texto:'Fechar', classe:'danger'}] 
+            });
         }
 
     } catch (err) {
