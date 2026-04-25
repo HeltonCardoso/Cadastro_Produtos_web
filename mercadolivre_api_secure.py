@@ -2132,8 +2132,8 @@ class MercadoLivreAPISecure:
             'EMPTY_GTIN_REASON', 'VALUE_ADDED_TAX', 'IMPORT_DUTY',
             'IS_TOM_BRAND', 'INSTALLATION_SERVICE', 'MPN','MAIN_COLOR',
             'FILTRABLE_COLOR','PACKAGE_HEIGHT','PACKAGE_WIDTH','PACKAGE_LENGTH',
-            'PACKAGE_WEIGHT','LINE','DETAILED_MODEL','PIECES_NUMBER','PATTERN_NAME','FINISH',
-            'INCLUDES_ASSEMBLY_ACCESSORIES','COLOR',
+            'PACKAGE_WEIGHT','DETAILED_MODEL','PIECES_NUMBER','PATTERN_NAME','FINISH',
+            'INCLUDES_ASSEMBLY_ACCESSORIES','COLOR'
         }
         ATRIBUTOS_PRINCIPAIS_ADICIONAIS = {'GTIN', 'SKU', 'SELLER_SKU','MODEL'}
         try:
@@ -2241,7 +2241,7 @@ class MercadoLivreAPISecure:
                     'PACKAGE_DATA_SOURCE', 'SELLER_PACKAGE_DATA_SOURCE', 'VERTICAL_TAGS',
                     'VALUE_ADDED_TAX', 'IMPORT_DUTY', 'IS_TOM_BRAND',
                     'SELLER_PACKAGE_WIDTH', 'SELLER_PACKAGE_LENGTH',
-                    'SELLER_PACKAGE_HEIGHT', 'SELLER_PACKAGE_WEIGHT',
+                    'SELLER_PACKAGE_HEIGHT', 'SELLER_PACKAGE_WEIGHT','LINE','STYLE'
                 }
 
                 # Regra final de visibilidade:
@@ -2326,11 +2326,34 @@ class MercadoLivreAPISecure:
                 qualidade['pontuacao'] = score_calculado
                 qualidade['nivel']     = self._nivel_por_score(score_calculado)
             
+            # Busca descrição do produto (endpoint separado da API ML)
+            descricao_texto = None
+            try:
+                url_desc = f"{self.base_url}/items/{mlb}/description"
+                resp_desc = requests.get(url_desc, headers=headers, timeout=10)
+                if resp_desc.status_code == 200:
+                    desc_json = resp_desc.json()
+                    descricao_texto = desc_json.get('plain_text') or desc_json.get('text')
+            except Exception:
+                pass
+
+            # Extrai fotos com URL de alta resolução
+            pictures = []
+            for pic in item.get('pictures', []):
+                url_pic = pic.get('url') or pic.get('secure_url') or ''
+                url_pic = url_pic.replace('-O.jpg', '-F.jpg').replace('-I.jpg', '-F.jpg')
+                if url_pic:
+                    pictures.append(url_pic)
+
             return {
                 'sucesso': True,
                 'mlb': mlb,
                 'titulo': item.get('title'),
                 'categoria_id': category_id,
+                'preco': item.get('price'),
+                'condicao': item.get('condition'),
+                'descricao': descricao_texto,
+                'fotos': pictures,
                 'atributos': self._filtrar_atributos_relevantes(atributos),
                 'qualidade': qualidade
             }
@@ -2401,7 +2424,8 @@ class MercadoLivreAPISecure:
             response = requests.get(url, headers=headers, timeout=15)
 
             if response.status_code != 200:
-                print(f"⚠️ Quality endpoint retornou {response.status_code} para {mlb}")
+                if response.status_code != 404:
+                    print(f"⚠️ Quality endpoint retornou {response.status_code} para {mlb}")
                 return None
 
             dados = response.json()

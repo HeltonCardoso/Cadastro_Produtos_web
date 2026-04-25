@@ -1,0 +1,1869 @@
+{
+  "mlb": "MLB760174761",
+  "titulo": "Poltrona De Amamentação Com Balanço E Puff Sabrina Corino Az Azul",
+  "categoria": "MLB1626",
+  "qualidade": {},
+  "atributos": [
+    {
+      "id": "MANUFACTURER",
+      "nome": "Fabricante",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "2746045",
+        "12977477"
+      ],
+      "values_names": [
+        "American Wood",
+        "Greco"
+      ],
+      "valor_atual_value_id": "3201016",
+      "valor_atual_value_name": "Phoenix Baby",
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "BRAND",
+      "nome": "Marca",
+      "value_type": "string",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 6,
+      "values_ids": [
+        "12977480",
+        "12977481",
+        "12977482",
+        "12977483",
+        "12977484"
+      ],
+      "values_names": [
+        "BOConcept",
+        "Amour",
+        "Cohelio Decor Móveis",
+        "Balaqui Decor",
+        "Buyngo"
+      ],
+      "valor_atual_value_id": "3201016",
+      "valor_atual_value_name": "Phoenix Baby",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "LINE",
+      "nome": "Linha",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 6,
+      "values_ids": [
+        "12977485",
+        "12977486",
+        "2659443",
+        "5272035",
+        "9082605"
+      ],
+      "values_names": [
+        "Bergamo",
+        "Carmo",
+        "Hampton",
+        "Modena",
+        "Osaka"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "Quarto Infantil",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "MODEL",
+      "nome": "Modelo",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 4,
+      "values_ids": [
+        "2355079",
+        "12977487",
+        "2348463",
+        "12977488"
+      ],
+      "values_names": [
+        "Praga",
+        "Cheisselonge",
+        "Bari",
+        "Saporitti"
+      ],
+      "valor_atual_value_id": "3654066",
+      "valor_atual_value_name": "Sabrina",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "PRODUCT_TYPE",
+      "nome": "Tipo de produto",
+      "value_type": "list",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 5,
+      "values_ids": [
+        "12977489",
+        "12977490",
+        "12977491",
+        "12977492",
+        "12977493"
+      ],
+      "values_names": [
+        "Sofá",
+        "Divan",
+        "Futon",
+        "Poltrona",
+        "Sillón"
+      ],
+      "valor_atual_value_id": "12977492",
+      "valor_atual_value_name": "Poltrona",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "COLOR",
+      "nome": "Cor",
+      "value_type": "string",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "allow_variations": true,
+        "defines_picture": true,
+        "required": true
+      },
+      "qtd_values": 51,
+      "values_ids": [
+        "283148",
+        "283149",
+        "283150",
+        "283151",
+        "283156"
+      ],
+      "values_names": [
+        "Coral-claro",
+        "Coral",
+        "Laranja-claro",
+        "Laranja-escuro",
+        "Cáqui"
+      ],
+      "valor_atual_value_id": "52028",
+      "valor_atual_value_name": "Azul",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "FABRIC_DESIGN",
+      "nome": "Desenho do tecido",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "allow_variations": true,
+        "defines_picture": true
+      },
+      "qtd_values": 6,
+      "values_ids": [
+        "24721100",
+        "43162155",
+        "508603",
+        "508605",
+        "3762742"
+      ],
+      "values_names": [
+        "Liso",
+        "Listrado",
+        "Florido",
+        "Geométrico",
+        "Capitonê"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "UPHOLSTERY_MATERIAL",
+      "nome": "Material do estofamento",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 10,
+      "values_ids": [
+        "482783",
+        "1258168",
+        "466793",
+        "2295020",
+        "433347"
+      ],
+      "values_names": [
+        "Couro",
+        "Oxford",
+        "Algodão",
+        "Chenille",
+        "Veludo"
+      ],
+      "valor_atual_value_id": "17888470",
+      "valor_atual_value_name": "Corano",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "PIECES_NUMBER",
+      "nome": "Quantidade de peças",
+      "value_type": "number",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "SEATERS_NUMBER",
+      "nome": "Quantidade de lugares",
+      "value_type": "list",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "required": true
+      },
+      "qtd_values": 12,
+      "values_ids": [
+        "4485163",
+        "4501850",
+        "4412704",
+        "4604555",
+        "13237454"
+      ],
+      "values_names": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "valor_atual_value_id": "4485163",
+      "valor_atual_value_name": "1",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "UNITS_PER_PACK",
+      "nome": "Unidades por kit",
+      "value_type": "number",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "1",
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "LEGS_MATERIAL",
+      "nome": "Material dos pés",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 4,
+      "values_ids": [
+        "973765",
+        "432366",
+        "432367",
+        "973766"
+      ],
+      "values_names": [
+        "Plástico",
+        "Madeira",
+        "Metal",
+        "Alumínio"
+      ],
+      "valor_atual_value_id": "432366",
+      "valor_atual_value_name": "Madeira",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "LEGS_COLOR",
+      "nome": "Cor dos pés",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 51,
+      "values_ids": [
+        "283148",
+        "283149",
+        "283150",
+        "283151",
+        "283156"
+      ],
+      "values_names": [
+        "Coral-claro",
+        "Coral",
+        "Laranja-claro",
+        "Laranja-escuro",
+        "Cáqui"
+      ],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "SOFA_ORIENTATION",
+      "nome": "Orientação do sofá",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "12977497",
+        "12977498"
+      ],
+      "values_names": [
+        "Direita",
+        "Esquerda"
+      ],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IS_RECLINABLE",
+      "nome": "É reclinável",
+      "value_type": "boolean",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "required": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": "242084",
+      "valor_atual_value_name": "Não",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "FILTRABLE_COLOR",
+      "nome": "Cor filtrável",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 55,
+      "values_ids": [
+        "2450295",
+        "2450293",
+        "2450307",
+        "2450311",
+        "2450291"
+      ],
+      "values_names": [
+        "Preto",
+        "Azul",
+        "Vermelho",
+        "Violeta",
+        "Marrom"
+      ],
+      "valor_atual_value_id": "2450278",
+      "valor_atual_value_name": "Azul-celeste",
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "MAIN_COLOR",
+      "nome": "Cor principal",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "variation_attribute": true
+      },
+      "qtd_values": 16,
+      "values_ids": [
+        "2450295",
+        "2450293",
+        "2450307",
+        "2450311",
+        "2450291"
+      ],
+      "values_names": [
+        "Preto",
+        "Azul",
+        "Vermelho",
+        "Violeta",
+        "Marrom"
+      ],
+      "valor_atual_value_id": "2450278",
+      "valor_atual_value_name": "Azul celeste",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "SOFA_FORMAT",
+      "nome": "Formato do sofá",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "multivalued": true
+      },
+      "qtd_values": 6,
+      "values_ids": [
+        "12977499",
+        "12977502",
+        "12977503",
+        "59606458",
+        "12977500"
+      ],
+      "values_names": [
+        "Em L",
+        "Modular",
+        "Em formato de U",
+        "Sofá-cama",
+        "Sofá de canto"
+      ],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "PACKAGE_HEIGHT",
+      "nome": "Altura da embalagem",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PACKAGE_WIDTH",
+      "nome": "Largura da embalagem",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PACKAGE_LENGTH",
+      "nome": "Comprimento da embalagem",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PACKAGE_WEIGHT",
+      "nome": "Peso da embalagem",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "WEIGHT",
+      "nome": "Peso",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "34 kg",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "WIDTH",
+      "nome": "Largura",
+      "value_type": "number_unit",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "required": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "76 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "STYLE",
+      "nome": "Estilo",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 12,
+      "values_ids": [
+        "26047777",
+        "18121769",
+        "13292020",
+        "26047779",
+        "432204"
+      ],
+      "values_names": [
+        "Clássico",
+        "Romântico",
+        "Nórdico",
+        "Retrô/Vintage",
+        "Moderno"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "Amamentação",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "STRUCTURE_MATERIALS",
+      "nome": "Materiais da estrutura",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "multivalued": true
+      },
+      "qtd_values": 3,
+      "values_ids": [
+        "2748301",
+        "2431881",
+        "112648"
+      ],
+      "values_names": [
+        "Alumínio",
+        "Madeira",
+        "Metal"
+      ],
+      "valor_atual_value_id": "1163763",
+      "valor_atual_value_name": "Madeira de pinho",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "BACK_FILL_MATERIAL",
+      "nome": "Material de enchimento do encosto",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 2,
+      "values_ids": [
+        "18455897",
+        "18455898"
+      ],
+      "values_names": [
+        "Espuma",
+        "Penas"
+      ],
+      "valor_atual_value_id": "18455897",
+      "valor_atual_value_name": "Espuma",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "SEAT_FOAM_DENSITY",
+      "nome": "Densidade da espuma do assento",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 2,
+      "values_ids": [
+        "18455899",
+        "18455900"
+      ],
+      "values_names": [
+        "Alta",
+        "Média"
+      ],
+      "valor_atual_value_id": "21172587",
+      "valor_atual_value_name": "D-20 e D-23",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "ACCESSORIES_INCLUDED",
+      "nome": "Acessórios incluídos",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "multivalued": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "2295025",
+        "2295026"
+      ],
+      "values_names": [
+        "Travesseiro",
+        "Puff"
+      ],
+      "valor_atual_value_id": "2295026",
+      "valor_atual_value_name": "Puff",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "MAX_WEIGHT_SUPPORTED",
+      "nome": "Peso máximo suportado",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "100 kg",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "IS_SOFA_IN_A_BOX",
+      "nome": "É sofá na caixa",
+      "value_type": "boolean",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "MATTRESS_WIDTH",
+      "nome": "Largura do colchão",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "MATTRESS_LENGTH",
+      "nome": "Comprimento do colchão",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "INCLUDES_MATTRESS",
+      "nome": "Inclui colchão",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "REQUIRES_ASSEMBLY",
+      "nome": "Requer montagem",
+      "value_type": "boolean",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": "242085",
+      "valor_atual_value_name": "Sim",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "WITH_REMOVABLE_COVER",
+      "nome": "Com tecido removível",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "WITH_REMOVABLE_LEGS",
+      "nome": "Com pés desmontáveis",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {},
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "GTIN",
+      "nome": "Código universal de produto",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "multivalued": true,
+        "variation_attribute": true,
+        "used_hidden": true,
+        "validate": true,
+        "conditional_required": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "7899741100864",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "EMPTY_GTIN_REASON",
+      "nome": "Motivo de GTIN vazio",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true,
+        "variation_attribute": true,
+        "conditional_required": true
+      },
+      "qtd_values": 4,
+      "values_ids": [
+        "17055158",
+        "17055159",
+        "17055160",
+        "17055161"
+      ],
+      "values_names": [
+        "O produto é uma peça artesanal",
+        "O produto é um kit ou pack",
+        "O produto não tem código cadastrado",
+        "Outro motivo"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "PACKAGING_BOXES_NUMBER",
+      "nome": "Quantidade de caixas de embalagem",
+      "value_type": "number",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "required": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "1",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "DEPTH",
+      "nome": "Profundidade",
+      "value_type": "number_unit",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "70 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "HEIGHT",
+      "nome": "Altura",
+      "value_type": "number_unit",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "98 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "INCLUDES_ASSEMBLY_MANUAL",
+      "nome": "Inclui manual de montagem",
+      "value_type": "boolean",
+      "obrigatorio": true,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "catalog_required": true,
+        "required": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": "242085",
+      "valor_atual_value_name": "Sim",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "VERTICAL_TAGS",
+      "nome": "Tags vertical",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 5,
+      "values_ids": [
+        "53559152",
+        "53559153",
+        "53559154",
+        "53559155",
+        "53559156"
+      ],
+      "values_names": [
+        "is_tom_brand",
+        "is_polos",
+        "is_social_brands",
+        "is_beauty_premium",
+        "has_dimensions_images"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "INSTALLATION_SERVICE",
+      "nome": "Serviço de instalação",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "INCLUDES_AUXILIARY_BED",
+      "nome": "Inclui cama auxiliar",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "BED_WIDTH",
+      "nome": "Largura da cama",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "BED_DEPTH",
+      "nome": "Profundidade da cama",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "BED_HEIGHT",
+      "nome": "Altura da cama",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": "-1",
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "RECLINING_POSITIONS_NUMBER",
+      "nome": "Quantidade de posições de reclinado",
+      "value_type": "number",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "MPN",
+      "nome": "MPN",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "ITEM_CONDITION",
+      "nome": "Condição do item",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 3,
+      "values_ids": [
+        "2230581",
+        "2230284",
+        "2230582"
+      ],
+      "values_names": [
+        "Usado",
+        "Novo",
+        "Recondicionado"
+      ],
+      "valor_atual_value_id": "2230284",
+      "valor_atual_value_name": "Novo",
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "VALUE_ADDED_TAX",
+      "nome": "Imposto sobre o valor acrescentado",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IMPORT_DUTY",
+      "nome": "Imposto de importação",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 17,
+      "values_ids": [
+        "49553239",
+        "49553240",
+        "49553241",
+        "49553242",
+        "49553243"
+      ],
+      "values_names": [
+        "0 %",
+        "1 %",
+        "2.5 %",
+        "4 %",
+        "5 %"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "SELLER_SKU",
+      "nome": "SKU",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true,
+        "variation_attribute": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "SV5657629",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "SELLER_PACKAGE_DATA_SOURCE",
+      "nome": "Origem do dado do pacote de envio",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "SELLER_PACKAGE_WIDTH",
+      "nome": "Largura da embalagem do vendor",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "65 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "SELLER_PACKAGE_LENGTH",
+      "nome": "Comprimento da embalagem do vendor",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "71 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "SELLER_PACKAGE_HEIGHT",
+      "nome": "Altura da embalagem do vendor",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "100 cm",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "SELLER_PACKAGE_WEIGHT",
+      "nome": "Peso da embalagem do vendor",
+      "value_type": "number_unit",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": "31000 g",
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "HAZMAT_TRANSPORTABILITY",
+      "nome": "Transportabilidade Hazmat",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 5,
+      "values_ids": [
+        "13414677",
+        "13414678",
+        "13414679",
+        "13414680",
+        "75989961"
+      ],
+      "values_names": [
+        "Livre",
+        "Limitado",
+        "Excedido",
+        "Indeterminado",
+        "Notificado"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IS_KIT",
+      "nome": "É kit",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - lista fechada"
+    },
+    {
+      "id": "DESCRIPTIVE_TAGS",
+      "nome": "Tags descritivos",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PRODUCT_CHEMICAL_FEATURES",
+      "nome": "Características químicas do produto",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 6,
+      "values_ids": [
+        "7651070",
+        "7651071",
+        "7651072",
+        "7651073",
+        "7651074"
+      ],
+      "values_names": [
+        "Inflamável",
+        "Aerosol",
+        "Oxidante",
+        "Corrosivo",
+        "Explosivo"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "FOODS_AND_DRINKS",
+      "nome": "Alimentos e bebidas",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "7575926",
+        "7575927"
+      ],
+      "values_names": [
+        "Para humanos",
+        "Para animais"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "MEDICINES",
+      "nome": "Medicamentos",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 4,
+      "values_ids": [
+        "7575930",
+        "7575931",
+        "7575932",
+        "7575933"
+      ],
+      "values_names": [
+        "Para humanos com receita médica",
+        "Para humanos sem receita médica",
+        "Para animais com receita médica",
+        "Para animais sem receita médica"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "BATTERIES_FEATURES",
+      "nome": "Características das baterias",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 3,
+      "values_ids": [
+        "7575934",
+        "7575935",
+        "7575936"
+      ],
+      "values_names": [
+        "Lítio stand-alone (separadas ou isolado)",
+        "De lítio instaladas",
+        "Para carros (ácido-chumbo)"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "SHIPMENT_PACKING",
+      "nome": "Embalagem do envío",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 5,
+      "values_ids": [
+        "7435891",
+        "7435892",
+        "7575937",
+        "7575939",
+        "27037932"
+      ],
+      "values_names": [
+        "Flyer",
+        "Caixa",
+        "Envelope",
+        "Auto-expedível",
+        "BEX"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "ADDITIONAL_INFO_REQUIRED",
+      "nome": "Informação adicional requerida",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "7435893",
+        "7435894"
+      ],
+      "values_names": [
+        "Possui código IMEI",
+        "Possui número de série"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "EXCLUDED_PLATFORMS",
+      "nome": "Plataformas excluídas",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 4,
+      "values_ids": [
+        "9936777",
+        "9936778",
+        "9936779",
+        "9936780"
+      ],
+      "values_names": [
+        "Android",
+        "iOS",
+        "Desktop",
+        "Mobile"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IS_SUITABLE_FOR_SHIPMENT",
+      "nome": "É adequado para envío",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PRODUCT_DATA_SOURCE",
+      "nome": "Fonte do produto",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": false,
+      "tags": {
+        "hidden": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "SIM - texto livre"
+    },
+    {
+      "id": "LIMITED_MARKETPLACE_VISIBILITY_REASONS",
+      "nome": "Razões de visibilidade limitada no Marketplace",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 1,
+      "values_ids": [
+        "24219544"
+      ],
+      "values_names": [
+        "Pharma"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "HAS_COMPATIBILITIES",
+      "nome": "Tem compatibilidades",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "CATALOG_TITLE",
+      "nome": "Título de catálogo",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "SEARCH_ENHANCEMENT_FIELDS",
+      "nome": "Campos de aprimoramento de pesquisa",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PRODUCT_FEATURES",
+      "nome": "Características do produto",
+      "value_type": "list",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "multivalued": true,
+        "read_only": true
+      },
+      "qtd_values": 13,
+      "values_ids": [
+        "7435885",
+        "7435883",
+        "7435888",
+        "8847339",
+        "7575917"
+      ],
+      "values_names": [
+        "Contém líquido",
+        "Frágil",
+        "Com validade",
+        "Sem validade",
+        "Desinfetante e saneante"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IS_NEW_OFFER",
+      "nome": "É nova oferta",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "SYI_PYMES_ID",
+      "nome": "syi pymes id",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "IS_FLAMMABLE",
+      "nome": "É inflamável",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "WITH_POSITIVE_IMPACT",
+      "nome": "Com impacto positivo",
+      "value_type": "boolean",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 2,
+      "values_ids": [
+        "242084",
+        "242085"
+      ],
+      "values_names": [
+        "Não",
+        "Sim"
+      ],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    },
+    {
+      "id": "PACKAGE_DATA_SOURCE",
+      "nome": "Origem do dado do pacote de fábrica",
+      "value_type": "string",
+      "obrigatorio": false,
+      "recomendado": false,
+      "readonly": true,
+      "tags": {
+        "hidden": true,
+        "read_only": true
+      },
+      "qtd_values": 0,
+      "values_ids": [],
+      "values_names": [],
+      "valor_atual_value_id": null,
+      "valor_atual_value_name": null,
+      "checkbox_na": "NAO - readonly"
+    }
+  ]
+}

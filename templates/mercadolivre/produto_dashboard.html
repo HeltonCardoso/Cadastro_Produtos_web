@@ -35,7 +35,10 @@
         display: flex;
         gap: 10px;
         align-items: center;
+        margin-left: 0;
+        transition: margin-left 0.32s cubic-bezier(0.4,0,0.2,1);
     }
+    .search-bar-sticky.panel-open { margin-left: 140px; }
 
     .search-label {
         font-size: 13px;
@@ -82,10 +85,12 @@
 
     /* ── Container ── */
     .dashboard-container {
-        max-width: 1400px;
+        max-width: 1800px;
         margin: 0 auto;
         padding: 20px 24px;
+        transition: padding-left 0.32s cubic-bezier(0.4,0,0.2,1);
     }
+    .dashboard-container.panel-open { padding-left: 150px; }
 
     /* ── Loading ── */
     .loading-overlay {
@@ -648,6 +653,136 @@
         color: #bbb;
         font-size: 13px;
     }
+
+    /* ── Painel de Descrição lateral ESQUERDO ── */
+    .desc-panel {
+        position: fixed;
+        top: 0;
+        left: -480px;
+        width: 460px;
+        height: 100vh;
+        background: white;
+        border-right: 1px solid var(--ml-border);
+        box-shadow: 8px 0 32px rgba(0,0,0,0.13);
+        z-index: 9000;
+        display: flex;
+        flex-direction: column;
+        transition: left 0.32s cubic-bezier(0.4,0,0.2,1);
+        font-family: inherit;
+    }
+    .desc-panel.open { left: 0; }
+
+    .desc-panel-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--ml-border);
+        background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+    }
+    .desc-panel-title {
+        color: white; font-size: 14px; font-weight: 700;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .desc-panel-mlb-badge {
+        background: rgba(255,255,255,0.18); color: rgba(255,255,255,0.92);
+        font-size: 11px; padding: 3px 9px; border-radius: 20px;
+        font-weight: 700; font-family: monospace;
+    }
+    .desc-panel-close {
+        background: rgba(255,255,255,0.15); border: none; color: white;
+        width: 30px; height: 30px; border-radius: 8px; cursor: pointer;
+        font-size: 16px; display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s; flex-shrink: 0;
+    }
+    .desc-panel-close:hover { background: rgba(255,255,255,0.3); }
+
+    .desc-panel-meta {
+        padding: 10px 18px; background: #f8f9fb;
+        border-bottom: 1px solid var(--ml-border); flex-shrink: 0;
+    }
+    .desc-panel-meta-title {
+        font-size: 12px; font-weight: 700; color: #1a1a2e;
+        line-height: 1.4; margin-bottom: 5px;
+    }
+    .desc-panel-meta-info { display: flex; gap: 12px; flex-wrap: wrap; }
+    .desc-panel-meta-info span {
+        font-size: 11px; color: #888; display: flex; align-items: center; gap: 4px;
+    }
+    .desc-panel-meta-info strong { color: #555; }
+
+    .desc-panel-tabs {
+        display: flex; border-bottom: 1px solid var(--ml-border);
+        flex-shrink: 0; background: white;
+    }
+    .desc-tab {
+        flex: 1; padding: 10px 8px; border: none; background: transparent;
+        font-size: 12px; font-weight: 600; color: #999; cursor: pointer;
+        border-bottom: 2px solid transparent; transition: all 0.18s; font-family: inherit;
+    }
+    .desc-tab.active { color: var(--ml-blue); border-bottom-color: var(--ml-blue); }
+    .desc-tab:hover:not(.active) { color: #555; background: #fafafa; }
+
+    .desc-panel-body { flex: 1; overflow-y: auto; padding: 16px 18px; }
+
+    .desc-panel-loading {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; height: 200px; color: #bbb; font-size: 13px; gap: 12px;
+    }
+    .desc-panel-error {
+        background: #fff8f8; border: 1px solid #fde8e8; border-radius: 8px;
+        padding: 16px; color: #c0392b; font-size: 13px; text-align: center;
+    }
+    .desc-section-label {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.6px; color: #aaa; margin-bottom: 8px; margin-top: 16px;
+        display: flex; align-items: center; gap: 5px;
+    }
+    .desc-section-label:first-child { margin-top: 0; }
+    .desc-text-box {
+        background: #f8f9fb; border: 1px solid var(--ml-border); border-radius: 8px;
+        padding: 12px 14px; font-size: 12.5px; color: #333; line-height: 1.65;
+        white-space: pre-wrap; word-break: break-word;
+        max-height: 380px; overflow-y: auto; user-select: text;
+    }
+    .desc-empty-state { text-align: center; padding: 40px 20px; color: #bbb; }
+    .desc-empty-state i { font-size: 32px; display: block; margin-bottom: 10px; }
+    .desc-empty-state p { font-size: 13px; }
+
+    .desc-copy-btn {
+        margin-top: 8px; background: #eef3ff; border: 1px solid #c7d9ff;
+        color: var(--ml-blue); border-radius: 6px; padding: 6px 14px;
+        font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+        font-family: inherit; display: flex; align-items: center; gap: 5px; width: fit-content;
+    }
+    .desc-copy-btn:hover { background: #dbeaff; }
+    .desc-copy-btn.copied { background: #e6f9ef; border-color: #b7ebd3; color: #1a7a44; }
+
+    .desc-attr-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .desc-attr-table tr { border-bottom: 1px solid #f0f0f0; }
+    .desc-attr-table tr:last-child { border-bottom: none; }
+    .desc-attr-table td { padding: 6px 4px; vertical-align: top; }
+    .desc-attr-table td:first-child { color: #888; font-weight: 600; width: 45%; padding-right: 10px; }
+    .desc-attr-table td:last-child { color: #333; font-weight: 500; }
+    .desc-no-value { color: #ccc; font-style: italic; font-weight: 400 !important; }
+
+    .desc-images-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .desc-img-thumb {
+        aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--ml-border);
+        object-fit: contain; background: #f8f9fb; width: 100%; cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .desc-img-thumb:hover { transform: scale(1.04); box-shadow: 0 4px 14px rgba(0,0,0,0.14); }
+
+    .btn-desc-panel {
+        background: #1a1a2e; color: white; border: none; padding: 10px 18px;
+        border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px;
+        display: flex; align-items: center; gap: 7px;
+        transition: background 0.2s, transform 0.15s; font-family: inherit; white-space: nowrap;
+    }
+    .btn-desc-panel:hover { background: #0f3460; transform: translateY(-1px); }
+
 </style>
 {% endblock %}
 
@@ -663,12 +798,49 @@
     </div>
 </div>
 
+<!-- Painel de Descrição (cola lateral esquerda) -->
+<div class="desc-panel" id="desc-panel">
+    <div class="desc-panel-header">
+        <div class="desc-panel-title">
+            <i class="fas fa-file-alt"></i>
+            Descrição do Produto
+            <span class="desc-panel-mlb-badge" id="desc-panel-mlb-badge">—</span>
+        </div>
+        <button class="desc-panel-close" onclick="fecharDescPanel()" title="Fechar painel">✕</button>
+    </div>
+    <div class="desc-panel-meta" id="desc-panel-meta" style="display:none;">
+        <div class="desc-panel-meta-title" id="desc-meta-titulo"></div>
+        <div class="desc-panel-meta-info">
+            <span><i class="fas fa-tag"></i> Cat: <strong id="desc-meta-cat"></strong></span>
+            <span><i class="fas fa-box"></i> Cond: <strong id="desc-meta-cond"></strong></span>
+            <span><i class="fas fa-dollar-sign"></i> R$ <strong id="desc-meta-preco"></strong></span>
+        </div>
+    </div>
+    <div class="desc-panel-tabs" id="desc-panel-tabs" style="display:none;">
+        <button class="desc-tab active" id="desc-tab-descricao" onclick="trocarAbaDesc('descricao')"><i class="fas fa-align-left"></i> Descrição</button>
+        <button class="desc-tab" id="desc-tab-atributos" onclick="trocarAbaDesc('atributos')"><i class="fas fa-list"></i> Atributos</button>
+        <button class="desc-tab" id="desc-tab-fotos" onclick="trocarAbaDesc('fotos')"><i class="fas fa-images"></i> Fotos</button>
+    </div>
+    <div class="desc-panel-body" id="desc-panel-body">
+        <div class="desc-panel-loading" id="desc-panel-loading" style="display:none;">
+            <div class="spinner"></div>
+            <span>Carregando...</span>
+        </div>
+        <div id="desc-content-descricao" class="desc-tab-content"></div>
+        <div id="desc-content-atributos" class="desc-tab-content" style="display:none;"></div>
+        <div id="desc-content-fotos" class="desc-tab-content" style="display:none;"></div>
+    </div>
+</div>
+
 <!-- Barra de pesquisa fixa -->
 <div class="search-bar-sticky">
     <span class="search-label">MLB</span>
     <input type="text" id="mlb_input" placeholder="Digite o código MLB (ex: MLB1234567890)">
     <button class="btn-search" onclick="carregarProduto()">
         <i class="fas fa-search"></i> Buscar produto
+    </button>
+    <button class="btn-desc-panel" id="btn-desc-panel" style="display:none;" onclick="abrirDescPanel()">
+        <i class="fas fa-file-alt"></i> Ver Descrição
     </button>
 </div>
 
@@ -795,6 +967,7 @@ async function carregarProduto() {
 
     mlbAtual     = mlb;
     estadoCampos = {};
+    descDadosCache = null;
 
     document.getElementById('loading').style.display        = 'block';
     document.getElementById('produto-content').style.display = 'none';
@@ -817,6 +990,7 @@ async function carregarProduto() {
         renderizarAtributos(data.atributos || []);
 
         document.getElementById('produto-content').style.display = 'block';
+        document.getElementById('btn-desc-panel').style.display  = 'flex';
 
     } catch (err) {
         document.getElementById('loading').style.display = 'none';
@@ -1151,9 +1325,15 @@ function toggleSection(s) {
         const chevron = document.getElementById(`chevron-${sec}`);
         const header  = document.getElementById(`header-${sec}`);
         if (sec === s) {
+            // Alterna a seção clicada
             const open = content.classList.toggle('expanded');
             chevron.classList.toggle('expanded', open);
             header.classList.toggle('expanded', open);
+        } else {
+            // Fecha sempre a outra seção
+            content.classList.remove('expanded');
+            chevron.classList.remove('expanded');
+            header.classList.remove('expanded');
         }
     });
 }
@@ -1265,6 +1445,155 @@ function escapeHtml(t) {
     const d = document.createElement('div');
     d.textContent = String(t);
     return d.innerHTML;
+}
+
+
+// ─── PAINEL DE DESCRIÇÃO ─────────────────────────────────────────────────────
+let descDadosCache = null;
+let descAbaAtual   = 'descricao';
+
+function abrirDescPanel() {
+    document.getElementById('desc-panel').classList.add('open');
+    document.querySelector('.search-bar-sticky').classList.add('panel-open');
+    document.querySelector('.dashboard-container').classList.add('panel-open');
+    if (!descDadosCache) carregarDescricao();
+}
+
+function fecharDescPanel() {
+    document.getElementById('desc-panel').classList.remove('open');
+    document.querySelector('.search-bar-sticky').classList.remove('panel-open');
+    document.querySelector('.dashboard-container').classList.remove('panel-open');
+}
+
+function trocarAbaDesc(aba) {
+    descAbaAtual = aba;
+    ['descricao','atributos','fotos'].forEach(a => {
+        document.getElementById('desc-tab-' + a).classList.toggle('active', a === aba);
+        document.getElementById('desc-content-' + a).style.display = (a === aba) ? 'block' : 'none';
+    });
+}
+
+async function carregarDescricao() {
+    const mlb = mlbAtual;
+    if (!mlb) return;
+
+    document.getElementById('desc-panel-mlb-badge').textContent = mlb;
+    document.getElementById('desc-panel-loading').style.display = 'flex';
+    document.getElementById('desc-panel-meta').style.display    = 'none';
+    document.getElementById('desc-panel-tabs').style.display    = 'none';
+    ['descricao','atributos','fotos'].forEach(a => {
+        document.getElementById('desc-content-' + a).innerHTML = '';
+    });
+
+    try {
+        // Reutiliza a mesma rota que o dashboard já usa — agora retorna descricao e fotos também
+        const res  = await fetch('/api/mercadolivre/produto-completo/' + mlb);
+        const data = await res.json();
+
+        document.getElementById('desc-panel-loading').style.display = 'none';
+
+        if (!data.sucesso) {
+            document.getElementById('desc-content-descricao').innerHTML =
+                '<div class="desc-panel-error"><i class="fas fa-exclamation-circle"></i> ' +
+                escapeHtml(data.erro || 'Erro ao carregar') + '</div>';
+            document.getElementById('desc-panel-tabs').style.display = 'flex';
+            return;
+        }
+
+        descDadosCache = data;
+
+        // Preenche meta
+        document.getElementById('desc-meta-titulo').textContent = data.titulo    || '—';
+        document.getElementById('desc-meta-cat').textContent    = data.categoria_id || '—';
+        document.getElementById('desc-meta-cond').textContent   = data.condicao   || '—';
+        document.getElementById('desc-meta-preco').textContent  = data.preco
+            ? Number(data.preco).toLocaleString('pt-BR', {minimumFractionDigits:2})
+            : '—';
+        document.getElementById('desc-panel-meta').style.display = 'block';
+        document.getElementById('desc-panel-tabs').style.display = 'flex';
+
+        renderizarAbaDescricao(data.descricao);
+        renderizarAbaAtributos(data.atributos || []);
+        renderizarAbaFotos(data.fotos || []);
+
+    } catch (err) {
+        document.getElementById('desc-panel-loading').style.display = 'none';
+        document.getElementById('desc-content-descricao').innerHTML =
+            '<div class="desc-panel-error"><i class="fas fa-exclamation-circle"></i> Erro de conexão: ' +
+            escapeHtml(err.message) + '</div>';
+        document.getElementById('desc-panel-tabs').style.display = 'flex';
+    }
+}
+
+function renderizarAbaDescricao(descricao) {
+    const el = document.getElementById('desc-content-descricao');
+    if (!descricao || !descricao.trim()) {
+        el.innerHTML = '<div class="desc-empty-state"><i class="fas fa-file-times"></i><p>Descrição não cadastrada para este produto.</p></div>';
+        return;
+    }
+    el.innerHTML =
+        '<div class="desc-section-label"><i class="fas fa-align-left"></i> Texto da Descrição</div>' +
+        '<div class="desc-text-box" id="desc-text-content">' + escapeHtml(descricao) + '</div>' +
+        '<button class="desc-copy-btn" id="desc-copy-btn" onclick="copiarDescricao()">' +
+        '<i class="fas fa-copy"></i> Copiar texto</button>';
+}
+
+function renderizarAbaAtributos(atributos) {
+    const el = document.getElementById('desc-content-atributos');
+    if (!atributos.length) {
+        el.innerHTML = '<div class="desc-empty-state"><i class="fas fa-inbox"></i><p>Nenhum atributo encontrado.</p></div>';
+        return;
+    }
+    const grupos = [
+        { nome: 'Principais',   cat: 'principal'  },
+        { nome: 'Recomendados', cat: 'recomendado' },
+        { nome: 'Secundários',  cat: 'secundario'  },
+    ];
+    let html = '';
+    grupos.forEach(g => {
+        const lista = atributos.filter(a => a.categoria === g.cat);
+        if (!lista.length) return;
+        html += '<div class="desc-section-label">' + g.nome + ' (' + lista.length + ')</div>';
+        html += '<table class="desc-attr-table">';
+        lista.forEach(a => {
+            const val = a.e_nao_se_aplica
+                ? '<em>N/A</em>'
+                : (a.valor ? escapeHtml(a.valor) : '<span class="desc-no-value">Não preenchido</span>');
+            html += '<tr><td>' + escapeHtml(a.nome || a.id) + '</td><td>' + val + '</td></tr>';
+        });
+        html += '</table>';
+    });
+    el.innerHTML = html;
+}
+
+function renderizarAbaFotos(fotos) {
+    const el = document.getElementById('desc-content-fotos');
+    if (!fotos || !fotos.length) {
+        el.innerHTML = '<div class="desc-empty-state"><i class="fas fa-images"></i><p>Nenhuma foto encontrada.</p></div>';
+        return;
+    }
+    el.innerHTML =
+        '<div class="desc-section-label"><i class="fas fa-images"></i> ' + fotos.length + ' foto(s)</div>' +
+        '<div class="desc-images-grid">' +
+        fotos.map(u =>
+            '<img class="desc-img-thumb" src="' + escapeHtml(u) + '" alt="Foto produto" ' +
+            'onclick="window.open(\'' + escapeHtml(u) + '\',\'_blank\')" title="Clique para ampliar">'
+        ).join('') +
+        '</div>';
+}
+
+function copiarDescricao() {
+    const el  = document.getElementById('desc-text-content');
+    const btn = document.getElementById('desc-copy-btn');
+    if (!el) return;
+    navigator.clipboard.writeText(el.textContent).then(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copiar texto';
+            btn.classList.remove('copied');
+        }, 2200);
+    });
 }
 
 document.getElementById('mlb_input').addEventListener('keypress', e => { if (e.key === 'Enter') carregarProduto(); });
