@@ -7,20 +7,21 @@
 <style>
     :root {
         --ml-blue: #3483fa;
+        --ml-blue-dark: #2968c8;
         --ml-green: #00a650;
         --ml-orange: #f5a623;
-        --ml-red: #ff3333;
+        --ml-red: #e63946;
         --ml-gray: #ededed;
         --ml-dark-gray: #666;
         --ml-border: #e5e5e5;
+        --ml-bg: #f8f9fb;
+        --card-radius: 10px;
+        --transition: 0.2s ease;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-        margin: 0;
-        padding: 0;
-    }
+    body { background: var(--ml-bg); }
 
     /* ── Barra de pesquisa fixa ── */
     .search-bar-sticky {
@@ -29,215 +30,299 @@
         z-index: 100;
         background: white;
         border-bottom: 1px solid var(--ml-border);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        padding: 12px 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        padding: 12px 24px;
         display: flex;
         gap: 10px;
         align-items: center;
     }
 
+    .search-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+    }
+
     .search-bar-sticky input {
         flex: 1;
         padding: 10px 16px;
-        border: 1px solid var(--ml-border);
+        border: 1.5px solid var(--ml-border);
         border-radius: 8px;
         font-size: 14px;
-        max-width: 500px;
+        max-width: 420px;
+        transition: border-color var(--transition), box-shadow var(--transition);
+        font-family: inherit;
     }
 
     .search-bar-sticky input:focus {
         outline: none;
         border-color: var(--ml-blue);
-        box-shadow: 0 0 0 2px rgba(52,131,250,0.1);
+        box-shadow: 0 0 0 3px rgba(52,131,250,0.12);
     }
 
     .btn-search {
         background: var(--ml-blue);
         color: white;
         border: none;
-        padding: 10px 24px;
+        padding: 10px 22px;
         border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
         font-size: 14px;
         white-space: nowrap;
+        transition: background var(--transition), transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
     }
 
-    .btn-search:hover { background: #2968c8; }
+    .btn-search:hover { background: var(--ml-blue-dark); transform: translateY(-1px); }
+    .btn-search:active { transform: translateY(0); }
 
-    /* ── Container principal sem padding excessivo ── */
+    /* ── Container ── */
     .dashboard-container {
-        max-width: 100%;
-        padding: 16px 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px 24px;
     }
 
     /* ── Loading ── */
     .loading-overlay {
         text-align: center;
-        padding: 40px;
+        padding: 60px 40px;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-radius: 14px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
 
     .spinner {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border: 3px solid var(--ml-gray);
         border-top-color: var(--ml-blue);
         border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin: 0 auto 12px;
+        animation: spin 0.75s linear infinite;
+        margin: 0 auto 16px;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Header com qualidade + info ── */
+    .produto-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 14px;
+        margin-bottom: 16px;
+        align-items: stretch;
+    }
+
+    @media (max-width: 768px) { .produto-header { grid-template-columns: 1fr; } }
+
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 16px 20px;
+        border: 1px solid var(--ml-border);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .produto-titulo-texto {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a2e;
+        line-height: 1.4;
+    }
+
+    .produto-meta {
+        font-size: 12px;
+        color: #888;
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .produto-meta span { display: flex; align-items: center; gap: 4px; }
+    .produto-meta strong { color: #444; }
+
     /* ── Quality card ── */
     .quality-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
         border-radius: 12px;
-        padding: 18px 24px;
-        margin-bottom: 14px;
+        padding: 16px 22px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
+        gap: 16px;
+        min-width: 280px;
     }
 
-    .quality-score-area {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
-
-    .quality-circle {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: #ffd700;
-        color: #1a1a2e;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        font-weight: bold;
+    .quality-ring {
+        position: relative;
+        width: 72px;
+        height: 72px;
         flex-shrink: 0;
     }
 
-    .quality-info h3 {
-        margin: 0 0 2px;
+    .quality-ring svg { transform: rotate(-90deg); }
+
+    .quality-ring-bg   { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+    .quality-ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+
+    .quality-ring-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
         color: white;
-        font-size: 13px;
-        font-weight: normal;
     }
 
-    .quality-info .score {
-        font-size: 26px;
-        font-weight: bold;
-        color: #ffd700;
+    .quality-info { flex: 1; }
+
+    .quality-label {
+        font-size: 11px;
+        color: rgba(255,255,255,0.55);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .quality-nivel {
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
         line-height: 1;
+        margin-bottom: 6px;
     }
 
     .quality-origem {
         font-size: 11px;
-        color: rgba(255,255,255,0.5);
-        margin-top: 4px;
-    }
-
-    .warning-badge {
-        background: rgba(255,255,255,0.1);
-        padding: 8px 16px;
+        padding: 3px 9px;
         border-radius: 20px;
-        color: white;
-        font-size: 13px;
+        display: inline-block;
+        font-weight: 600;
     }
 
-    /* ── Info card com título maior ── */
-    .info-card {
-        background: #f5f5f5;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 14px;
-        font-size: 14px;
-        line-height: 1.5;
-    }
+    .quality-origem.oficial   { background: rgba(0,166,80,0.25);  color: #4dff9b; }
+    .quality-origem.calculado { background: rgba(245,166,35,0.25); color: #ffd166; }
 
-    .info-card .produto-titulo-texto {
-        font-size: 17px;
-        font-weight: 700;
-        color: #222;
-        display: block;
-        margin-bottom: 4px;
-    }
-
-    .info-card .produto-meta {
-        font-size: 13px;
-        color: #555;
-    }
-
-    /* ── Contador vazios ── */
-    .contador-vazios {
-        background: var(--ml-orange);
-        color: white;
-        padding: 10px 16px;
-        border-radius: 8px;
-        margin-bottom: 14px;
-        font-size: 13px;
+    /* ── Contador ── */
+    .contador-bar {
+        background: white;
+        border: 1px solid var(--ml-border);
+        border-radius: 10px;
+        padding: 12px 18px;
+        margin-bottom: 16px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 10px;
     }
 
-    /* ── Seções accordion ── */
+    .contador-stats {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+    }
+
+    .stat-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .stat-dot.pendente   { background: var(--ml-red); }
+    .stat-dot.preenchido { background: var(--ml-green); }
+    .stat-dot.na         { background: #aaa; }
+
+    /* ── Seções ── */
     .atributos-section {
         background: white;
         border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        margin-bottom: 10px;
+        border: 1px solid var(--ml-border);
+        margin-bottom: 14px;
         overflow: hidden;
     }
 
     .section-header {
-        padding: 13px 18px;
-        background: #fafafa;
-        border-bottom: 1px solid var(--ml-border);
+        padding: 14px 20px;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: background 0.2s;
+        transition: background var(--transition);
         user-select: none;
+        border-bottom: 1px solid transparent;
     }
 
-    .section-header:hover { background: #f0f0f0; }
+    .section-header:hover { background: #fafafa; }
+    .section-header.expanded { border-bottom-color: var(--ml-border); }
 
-    .section-header h3 {
-        margin: 0;
-        font-size: 15px;
-        font-weight: 600;
+    .section-header-left {
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .section-header h3 i { color: var(--ml-blue); }
-
-    .section-badge {
-        background: var(--ml-blue);
-        color: white;
-        padding: 2px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: normal;
+    .section-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
     }
 
-    .section-badge.recommended { background: #7b2ff7; }
+    .section-icon.principal  { background: #fff3e0; color: #f57c00; }
+    .section-icon.secundaria { background: #e8f5e9; color: #388e3c; }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .section-subtitle {
+        font-size: 12px;
+        color: #999;
+        margin-top: 1px;
+    }
+
+    .section-badge {
+        background: #f0f0f0;
+        color: #555;
+        padding: 3px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .section-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
     .chevron {
+        color: #bbb;
         transition: transform 0.25s;
-        color: var(--ml-dark-gray);
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .chevron.expanded { transform: rotate(180deg); }
@@ -245,112 +330,224 @@
     .section-content {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.35s ease;
-        padding: 0 18px;
+        transition: max-height 0.35s ease, padding 0.25s;
+        padding: 0 20px;
     }
 
     .section-content.expanded {
-        max-height: 9000px;
-        padding: 16px 18px;
+        max-height: 9999px;
+        padding: 18px 20px;
     }
 
-    /* ── Grid de atributos ── */
+    /* ── Grid ── */
     .atributos-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 12px;
     }
 
-    @media (max-width: 1200px) { .atributos-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 900px)  { .atributos-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 1300px) { .atributos-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 960px)  { .atributos-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 560px)  { .atributos-grid { grid-template-columns: 1fr; } }
 
     /* ── Cards de atributo ── */
     .atributo-card {
-        border: 1px solid var(--ml-border);
-        border-radius: 10px;
+        border: 1.5px solid var(--ml-border);
+        border-radius: var(--card-radius);
         padding: 12px;
         background: white;
-        transition: box-shadow 0.2s;
+        transition: box-shadow var(--transition), border-color var(--transition);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .atributo-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);       background: #fff9f9; }
-    .atributo-card.preenchido { border-left: 3px solid var(--ml-green); }
-    .atributo-card.nao-aplica { border-left: 3px solid var(--ml-dark-gray); background: #f9f9f9; }
+    .atributo-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
+
+    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);    background: #fff8f8; }
+    .atributo-card.preenchido { border-left: 3px solid var(--ml-green);  }
+    .atributo-card.nao-aplica { border-left: 3px solid #bbb;             background: #f9f9f9; }
 
     .atributo-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 8px;
         gap: 6px;
     }
 
     .atributo-nome {
         font-weight: 600;
         font-size: 12px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        color: #333;
+        line-height: 1.35;
         flex: 1;
-        line-height: 1.3;
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
     }
 
-    .atributo-nome i { color: var(--ml-blue); font-size: 11px; flex-shrink: 0; }
-    .star { color: #ffc107; font-size: 11px; }
+    .obrig-mark {
+        color: var(--ml-red);
+        font-size: 13px;
+        line-height: 1;
+        flex-shrink: 0;
+    }
 
-    .status-badge {
-        padding: 2px 7px;
-        border-radius: 12px;
+    .status-pill {
+        padding: 2px 8px;
+        border-radius: 20px;
         font-size: 10px;
-        font-weight: 600;
+        font-weight: 700;
         white-space: nowrap;
         flex-shrink: 0;
     }
 
-    .status-badge.success { background: #d4edda; color: #155724; }
-    .status-badge.danger  { background: #f8d7da; color: #721c24; }
-    .status-badge.info    { background: #d1ecf1; color: #0c5460; }
+    .status-pill.success { background: #e6f9ef; color: #1a7a44; }
+    .status-pill.danger  { background: #fde8e8; color: #c0392b; }
+    .status-pill.info    { background: #eef0f5; color: #666; }
 
-    /* ── Inputs e selects ── */
+    /* ── Inputs ── */
     .atributo-input {
         width: 100%;
         padding: 8px 10px;
-        border: 1px solid var(--ml-border);
+        border: 1.5px solid #e0e0e0;
         border-radius: 7px;
         font-size: 13px;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        font-family: inherit;
+        transition: border-color var(--transition), box-shadow var(--transition);
         background: white;
-        appearance: auto;
+        color: #222;
     }
 
     .atributo-input:focus {
         outline: none;
         border-color: var(--ml-blue);
-        box-shadow: 0 0 0 2px rgba(52,131,250,0.1);
+        box-shadow: 0 0 0 3px rgba(52,131,250,0.1);
     }
 
     .atributo-input:disabled {
         background: #f5f5f5;
-        color: #999;
+        color: #aaa;
         cursor: not-allowed;
+        border-color: #e8e8e8;
     }
 
-    select.atributo-input {
+    select.atributo-input { cursor: pointer; }
+
+    /* ── Campo number_unit ── */
+    .input-unit-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-unit-wrap .atributo-input { padding-right: 38px; }
+
+    .unit-label {
+        position: absolute;
+        right: 10px;
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 600;
+        pointer-events: none;
+    }
+
+    /* ── Chips multivalued ── */
+    .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        min-height: 34px;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 7px;
+        padding: 5px 8px;
+        background: white;
+        cursor: text;
+        transition: border-color var(--transition);
+        align-items: center;
+    }
+
+    .chips-container:focus-within {
+        border-color: var(--ml-blue);
+        box-shadow: 0 0 0 3px rgba(52,131,250,0.1);
+    }
+
+    .chip {
+        background: #e8f0fe;
+        color: #1a56db;
+        border-radius: 4px;
+        padding: 2px 7px 2px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .chip-remove {
         cursor: pointer;
+        color: #6b7fc4;
+        font-size: 13px;
+        line-height: 1;
+        padding: 0 1px;
+        transition: color 0.15s;
     }
 
-    /* ── Checkbox Não se aplica ── */
+    .chip-remove:hover { color: var(--ml-red); }
+
+    .chips-input {
+        border: none;
+        outline: none;
+        font-size: 12px;
+        min-width: 80px;
+        flex: 1;
+        background: transparent;
+        font-family: inherit;
+        color: #222;
+    }
+
+    /* ── Sim/Não toggle ── */
+    .bool-toggle {
+        display: flex;
+        border: 1.5px solid #e0e0e0;
+        border-radius: 7px;
+        overflow: hidden;
+    }
+
+    .bool-btn {
+        flex: 1;
+        padding: 8px 4px;
+        border: none;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        color: #999;
+        transition: background var(--transition), color var(--transition);
+        text-align: center;
+    }
+
+    .bool-btn:first-child { border-right: 1px solid #e0e0e0; }
+
+    .bool-btn.active-sim { background: #e6f9ef; color: #1a7a44; }
+    .bool-btn.active-nao { background: #fde8e8; color: #c0392b; }
+
+    /* ── Checkbox N/A ── */
     .nao-aplica-checkbox {
-        margin-top: 8px;
         display: flex;
         align-items: center;
         gap: 6px;
         font-size: 11px;
-        color: var(--ml-dark-gray);
+        color: #999;
         cursor: pointer;
+        margin-top: 2px;
+        padding-top: 6px;
+        border-top: 1px dashed #eee;
+        transition: color var(--transition);
     }
+
+    .nao-aplica-checkbox:hover { color: #666; }
 
     .nao-aplica-checkbox input {
         width: 13px;
@@ -361,23 +558,33 @@
     }
 
     /* ── Botão salvar ── */
+    .btn-salvar-wrap {
+        padding: 16px 0 4px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
     .btn-salvar {
         background: var(--ml-blue);
         color: white;
         border: none;
-        padding: 14px 28px;
+        padding: 12px 32px;
         border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         cursor: pointer;
-        width: 100%;
-        margin-top: 16px;
-        transition: background 0.2s, transform 0.15s;
+        transition: background var(--transition), transform 0.15s, box-shadow var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(52,131,250,0.25);
     }
 
     .btn-salvar:hover {
-        background: #2968c8;
+        background: var(--ml-blue-dark);
         transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(52,131,250,0.3);
     }
 
     /* ── MODAL ── */
@@ -385,71 +592,62 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.45);
+        background: rgba(0,0,0,0.4);
         z-index: 9999;
         align-items: center;
         justify-content: center;
+        backdrop-filter: blur(3px);
     }
 
     .modal-overlay.show { display: flex; }
 
     .modal-box {
         background: white;
-        border-radius: 14px;
-        padding: 28px 32px;
-        max-width: 420px;
+        border-radius: 16px;
+        padding: 32px;
+        max-width: 400px;
         width: 90%;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.2);
         text-align: center;
-        animation: modalIn 0.2s ease;
+        animation: modalIn 0.22s ease;
     }
 
     @keyframes modalIn {
-        from { opacity: 0; transform: scale(0.92) translateY(10px); }
+        from { opacity: 0; transform: scale(0.92) translateY(12px); }
         to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    .modal-icon {
-        font-size: 48px;
-        margin-bottom: 14px;
-        display: block;
-    }
+    .modal-icon   { font-size: 44px; margin-bottom: 12px; display: block; }
+    .modal-title  { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #1a1a2e; }
+    .modal-message{ font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 22px; }
 
-    .modal-title {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0 0 8px;
-        color: #1a1a2e;
-    }
-
-    .modal-message {
-        font-size: 14px;
-        color: #555;
-        margin: 0 0 22px;
-        line-height: 1.5;
-    }
-
-    .modal-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; }
 
     .modal-btn {
-        padding: 10px 24px;
+        padding: 10px 22px;
         border-radius: 8px;
         border: none;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 13px;
+        font-weight: 700;
         cursor: pointer;
-        transition: opacity 0.2s;
+        transition: opacity 0.2s, transform 0.15s;
+        font-family: inherit;
     }
 
-    .modal-btn:hover { opacity: 0.85; }
+    .modal-btn:hover   { opacity: 0.88; transform: translateY(-1px); }
     .modal-btn.primary   { background: var(--ml-blue);  color: white; }
-    .modal-btn.secondary { background: #eee; color: #333; }
+    .modal-btn.secondary { background: #eee; color: #555; }
     .modal-btn.success   { background: var(--ml-green); color: white; }
     .modal-btn.danger    { background: var(--ml-red);   color: white; }
+
+    /* ── Empty state ── */
+    .empty-state {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 32px;
+        color: #bbb;
+        font-size: 13px;
+    }
 </style>
 {% endblock %}
 
@@ -457,164 +655,162 @@
 
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay">
-    <div class="modal-box" id="modal-box">
-        <span class="modal-icon" id="modal-icon">✅</span>
-        <div class="modal-title"   id="modal-title">Título</div>
-        <div class="modal-message" id="modal-message">Mensagem</div>
-        <div class="modal-actions" id="modal-actions"></div>
+    <div class="modal-box">
+        <span class="modal-icon"    id="modal-icon">✅</span>
+        <div class="modal-title"    id="modal-title"></div>
+        <div class="modal-message"  id="modal-message"></div>
+        <div class="modal-actions"  id="modal-actions"></div>
     </div>
 </div>
 
-<!-- Barra de pesquisa FIXA -->
+<!-- Barra de pesquisa fixa -->
 <div class="search-bar-sticky">
-    <input type="text" id="mlb_input" placeholder="Digite o MLB do produto (ex: MLB1234567890)">
+    <span class="search-label">MLB</span>
+    <input type="text" id="mlb_input" placeholder="Digite o código MLB (ex: MLB1234567890)">
     <button class="btn-search" onclick="carregarProduto()">
-        <i class="fas fa-search"></i> Buscar
+        <i class="fas fa-search"></i> Buscar produto
     </button>
 </div>
 
 <div class="dashboard-container">
 
+    <!-- Loading -->
     <div id="loading" class="loading-overlay" style="display:none;">
         <div class="spinner"></div>
-        <p>Carregando dados do produto...</p>
+        <p style="color:#999;font-size:13px;margin-top:4px;">Carregando dados do produto...</p>
     </div>
 
     <div id="produto-content" style="display:none;">
 
-        <div id="quality-card"></div>
-
-        <div class="info-card">
-            <span class="produto-titulo-texto" id="produto-titulo"></span>
-            <span class="produto-meta">
-                MLB: <strong id="produto-mlb"></strong> &nbsp;|&nbsp;
-                Categoria: <strong id="produto-categoria"></strong>
-            </span>
+        <!-- Header: qualidade + info -->
+        <div class="produto-header">
+            <div class="info-card">
+                <div class="produto-titulo-texto" id="produto-titulo"></div>
+                <div class="produto-meta">
+                    <span><i class="fas fa-barcode"></i> MLB: <strong id="produto-mlb"></strong></span>
+                    <span><i class="fas fa-tag"></i> Categoria: <strong id="produto-categoria"></strong></span>
+                </div>
+            </div>
+            <div class="quality-card" id="quality-card"></div>
         </div>
 
-        <div id="contador-vazios" class="contador-vazios" style="display:none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="contador-texto"></span>
+        <!-- Barra de contadores -->
+        <div class="contador-bar" id="contador-bar">
+            <div class="contador-stats" id="contador-stats"></div>
+            <span style="font-size:12px;color:#aaa;" id="contador-total"></span>
         </div>
 
-        <!-- Seção Principal -->
+        <!-- Seção Características Principais -->
         <div class="atributos-section">
-            <div class="section-header" onclick="toggleSection('primaria')">
-                <h3>
-                    <i class="fas fa-star"></i>
-                    Características Principais
-                    <span class="section-badge" id="primaria-badge">Essenciais</span>
-                </h3>
-                <i class="fas fa-chevron-down chevron expanded" id="chevron-primaria"></i>
+            <div class="section-header expanded" id="header-primaria" onclick="toggleSection('primaria')">
+                <div class="section-header-left">
+                    <div class="section-icon principal"><i class="fas fa-star"></i></div>
+                    <div>
+                        <div class="section-title">Características Principais</div>
+                        <div class="section-subtitle">Obrigatórias para publicação</div>
+                    </div>
+                </div>
+                <div class="section-right">
+                    <span class="section-badge" id="badge-primaria">—</span>
+                    <i class="fas fa-chevron-down chevron expanded" id="chevron-primaria"></i>
+                </div>
             </div>
             <div class="section-content expanded" id="content-primaria">
-                <div id="primaria-grid" class="atributos-grid"></div>
+                <div class="atributos-grid" id="grid-primaria"></div>
             </div>
         </div>
 
-        <!-- Seção Recomendada -->
+        <!-- Seção Características Secundárias -->
         <div class="atributos-section">
-            <div class="section-header" onclick="toggleSection('recomendada')">
-                <h3>
-                    <i class="fas fa-thumbs-up"></i>
-                    Características Recomendadas
-                    <span class="section-badge recommended" id="recomendada-badge">Recomendadas</span>
-                </h3>
-                <i class="fas fa-chevron-down chevron" id="chevron-recomendada"></i>
+            <div class="section-header" id="header-secundaria" onclick="toggleSection('secundaria')">
+                <div class="section-header-left">
+                    <div class="section-icon secundaria"><i class="fas fa-list-ul"></i></div>
+                    <div>
+                        <div class="section-title">Características Secundárias</div>
+                        <div class="section-subtitle">Complementam o anúncio e melhoram a exposição</div>
+                    </div>
+                </div>
+                <div class="section-right">
+                    <span class="section-badge" id="badge-secundaria">—</span>
+                    <i class="fas fa-chevron-down chevron" id="chevron-secundaria"></i>
+                </div>
             </div>
-            <div class="section-content" id="content-recomendada">
-                <div id="recomendada-grid" class="atributos-grid"></div>
+            <div class="section-content" id="content-secundaria">
+                <div class="atributos-grid" id="grid-secundaria"></div>
             </div>
         </div>
 
-        <button class="btn-salvar" onclick="salvarTodosAtributos()">
-            <i class="fas fa-save"></i> Salvar todas as alterações
-        </button>
+        <!-- Botão salvar -->
+        <div class="btn-salvar-wrap">
+            <button class="btn-salvar" onclick="salvarTodosAtributos()">
+                <i class="fas fa-save"></i> Salvar alterações
+            </button>
+        </div>
 
     </div>
 </div>
 
 <script>
-let mlbAtual = '';
-// Guarda o estado original DE CADA CAMPO (separado do estado atual da UI)
-let estadoCampos = {};
+let mlbAtual    = '';
+let estadoCampos = {};  // { id: { valorOriginal, valueIdOriginal, naoAplicaOriginal, tipo, ... } }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MODAL
-// ─────────────────────────────────────────────────────────────────────────────
-function mostrarModal({ icone = '✅', titulo, mensagem, botoes = [] }) {
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function mostrarModal({ icone='✅', titulo, mensagem, botoes=[] }) {
     document.getElementById('modal-icon').textContent    = icone;
     document.getElementById('modal-title').textContent   = titulo;
     document.getElementById('modal-message').textContent = mensagem;
-
-    const actionsEl = document.getElementById('modal-actions');
-    actionsEl.innerHTML = '';
-
+    const el = document.getElementById('modal-actions');
+    el.innerHTML = '';
     botoes.forEach(b => {
         const btn = document.createElement('button');
-        btn.className = `modal-btn ${b.classe || 'primary'}`;
+        btn.className = `modal-btn ${b.classe||'primary'}`;
         btn.textContent = b.texto;
-        btn.onclick = () => {
-            fecharModal();
-            if (b.acao) b.acao();
-        };
-        actionsEl.appendChild(btn);
+        btn.onclick = () => { fecharModal(); if (b.acao) b.acao(); };
+        el.appendChild(btn);
     });
-
     document.getElementById('modal-overlay').classList.add('show');
 }
 
-function fecharModal() {
-    document.getElementById('modal-overlay').classList.remove('show');
+function fecharModal() { document.getElementById('modal-overlay').classList.remove('show'); }
+
+function confirmarModal({ icone, titulo, mensagem, textoCancelar='Cancelar', textoConfirmar='Confirmar' }) {
+    return new Promise(resolve => mostrarModal({
+        icone, titulo, mensagem,
+        botoes: [
+            { texto: textoCancelar,  classe: 'secondary', acao: () => resolve(false) },
+            { texto: textoConfirmar, classe: 'primary',   acao: () => resolve(true)  }
+        ]
+    }));
 }
 
-function confirmarModal({ icone, titulo, mensagem, textoCancelar = 'Cancelar', textoConfirmar = 'Confirmar' }) {
-    return new Promise(resolve => {
-        mostrarModal({
-            icone, titulo, mensagem,
-            botoes: [
-                { texto: textoCancelar,  classe: 'secondary', acao: () => resolve(false) },
-                { texto: textoConfirmar, classe: 'primary',   acao: () => resolve(true)  }
-            ]
-        });
-    });
-}
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target.id === 'modal-overlay') fecharModal(); });
 
-// Fecha modal ao clicar fora
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
-    if (e.target === this) fecharModal();
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CARREGAMENTO DO PRODUTO
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── CARREGAR PRODUTO ─────────────────────────────────────────────────────────
 async function carregarProduto() {
     const mlb = document.getElementById('mlb_input').value.trim().toUpperCase();
-
     if (!mlb || !mlb.startsWith('MLB')) {
-        mostrarModal({ icone: '⚠️', titulo: 'MLB inválido', mensagem: 'Digite um MLB válido (ex: MLB1234567890)', botoes: [{ texto: 'OK', classe: 'primary' }] });
+        mostrarModal({ icone:'⚠️', titulo:'MLB inválido', mensagem:'Digite um MLB válido (ex: MLB1234567890)', botoes:[{texto:'OK'}] });
         return;
     }
 
-    mlbAtual = mlb;
+    mlbAtual     = mlb;
     estadoCampos = {};
 
-    document.getElementById('loading').style.display = 'block';
+    document.getElementById('loading').style.display        = 'block';
     document.getElementById('produto-content').style.display = 'none';
 
     try {
-        const response = await fetch(`/api/mercadolivre/produto-completo/${mlb}`);
-        const data = await response.json();
-
+        const res  = await fetch(`/api/mercadolivre/produto-completo/${mlb}`);
+        const data = await res.json();
         document.getElementById('loading').style.display = 'none';
 
         if (!data.sucesso) {
-            mostrarModal({ icone: '❌', titulo: 'Erro', mensagem: data.erro, botoes: [{ texto: 'OK', classe: 'danger' }] });
+            mostrarModal({ icone:'❌', titulo:'Erro', mensagem: data.erro, botoes:[{texto:'OK', classe:'danger'}] });
             return;
         }
 
-        document.getElementById('produto-titulo').textContent   = data.titulo    || 'N/A';
-        document.getElementById('produto-mlb').textContent      = data.mlb;
+        document.getElementById('produto-titulo').textContent    = data.titulo       || 'N/A';
+        document.getElementById('produto-mlb').textContent       = data.mlb;
         document.getElementById('produto-categoria').textContent = data.categoria_id || 'N/A';
 
         renderizarQualidade(data.qualidade);
@@ -622,434 +818,455 @@ async function carregarProduto() {
 
         document.getElementById('produto-content').style.display = 'block';
 
-    } catch (error) {
+    } catch (err) {
         document.getElementById('loading').style.display = 'none';
-        mostrarModal({ icone: '❌', titulo: 'Erro de conexão', mensagem: error.message, botoes: [{ texto: 'OK', classe: 'danger' }] });
+        mostrarModal({ icone:'❌', titulo:'Erro de conexão', mensagem: err.message, botoes:[{texto:'OK', classe:'danger'}] });
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// QUALIDADE
-// ─────────────────────────────────────────────────────────────────────────────
-function renderizarQualidade(qualidade) {
-    const score  = qualidade?.pontuacao ?? 0;
-    const nivel  = qualidade?.nivel    ?? 'Básico';
-    const origem = qualidade?.origem   ?? 'calculado';
+// ─── QUALIDADE ────────────────────────────────────────────────────────────────
+function renderizarQualidade(q) {
+    const score  = q?.pontuacao ?? 0;
+    const nivel  = q?.nivel     ?? 'Básico';
+    const origem = q?.origem    ?? 'calculado';
 
-    const origemLabel = origem === 'oficial'
-        ? '<span style="color:#00ff88;font-size:11px;">● Score oficial do Mercado Livre</span>'
-        : '<span style="color:#ffa500;font-size:11px;">⚠ Score calculado localmente</span>';
+    const cor = score >= 80 ? '#4dff9b' : score >= 50 ? '#ffd166' : '#ff6b6b';
+    const r   = 32, circ = 2 * Math.PI * r;
+    const offset = circ - (score / 100) * circ;
 
     document.getElementById('quality-card').innerHTML = `
-        <div class="quality-card">
-            <div class="quality-score-area">
-                <div class="quality-circle">${score}</div>
-                <div class="quality-info">
-                    <h3>Qualidade do Anúncio</h3>
-                    <div class="score">${score} pontos</div>
-                    <div class="quality-origem">${origemLabel}</div>
-                </div>
-            </div>
-            <div class="warning-badge"><i class="fas fa-chart-line"></i> Nível: ${nivel}</div>
+        <div class="quality-ring">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle class="quality-ring-bg"   cx="36" cy="36" r="${r}"/>
+                <circle class="quality-ring-fill"  cx="36" cy="36" r="${r}"
+                    stroke="${cor}"
+                    stroke-dasharray="${circ}"
+                    stroke-dashoffset="${offset}"/>
+            </svg>
+            <div class="quality-ring-text" style="color:${cor}">${score}</div>
+        </div>
+        <div class="quality-info">
+            <div class="quality-label">Qualidade do anúncio</div>
+            <div class="quality-nivel">${nivel}</div>
+            <span class="quality-origem ${origem}">${origem === 'oficial' ? '● Score oficial ML' : '⚠ Score calculado'}</span>
         </div>
     `;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// RENDERIZAÇÃO DOS ATRIBUTOS
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── RENDERIZAR ATRIBUTOS ─────────────────────────────────────────────────────
 function renderizarAtributos(atributos) {
-    const primarios    = atributos.filter(a => a.categoria === 'principal');
-    const recomendados = atributos.filter(a => a.categoria === 'recomendado');
+    // Principais = 'principal' | Secundárias = 'recomendado' + 'secundario'
+    const principais   = atributos.filter(a => a.categoria === 'principal');
+    const secundarias  = atributos.filter(a => ['recomendado','secundario'].includes(a.categoria));
 
-    renderizarGrid('primaria',    primarios);
-    renderizarGrid('recomendada', recomendados);
+    renderizarGrid('primaria',    principais);
+    renderizarGrid('secundaria',  secundarias);
+
+    document.getElementById('badge-primaria').textContent   = `${principais.length} campos`;
+    document.getElementById('badge-secundaria').textContent = `${secundarias.length} campos`;
+
     atualizarContadores();
 }
 
 function renderizarGrid(gridId, atributos) {
-    const grid = document.getElementById(`${gridId}-grid`);
+    const grid = document.getElementById(`grid-${gridId}`);
     grid.innerHTML = '';
 
     if (!atributos || atributos.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:#999;">Nenhum atributo disponível</div>';
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-inbox" style="font-size:24px;margin-bottom:8px;display:block;"></i>Nenhum atributo disponível</div>';
         return;
     }
 
-    atributos.forEach(attr => buildAtributoCard(grid, attr));
+    atributos.forEach(attr => buildCard(grid, attr));
 }
 
-function buildAtributoCard(container, attr) {
-    const valoresPossiveis = attr.valores_possiveis || [];
-    const temDropdown      = valoresPossiveis.length > 0;
-    const isModelo         = attr.id === 'MODEL';
+// ─── BUILD CARD ───────────────────────────────────────────────────────────────
+function buildCard(container, attr) {
+    const id              = attr.id;
+    const valueType       = attr.value_type  || 'string';
+    const isMultivalued   = attr.multivalued === true;
+    const isBoolean       = valueType === 'boolean';
+    const isNumberUnit    = valueType === 'number_unit';
+    const valoresPoss     = attr.valores_possiveis || [];
+    const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued;
+    const isObrigatorio   = attr.obrigatorio === true;
+    const suportaNA       = attr.tem_nao_se_aplica === true;
 
-    // ── Detecta se o campo atual é "Não se aplica" ──
-    let eNaoAplica = attr.e_nao_se_aplica === true;
-    if (!eNaoAplica && attr.value_id === "-1" && !attr.valor) eNaoAplica = true;
+    let eNaoAplica = attr.e_nao_se_aplica === true || (attr.value_id === '-1' && !attr.valor);
+    const estaVazio = !eNaoAplica && !attr.valor && !(attr.value_id && attr.value_id !== '-1');
 
-    // ── Detecta se o campo suporta "Não se aplica" como opção ──
-    // 1) O ML retornou tem_nao_se_aplica=true  OU
-    // 2) Tem opção textual "Não" / "Não se aplica" na lista
-    const temOpcaoNaoNaLista = valoresPossiveis.some(v =>
-        ['não', 'nao', 'não se aplica', 'nao se aplica', 'n/a', 'no'].includes((v.name || '').trim().toLowerCase())
-    );
-    const suportaNaoAplica = attr.tem_nao_se_aplica || temOpcaoNaoNaLista;
-
-    const estaVazio = !eNaoAplica && !attr.valor && !(attr.value_id && attr.value_id !== "-1");
-
-    // ── Classes do card ──
+    // Estado do card
     let cardClass = 'atributo-card';
-    if (eNaoAplica)      cardClass += ' nao-aplica';
-    else if (estaVazio)  cardClass += ' vazio';
-    else                 cardClass += ' preenchido';
+    if (eNaoAplica)     cardClass += ' nao-aplica';
+    else if (estaVazio) cardClass += ' vazio';
+    else                cardClass += ' preenchido';
 
-    // ── Badge de status ──
-    let statusText = '', statusClass = 'status-badge';
-    if (eNaoAplica)      { statusText = 'Não se aplica'; statusClass += ' info'; }
-    else if (!estaVazio) { statusText = 'Preenchido';    statusClass += ' success'; }
-    else                 { statusText = 'Pendente';      statusClass += ' danger'; }
+    // Status pill
+    let pillClass = 'status-pill', pillText = '';
+    if (eNaoAplica)     { pillClass += ' info';    pillText = 'N/A'; }
+    else if (estaVazio) { pillClass += ' danger';  pillText = 'Pendente'; }
+    else                { pillClass += ' success'; pillText = 'OK'; }
 
-    // ── Determina placeholder / unidade ──
-    function getUnidade(id, nome) {
-        const EXCLUIR_UNIDADE = ['PACKAGE_WEIGHT', 'SELLER_PACKAGE_WEIGHT'];
-        if (EXCLUIR_UNIDADE.includes(id)) return '';
-        if (id.includes('WEIGHT') || nome.includes('Peso'))    return 'kg';
-        if (id.includes('HEIGHT') || nome.includes('Altura'))  return 'cm';
-        if (id.includes('WIDTH')  || nome.includes('Largura')) return 'cm';
-        if (id.includes('DEPTH')  || nome.includes('Profundidade')) return 'cm';
-        if (id.includes('LENGTH') || nome.includes('Comprimento')) return 'cm';
-        return '';
-    }
-    const unidade = getUnidade(attr.id, attr.nome || '');
-
-    // ── Monta o input/select ──
+    // ── Monta o campo ──
     let inputHtml = '';
 
     if (eNaoAplica) {
-        // Campo já está como N/A — mostra texto desabilitado
+        // Campo bloqueado como N/A
+        inputHtml = `<input type="text" id="attr_${id}" class="atributo-input" value="Não se aplica" disabled>`;
+
+    } else if (isBoolean) {
+        // Sim / Não como toggle
+        const currentId   = attr.value_id;
+        const simOpt      = valoresPoss.find(v => ['sim','yes','true'].includes((v.name||'').toLowerCase())) || valoresPoss.find(v => v.name === 'Sim') || {id:'sim', name:'Sim'};
+        const naoOpt      = valoresPoss.find(v => ['não','nao','no','false'].includes((v.name||'').toLowerCase())) || valoresPoss.find(v => v.name === 'Não') || {id:'nao', name:'Não'};
+        const isSim       = currentId === simOpt.id || (attr.valor||'').toLowerCase() === 'sim';
+        const isNao       = currentId === naoOpt.id || (attr.valor||'').toLowerCase() === 'não';
         inputHtml = `
-            <input type="text" id="attr_${attr.id}" class="atributo-input"
-                   value="Não se aplica" disabled
-                   style="background:#f0f0f0;color:#888;">
+            <div class="bool-toggle" id="attr_${id}" data-value="${currentId||''}" data-sim-id="${simOpt.id}" data-nao-id="${naoOpt.id}">
+                <button type="button" class="bool-btn ${isSim ? 'active-sim' : ''}" onclick="toggleBool('${id}', 'sim')">✓ Sim</button>
+                <button type="button" class="bool-btn ${isNao ? 'active-nao' : ''}" onclick="toggleBool('${id}', 'nao')">✗ Não</button>
+            </div>
         `;
-    } else if (temDropdown && !isModelo) {
-        // SELECT com valor atual do ML já selecionado
-        let options = '<option value="">Selecione...</option>';
 
-        valoresPossiveis.forEach(opt => {
-            const nome = escapeHtml(opt.name || opt.nome || '');
-            const optId = escapeHtml(opt.id || '');
-            // Compara pelo id (mais confiável) ou pelo nome
-            const selected = (attr.value_id && attr.value_id === opt.id) || (!attr.value_id && opt.name === attr.valor) ? 'selected' : '';
-            options += `<option value="${optId}" data-name="${nome}" ${selected}>${nome}</option>`;
-        });
+    } else if (isMultivalued) {
+        // Chips para múltiplos valores
+        const valoresAtuais = attr.valor ? attr.valor.split(',').map(v => v.trim()).filter(Boolean) : [];
+        let chipsHtml = valoresAtuais.map(v => `
+            <span class="chip" data-value="${escapeHtml(v)}">
+                ${escapeHtml(v)}
+                <span class="chip-remove" onclick="removeChip('${id}', this)">×</span>
+            </span>
+        `).join('');
 
         inputHtml = `
-            <select id="attr_${attr.id}" class="atributo-input"
-                    onchange="handleSelectChange('${attr.id}', this)">
-                ${options}
+            <div class="chips-container" id="attr_${id}" onclick="document.getElementById('chips_input_${id}').focus()">
+                ${chipsHtml}
+                <input class="chips-input" id="chips_input_${id}" placeholder="Digitar e Enter..."
+                    onkeydown="handleChipInput('${id}', event)"
+                    ${valoresPoss.length > 0 ? `list="datalist_${id}"` : ''}>
+            </div>
+            ${valoresPoss.length > 0 ? `<datalist id="datalist_${id}">${valoresPoss.map(v=>`<option value="${escapeHtml(v.name||'')}"></option>`).join('')}</datalist>` : ''}
+        `;
+
+    } else if (temDropdown) {
+        // Select dropdown
+        let opts = '<option value="">Selecione...</option>';
+        valoresPoss.forEach(opt => {
+            const nome = escapeHtml(opt.name || '');
+            const oid  = escapeHtml(opt.id   || '');
+            const sel  = (attr.value_id && attr.value_id === opt.id) ? 'selected' : '';
+            opts += `<option value="${oid}" data-name="${nome}" ${sel}>${nome}</option>`;
+        });
+        inputHtml = `
+            <select id="attr_${id}" class="atributo-input" onchange="onSelectChange('${id}', this)">
+                ${opts}
             </select>
         `;
-    } else {
-        // INPUT texto com valor atual
-        let valorAtual = attr.valor || '';
-        // Garante unidade se o valor veio sem ela
-        if (unidade && valorAtual && !valorAtual.includes(unidade)) {
-            const numeros = valorAtual.replace(/[^0-9.,]/g, '');
-            if (numeros) valorAtual = `${numeros} ${unidade}`;
-        }
 
-        const placeholder = unidade ? `Ex: 10 ${unidade}` : `Digite o ${(attr.nome || '').toLowerCase()}`;
-
+    } else if (isNumberUnit) {
+        // Número com unidade inline
+        const unitMap = {
+            HEIGHT:'cm', WIDTH:'cm', DEPTH:'cm', LENGTH:'cm',
+            WEIGHT:'kg', MAX_SHELF_WEIGHT_SUPPORTED:'kg'
+        };
+        const unit = attr.unidade || unitMap[id] || '';
+        const valAtual = attr.valor || '';
         inputHtml = `
-            <input type="text" id="attr_${attr.id}" class="atributo-input"
-                   value="${escapeHtml(valorAtual)}"
-                   placeholder="${escapeHtml(placeholder)}"
-                   ${isModelo ? 'style="font-weight:bold;background:#fff8e1;border-color:#ffc107;"' : ''}
-                   data-unidade="${unidade}"
-                   onblur="aplicarUnidade('${attr.id}')"
-                   oninput="marcarAlteracao('${attr.id}')">
+            <div class="input-unit-wrap">
+                <input type="text" id="attr_${id}" class="atributo-input"
+                    value="${escapeHtml(valAtual)}"
+                    placeholder="${unit ? `Ex: 10 ${unit}` : 'Digite o valor'}"
+                    data-unidade="${unit}"
+                    onblur="aplicarUnidade('${id}')"
+                    oninput="onInputChange('${id}')">
+                ${unit ? `<span class="unit-label">${unit}</span>` : ''}
+            </div>
+        `;
+
+    } else {
+        // Texto livre padrão
+        inputHtml = `
+            <input type="text" id="attr_${id}" class="atributo-input"
+                value="${escapeHtml(attr.valor || '')}"
+                placeholder="Digite o valor"
+                oninput="onInputChange('${id}')">
         `;
     }
 
-    // ── Checkbox "Não se aplica" ──
-    // Aparece SEMPRE que o atributo suporta N/A (tem a opção) e não é modal
-    let naoAplicaHtml = '';
-    if (!isModelo && suportaNaoAplica) {
-        naoAplicaHtml = `
+    // ── Checkbox N/A ──
+    let naHtml = '';
+    if (suportaNA) {
+        naHtml = `
             <label class="nao-aplica-checkbox">
-                <input type="checkbox" id="nao_aplica_${attr.id}"
-                       ${eNaoAplica ? 'checked' : ''}
-                       onchange="toggleNaoSeAplica('${attr.id}', this.checked)">
-                <i class="fas fa-ban"></i> Não se aplica
+                <input type="checkbox" id="na_${id}" ${eNaoAplica ? 'checked' : ''}
+                    onchange="toggleNA('${id}', this.checked)">
+                <i class="fas fa-ban" style="font-size:10px;"></i> Não se aplica
             </label>
         `;
     }
 
     const card = document.createElement('div');
     card.className = cardClass;
-    card.id = `card_${attr.id}`;
+    card.id = `card_${id}`;
     card.innerHTML = `
         <div class="atributo-header">
             <div class="atributo-nome">
-                <i class="fas ${isModelo ? 'fa-star' : 'fa-tag'}"></i>
-                <span>${escapeHtml(attr.nome || attr.id)}</span>
-                ${isModelo ? '<span class="star">★</span>' : ''}
+                ${isObrigatorio ? '<span class="obrig-mark">*</span>' : ''}
+                ${escapeHtml(attr.nome || id)}
             </div>
-            <span class="${statusClass}" id="status_${attr.id}">${statusText}</span>
+            <span class="${pillClass}" id="pill_${id}">${pillText}</span>
         </div>
         ${inputHtml}
-        ${naoAplicaHtml}
+        ${naHtml}
     `;
-
     container.appendChild(card);
 
     // Salva estado original
-    estadoCampos[attr.id] = {
-        valorOriginal:      attr.valor || '',
-        valueIdOriginal:    attr.value_id || '',
-        naoAplicaOriginal:  eNaoAplica,
-        temDropdown,
-        suportaNaoAplica,
-        unidade,
-        nome: attr.nome
+    estadoCampos[id] = {
+        valorOriginal:    attr.valor      || '',
+        valueIdOriginal:  attr.value_id   || '',
+        naoAplicaOrig:    eNaoAplica,
+        tipo:             isBoolean ? 'boolean' : isMultivalued ? 'multivalued' : temDropdown ? 'dropdown' : isNumberUnit ? 'number_unit' : 'text',
+        suportaNA,
+        unidade:          attr.unidade    || '',
+        valoresPoss,
     };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// INTERAÇÕES
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── INTERAÇÕES DE CAMPO ──────────────────────────────────────────────────────
 
-function handleSelectChange(attrId, selectEl) {
-    const card       = document.getElementById(`card_${attrId}`);
-    const statusSpan = document.getElementById(`status_${attrId}`);
-    const val        = selectEl.value;
-
-    if (val === '') {
-        setCardEstado(card, statusSpan, 'vazio');
-    } else {
-        setCardEstado(card, statusSpan, 'preenchido');
-    }
-
-    // Se tinha checkbox N/A, desmarca
-    const chk = document.getElementById(`nao_aplica_${attrId}`);
-    if (chk) chk.checked = false;
-
+function toggleBool(id, val) {
+    const wrap   = document.getElementById(`attr_${id}`);
+    const simId  = wrap.dataset.simId;
+    const naoId  = wrap.dataset.naoId;
+    const buttons = wrap.querySelectorAll('.bool-btn');
+    buttons[0].className = `bool-btn ${val === 'sim' ? 'active-sim' : ''}`;
+    buttons[1].className = `bool-btn ${val === 'nao' ? 'active-nao' : ''}`;
+    wrap.dataset.value = val === 'sim' ? simId : naoId;
+    setEstado(id, 'preenchido');
     atualizarContadores();
 }
 
-function toggleNaoSeAplica(attrId, checked) {
-    const input      = document.getElementById(`attr_${attrId}`);
-    const card       = document.getElementById(`card_${attrId}`);
-    const statusSpan = document.getElementById(`status_${attrId}`);
+function handleChipInput(id, event) {
+    if (event.key !== 'Enter' && event.key !== ',') return;
+    event.preventDefault();
+    const inp = document.getElementById(`chips_input_${id}`);
+    const val = inp.value.trim();
+    if (!val) return;
+    addChip(id, val);
+    inp.value = '';
+    onInputChange(id);
+}
+
+function addChip(id, val) {
+    const container = document.getElementById(`attr_${id}`);
+    const inp       = document.getElementById(`chips_input_${id}`);
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.dataset.value = val;
+    chip.innerHTML = `${escapeHtml(val)}<span class="chip-remove" onclick="removeChip('${id}', this)">×</span>`;
+    container.insertBefore(chip, inp);
+    setEstado(id, 'preenchido');
+    atualizarContadores();
+}
+
+function removeChip(id, el) {
+    el.closest('.chip').remove();
+    const container = document.getElementById(`attr_${id}`);
+    const chips = container.querySelectorAll('.chip');
+    setEstado(id, chips.length > 0 ? 'preenchido' : 'vazio');
+    atualizarContadores();
+}
+
+function onSelectChange(id, sel) {
+    setEstado(id, sel.value ? 'preenchido' : 'vazio');
+    const chk = document.getElementById(`na_${id}`);
+    if (chk) chk.checked = false;
+    atualizarContadores();
+}
+
+function onInputChange(id) {
+    const inp = document.getElementById(`attr_${id}`);
+    if (!inp || inp.disabled) return;
+    const chk = document.getElementById(`na_${id}`);
+    if (chk && chk.checked) return;
+    setEstado(id, inp.value.trim() ? 'preenchido' : 'vazio');
+    atualizarContadores();
+}
+
+function aplicarUnidade(id) {
+    const inp = document.getElementById(`attr_${id}`);
+    if (!inp || inp.disabled || !inp.dataset.unidade) return;
+    const unit = inp.dataset.unidade;
+    const val  = inp.value.trim();
+    if (!val || val.includes(unit)) return;
+    const num = val.replace(/[^0-9.,]/g, '');
+    if (num) inp.value = `${num} ${unit}`;
+}
+
+function toggleNA(id, checked) {
+    const card = document.getElementById(`card_${id}`);
+    const pill = document.getElementById(`pill_${id}`);
+    const inp  = document.getElementById(`attr_${id}`);
 
     if (checked) {
-        if (input) { input.disabled = true; input.value = ''; }
-        setCardEstado(card, statusSpan, 'nao-aplica');
-    } else {
-        if (input) input.disabled = false;
-        setCardEstado(card, statusSpan, 'vazio');
-    }
+        if (inp) {
+            inp.disabled = true;
+            if (inp.tagName === 'INPUT')  inp.value = '';
+            if (inp.tagName === 'SELECT') inp.selectedIndex = 0;
+        }
+        // Boolean: desativa os botões
+        const boolWrap = card.querySelector('.bool-toggle');
+        if (boolWrap) boolWrap.querySelectorAll('.bool-btn').forEach(b => b.disabled = true);
 
+        setEstado(id, 'nao-aplica');
+    } else {
+        if (inp) inp.disabled = false;
+        const boolWrap = card.querySelector('.bool-toggle');
+        if (boolWrap) boolWrap.querySelectorAll('.bool-btn').forEach(b => b.disabled = false);
+        setEstado(id, 'vazio');
+    }
     atualizarContadores();
 }
 
-function setCardEstado(card, statusSpan, estado) {
-    card.classList.remove('vazio', 'preenchido', 'nao-aplica');
+function setEstado(id, estado) {
+    const card = document.getElementById(`card_${id}`);
+    const pill = document.getElementById(`pill_${id}`);
+    if (!card || !pill) return;
+    card.classList.remove('vazio','preenchido','nao-aplica');
     card.classList.add(estado);
     const map = {
-        'vazio':      { cls: 'danger',  txt: 'Pendente' },
-        'preenchido': { cls: 'success', txt: 'Preenchido' },
-        'nao-aplica': { cls: 'info',    txt: 'Não se aplica' }
+        'vazio':      { cls:'danger',  txt:'Pendente' },
+        'preenchido': { cls:'success', txt:'OK' },
+        'nao-aplica': { cls:'info',    txt:'N/A' }
     };
-    const m = map[estado] || map['vazio'];
-    statusSpan.className   = `status-badge ${m.cls}`;
-    statusSpan.textContent = m.txt;
+    const m = map[estado] || map.vazio;
+    pill.className = `status-pill ${m.cls}`;
+    pill.textContent = m.txt;
 }
 
-function aplicarUnidade(attrId) {
-    const input = document.getElementById(`attr_${attrId}`);
-    if (!input || input.disabled) return;
-    const unidade = input.dataset.unidade;
-    if (!unidade) return;
-
-    let val = input.value.trim();
-    if (!val) return;
-
-    const numeros = val.replace(/[^0-9.,]/g, '');
-    if (numeros && !val.toLowerCase().includes(unidade)) {
-        input.value = `${numeros} ${unidade}`;
-    }
-}
-
-function marcarAlteracao(attrId) {
-    const input      = document.getElementById(`attr_${attrId}`);
-    const card       = document.getElementById(`card_${attrId}`);
-    const statusSpan = document.getElementById(`status_${attrId}`);
-    if (!input || !card || !statusSpan) return;
-
-    input.style.borderColor = '#f5a623';
-    clearTimeout(input._borderTimer);
-    input._borderTimer = setTimeout(() => { input.style.borderColor = ''; }, 800);
-
-    const chk = document.getElementById(`nao_aplica_${attrId}`);
-    if (chk && chk.checked) return; // está como N/A, não altera visual
-
-    if (input.value.trim()) {
-        setCardEstado(card, statusSpan, 'preenchido');
-    } else {
-        setCardEstado(card, statusSpan, 'vazio');
-    }
-
-    atualizarContadores();
-}
-
-function atualizarContadores() {
-    const cards  = document.querySelectorAll('.atributo-card');
-    const vazios = [...cards].filter(c => c.classList.contains('vazio')).length;
-    const el     = document.getElementById('contador-vazios');
-    const txtEl  = document.getElementById('contador-texto');
-    if (!el || !txtEl) return;
-
-    if (vazios > 0) {
-        el.style.display    = 'flex';
-        txtEl.textContent   = `${vazios} campo(s) pendente(s) de ${cards.length} atributos`;
-    } else {
-        el.style.display = 'none';
-    }
-}
-
-// ── Accordion — abre uma seção e fecha a outra ──
-function toggleSection(section) {
-    const sections = ['primaria', 'recomendada'];
-    sections.forEach(s => {
-        const content = document.getElementById(`content-${s}`);
-        const chevron = document.getElementById(`chevron-${s}`);
-        if (s === section) {
-            content.classList.toggle('expanded');
-            chevron.classList.toggle('expanded');
-        } else {
-            content.classList.remove('expanded');
-            chevron.classList.remove('expanded');
+function toggleSection(s) {
+    ['primaria','secundaria'].forEach(sec => {
+        const content = document.getElementById(`content-${sec}`);
+        const chevron = document.getElementById(`chevron-${sec}`);
+        const header  = document.getElementById(`header-${sec}`);
+        if (sec === s) {
+            const open = content.classList.toggle('expanded');
+            chevron.classList.toggle('expanded', open);
+            header.classList.toggle('expanded', open);
         }
     });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SALVAR
-// ─────────────────────────────────────────────────────────────────────────────
+function atualizarContadores() {
+    const cards      = [...document.querySelectorAll('.atributo-card')];
+    const total      = cards.length;
+    const pendentes  = cards.filter(c => c.classList.contains('vazio')).length;
+    const preench    = cards.filter(c => c.classList.contains('preenchido')).length;
+    const na         = cards.filter(c => c.classList.contains('nao-aplica')).length;
+
+    document.getElementById('contador-stats').innerHTML = `
+        <div class="stat-item"><div class="stat-dot pendente"></div> <strong>${pendentes}</strong> pendente(s)</div>
+        <div class="stat-item"><div class="stat-dot preenchido"></div> <strong>${preench}</strong> preenchido(s)</div>
+        <div class="stat-item"><div class="stat-dot na"></div> <strong>${na}</strong> não se aplica</div>
+    `;
+    document.getElementById('contador-total').textContent = `${total} atributos no total`;
+}
+
+// ─── SALVAR ───────────────────────────────────────────────────────────────────
 async function salvarTodosAtributos() {
-    const atributosModificados = {};
+    const modificados = {};
 
-    for (const [id, estado] of Object.entries(estadoCampos)) {
-        const input = document.getElementById(`attr_${id}`);
-        const chk   = document.getElementById(`nao_aplica_${id}`);
-        if (!input) continue;
+    for (const [id, est] of Object.entries(estadoCampos)) {
+        const chk   = document.getElementById(`na_${id}`);
+        const isNA  = chk ? chk.checked : false;
 
-        const isNaoAgoraChk   = chk ? chk.checked : false;
-        const isNaoAgoraInput = input.disabled && input.value === '' && estado.suportaNaoAplica;
-        const isNaoAgora      = isNaoAgoraChk || isNaoAgoraInput;
-
-        if (isNaoAgora !== estado.naoAplicaOriginal) {
-            atributosModificados[id] = { valor: null, is_nao_se_aplica: isNaoAgora };
+        if (isNA !== est.naoAplicaOrig) {
+            modificados[id] = { valor: null, value_id: isNA ? '-1' : null, is_nao_se_aplica: isNA };
             continue;
         }
 
-        if (isNaoAgora) continue; // não mudou e é N/A
+        if (isNA) continue;
 
-        if (estado.temDropdown) {
-            // Para dropdowns, compara o value_id selecionado
-            const novoValueId = input.value;
-            if (novoValueId && novoValueId !== estado.valueIdOriginal) {
-                // Recupera o nome do option selecionado
-                const optSelecionada = input.options[input.selectedIndex];
-                const novoNome = optSelecionada ? (optSelecionada.dataset.name || optSelecionada.text) : '';
-                atributosModificados[id] = { valor: novoNome, value_id: novoValueId, is_nao_se_aplica: false };
+        if (est.tipo === 'boolean') {
+            const wrap  = document.getElementById(`attr_${id}`);
+            const novo  = wrap ? wrap.dataset.value : '';
+            if (novo && novo !== est.valueIdOriginal) {
+                modificados[id] = { valor: null, value_id: novo, is_nao_se_aplica: false };
             }
+
+        } else if (est.tipo === 'multivalued') {
+            const chips = [...document.querySelectorAll(`#attr_${id} .chip`)].map(c => c.dataset.value);
+            const novo  = chips.join(',');
+            if (novo !== est.valorOriginal) {
+                modificados[id] = { valor: novo, is_nao_se_aplica: false };
+            }
+
+        } else if (est.tipo === 'dropdown') {
+            const sel = document.getElementById(`attr_${id}`);
+            if (sel && sel.value && sel.value !== est.valueIdOriginal) {
+                const opt = sel.options[sel.selectedIndex];
+                modificados[id] = { valor: opt ? (opt.dataset.name || opt.text) : '', value_id: sel.value, is_nao_se_aplica: false };
+            }
+
         } else {
-            const novoValor = input.value.trim();
-            if (novoValor !== estado.valorOriginal && novoValor !== '') {
-                atributosModificados[id] = { valor: novoValor, is_nao_se_aplica: false };
+            const inp  = document.getElementById(`attr_${id}`);
+            const novo = inp ? inp.value.trim() : '';
+            if (novo && novo !== est.valorOriginal) {
+                modificados[id] = { valor: novo, is_nao_se_aplica: false };
             }
         }
     }
 
-    if (Object.keys(atributosModificados).length === 0) {
-        mostrarModal({
-            icone: 'ℹ️',
-            titulo: 'Sem alterações',
-            mensagem: 'Nenhum campo foi modificado.',
-            botoes: [{ texto: 'OK', classe: 'secondary' }]
-        });
+    if (Object.keys(modificados).length === 0) {
+        mostrarModal({ icone:'ℹ️', titulo:'Sem alterações', mensagem:'Nenhum campo foi modificado.', botoes:[{texto:'OK', classe:'secondary'}] });
         return;
     }
 
-    const total = Object.keys(atributosModificados).length;
     const confirmado = await confirmarModal({
-        icone: '💾',
-        titulo: 'Confirmar salvamento',
-        mensagem: `Deseja salvar ${total} campo(s) alterado(s)?`,
-        textoCancelar: 'Cancelar',
-        textoConfirmar: 'Salvar'
+        icone:'💾',
+        titulo:'Confirmar salvamento',
+        mensagem:`Deseja salvar ${Object.keys(modificados).length} campo(s) alterado(s)?`,
+        textoConfirmar:'Salvar'
     });
 
     if (!confirmado) return;
 
-    document.getElementById('loading').style.display = 'block';
+    document.getElementById('loading').style.display         = 'block';
     document.getElementById('produto-content').style.display = 'none';
 
     try {
-        const response = await fetch('/api/mercadolivre/alterar-multiplos-atributos', {
+        const res  = await fetch('/api/mercadolivre/alterar-multiplos-atributos', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mlb: mlbAtual, atributos: atributosModificados })
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ mlb: mlbAtual, atributos: modificados })
         });
-
-        const data = await response.json();
+        const data = await res.json();
         document.getElementById('loading').style.display = 'none';
 
         if (data.sucesso) {
-            mostrarModal({
-                icone: '✅',
-                titulo: 'Salvo com sucesso!',
-                mensagem: data.mensagem || 'Atributos atualizados com sucesso.',
-                botoes: [{ texto: 'OK', classe: 'success', acao: () => carregarProduto() }]
-            });
+            mostrarModal({ icone:'✅', titulo:'Salvo com sucesso!', mensagem: data.mensagem||'Atributos atualizados.',
+                botoes:[{texto:'OK', classe:'success', acao: () => carregarProduto()}] });
         } else {
             document.getElementById('produto-content').style.display = 'block';
-            mostrarModal({
-                icone: '❌',
-                titulo: 'Erro ao salvar',
-                mensagem: data.erro || 'Ocorreu um erro inesperado.',
-                botoes: [{ texto: 'Fechar', classe: 'danger' }]
-            });
+            mostrarModal({ icone:'❌', titulo:'Erro ao salvar', mensagem: data.erro||'Erro inesperado.', botoes:[{texto:'Fechar', classe:'danger'}] });
         }
 
-    } catch (error) {
-        document.getElementById('loading').style.display = 'none';
+    } catch (err) {
+        document.getElementById('loading').style.display         = 'none';
         document.getElementById('produto-content').style.display = 'block';
-        mostrarModal({
-            icone: '❌',
-            titulo: 'Erro de conexão',
-            mensagem: error.message,
-            botoes: [{ texto: 'Fechar', classe: 'danger' }]
-        });
+        mostrarModal({ icone:'❌', titulo:'Erro de conexão', mensagem: err.message, botoes:[{texto:'Fechar', classe:'danger'}] });
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// UTILS
-// ─────────────────────────────────────────────────────────────────────────────
-function escapeHtml(text) {
-    if (text == null) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function escapeHtml(t) {
+    if (t == null) return '';
+    const d = document.createElement('div');
+    d.textContent = String(t);
+    return d.innerHTML;
 }
 
-document.getElementById('mlb_input').addEventListener('keypress', e => {
-    if (e.key === 'Enter') carregarProduto();
-});
+document.getElementById('mlb_input').addEventListener('keypress', e => { if (e.key === 'Enter') carregarProduto(); });
 </script>
 {% endblock %}

@@ -2208,36 +2208,103 @@ class MercadoLivreAPISecure:
                 eh_readonly = bool(tags.get('read_only', False))
                 relevance   = cat_attr.get('relevance', 0)
 
-                if attr_id in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
-                    categoria = 'principal'
-                elif attr_id in ATRIBUTOS_INTERNOS_ML:
+                eh_hidden = bool(tags.get('hidden', False))
+
+                # Regra de classificação baseada no comportamento real do ML:
+                #
+                # O ML exibe na interface TUDO que não é read_only,
+                # independente da tag hidden (hidden só oculta da API pública).
+                #
+                # Campos que NUNCA aparecem (ignorar):
+                #   - read_only: true  → o ML não permite editar
+                #   - Na lista ATRIBUTOS_INTERNOS_ML → campos de sistema
+                #     que mesmo sem read_only não fazem sentido exibir
+                #     (ex: HAZMAT, BATTERIES_FEATURES, SHIPMENT_PACKING)
+                #
+                # Campos que aparecem como PRINCIPAL:
+                #   - required ou catalog_required
+                #   - ATRIBUTOS_PRINCIPAIS_ADICIONAIS (GTIN, SKU, MODEL, BRAND)
+                #
+                # Campos que aparecem como SECUNDÁRIO:
+                #   - Tudo que não é read_only e não é interno
+                #     (altura, largura, estilo, com rodas, etc.)
+
+                # Lista de campos de sistema que o ML não exibe mesmo sem read_only
+                CAMPOS_SISTEMA = {
+                    'HAZMAT_TRANSPORTABILITY', 'DESCRIPTIVE_TAGS',
+                    'PRODUCT_CHEMICAL_FEATURES', 'FOODS_AND_DRINKS', 'MEDICINES',
+                    'BATTERIES_FEATURES', 'SHIPMENT_PACKING', 'ADDITIONAL_INFO_REQUIRED',
+                    'EXCLUDED_PLATFORMS', 'IS_SUITABLE_FOR_SHIPMENT', 'PRODUCT_DATA_SOURCE',
+                    'LIMITED_MARKETPLACE_VISIBILITY_REASONS', 'HAS_COMPATIBILITIES',
+                    'CATALOG_TITLE', 'SEARCH_ENHANCEMENT_FIELDS', 'PRODUCT_FEATURES',
+                    'IS_NEW_OFFER', 'SYI_PYMES_ID', 'IS_FLAMMABLE', 'WITH_POSITIVE_IMPACT',
+                    'PACKAGE_DATA_SOURCE', 'SELLER_PACKAGE_DATA_SOURCE', 'VERTICAL_TAGS',
+                    'VALUE_ADDED_TAX', 'IMPORT_DUTY', 'IS_TOM_BRAND',
+                    'SELLER_PACKAGE_WIDTH', 'SELLER_PACKAGE_LENGTH',
+                    'SELLER_PACKAGE_HEIGHT', 'SELLER_PACKAGE_WEIGHT',
+                }
+
+                # Regra final de visibilidade:
+                # - read_only         → sempre ignorar
+                # - hidden + não obrigatório → ignorar (interno do ML, não exibe na interface)
+                # - hidden + obrigatório     → mostrar como principal (ex: BRAND em algumas categorias)
+                # - não hidden, editável     → mostrar (principal, recomendado ou secundário)
+                if eh_readonly:
                     categoria = 'ignorar'
-                elif obrigatorio:
+                elif eh_hidden and not obrigatorio and attr_id not in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
+                    categoria = 'ignorar'
+                elif obrigatorio or attr_id in ATRIBUTOS_PRINCIPAIS_ADICIONAIS:
                     categoria = 'principal'
-                elif recomendado or relevance == 1:
+                elif recomendado:
                     categoria = 'recomendado'
                 else:
-                    categoria = 'ignorar'
+                    categoria = 'secundario'
 
-                # BUG FIX: qualquer atributo editável aceita N/A no ML.
-                # Antes só mostrava o checkbox se a categoria listasse value_id=="-1"
-                # nos valores possíveis, o que é raro — o ML aceita N/A mesmo sem isso.
-                tem_nao_se_aplica = not eh_readonly
+                # Regra correta para exibir checkbox "Não se aplica":
+                #
+                # ✅ MOSTRA quando:
+                #   1. A lista de valores possíveis contém explicitamente value_id=="-1"
+                #      (o ML declarou que esse campo aceita N/A)
+                #   2. Campo de texto livre sem lista fechada de opções
+                #      (value_type string/number sem values definidos)
+                #
+                # ❌ NÃO MOSTRA quando:
+                #   - Campo read_only (não editável)
+                #   - Campo com lista fechada de valores (ex: Sim/Não, dropdown)
+                #     — nesses casos o usuário escolhe da lista, N/A não faz sentido
+
+                value_type     = cat_attr.get('value_type', 'string')
+                tem_lista_fixa = len(valores_possiveis) > 0
+                tem_opcao_na   = any(v.get('id') == '-1' for v in valores_possiveis)
+
+                if eh_readonly:
+                    tem_nao_se_aplica = False
+                elif tem_opcao_na:
+                    # ML declarou explicitamente que esse campo aceita N/A
+                    tem_nao_se_aplica = True
+                elif tem_lista_fixa:
+                    # Tem dropdown com opções fixas (Sim/Não, cores, etc.) — sem N/A
+                    tem_nao_se_aplica = False
+                else:
+                    # Campo de texto/número livre sem opções predefinidas — aceita N/A
+                    tem_nao_se_aplica = True
 
                 atributos.append({
-                    'id': attr_id,
-                    'nome': cat_attr.get('name'),
-                    'valor': value_name if (value_name and not e_nao_se_aplica) else None,
-                    'esta_vazio': esta_vazio,
-                    'value_id': value_id,
+                    'id':              attr_id,
+                    'nome':            cat_attr.get('name'),
+                    'valor':           value_name if (value_name and not e_nao_se_aplica) else None,
+                    'esta_vazio':      esta_vazio,
+                    'value_id':        value_id,
+                    'value_type':      value_type,
                     'valores_possiveis': valores_possiveis,
                     'tem_nao_se_aplica': tem_nao_se_aplica,
                     'e_nao_se_aplica': e_nao_se_aplica,
-                    'obrigatorio': obrigatorio,
-                    'recomendado': recomendado,
-                    'readonly': eh_readonly,
-                    'categoria': categoria,
-                    'relevance': relevance
+                    'obrigatorio':     obrigatorio,
+                    'recomendado':     recomendado,
+                    'readonly':        eh_readonly,
+                    'multivalued':     bool(tags.get('multivalued', False)),
+                    'categoria':       categoria,
+                    'relevance':       relevance
                 })
 
             qualidade = self._buscar_qualidade_oficial(mlb)
@@ -2276,9 +2343,11 @@ class MercadoLivreAPISecure:
             }
 
     def _filtrar_atributos_relevantes(self, atributos):
+        # Retorna principal + recomendado + secundario
+        # Ignorados são apenas os read_only e campos de sistema internos do ML
         return [
             a for a in atributos
-            if a.get('categoria') in ('principal', 'recomendado')
+            if a.get('categoria') in ('principal', 'recomendado', 'secundario')
         ]
     
     def _eh_nao_se_aplica(self, value_id, value_name):
