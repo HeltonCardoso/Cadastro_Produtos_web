@@ -150,6 +150,11 @@ def oauth_callback():
 
     print(f"🔄 Trocando code por tokens — conta: {account_id}")
 
+    print(f"🔍 Debug credenciais:")
+    print(f"   client_id: {client_id[:10]}... (len: {len(client_id) if client_id else 0})")
+    print(f"   client_secret: {'*' * (len(client_secret)-4) if client_secret else 'None'}")
+    print(f"   redirect_uri: {redirect_uri}")
+
     try:
         response = requests.post(
             ML_TOKEN_URL,
