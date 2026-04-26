@@ -32,6 +32,7 @@ from processamento.google_sheets import ler_planilha_google
 from google_auth import GoogleSheetsOAuth, GoogleTokenManager
 from functools import wraps
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from ml_oauth import ml_oauth_bp
 
 
 
@@ -107,6 +108,7 @@ def permissao_modulo(modulo):
 # 🔹 SEGUNDO: Registra os blueprints (DEPOIS de init_app)
 #app.register_blueprint(metrics_bp)
 app.register_blueprint(intelipost_bp)
+app.register_blueprint(ml_oauth_bp)
 
 # Configuração de logs
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)

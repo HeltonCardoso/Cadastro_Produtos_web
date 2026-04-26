@@ -130,14 +130,152 @@
                     </div>
                 </div>
 
-                <!-- BOTÃO PRINCIPAL -->
-                <div class="primary-action">
-                    <button class="btn-primary" onclick="abrirModalNovaConta()">
-                        <i class="fas fa-plus"></i> Adicionar Nova Conta
-                    </button>
-                </div>
+                <!-- ================================================ -->
+                <!-- BLOCO DE AUTENTICAÇÃO COM ABAS (NOVO + LEGADO)   -->
+                <!-- ================================================ -->
+                <div class="auth-methods-container">
 
-                <!-- LISTA DE CONTAS (SÓ APARECE SE TIVER CONTAS) -->
+                    <div class="auth-methods-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Adicionar Nova Conta</strong>
+                            <p>Escolha como deseja autenticar. OAuth é o método oficial do Mercado Livre.</p>
+                        </div>
+                    </div>
+
+                    <!-- Abas -->
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" id="tabOAuth" onclick="switchAuthTab('oauth')">
+                            <i class="fas fa-external-link-alt"></i>
+                            OAuth 2.0
+                            <span class="tab-badge recommended">Recomendado</span>
+                        </button>
+                        <button class="auth-tab" id="tabManual" onclick="switchAuthTab('manual')">
+                            <i class="fas fa-keyboard"></i>
+                            Token Manual
+                            <span class="tab-badge legacy">Legado</span>
+                        </button>
+                    </div>
+
+                    <!-- ABA OAuth -->
+                    <div class="auth-tab-content active" id="contentOAuth">
+                        <div class="oauth-info-box">
+                            <div class="oauth-steps">
+                                <div class="oauth-step">
+                                    <span class="step-num">1</span>
+                                    <span>Informe o nome da conta e as credenciais do App ML</span>
+                                </div>
+                                <div class="oauth-step">
+                                    <span class="step-num">2</span>
+                                    <span>Clique em <strong>Autenticar com ML</strong></span>
+                                </div>
+                                <div class="oauth-step">
+                                    <span class="step-num">3</span>
+                                    <span>Faça login na tela oficial do Mercado Livre</span>
+                                </div>
+                                <div class="oauth-step">
+                                    <span class="step-num">4</span>
+                                    <span>Tokens são salvos e renovados automaticamente</span>
+                                </div>
+                            </div>
+                            <div class="oauth-redirect-warning">
+                                <i class="fas fa-info-circle"></i>
+                                <small>
+                                    Cadastre esta URL no seu App ML como URL de Redirect:<br>
+                                    <code id="callbackUrlDisplay"></code>
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="simple-form">
+                            <div class="form-group">
+                                <label>Nome da Conta</label>
+                                <input type="text" id="oauthContaNome" class="form-control"
+                                       placeholder="Ex: Minha Loja Principal">
+                            </div>
+                            <div class="form-group">
+                                <label>App ID (Client ID)</label>
+                                <input type="text" id="oauthAppId" class="form-control"
+                                       placeholder="Seu App ID do Mercado Livre">
+                                <small>Developers → Minhas aplicações</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Secret Key</label>
+                                <div class="input-with-action">
+                                    <input type="password" id="oauthSecretKey" class="form-control"
+                                           placeholder="Sua Secret Key">
+                                    <button type="button" class="btn-eye" onclick="toggleTokenVisibility('oauthSecretKey')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-oauth" onclick="iniciarOAuthML()">
+                                    <i class="fas fa-sign-in-alt"></i> Autenticar com Mercado Livre
+                                </button>
+                            </div>
+                            <div id="oauthStatus" class="status-message"></div>
+                        </div>
+                    </div>
+
+                    <!-- ABA Token Manual (legado — continua funcionando) -->
+                    <div class="auth-tab-content" id="contentManual">
+                        <div class="legacy-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong>Método legado — continua funcionando normalmente</strong>
+                                <p>Use quando já tiver os tokens em mãos ou enquanto migra para o OAuth.</p>
+                            </div>
+                        </div>
+
+                        <div class="simple-form">
+                            <div class="form-group">
+                                <label>Nome da Conta</label>
+                                <input type="text" id="novaContaNome" class="form-control"
+                                       placeholder="Ex: Conta Secundária">
+                            </div>
+                            <div class="form-group">
+                                <label>App ID (Client ID)</label>
+                                <input type="text" id="novaContaAppId" class="form-control"
+                                       placeholder="Seu App ID">
+                            </div>
+                            <div class="form-group">
+                                <label>Secret Key</label>
+                                <div class="input-with-action">
+                                    <input type="password" id="novaContaSecretKey" class="form-control"
+                                           placeholder="Sua Secret Key">
+                                    <button type="button" class="btn-eye" onclick="toggleTokenVisibility('novaContaSecretKey')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Access Token</label>
+                                <input type="text" id="novaContaAccessToken" class="form-control"
+                                       placeholder="APP_USR-..." style="font-family: monospace; font-size: 12px;">
+                                <small>Deixe em branco para tentar obter automaticamente</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Refresh Token</label>
+                                <input type="text" id="novaContaRefreshToken" class="form-control"
+                                       placeholder="TG-..." style="font-family: monospace; font-size: 12px;">
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-primary" onclick="adicionarContaManualML()">
+                                    <i class="fas fa-save"></i> Salvar com Tokens
+                                </button>
+                                <button class="btn-secondary" onclick="adicionarNovaContaML()">
+                                    <i class="fas fa-magic"></i> Tentar Auto-Autenticar
+                                </button>
+                            </div>
+                            <div id="manualStatus" class="status-message"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- FIM BLOCO DE AUTENTICAÇÃO -->
+
+                <!-- LISTA DE CONTAS -->
                 <div class="accounts-section" id="mlAccountsContainer">
                     <h4><i class="fas fa-list"></i> Contas Configuradas</h4>
                     <div class="accounts-grid" id="mlAccountsList">
@@ -613,7 +751,297 @@ function removerToken(service) {
 // Atualiza status global
 function atualizarStatusGlobal() {
     console.log('Atualizando status global...');
-    // Implemente atualização de status
+}
+
+// ============================================================
+// ABAS DE AUTENTICAÇÃO — OAUTH E MANUAL
+// ============================================================
+
+function switchAuthTab(tab) {
+    // Abas
+    document.getElementById('tabOAuth').classList.toggle('active', tab === 'oauth');
+    document.getElementById('tabManual').classList.toggle('active', tab === 'manual');
+    // Conteúdo
+    document.getElementById('contentOAuth').classList.toggle('active', tab === 'oauth');
+    document.getElementById('contentManual').classList.toggle('active', tab === 'manual');
+}
+
+// Mostra a URL de callback correta baseada no host atual
+document.addEventListener('DOMContentLoaded', function() {
+    const callbackEl = document.getElementById('callbackUrlDisplay');
+    if (callbackEl) {
+        callbackEl.textContent = window.location.origin + '/mercadolivre/oauth/callback';
+    }
+});
+
+// ── OAUTH: salva credenciais e redireciona para ML ──────────
+function iniciarOAuthML() {
+    const nome      = (document.getElementById('oauthContaNome')?.value  || '').trim();
+    const appId     = (document.getElementById('oauthAppId')?.value      || '').trim();
+    const secretKey = (document.getElementById('oauthSecretKey')?.value  || '').trim();
+    const statusEl  = document.getElementById('oauthStatus');
+
+    if (!appId || !secretKey) {
+        statusEl.innerHTML = '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Preencha o App ID e o Secret Key antes de continuar.</div>';
+        return;
+    }
+
+    statusEl.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Salvando credenciais e redirecionando...</div>';
+
+    // 1. Salva App ID + Secret Key via API existente
+    fetch('/api/mercadolivre/configurar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: appId, client_secret: secretKey })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.sucesso) {
+            statusEl.innerHTML = `<div class="alert alert-danger"><i class="fas fa-times"></i> ${data.erro || 'Erro ao salvar credenciais.'}</div>`;
+            return;
+        }
+        // 2. Redireciona para o fluxo OAuth
+        const nomeConta = nome || 'Conta Principal';
+        window.location.href = `/mercadolivre/oauth/iniciar?account_name=${encodeURIComponent(nomeConta)}`;
+    })
+    .catch(err => {
+        statusEl.innerHTML = `<div class="alert alert-danger"><i class="fas fa-times"></i> Erro: ${err.message}</div>`;
+    });
+}
+
+// ── MANUAL: salva conta com tokens fornecidos pelo usuário ──
+function adicionarContaManualML() {
+    const nome         = (document.getElementById('novaContaNome')?.value         || '').trim();
+    const appId        = (document.getElementById('novaContaAppId')?.value        || '').trim();
+    const secretKey    = (document.getElementById('novaContaSecretKey')?.value    || '').trim();
+    const accessToken  = (document.getElementById('novaContaAccessToken')?.value  || '').trim();
+    const refreshToken = (document.getElementById('novaContaRefreshToken')?.value || '').trim();
+    const statusEl     = document.getElementById('manualStatus');
+
+    if (!appId || !secretKey) {
+        statusEl.innerHTML = '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> App ID e Secret Key são obrigatórios.</div>';
+        return;
+    }
+
+    statusEl.innerHTML = '<div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Adicionando conta...</div>';
+
+    // Primeiro cria a conta
+    fetch('/api/mercadolivre/contas/adicionar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            account_name: nome || 'Conta Manual',
+            app_id:       appId,
+            secret_key:   secretKey
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.sucesso && !data.account_id) {
+            statusEl.innerHTML = `<div class="alert alert-danger"><i class="fas fa-times"></i> ${data.erro || 'Erro ao criar conta.'}</div>`;
+            return;
+        }
+
+        const accountId = data.account_id;
+
+        // Se forneceu tokens manualmente, salva-os
+        if (accessToken && refreshToken && accountId) {
+            return fetch(`/api/mercadolivre/contas/${accountId}/adicionar-tokens-manual`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken })
+            })
+            .then(r => r.json())
+            .then(tokenData => {
+                if (tokenData.sucesso) {
+                    statusEl.innerHTML = '<div class="alert alert-success"><i class="fas fa-check"></i> Conta salva com sucesso!</div>';
+                    setTimeout(() => carregarContasMercadoLivre(), 1000);
+                } else {
+                    statusEl.innerHTML = `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Conta criada mas houve erro ao salvar tokens: ${tokenData.erro}</div>`;
+                }
+            });
+        }
+
+        // Sem tokens manuais — autenticação automática já tentada
+        if (data.autenticada_automaticamente) {
+            statusEl.innerHTML = '<div class="alert alert-success"><i class="fas fa-check"></i> Conta autenticada automaticamente!</div>';
+        } else {
+            statusEl.innerHTML = `<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Conta criada. ${data.mensagem || 'Adicione os tokens manualmente.'}</div>`;
+        }
+        setTimeout(() => carregarContasMercadoLivre(), 1000);
+    })
+    .catch(err => {
+        statusEl.innerHTML = `<div class="alert alert-danger"><i class="fas fa-times"></i> Erro: ${err.message}</div>`;
+    });
 }
 </script>
+
+<style>
+/* ── Estilos das abas de autenticação ───────────────────── */
+.auth-methods-container {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.auth-methods-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.auth-methods-header i {
+    font-size: 22px;
+    color: #f5a623;
+    margin-top: 2px;
+}
+
+.auth-methods-header strong { display: block; margin-bottom: 4px; }
+.auth-methods-header p { margin: 0; font-size: 13px; color: #666; }
+
+/* Abas */
+.auth-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.auth-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    transition: all .2s;
+}
+
+.auth-tab:hover { border-color: #f5a623; color: #f5a623; }
+
+.auth-tab.active {
+    border-color: #f5a623;
+    background: #fff8ec;
+    color: #e6930a;
+}
+
+.tab-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.tab-badge.recommended { background: #d4edda; color: #155724; }
+.tab-badge.legacy       { background: #fff3cd; color: #856404; }
+
+/* Conteúdo das abas */
+.auth-tab-content { display: none; }
+.auth-tab-content.active { display: block; }
+
+/* Info box OAuth */
+.oauth-info-box {
+    background: #fff;
+    border: 1px solid #d4edda;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+.oauth-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.oauth-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #333;
+}
+
+.step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #28a745;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.oauth-redirect-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #e8f4fd;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #1a6a9a;
+}
+
+.oauth-redirect-warning code {
+    display: block;
+    margin-top: 4px;
+    word-break: break-all;
+    background: rgba(0,0,0,.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+/* Botão OAuth */
+.btn-oauth {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: linear-gradient(135deg, #f5a623, #e6930a);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+}
+
+.btn-oauth:hover { opacity: .9; transform: translateY(-1px); }
+
+/* Aviso legado */
+.legacy-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.legacy-warning i { color: #f5a623; font-size: 18px; margin-top: 2px; }
+.legacy-warning strong { display: block; margin-bottom: 3px; color: #795548; }
+.legacy-warning p { margin: 0; color: #666; }
+</style>
 {% endblock %}
