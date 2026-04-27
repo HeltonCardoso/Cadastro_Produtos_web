@@ -105,7 +105,7 @@
                 </div>
 
                 <div class="section-description">
-                    <p>Conecte e gerencie múltiplas contas do Mercado Livre. Cada conta fica totalmente separada.</p>
+                    <p>Conecte e gerencie múltiplas contas do Mercado Livre.</p>
                 </div>
 
                 <!-- RESUMO RÁPIDO -->
@@ -135,15 +135,6 @@
 
                 <!-- BLOCO DE AUTENTICAÇÃO COM ABAS -->
                 <div class="auth-methods-container">
-
-                    <div class="auth-methods-header">
-                        <i class="fas fa-shield-alt"></i>
-                        <div>
-                            <strong>Adicionar Nova Conta</strong>
-                            <p>OAuth é o método oficial e recomendado. Token Manual serve como legado e continua funcionando.</p>
-                        </div>
-                    </div>
-
                     <!-- Abas -->
                     <div class="auth-tabs">
                         <button class="auth-tab active" id="tabOAuth" onclick="switchAuthTab('oauth')">
@@ -154,14 +145,14 @@
                         <button class="auth-tab" id="tabManual" onclick="switchAuthTab('manual')">
                             <i class="fas fa-keyboard"></i>
                             Token Manual
-                            <span class="tab-badge legacy">Legado</span>
+                            <span class="tab-badge legacy">Versão Antiga</span>
                         </button>
                     </div>
 
                     <!-- ABA OAuth -->
                     <!-- As credenciais do seu App (Client ID / Secret) ficam no .env do servidor. -->
                     <!-- O usuário só precisa informar um nome para a conta e clicar em Conectar.   -->
-                    <div class="auth-tab-content active" id="contentOAuth">
+                 <!---   <div class="auth-tab-content active" id="contentOAuth">
                         <div class="oauth-info-box">
                             <div class="oauth-steps">
                                 <div class="oauth-step">
@@ -188,14 +179,14 @@
                                     <code id="callbackUrlDisplay">Carregando...</code>
                                 </small>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="simple-form">
                             <div class="form-group">
-                                <label>Nome da Conta</label>
+                                <label>Apelido para Conta</label>
                                 <input type="text" id="oauthContaNome" class="form-control"
                                        placeholder="Ex: Minha Loja Principal">
-                                <small>Um nome para identificar esta conta na lista</small>
+                                <small>Nome para identificar esta conta na lista</small>
                             </div>
                             <div class="form-actions">
                                 <button class="btn-oauth" onclick="iniciarOAuthML()">
@@ -208,14 +199,6 @@
 
                     <!-- ABA Token Manual (legado — continua funcionando) -->
                     <div class="auth-tab-content" id="contentManual">
-                        <div class="legacy-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <div>
-                                <strong>Método legado — continua funcionando normalmente</strong>
-                                <p>Use quando já tiver os tokens em mãos. Contas manuais ficam separadas das contas OAuth.</p>
-                            </div>
-                        </div>
-
                         <div class="simple-form">
                             <div class="form-group">
                                 <label>Nome da Conta</label>
@@ -227,27 +210,7 @@
                                 <input type="text" id="novaContaAppId" class="form-control"
                                        placeholder="Seu App ID">
                             </div>
-                            <div class="form-group">
-                                <label>Secret Key</label>
-                                <div class="input-with-action">
-                                    <input type="password" id="novaContaSecretKey" class="form-control"
-                                           placeholder="Sua Secret Key">
-                                    <button type="button" class="btn-eye" onclick="toggleTokenVisibility('novaContaSecretKey')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Access Token</label>
-                                <input type="text" id="novaContaAccessToken" class="form-control"
-                                       placeholder="APP_USR-..." style="font-family: monospace; font-size: 12px;">
-                                <small>Deixe em branco para tentar obter automaticamente</small>
-                            </div>
-                            <div class="form-group">
-                                <label>Refresh Token</label>
-                                <input type="text" id="novaContaRefreshToken" class="form-control"
-                                       placeholder="TG-..." style="font-family: monospace; font-size: 12px;">
-                            </div>
+                           
                             <div class="form-actions">
                                 <button class="btn-primary" onclick="adicionarContaManualML()">
                                     <i class="fas fa-save"></i> Salvar com Tokens

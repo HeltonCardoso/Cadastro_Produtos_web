@@ -127,11 +127,11 @@ def oauth_callback():
 
     if error:
         flash(f'Autorização recusada: {error}', 'danger')
-        return redirect(url_for('consultar_mercado_livre'))
+        return redirect(url_for('configurar_tokens'))
 
     if not code:
         flash('Código de autorização não recebido.', 'danger')
-        return redirect(url_for('consultar_mercado_livre'))
+        return redirect(url_for('configurar_tokens'))
 
     # Recupera dados da sessão
     account_id   = session.pop('ml_oauth_account_id',   None)
@@ -146,7 +146,7 @@ def oauth_callback():
 
     if not client_id or not client_secret:
         flash('Credenciais do aplicativo não configuradas no servidor.', 'danger')
-        return redirect(url_for('consultar_mercado_livre'))
+        return redirect(url_for('configurar_tokens'))
 
     print(f"🔄 Trocando code por tokens — conta: {account_id}")
 
@@ -176,7 +176,7 @@ def oauth_callback():
             detalhe = response.json().get('error_description', response.text[:200])
             print(f"❌ Erro ao trocar code: {response.status_code} — {detalhe}")
             flash(f'Erro na autenticação: {detalhe}', 'danger')
-            return redirect(url_for('consultar_mercado_livre'))
+            return redirect(url_for('configurar_tokens'))
 
         token_data    = response.json()
         access_token  = token_data.get('access_token')
@@ -216,12 +216,12 @@ def oauth_callback():
 
         nickname = account.get('nickname', account_name)
         flash(f'✅ Conta autenticada com sucesso: {nickname}', 'success')
-        return redirect(url_for('consultar_mercado_livre'))
+        return redirect(url_for('configurar_tokens'))
 
     except Exception as e:
         print(f"❌ Exceção no callback OAuth: {e}")
         flash(f'Erro interno na autenticação: {str(e)}', 'danger')
-        return redirect(url_for('consultar_mercado_livre'))
+        return redirect(url_for('configurar_tokens'))
 
 
 # ── ROTA 3: Renovar token manualmente (opcional) ──────────
