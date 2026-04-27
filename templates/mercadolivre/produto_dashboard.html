@@ -142,6 +142,75 @@
         line-height: 1.4;
     }
 
+    /* ── Edição de título ── */
+    .titulo-edit-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .titulo-input-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .titulo-edit-input {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1a2e;
+        border: 1.5px solid var(--ml-blue);
+        border-radius: 8px;
+        padding: 7px 12px;
+        font-family: inherit;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52,131,250,0.1);
+        transition: border-color 0.2s;
+    }
+    .titulo-edit-input:focus { border-color: #0d6efd; }
+
+    .titulo-char-count {
+        font-size: 11px;
+        color: #aaa;
+        text-align: right;
+    }
+    .titulo-char-count.warn  { color: #e67e22; }
+    .titulo-char-count.over  { color: #e74c3c; font-weight: 700; }
+
+    .btn-titulo-salvar {
+        background: var(--ml-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s, transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .btn-titulo-salvar:hover   { background: #0d6efd; transform: translateY(-1px); }
+    .btn-titulo-salvar:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+
+    .btn-titulo-cancelar {
+        background: #f0f0f0;
+        color: #555;
+        border: none;
+        border-radius: 8px;
+        padding: 7px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 0.2s;
+    }
+    .btn-titulo-cancelar:hover { background: #e0e0e0; }
+
     .produto-meta {
         font-size: 12px;
         color: #888;
@@ -369,7 +438,7 @@
 
     .atributo-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
 
-    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);    background: #ffeaea; box-shadow: inset 0 0 0 1px rgba(230,57,70,0.08); }
+    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);    background: #fff8f8; }
     .atributo-card.preenchido { border-left: 3px solid var(--ml-green);  }
     .atributo-card.nao-aplica { border-left: 3px solid #bbb;             background: #f9f9f9; }
 
@@ -857,7 +926,25 @@
         <!-- Header: qualidade + info -->
         <div class="produto-header">
             <div class="info-card">
-                <div class="produto-titulo-texto" id="produto-titulo"></div>
+                <div class="titulo-edit-wrap">
+                    <div class="titulo-input-row">
+                        <input
+                            type="text"
+                            id="produto-titulo"
+                            class="titulo-edit-input"
+                            placeholder="Título do anúncio"
+                            maxlength="60"
+                            oninput="onTituloInput()"
+                        >
+                        <button class="btn-titulo-salvar" id="btn-titulo-salvar" onclick="salvarTitulo()" disabled title="Salvar título">
+                            <i class="fas fa-save"></i> Salvar título
+                        </button>
+                        <button class="btn-titulo-cancelar" id="btn-titulo-cancelar" onclick="cancelarTitulo()" style="display:none;" title="Cancelar">
+                            ✕
+                        </button>
+                    </div>
+                    <div class="titulo-char-count" id="titulo-char-count">0 / 60 caracteres</div>
+                </div>
                 <div class="produto-meta">
                     <span><i class="fas fa-barcode"></i> MLB: <strong id="produto-mlb"></strong></span>
                     <span><i class="fas fa-tag"></i> Categoria: <strong id="produto-categoria"></strong></span>
@@ -924,7 +1011,66 @@
 
 <script>
 let mlbAtual    = '';
+let tituloOriginal = '';
 let estadoCampos = {};  // { id: { valorOriginal, valueIdOriginal, naoAplicaOriginal, tipo, ... } }
+
+// ─── TÍTULO ───────────────────────────────────────────────────────────────────
+function atualizarContadorTitulo() {
+    const inp   = document.getElementById('produto-titulo');
+    const count = document.getElementById('titulo-char-count');
+    const len   = inp.value.length;
+    count.textContent = `${len} / 60 caracteres`;
+    count.className   = 'titulo-char-count' + (len > 55 ? ' over' : len > 45 ? ' warn' : '');
+}
+
+function onTituloInput() {
+    atualizarContadorTitulo();
+    const inp      = document.getElementById('produto-titulo');
+    const mudou    = inp.value.trim() !== tituloOriginal.trim();
+    document.getElementById('btn-titulo-salvar').disabled             = !mudou || inp.value.trim().length < 5;
+    document.getElementById('btn-titulo-cancelar').style.display      = mudou ? 'inline-flex' : 'none';
+}
+
+function cancelarTitulo() {
+    document.getElementById('produto-titulo').value = tituloOriginal;
+    onTituloInput();
+}
+
+async function salvarTitulo() {
+    const novoTitulo = document.getElementById('produto-titulo').value.trim();
+    if (!novoTitulo || novoTitulo.length < 5) return;
+
+    const confirmado = await confirmarModal({
+        icone: '✏️',
+        titulo: 'Alterar título',
+        mensagem: `Deseja salvar o novo título?\n\n"${novoTitulo}"`,
+        textoConfirmar: 'Salvar'
+    });
+    if (!confirmado) return;
+
+    document.getElementById('btn-titulo-salvar').disabled = true;
+
+    try {
+        const res  = await fetch('/api/mercadolivre/alterar-titulo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mlb: mlbAtual, titulo: novoTitulo })
+        });
+        const data = await res.json();
+
+        if (data.sucesso) {
+            tituloOriginal = novoTitulo;
+            document.getElementById('btn-titulo-cancelar').style.display = 'none';
+            mostrarModal({ icone: '✅', titulo: 'Título atualizado!', mensagem: data.mensagem || 'Título salvo com sucesso.', botoes: [{ texto: 'OK', classe: 'success' }] });
+        } else {
+            document.getElementById('btn-titulo-salvar').disabled = false;
+            mostrarModal({ icone: '❌', titulo: 'Erro ao salvar título', mensagem: data.erro || 'Não foi possível alterar o título.', botoes: [{ texto: 'OK', classe: 'danger' }] });
+        }
+    } catch (err) {
+        document.getElementById('btn-titulo-salvar').disabled = false;
+        mostrarModal({ icone: '❌', titulo: 'Erro de conexão', mensagem: err.message, botoes: [{ texto: 'OK', classe: 'danger' }] });
+    }
+}
 
 // ─── MODAL ───────────────────────────────────────────────────────────────────
 function mostrarModal({ icone='✅', titulo, mensagem, botoes=[] }) {
@@ -982,7 +1128,13 @@ async function carregarProduto() {
             return;
         }
 
-        document.getElementById('produto-titulo').textContent    = data.titulo       || 'N/A';
+        const tituloInput = document.getElementById('produto-titulo');
+        tituloInput.value = data.titulo || '';
+        tituloOriginal    = data.titulo || '';
+        atualizarContadorTitulo();
+        document.getElementById('btn-titulo-salvar').disabled   = true;
+        document.getElementById('btn-titulo-cancelar').style.display = 'none';
+
         document.getElementById('produto-mlb').textContent       = data.mlb;
         document.getElementById('produto-categoria').textContent = data.categoria_id || 'N/A';
 
@@ -1031,7 +1183,7 @@ function renderizarQualidade(q) {
 function renderizarAtributos(atributos) {
     // Principais = 'principal' | Secundárias = 'recomendado' + 'secundario'
     // IDs a ocultar completamente da interface (case-insensitive)
-    const IDS_OCULTOS = ['STYLE', 'LINHA', 'PRODUCT_LINE'];
+    const IDS_OCULTOS = ['STYLE', 'LINHA', 'LINE', 'PRODUCT_LINE'];
     const atributosFiltrados = atributos.filter(attr => {
         const attrId = (attr.id || '').toUpperCase();
         const hidden = IDS_OCULTOS.some(oculto => attrId === oculto.toUpperCase());
@@ -1070,11 +1222,16 @@ function buildCard(container, attr) {
     const isBoolean       = valueType === 'boolean';
     const isNumberUnit    = valueType === 'number_unit';
     const valoresPoss     = attr.valores_possiveis || [];
-    const IDS_TEXTO_LIVRE = ['MODEL', 'BRAND', 'UPHOLSTERY_MATERIAL'];  // sempre texto livre
+    const IDS_TEXTO_LIVRE = [
+        'MODEL',            // Modelo
+        'BRAND',            // Marca
+        'SLIDES_MATERIAL',  // Material das corrediças
+        'HANDLES_MATERIAL', // Material das alças
+    ];  // sempre texto livre, ignoram valores_possiveis
     const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued && !IDS_TEXTO_LIVRE.includes(id);
     const isObrigatorio   = attr.obrigatorio === true;
     // IDs que sempre suportam "Não se aplica" mesmo que a API não devolva o flag
-    const IDS_FORCAM_NA = ['SOFA_TYPE', 'SOFA_FORMAT', 'LINE', 'STYLE', 'ITEM_STYLE'];
+    const IDS_FORCAM_NA = ['SOFA_TYPE', 'STYLE', 'ITEM_STYLE'];
     const suportaNA     = attr.tem_nao_se_aplica === true || IDS_FORCAM_NA.includes(id);
 
     let eNaoAplica = attr.e_nao_se_aplica === true || (attr.value_id === '-1' && !attr.valor);
@@ -1126,7 +1283,7 @@ function buildCard(container, attr) {
         inputHtml = `
             <div class="chips-container" id="attr_${id}" onclick="document.getElementById('chips_input_${id}').focus()">
                 ${chipsHtml}
-                <input class="chips-input" id="chips_input_${id}" placeholder="Digitar e Enter..."
+                <input class="chips-input" id="chips_input_${id}" placeholder="Digitar e Pressione Enter..."
                     onkeydown="handleChipInput('${id}', event)"
                     ${valoresPoss.length > 0 ? `list="datalist_${id}"` : ''}>
             </div>
@@ -1505,7 +1662,7 @@ async function salvarTodosAtributos() {
 
     for (const [id, est] of Object.entries(estadoCampos)) {
 
-        const IDS_IGNORADOS_SAVE = ['STYLE', 'LINHA', 'PRODUCT_LINE'];
+        const IDS_IGNORADOS_SAVE = ['STYLE', 'LINHA', 'LINE', 'PRODUCT_LINE'];
         if (IDS_IGNORADOS_SAVE.some(ig => id.toUpperCase() === ig)){
             console.log('Ignorando Atributo:', id);
             continue;

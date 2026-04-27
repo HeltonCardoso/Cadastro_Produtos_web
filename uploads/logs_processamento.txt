@@ -1,13 +1,94 @@
-[14:16:43] Anuncio Criado: 7908863454103 - Poltrona do Papai Sala de Estar Giratória Reclinável Arcane Manual Aquecimento Massagem PU Bege G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863493225 - Poltrona do Papai Sala de Estar Giratória Reclinável Arcane Manual Aquecimento Massagem PU Preto G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863490705 - Poltrona do Papai Reclinável Elétrica Bimotor Alabama com Massagem Aquecimento Entrada USB PU Caramelo G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863490712 - Poltrona do Papai Reclinável Elétrica Bimotor Alabama com Massagem Aquecimento Entrada USB PU Preto G94 - Gran Belo
-[14:16:43] Anuncio Criado: 38321 - Poltrona do Papai Reclinável Elétrica Boston com Massagem Aquecimento Base Giratória Entrada USB/USB-C PU Bege G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863481536 - Poltrona do Papai Reclinável Elétrica Boston com Massagem Aquecimento Base Giratória Entrada USB/USB-C PU Caramelo G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863490682 - Poltrona do Papai Reclinável Elétrica Boston com Massagem Aquecimento Base Giratória Entrada USB/USB-C PU Preto G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863488184 - Massageador de Pés Zivi 3 Intensidades com Massagem 3D Aquecimento Térmico Tela LCD e Óculos Massageador com Bluetooth Cinza/Branco G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863493065 - Poltrona de Massagem 3D Atlas Tela LCD Touch Carregamento Indução com Gravidade Zero Aquecimento e Bluetooth PU Branco G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863450228 - Poltrona de Massagem 4D Ultron Aquecimento Reclinação Gravidade Zero Controle LCD Touch PU Preto G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863488214 - Massageador Elétrico para os Olhos Vibração AirBag Aquecimento Bluetooth Recarregável Branco G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863481505 - Poltrona do Papai Reclinável Elétrica Vegas com Massagem Aquecimento Entrada USB/USB-C PU Caramelo G94 - Gran Belo
-[14:16:43] Anuncio Criado: 7908863490699 - Poltrona do Papai Reclinável Elétrica Vegas com Massagem Aquecimento Entrada USB/USB-C PU Preto G94 - Gran Belo
+[16:14:05] Anuncio Criado: 7901064730144 - Guarda Roupa Casal 245cm 6 Portas Loretto Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730151 - Guarda Roupa Casal 245cm 6 Portas Loretto Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730168 - Guarda Roupa Casal 245cm 6 Portas Com Espelho Loretto Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730175 - Guarda Roupa Casal 245cm 6 Portas Com Espelho Loretto Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730182 - Guarda Roupa Casal 212cm 8 Portas 6 Gavetas Valenza Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730199 - Guarda Roupa Casal 212cm 8 Portas 6 Gavetas Valenza Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730205 - Guarda Roupa Casal 212cm 8 Portas 6 Gavetas Valenza Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730212 - Guarda Roupa Casal 212cm 8 Portas Com Espelho Valenza Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730229 - Guarda Roupa Casal 212cm 8 Portas Com Espelho Valenza Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730236 - Guarda Roupa Casal 212cm 8 Portas Com Espelho Valenza Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730243 - Guarda Roupa Casal 192cm 4 Portas 6 Gavetas Itajaí Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730250 - Guarda Roupa Casal 192cm 4 Portas 6 Gavetas Itajaí Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730267 - Guarda Roupa Casal 192cm 4 Portas 6 Gavetas Itajaí Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730274 - Guarda Roupa Casal 192cm 4 Portas Com Espelho Itajaí Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730281 - Guarda Roupa Casal 192cm 4 Portas Com Espelho Itajaí Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730298 - Guarda Roupa Casal 192cm 4 Portas Com Espelho Itajaí Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730304 -  Guarda Roupa Solteiro 107cm 2 Portas Deslizante Thales Jequitibá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730311 - Guarda Roupa Solteiro 107cm 2 Portas Deslizante Thales Jequitibá/Off S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730328 -  Guarda Roupa Solteiro 107cm 2 Portas Deslizante Thales Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730335 - Guarda Roupa Solteiro 107cm 2 Portas Com Espelho Thales Jequitibá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730342 - Guarda Roupa Solteiro 107cm 2 Portas Com Espelho Thales Jequitibá/Off S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730359 - Guarda Roupa Solteiro 107cm 2 Portas Com Espelho Thales Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730366 - Guarda Roupa Solteiro 70cm 3 Portas 2 Gavetas Thales Jequitibá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730373 - Guarda Roupa Solteiro 70cm 3 Portas 2 Gavetas Thales Jequitibá/Off  S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730380 - Guarda Roupa Solteiro 70cm 3 Portas 2 Gavetas Thales Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730397 - Guarda Roupa Casal 232cm 6 Portas 4 Gavetas Zain Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730403 - Guarda Roupa Casal 232cm 6 Portas 4 Gavetas Zain Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730410 - Guarda Roupa Casal 232cm 6 Portas 4 Gavetas Zain Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730427 - Guarda Roupa Solteiro 155cm 4 Portas 2 Gavetas Zain Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730434 - Guarda Roupa Solteiro 155cm 4 Portas 2 Gavetas Zain Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730441 - Guarda Roupa Solteiro 155cm 4 Portas 2 Gavetas Zain Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730458 - Guarda Roupa Casal 192cm 11 Portas Com Espelho Tóquio Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730465 - Guarda Roupa Casal 192cm 11 Portas Com Espelho Tóquio Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730472 - Guarda Roupa Capelinha 13 Portas 7 Gavetas Com Espelho Tóquio Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730489 - Guarda Roupa Capelinha 13 Portas 7 Gavetas Com Espelho Tóquio Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730496 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Vortex Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730502 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Vortex Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730519 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Vortex Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730526 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Vortex Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730533 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Pés Vortex Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730540 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Pés Vortex Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730557 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Pés Vortex Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730564 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Pés Vortex Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730571 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Espelho Vortex Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730588 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Espelho Vortex Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730595 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Espelho Vortex Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730601 - Guarda Roupa Casal 239cm 8 Portas 4 Gavetas Com Espelho Vortex Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730618 - Guarda Roupa Casal 239cm 8 Portas Com Pés e Espelho Vortex Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730625 - Guarda Roupa Casal 239cm 8 Portas Com Pés e Espelho Vortex Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730632 - Guarda Roupa Casal 239cm 8 Portas Com Pés e Espelho Vortex Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730649 - Guarda Roupa Casal 239cm 8 Portas Com Pés e Espelho Vortex Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730656 - Cômoda Quarto 90cm 8 Gavetas 1 Porta Thales Jequitibá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730663 - Cômoda Quarto 90cm 8 Gavetas 1 Porta Thales Jequitibá/Off S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730670 - Cômoda Quarto 90cm 8 Gavetas 1 Porta Thales Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730687 - Cômoda Quarto 67cm 4 Gavetas Nayra Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730694 - Cômoda Quarto 131cm 5 Gavetas 2 Portas Valenza Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730700 - Cômoda Quarto 131cm 5 Gavetas 2 Portas Valenza Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730717 - Cômoda Quarto 131cm 5 Gavetas 2 Portas Com Pés Valenza Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730724 - Cômoda Quarto 131cm 5 Gavetas 2 Portas Com Pés Valenza Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730731 - Cômoda Quarto 130cm 4 Gavetas 2 Portas Com Pés Castro Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730748 - Cômoda Quarto 130cm 4 Gavetas 2 Portas Com Pés Castro Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730755 - Cômoda Quarto 130cm 4 Gavetas 2 Portas Com Pés Castro Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730762 - Cômoda Quarto 129cm 4 Gavetas 2 Portas Savana Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730779 - Cômoda Quarto 129cm 4 Gavetas 2 Portas Savana Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730786 - Cômoda Quarto 129cm 4 Gavetas 2 Portas Savana Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730793 - Cômoda Quarto 129cm 4 Gavetas 2 Portas Savana Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730809 - Cômoda Quarto 136cm 8 Gavetas Morin Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730816 - Cômoda Quarto 136cm 8 Gavetas Morin Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730823 - Cômoda Quarto 136cm 8 Gavetas Morin Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730830 - Cômoda Multiuso 6 Gavetas 1 Porta 96cm Guaíra Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730847 - Cômoda Multiuso 6 Gavetas 1 Porta 96cm Guaíra Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730854 - Cômoda Multiuso 6 Gavetas 1 Porta 96cm Guaíra Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730861 - Cômoda Multiuso 6 Gavetas 1 Porta 96cm Guaíra Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730878 - Armário Multiuso 60cm 2 portas Thales Jequitibá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730885 - Armário Multiuso 60cm 2 portas Thales Jequitibá/Off S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730908 - Mesa Cabeceira Quarto 47cm 2 Gavetas Zari Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730915 - Mesa Cabeceira Quarto 47cm 2 Gavetas Zari Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730922 - Mesa Cabeceira Quarto 47cm 2 Gavetas Zari Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730939 - Mesa Cabeceira Quarto 47cm 2 Gavetas Zari Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730946 - Cabeceira Cama Casal e Queen 256cm 2 Mesas Laterais Lunara Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730953 - Cabeceira Cama Casal e Queen 256cm 2 Mesas Laterais Lunara Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730960 - Cabeceira Cama Casal e Queen 256cm 2 Mesas Laterais Lunara Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730977 - Guarda Roupa Casal Modulado 140cm Vincenzo Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730984 - Guarda Roupa Casal Modulado 140cm Vincenzo Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064730991 - Guarda Roupa Casal Modulado 140cm Com Espelho Vincenzo Jatobá/Areia S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731004 - Guarda Roupa Casal Modulado 140cm Com Espelho Vincenzo Jatobá/Grafite S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731011 - Cama Solteiro Para Colchão 188x88cm Com Nichos Zuri Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731028 - Cama Solteiro Para Colchão 188x88cm Com Nichos Zuri Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731035 - Cama Solteiro Para Colchão 188x88cm Com 2 Gavetas e Nichos Zuri Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731042 - Cama Solteiro Para Colchão 188x88cm Com 2 Gavetas e Nichos Zuri Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731059 - Cama Solteiro Infantil Com Auxiliar e Nicho 188x88cm Zuri Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731066 - Cama Solteiro Infantil Com Auxiliar e Nicho 188x88cm Zuri Branco S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731073 - Cama Casal 140cm Com Nichos Zuri Jatobá S01 - Mpozenato
+[16:14:05] Anuncio Criado: 7901064731080 - Cama Casal 140cm Com Nichos Zuri Branco S01 - Mpozenato
