@@ -695,6 +695,90 @@
     border: 1px solid #fde68a;
 }
 
+
+* Estilos para as imagens dos serviços */
+.service-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.service-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.service-menu-item:hover .service-img {
+    transform: scale(1.1);
+}
+
+.service-menu-item:hover .service-icon {
+    background: #e8e8e8;
+}
+
+.service-menu-item.active .service-icon {
+    background: linear-gradient(135deg, #f5a62320, #e6930a20);
+    border: 1px solid #f5a623;
+}
+
+/* Ajuste responsivo para telas pequenas */
+@media (max-width: 768px) {
+    .service-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .service-img {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* Estilos para ícones das seções */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Responsivo para tablets */
+@media (max-width: 768px) {
+    .section-icon {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Responsivo para mobile */
+@media (max-width: 480px) {
+    .section-icon {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* Animação suave ao passar o mouse */
+.section-icon {
+    transition: transform 0.2s ease;
+}
+
+.section-header:hover .section-icon {
+    transform: scale(1.05);
+}
 /* ========================================= */
 /* MODAIS MINIMALISTAS */
 /* ========================================= */
