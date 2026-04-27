@@ -369,7 +369,7 @@
 
     .atributo-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
 
-    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);    background: #fff8f8; }
+    .atributo-card.vazio      { border-left: 3px solid var(--ml-red);    background: #ffeaea; box-shadow: inset 0 0 0 1px rgba(230,57,70,0.08); }
     .atributo-card.preenchido { border-left: 3px solid var(--ml-green);  }
     .atributo-card.nao-aplica { border-left: 3px solid #bbb;             background: #f9f9f9; }
 
@@ -1030,9 +1030,16 @@ function renderizarQualidade(q) {
 // ─── RENDERIZAR ATRIBUTOS ─────────────────────────────────────────────────────
 function renderizarAtributos(atributos) {
     // Principais = 'principal' | Secundárias = 'recomendado' + 'secundario'
-    const atributosFiltrados = atributos.filter(attr => attr.id !== 'STYLE');
-    const principais   = atributos.filter(a => a.categoria === 'principal');
-    const secundarias  = atributos.filter(a => ['recomendado','secundario'].includes(a.categoria));
+    // IDs a ocultar completamente da interface (case-insensitive)
+    const IDS_OCULTOS = ['STYLE', 'LINHA', 'PRODUCT_LINE'];
+    const atributosFiltrados = atributos.filter(attr => {
+        const attrId = (attr.id || '').toUpperCase();
+        const hidden = IDS_OCULTOS.some(oculto => attrId === oculto.toUpperCase());
+        if (hidden) console.log('[OCULTO] Atributo filtrado da tela:', attr.id, attr.nome);
+        return !hidden;
+    });
+    const principais   = atributosFiltrados.filter(a => a.categoria === 'principal');
+    const secundarias  = atributosFiltrados.filter(a => ['recomendado','secundario'].includes(a.categoria));
 
     renderizarGrid('primaria',    principais);
     renderizarGrid('secundaria',  secundarias);
@@ -1063,9 +1070,12 @@ function buildCard(container, attr) {
     const isBoolean       = valueType === 'boolean';
     const isNumberUnit    = valueType === 'number_unit';
     const valoresPoss     = attr.valores_possiveis || [];
-    const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued;
+    const IDS_TEXTO_LIVRE = ['MODEL', 'BRAND', 'UPHOLSTERY_MATERIAL'];  // sempre texto livre
+    const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued && !IDS_TEXTO_LIVRE.includes(id);
     const isObrigatorio   = attr.obrigatorio === true;
-    const suportaNA       = attr.tem_nao_se_aplica === true;
+    // IDs que sempre suportam "Não se aplica" mesmo que a API não devolva o flag
+    const IDS_FORCAM_NA = ['SOFA_TYPE', 'SOFA_FORMAT', 'LINE', 'STYLE', 'ITEM_STYLE'];
+    const suportaNA     = attr.tem_nao_se_aplica === true || IDS_FORCAM_NA.includes(id);
 
     let eNaoAplica = attr.e_nao_se_aplica === true || (attr.value_id === '-1' && !attr.valor);
     const estaVazio = !eNaoAplica && !attr.valor && !(attr.value_id && attr.value_id !== '-1');
@@ -1129,7 +1139,10 @@ function buildCard(container, attr) {
         valoresPoss.forEach(opt => {
             const nome = escapeHtml(opt.name || '');
             const oid  = escapeHtml(opt.id   || '');
-            const sel  = (attr.value_id && attr.value_id === opt.id) ? 'selected' : '';
+            // Tenta match por ID ou por nome (case-insensitive) para casos como ESTILO
+            const matchById   = attr.value_id && attr.value_id === opt.id;
+            const matchByName = attr.valor && (attr.valor||'').toLowerCase() === (opt.name||'').toLowerCase();
+            const sel  = (matchById || matchByName) ? 'selected' : '';
             opts += `<option value="${oid}" data-name="${nome}" ${sel}>${nome}</option>`;
         });
         inputHtml = `
@@ -1196,10 +1209,18 @@ function buildCard(container, attr) {
     `;
     container.appendChild(card);
 
+    // Para dropdown: captura o value_id real que ficou selecionado no <select> após render
+    // (pode diferir do attr.value_id se o match foi feito por nome)
+    let valueIdResolvidoParaSalvar = attr.value_id || '';
+    if (temDropdown) {
+        const sel = document.getElementById(`attr_${id}`);
+        if (sel) valueIdResolvidoParaSalvar = sel.value || '';
+    }
+
     // Salva estado original
     estadoCampos[id] = {
         valorOriginal:    attr.valor      || '',
-        valueIdOriginal:  attr.value_id   || '',
+        valueIdOriginal:  valueIdResolvidoParaSalvar,
         naoAplicaOrig:    eNaoAplica,
         tipo:             isBoolean ? 'boolean' : isMultivalued ? 'multivalued' : temDropdown ? 'dropdown' : isNumberUnit ? 'number_unit' : 'text',
         suportaNA,
@@ -1365,6 +1386,33 @@ function tratarErroMercadoLivre(data) {
     // Extrai o erro da estrutura do Mercado Livre
     const errorData = data.detalhes || data.erro;
     
+    // ── Erro de produto duplicado (Repeated user-product) ──
+    if (errorData && typeof errorData === 'object') {
+        const code    = errorData.error || '';
+        const msg     = errorData.message || '';
+        const causes  = errorData.cause || [];
+
+        const isRepeated = code === 'bad_request' && (
+            msg.toLowerCase().includes('repeated user-product') ||
+            causes.some(c => c.code === 'item.user_product.repeated.conflict')
+        );
+
+        if (isRepeated) {
+            // Tenta extrair o ID do conflito da mensagem
+            const conflictMatch = msg.match(/Conflict id:\s*(MLB\w+)/i);
+            const conflictId    = conflictMatch ? conflictMatch[1] : null;
+            return (
+                `⚠️ Produto duplicado no Mercado Livre\n\n` +
+                `Este conjunto de atributos (título, imagem e características) já existe em outro anúncio seu` +
+                (conflictId ? ` (${conflictId})` : '') + `.\n\n` +
+                `🔧 Como resolver:\n` +
+                `• Acesse o anúncio conflitante${conflictId ? ' ' + conflictId : ''} e verifique se ele já está cadastrado\n` +
+                `• Altere pelo menos um atributo diferenciador (ex.: cor, modelo ou descrição) para torná-lo único\n` +
+                `• Se for um produto duplicado acidental, remova ou pause o anúncio conflitante antes de salvar`
+            );
+        }
+    }
+    
     // Verifica se é o erro específico de product_identifier duplicado
     if (errorData && typeof errorData === 'object') {
         // Caso 1: O erro vem no formato do ML (dentro de 'cause')
@@ -1457,10 +1505,10 @@ async function salvarTodosAtributos() {
 
     for (const [id, est] of Object.entries(estadoCampos)) {
 
-        if (id === 'STYLE'){
-            console.log('Ignorando Atributo STYLE');
+        const IDS_IGNORADOS_SAVE = ['STYLE', 'LINHA', 'PRODUCT_LINE'];
+        if (IDS_IGNORADOS_SAVE.some(ig => id.toUpperCase() === ig)){
+            console.log('Ignorando Atributo:', id);
             continue;
-
         }
         const chk   = document.getElementById(`na_${id}`);
         const isNA  = chk ? chk.checked : false;
@@ -1489,6 +1537,7 @@ async function salvarTodosAtributos() {
         } else if (est.tipo === 'dropdown') {
             const sel = document.getElementById(`attr_${id}`);
             if (sel && sel.value && sel.value !== est.valueIdOriginal) {
+                console.log(`[MODIFICADO dropdown] ${id}: original="${est.valueIdOriginal}" novo="${sel.value}"`);
                 const opt = sel.options[sel.selectedIndex];
                 modificados[id] = { valor: opt ? (opt.dataset.name || opt.text) : '', value_id: sel.value, is_nao_se_aplica: false };
             }
@@ -1497,6 +1546,7 @@ async function salvarTodosAtributos() {
             const inp  = document.getElementById(`attr_${id}`);
             const novo = inp ? inp.value.trim() : '';
             if (novo && novo !== est.valorOriginal) {
+                console.log(`[MODIFICADO text] ${id}: original="${est.valorOriginal}" novo="${novo}"`);
                 modificados[id] = { valor: novo, is_nao_se_aplica: false };
             }
         }
