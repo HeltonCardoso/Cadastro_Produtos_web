@@ -6349,7 +6349,89 @@ def obter_dados_completos_perfil():
         traceback.print_exc()
         return {'erro': f'Erro interno: {str(e)}'}
 
+# ──────────────────────────────────────────────────────────────
+# WEBHOOK — recebe notificações do Mercado Livre
+# ──────────────────────────────────────────────────────────────
+@app.route('/mercadolivre/oauth/webhook', methods=['POST'])
+def webhook_mercadolivre():
+    """
+    Endpoint registrado no painel do seu aplicativo ML.
+    Salva cada evento no banco e responde 200 imediatamente,
+    evitando que o ML fique reenviando indefinidamente.
+    """
+    from models import MLWebhookEvent
+    import json as _json
 
-    
+    data = request.get_json(silent=True) or {}
+
+    topic          = data.get('topic') or data.get('type', 'unknown')
+    resource       = data.get('resource', '')
+    user_id        = str(data.get('user_id', ''))
+    attempts       = int(data.get('attempts', 1))
+    application_id = str(data.get('application_id', ''))
+
+    try:
+        evento = MLWebhookEvent(
+            topic          = topic,
+            resource       = resource,
+            user_id        = user_id,
+            attempts       = attempts,
+            application_id = application_id,
+            payload        = _json.dumps(data),
+            processed      = False,
+        )
+        db.session.add(evento)
+        db.session.commit()
+        app.logger.info(f"[ML-Webhook] topic={topic} resource={resource} id={evento.id}")
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"[ML-Webhook] Erro ao salvar evento: {e}")
+
+    # Sempre responde 200 — obrigatório para o ML parar de reenviar
+    return "", 200
+
+
+# ──────────────────────────────────────────────────────────────
+# API — dados para o dashboard de eventos
+# ──────────────────────────────────────────────────────────────
+@app.route('/api/ml/webhook-events')
+@login_required
+def api_webhook_events():
+    """Retorna últimos 200 eventos + contadores por tópico (últimos 7 dias)."""
+    from models import MLWebhookEvent
+    from sqlalchemy import func
+
+    eventos = (
+        MLWebhookEvent.query
+        .order_by(MLWebhookEvent.received_at.desc())
+        .limit(200)
+        .all()
+    )
+
+    sete_dias = datetime.utcnow() - timedelta(days=7)
+    contadores = (
+        db.session.query(MLWebhookEvent.topic, func.count(MLWebhookEvent.id))
+        .filter(MLWebhookEvent.received_at >= sete_dias)
+        .group_by(MLWebhookEvent.topic)
+        .all()
+    )
+
+    return jsonify({
+        'eventos':    [e.to_dict() for e in eventos],
+        'contadores': {t: c for t, c in contadores},
+        'total':      len(eventos),
+    })
+
+
+# ──────────────────────────────────────────────────────────────
+# DASHBOARD — página de eventos do Mercado Livre
+# ──────────────────────────────────────────────────────────────
+@app.route('/dashboard/ml-eventos')
+@login_required
+def dashboard_ml_eventos():
+    """Renderiza o dashboard de eventos do Mercado Livre."""
+    return render_template('mercadolivre/dashboard_eventos.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True)

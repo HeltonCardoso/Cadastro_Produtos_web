@@ -107,7 +107,6 @@ class Usuario(UserMixin, db.Model):
     
     def has_permission(self, modulo):
         """Verifica se o perfil tem acesso ao módulo"""
-        # Mapeamento de permissões por perfil
         permissoes = {
             'Master': ['todos'],
             'SAC': ['pedidos', 'clientes', 'dashboard'],
@@ -115,16 +114,13 @@ class Usuario(UserMixin, db.Model):
             'Financeiro': ['financeiro', 'relatorios', 'dashboard']
         }
         
-        # Master tem acesso a tudo
         if self.is_master():
             return True
         
-        # Verifica permissões extras do banco (sobrescreve)
         for p in self.permissoes_extras:
             if p.modulo == modulo:
                 return p.pode_ler
         
-        # Verifica permissão padrão do perfil
         perfil_permissoes = permissoes.get(self.perfil, [])
         return modulo in perfil_permissoes or 'todos' in perfil_permissoes
     
@@ -144,7 +140,6 @@ class Usuario(UserMixin, db.Model):
         return modulos
     
     def to_dict(self):
-        """Converte para dicionário"""
         return {
             'id': self.id,
             'username': self.username,
@@ -167,18 +162,16 @@ class Permissao(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-    modulo = db.Column(db.String(50), nullable=False)  # 'mercadolivre', 'anymarket', 'cadastro', 'configuracoes', 'pedidos'
+    modulo = db.Column(db.String(50), nullable=False)
     pode_ler = db.Column(db.Boolean, default=True)
     pode_escrever = db.Column(db.Boolean, default=False)
     pode_excluir = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Garantir que não haja duplicidade (um usuário não pode ter duas permissões para o mesmo módulo)
     __table_args__ = (db.UniqueConstraint('usuario_id', 'modulo', name='unique_usuario_modulo'),)
     
     def to_dict(self):
-        """Converte para dicionário"""
         return {
             'id': self.id,
             'usuario_id': self.usuario_id,
@@ -197,20 +190,18 @@ class TokenConfig(db.Model):
     __tablename__ = 'token_configs'
     
     id = db.Column(db.Integer, primary_key=True)
-    service = db.Column(db.String(50), unique=True, nullable=False)  # 'mercadolivre', 'anymarket', 'intelipost', 'google'
-    token_data = db.Column(db.Text, nullable=False)  # JSON com os tokens
+    service = db.Column(db.String(50), unique=True, nullable=False)
+    token_data = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def get_data(self):
-        """Retorna os dados do token como dicionário"""
         try:
             return json.loads(self.token_data)
         except:
             return {}
     
     def set_data(self, data):
-        """Define os dados do token a partir de um dicionário"""
         self.token_data = json.dumps(data)
     
     def to_dict(self):
@@ -235,13 +226,12 @@ class LogAcesso(db.Model):
     usuario_nome = db.Column(db.String(80))
     ip = db.Column(db.String(45))
     user_agent = db.Column(db.String(256))
-    acao = db.Column(db.String(50))  # 'login', 'logout', 'acesso_recurso', 'alteracao'
-    recurso = db.Column(db.String(200))  # URL ou recurso acessado
+    acao = db.Column(db.String(50))
+    recurso = db.Column(db.String(200))
     sucesso = db.Column(db.Boolean, default=True)
     detalhes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relacionamento
     usuario = db.relationship('Usuario', backref='logs')
     
     def to_dict(self):
@@ -263,6 +253,45 @@ class LogAcesso(db.Model):
 
 
 # ============================================
+# MERCADO LIVRE — EVENTOS DE WEBHOOK
+# ============================================
+
+class MLWebhookEvent(db.Model):
+    """
+    Salva cada notificação recebida do Mercado Livre via webhook.
+    A tabela é criada automaticamente pelo db.create_all() no startup.
+    """
+    __tablename__ = 'ml_webhook_events'
+
+    id             = db.Column(db.Integer, primary_key=True)
+    topic          = db.Column(db.String(100), index=True)       # orders, items, questions, payments…
+    resource       = db.Column(db.String(255))                    # ex: /orders/1234567890
+    user_id        = db.Column(db.String(50), index=True)         # seller que gerou o evento
+    attempts       = db.Column(db.Integer, default=1)             # quantas vezes o ML tentou entregar
+    application_id = db.Column(db.String(50))                     # ID do app ML registrado
+    payload        = db.Column(db.Text)                           # JSON bruto recebido
+    received_at    = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    processed      = db.Column(db.Boolean, default=False)         # True quando sua lógica processou
+    error_msg      = db.Column(db.Text, nullable=True)            # Erro de processamento, se houver
+
+    def to_dict(self):
+        return {
+            'id':             self.id,
+            'topic':          self.topic,
+            'resource':       self.resource,
+            'user_id':        self.user_id,
+            'attempts':       self.attempts,
+            'application_id': self.application_id,
+            'received_at':    self.received_at.isoformat() if self.received_at else None,
+            'processed':      self.processed,
+            'error_msg':      self.error_msg,
+        }
+
+    def __repr__(self):
+        return f'<MLWebhookEvent {self.topic} - {self.resource}>'
+
+
+# ============================================
 # FUNÇÕES AUXILIARES PARA INICIALIZAÇÃO
 # ============================================
 
@@ -271,7 +300,6 @@ def init_perfis_e_usuarios():
     from app import app
     
     with app.app_context():
-        # Perfis padrão
         perfis_padrao = [
             {'nome': 'Master', 'descricao': 'Acesso total ao sistema'},
             {'nome': 'SAC', 'descricao': 'Acesso a pedidos e clientes'},
@@ -287,7 +315,6 @@ def init_perfis_e_usuarios():
         
         db.session.commit()
         
-        # Criar usuários padrão
         usuarios_padrao = [
             {'username': 'master', 'email': 'master@sistema.com', 'perfil': 'Master', 'senha': 'master123'},
             {'username': 'sac', 'email': 'sac@sistema.com', 'perfil': 'SAC', 'senha': 'sac123'},

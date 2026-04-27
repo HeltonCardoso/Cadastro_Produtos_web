@@ -1,0 +1,560 @@
+{% extends 'base.html' %}
+
+{% block title %}Eventos Mercado Livre{% endblock %}
+
+{% block extra_css %}
+{{ super() }}
+<style>
+    :root {
+        --ml-blue:      #3483fa;
+        --ml-blue-dark: #2968c8;
+        --ml-green:     #00a650;
+        --ml-orange:    #f5a623;
+        --ml-red:       #e63946;
+        --ml-purple:    #7c3aed;
+        --ml-gray:      #ededed;
+        --ml-dark-gray: #666;
+        --ml-border:    #e5e5e5;
+        --ml-bg:        #f8f9fb;
+        --card-radius:  10px;
+        --transition:   0.2s ease;
+    }
+
+    * { box-sizing: border-box; }
+    body { background: var(--ml-bg); }
+
+    /* ── Page header ── */
+    .page-header {
+        background: white;
+        border-bottom: 1px solid var(--ml-border);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .page-header h1 {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0;
+        flex: 1;
+    }
+
+    .live-badge {
+        background: var(--ml-green);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 20px;
+        letter-spacing: .8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .live-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: white;
+        animation: blink 1.4s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .refresh-info {
+        font-size: 12px;
+        color: var(--ml-dark-gray);
+    }
+
+    .refresh-info span {
+        font-weight: 700;
+        color: var(--ml-blue);
+    }
+
+    .btn-refresh {
+        background: white;
+        border: 1.5px solid var(--ml-border);
+        color: #333;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all var(--transition);
+        font-family: inherit;
+    }
+
+    .btn-refresh:hover {
+        border-color: var(--ml-blue);
+        color: var(--ml-blue);
+    }
+
+    /* ── Container ── */
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    /* ── Stats grid ── */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid var(--ml-border);
+        border-radius: var(--card-radius);
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow var(--transition), transform var(--transition);
+    }
+
+    .stat-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+        transform: translateY(-2px);
+    }
+
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        border-radius: var(--card-radius) var(--card-radius) 0 0;
+    }
+
+    .stat-card.orders::after    { background: var(--ml-blue); }
+    .stat-card.items::after     { background: var(--ml-green); }
+    .stat-card.questions::after { background: var(--ml-orange); }
+    .stat-card.payments::after  { background: #10b981; }
+    .stat-card.catalog::after   { background: var(--ml-purple); }
+    .stat-card.total::after     { background: #64748b; }
+
+    .stat-icon { font-size: 22px; line-height: 1; }
+
+    .stat-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--ml-dark-gray);
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a2e;
+        line-height: 1;
+    }
+
+    .stat-sub { font-size: 11px; color: #aaa; }
+
+    /* ── Events section ── */
+    .events-section {
+        background: white;
+        border: 1px solid var(--ml-border);
+        border-radius: var(--card-radius);
+        overflow: hidden;
+    }
+
+    .events-toolbar {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--ml-border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .events-toolbar h2 {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0;
+        flex: 1;
+    }
+
+    .filter-pill {
+        background: #f3f4f6;
+        border: 1.5px solid transparent;
+        color: #555;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition);
+        font-family: inherit;
+    }
+
+    .filter-pill:hover { background: var(--ml-gray); }
+
+    .filter-pill.active                { background: var(--ml-blue);   border-color: var(--ml-blue);   color: white; }
+    .filter-pill.active.items          { background: var(--ml-green);  border-color: var(--ml-green);  color: white; }
+    .filter-pill.active.questions      { background: var(--ml-orange); border-color: var(--ml-orange); color: white; }
+    .filter-pill.active.payments       { background: #10b981;          border-color: #10b981;          color: white; }
+    .filter-pill.active.catalog        { background: var(--ml-purple); border-color: var(--ml-purple); color: white; }
+
+    /* ── Table ── */
+    .table-wrap {
+        overflow-x: auto;
+        max-height: 560px;
+        overflow-y: auto;
+    }
+
+    .table-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+    #events-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    #events-table thead th {
+        padding: 10px 16px;
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ml-dark-gray);
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        border-bottom: 1px solid var(--ml-border);
+        background: #fafafa;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #events-table tbody td {
+        padding: 11px 16px;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+        color: #333;
+    }
+
+    #events-table tbody tr:last-child td { border-bottom: none; }
+    #events-table tbody tr { transition: background var(--transition); }
+    #events-table tbody tr:hover { background: #f8f9fb; }
+
+    .row-new { animation: rowIn .4s ease; }
+    @keyframes rowIn { from { opacity:0; background:#eff6ff; } to { opacity:1; background:transparent; } }
+
+    /* topic badge */
+    .topic-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .topic-badge.orders    { background: #eff6ff; color: var(--ml-blue); }
+    .topic-badge.items     { background: #f0fdf4; color: var(--ml-green); }
+    .topic-badge.questions { background: #fff7ed; color: #d97706; }
+    .topic-badge.payments  { background: #ecfdf5; color: #059669; }
+    .topic-badge.catalog   { background: #f5f3ff; color: var(--ml-purple); }
+    .topic-badge.default   { background: #f3f4f6; color: #6b7280; }
+
+    .resource-txt {
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--ml-blue);
+        background: #f0f4ff;
+        padding: 2px 7px;
+        border-radius: 5px;
+        max-width: 240px;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .attempts-pill {
+        display: inline-block;
+        min-width: 24px;
+        text-align: center;
+        padding: 2px 7px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .attempts-pill.ok   { background: #f0fdf4; color: var(--ml-green); }
+    .attempts-pill.warn { background: #fff7ed; color: #d97706; }
+    .attempts-pill.err  { background: #fef2f2; color: var(--ml-red); }
+
+    .time-txt  { font-size: 12px; color: #888; white-space: nowrap; }
+    .id-txt    { font-size: 12px; color: #aaa; font-family: monospace; }
+
+    /* empty / loading */
+    .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .empty-state p { font-size: 14px; }
+
+    .spinner-sm {
+        width: 32px; height: 32px;
+        border: 3px solid var(--ml-gray);
+        border-top-color: var(--ml-blue);
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
+        margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Page header ── -->
+<div class="page-header">
+    <h1>📡 Notificações Mercado Livre</h1>
+    <div class="live-badge">
+        <div class="live-dot"></div>
+        AO VIVO
+    </div>
+    <div class="refresh-info">Atualiza em <span id="countdown">15</span>s</div>
+    <button class="btn-refresh" onclick="forceRefresh()">
+        <i class="fas fa-sync-alt" id="refresh-icon"></i> Atualizar
+    </button>
+</div>
+
+<div class="dashboard-container">
+
+    <!-- ── Stat cards ── -->
+    <div class="stats-grid">
+        <div class="stat-card orders">
+            <div class="stat-icon">🛍️</div>
+            <div class="stat-label">Pedidos</div>
+            <div class="stat-value" id="cnt-orders">—</div>
+            <div class="stat-sub">últimos 7 dias</div>
+        </div>
+        <div class="stat-card items">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Anúncios</div>
+            <div class="stat-value" id="cnt-items">—</div>
+            <div class="stat-sub">últimos 7 dias</div>
+        </div>
+        <div class="stat-card questions">
+            <div class="stat-icon">💬</div>
+            <div class="stat-label">Perguntas</div>
+            <div class="stat-value" id="cnt-questions">—</div>
+            <div class="stat-sub">últimos 7 dias</div>
+        </div>
+        <div class="stat-card payments">
+            <div class="stat-icon">💳</div>
+            <div class="stat-label">Pagamentos</div>
+            <div class="stat-value" id="cnt-payments">—</div>
+            <div class="stat-sub">últimos 7 dias</div>
+        </div>
+        <div class="stat-card catalog">
+            <div class="stat-icon">📋</div>
+            <div class="stat-label">Catálogos</div>
+            <div class="stat-value" id="cnt-catalog">—</div>
+            <div class="stat-sub">últimos 7 dias</div>
+        </div>
+        <div class="stat-card total">
+            <div class="stat-icon">🔔</div>
+            <div class="stat-label">Total exibido</div>
+            <div class="stat-value" id="cnt-total">—</div>
+            <div class="stat-sub">últimos 200 eventos</div>
+        </div>
+    </div>
+
+    <!-- ── Events table ── -->
+    <div class="events-section">
+        <div class="events-toolbar">
+            <h2>Histórico de Notificações</h2>
+            <button class="filter-pill active"    data-filter="all">Todos</button>
+            <button class="filter-pill orders"    data-filter="orders">Pedidos</button>
+            <button class="filter-pill items"     data-filter="items">Anúncios</button>
+            <button class="filter-pill questions" data-filter="questions">Perguntas</button>
+            <button class="filter-pill payments"  data-filter="payments">Pagamentos</button>
+            <button class="filter-pill catalog"   data-filter="catalog">Catálogos</button>
+        </div>
+
+        <div class="table-wrap">
+            <table id="events-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tópico</th>
+                        <th>Recurso</th>
+                        <th>Seller ID</th>
+                        <th>Tentativas</th>
+                        <th>Recebido</th>
+                    </tr>
+                </thead>
+                <tbody id="events-body">
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="spinner-sm"></div>
+                            <p>Carregando eventos…</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+const TOPICS = {
+    orders:          { label: 'Pedido',    css: 'orders',    icon: '🛍️' },
+    payments:        { label: 'Pagamento', css: 'payments',  icon: '💳' },
+    items:           { label: 'Anúncio',   css: 'items',     icon: '📦' },
+    questions:       { label: 'Pergunta',  css: 'questions', icon: '💬' },
+    catalog_listing: { label: 'Catálogo',  css: 'catalog',   icon: '📋' },
+};
+
+let allEvents     = [];
+let currentFilter = 'all';
+let countdownVal  = 15;
+let timer;
+
+// ── fetch ──────────────────────────────────────────────────────
+async function fetchEvents() {
+    try {
+        const res  = await fetch('/api/ml/webhook-events');
+        const data = await res.json();
+        allEvents  = data.eventos || [];
+        updateStats(data.contadores || {}, data.total || 0);
+        renderTable();
+    } catch (e) {
+        console.error('Erro ao buscar eventos:', e);
+    }
+}
+
+function forceRefresh() {
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('fa-spin');
+    fetchEvents().finally(() => {
+        setTimeout(() => icon.classList.remove('fa-spin'), 600);
+        resetCountdown();
+    });
+}
+
+// ── stats ──────────────────────────────────────────────────────
+function updateStats(contadores, total) {
+    const match = (key) => {
+        let v = 0;
+        for (const [k, c] of Object.entries(contadores)) {
+            if (k.toLowerCase().includes(key)) v += c;
+        }
+        return v;
+    };
+    document.getElementById('cnt-orders').textContent    = match('order');
+    document.getElementById('cnt-items').textContent     = match('item');
+    document.getElementById('cnt-questions').textContent = match('question');
+    document.getElementById('cnt-payments').textContent  = match('payment');
+    document.getElementById('cnt-catalog').textContent   = match('catalog');
+    document.getElementById('cnt-total').textContent     = total;
+}
+
+// ── table ──────────────────────────────────────────────────────
+function renderTable() {
+    const body     = document.getElementById('events-body');
+    const filtered = currentFilter === 'all'
+        ? allEvents
+        : allEvents.filter(e => (e.topic || '').toLowerCase().includes(currentFilter));
+
+    if (!filtered.length) {
+        body.innerHTML = `<tr><td colspan="6" class="empty-state">
+            <div class="icon">📭</div>
+            <p>Nenhum evento encontrado para este filtro.</p>
+        </td></tr>`;
+        return;
+    }
+
+    body.innerHTML = filtered.map((e, i) => {
+        const topicKey = (e.topic || '').toLowerCase();
+        const tEntry   = Object.entries(TOPICS).find(([k]) => topicKey.includes(k));
+        const tInfo    = tEntry ? tEntry[1] : { label: e.topic || 'Outro', css: 'default', icon: '🔔' };
+
+        const attClass = e.attempts <= 1 ? 'ok' : e.attempts <= 3 ? 'warn' : 'err';
+        const resource = e.resource || '';
+        const resTxt   = resource.length > 38 ? resource.slice(0, 38) + '…' : resource;
+
+        return `<tr class="${i === 0 ? 'row-new' : ''}">
+            <td class="id-txt">${e.id}</td>
+            <td><span class="topic-badge ${tInfo.css}">${tInfo.icon} ${tInfo.label}</span></td>
+            <td>${resource
+                ? `<span class="resource-txt" title="${esc(resource)}">${esc(resTxt)}</span>`
+                : '<span style="color:#ccc">—</span>'
+            }</td>
+            <td style="font-family:monospace;font-size:12px;color:#555">${e.user_id || '—'}</td>
+            <td><span class="attempts-pill ${attClass}">${e.attempts}</span></td>
+            <td class="time-txt">${timeAgo(e.received_at)}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ── helpers ────────────────────────────────────────────────────
+function esc(t) {
+    const d = document.createElement('div');
+    d.textContent = String(t ?? '');
+    return d.innerHTML;
+}
+
+function timeAgo(iso) {
+    if (!iso) return '—';
+    const diff = (Date.now() - new Date(iso + 'Z').getTime()) / 1000;
+    if (diff < 60)    return `${Math.round(diff)}s atrás`;
+    if (diff < 3600)  return `${Math.round(diff / 60)}min atrás`;
+    if (diff < 86400) return `${Math.round(diff / 3600)}h atrás`;
+    return new Date(iso + 'Z').toLocaleDateString('pt-BR');
+}
+
+// ── filter pills ───────────────────────────────────────────────
+document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderTable();
+    });
+});
+
+// ── countdown ──────────────────────────────────────────────────
+function resetCountdown() {
+    clearInterval(timer);
+    countdownVal = 15;
+    document.getElementById('countdown').textContent = 15;
+    timer = setInterval(() => {
+        countdownVal--;
+        document.getElementById('countdown').textContent = countdownVal;
+        if (countdownVal <= 0) { fetchEvents(); resetCountdown(); }
+    }, 1000);
+}
+
+// ── init ───────────────────────────────────────────────────────
+fetchEvents();
+resetCountdown();
+</script>
+{% endblock %}
