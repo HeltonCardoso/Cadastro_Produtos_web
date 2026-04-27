@@ -292,6 +292,122 @@ def admin_usuarios():
     return render_template('admin/usuarios.html', usuarios=usuarios, perfis=perfis, page_title='Gerenciar Usuários')
 
 
+# ============================================
+# ROTAS DE GERENCIAMENTO DE USUÁRIOS
+# ============================================
+
+@app.route('/auth/admin/usuario/novo', methods=['POST'])
+@login_required
+@master_required
+def admin_usuario_novo():
+    """Cria um novo usuário"""
+    try:
+        data = request.get_json()
+        username = data.get('username', '').strip()
+        email    = data.get('email', '').strip()
+        password = data.get('password', '')
+        role     = data.get('role', 'SAC')
+
+        if not username or not email or not password:
+            return jsonify({'success': False, 'error': 'Usuário, e-mail e senha são obrigatórios'}), 400
+
+        if Usuario.query.filter_by(username=username).first():
+            return jsonify({'success': False, 'error': 'Nome de usuário já existe'}), 400
+
+        if Usuario.query.filter_by(email=email).first():
+            return jsonify({'success': False, 'error': 'E-mail já cadastrado'}), 400
+
+        perfil = Perfil.query.filter_by(nome=role).first()
+        if not perfil:
+            return jsonify({'success': False, 'error': f'Perfil "{role}" não encontrado'}), 400
+
+        novo = Usuario(
+            username=username,
+            email=email,
+            perfil_id=perfil.id,
+            is_active=True
+        )
+        novo.set_password(password)
+        db.session.add(novo)
+        db.session.commit()
+
+        return jsonify({'success': True, 'id': novo.id})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/auth/admin/usuario/<int:usuario_id>/editar', methods=['PUT'])
+@login_required
+@master_required
+def admin_usuario_editar(usuario_id):
+    """Edita um usuário existente"""
+    try:
+        usuario = Usuario.query.get_or_404(usuario_id)
+        data    = request.get_json()
+
+        username  = data.get('username', '').strip()
+        email     = data.get('email', '').strip()
+        password  = data.get('password', '')
+        role      = data.get('role')
+        is_active = data.get('is_active')
+
+        if not username or not email:
+            return jsonify({'success': False, 'error': 'Usuário e e-mail são obrigatórios'}), 400
+
+        # Verifica duplicidade apenas se mudou
+        outro = Usuario.query.filter_by(username=username).first()
+        if outro and outro.id != usuario_id:
+            return jsonify({'success': False, 'error': 'Nome de usuário já existe'}), 400
+
+        outro_email = Usuario.query.filter_by(email=email).first()
+        if outro_email and outro_email.id != usuario_id:
+            return jsonify({'success': False, 'error': 'E-mail já cadastrado'}), 400
+
+        usuario.username = username
+        usuario.email    = email
+
+        if role:
+            perfil = Perfil.query.filter_by(nome=role).first()
+            if not perfil:
+                return jsonify({'success': False, 'error': f'Perfil "{role}" não encontrado'}), 400
+            usuario.perfil_id = perfil.id
+
+        if is_active is not None:
+            usuario.is_active = bool(is_active)
+
+        if password:
+            usuario.set_password(password)
+
+        db.session.commit()
+        return jsonify({'success': True})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/auth/admin/usuario/<int:usuario_id>/excluir', methods=['DELETE'])
+@login_required
+@master_required
+def admin_usuario_excluir(usuario_id):
+    """Exclui um usuário"""
+    try:
+        # Impede que o próprio usuário logado se exclua
+        if usuario_id == current_user.id:
+            return jsonify({'success': False, 'error': 'Você não pode excluir seu próprio usuário'}), 400
+
+        usuario = Usuario.query.get_or_404(usuario_id)
+        db.session.delete(usuario)
+        db.session.commit()
+        return jsonify({'success': True})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 @app.route('/api/google/sheets/list', methods=['GET'])
 def api_listar_google_sheets():
     """Lista planilhas do usuário"""

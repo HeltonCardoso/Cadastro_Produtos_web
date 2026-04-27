@@ -47,10 +47,17 @@
                             </td>
                             <td>{{ usuario.last_login.strftime('%d/%m/%Y %H:%M') if usuario.last_login else 'Nunca' }}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning" onclick="editarUsuario({{ usuario.id }})">
+                                <button class="btn btn-sm btn-warning" 
+                                    onclick="editarUsuario(
+                                        {{ usuario.id }},
+                                        '{{ usuario.username }}',
+                                        '{{ usuario.email }}',
+                                        '{{ usuario.perfil }}',
+                                        {{ 'true' if usuario.is_active else 'false' }}
+                                    )">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" onclick="excluirUsuario({{ usuario.id }})">
+                                <button class="btn btn-sm btn-danger" onclick="excluirUsuario({{ usuario.id }}, '{{ usuario.username }}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -63,37 +70,46 @@
     </div>
 </div>
 
-<!-- Modal Novo Usuário -->
+<!-- Modal Novo / Editar Usuário -->
 <div class="modal fade" id="modalUsuario" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Novo Usuário</h5>
+                <h5 class="modal-title" id="modalUsuarioTitulo">Novo Usuário</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="formUsuario">
-                    <div class="mb-3">
-                        <label>Usuário</label>
-                        <input type="text" id="username" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" id="email" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Senha</label>
-                        <input type="password" id="password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Perfil</label>
-                        <select id="perfil" class="form-control">
-                            <option value="SAC">SAC</option>
-                            <option value="Cadastro">Cadastro</option>
-                            <option value="Master">Master</option>
-                        </select>
-                    </div>
-                </form>
+                <!-- Campo oculto para guardar o ID em modo edição -->
+                <input type="hidden" id="usuarioId">
+
+                <div class="mb-3">
+                    <label>Usuário</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label id="labelSenha">Senha</label>
+                    <input type="password" id="password" class="form-control">
+                    <small id="dicaSenha" class="text-muted d-none">Deixe em branco para manter a senha atual</small>
+                </div>
+                <div class="mb-3">
+                    <label>Perfil</label>
+                    <select id="perfil" class="form-control">
+                        <option value="SAC">SAC</option>
+                        <option value="Cadastro">Cadastro</option>
+                        <option value="Master">Master</option>
+                    </select>
+                </div>
+                <div class="mb-3" id="campoStatus" style="display:none;">
+                    <label>Status</label>
+                    <select id="is_active" class="form-control">
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -104,42 +120,124 @@
 </div>
 
 <script>
+// ─── Novo Usuário ────────────────────────────────────────────────────────────
 function abrirModalNovoUsuario() {
-    document.getElementById('formUsuario').reset();
+    // Limpa campos
+    document.getElementById('usuarioId').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('perfil').value = 'SAC';
+
+    // Ajusta título e dicas
+    document.getElementById('modalUsuarioTitulo').textContent = 'Novo Usuário';
+    document.getElementById('dicaSenha').classList.add('d-none');
+    document.getElementById('password').required = true;
+    document.getElementById('campoStatus').style.display = 'none';
+
     new bootstrap.Modal(document.getElementById('modalUsuario')).show();
 }
 
+// ─── Editar Usuário ──────────────────────────────────────────────────────────
+function editarUsuario(id, username, email, perfil, isActive) {
+    // Preenche campos com os dados atuais
+    document.getElementById('usuarioId').value = id;
+    document.getElementById('username').value = username;
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = '';
+    document.getElementById('perfil').value = perfil;
+    document.getElementById('is_active').value = isActive ? 'true' : 'false';
+
+    // Ajusta título, dica de senha e campo de status
+    document.getElementById('modalUsuarioTitulo').textContent = 'Editar Usuário';
+    document.getElementById('dicaSenha').classList.remove('d-none');
+    document.getElementById('password').required = false;
+    document.getElementById('campoStatus').style.display = 'block';
+
+    new bootstrap.Modal(document.getElementById('modalUsuario')).show();
+}
+
+// ─── Salvar (Novo ou Edição) ─────────────────────────────────────────────────
 async function salvarUsuario() {
+    const id = document.getElementById('usuarioId').value;
+    const modoEdicao = id !== '';
+
     const data = {
-        username: document.getElementById('username').value,
-        email: document.getElementById('email').value,
+        username: document.getElementById('username').value.trim(),
+        email:    document.getElementById('email').value.trim(),
         password: document.getElementById('password').value,
-        role: document.getElementById('perfil').value
+        role:     document.getElementById('perfil').value,
     };
-    
-    const response = await fetch('/auth/admin/usuario/novo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    
-    const result = await response.json();
-    if (result.success) {
-        location.reload();
+
+    // Valida campos obrigatórios
+    if (!data.username || !data.email) {
+        alert('Usuário e e-mail são obrigatórios.');
+        return;
+    }
+    if (!modoEdicao && !data.password) {
+        alert('Senha é obrigatória para novo usuário.');
+        return;
+    }
+
+    // Em edição inclui status e envia para rota diferente
+    let url, method;
+    if (modoEdicao) {
+        data.is_active = document.getElementById('is_active').value === 'true';
+        url    = `/auth/admin/usuario/${id}/editar`;
+        method = 'PUT';
     } else {
-        alert('Erro: ' + result.error);
+        url    = '/auth/admin/usuario/novo';
+        method = 'POST';
+    }
+
+    try {
+        const response = await fetch(url, {
+            method:  method,
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            alert('Erro: ' + (err.error || `HTTP ${response.status}`));
+            return;
+        }
+
+        const result = await response.json();
+        if (result.success) {
+            location.reload();
+        } else {
+            alert('Erro: ' + (result.error || 'Falha desconhecida'));
+        }
+    } catch (e) {
+        alert('Erro de conexão: ' + e.message);
     }
 }
 
-function editarUsuario(id) {
-    // Implementar edição
-    alert('Funcionalidade em desenvolvimento');
-}
+// ─── Excluir Usuário ─────────────────────────────────────────────────────────
+async function excluirUsuario(id, username) {
+    if (!confirm(`Tem certeza que deseja excluir o usuário "${username}"?`)) return;
 
-function excluirUsuario(id) {
-    if (confirm('Tem certeza que deseja excluir este usuário?')) {
-        fetch(`/auth/admin/usuario/${id}/excluir`, { method: 'DELETE' })
-            .then(() => location.reload());
+    try {
+        const response = await fetch(`/auth/admin/usuario/${id}/excluir`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            alert('Erro ao excluir: ' + (err.error || `HTTP ${response.status}`));
+            return;
+        }
+
+        const result = await response.json().catch(() => ({ success: true }));
+        if (result.success !== false) {
+            location.reload();
+        } else {
+            alert('Erro ao excluir: ' + (result.error || 'Falha desconhecida'));
+        }
+    } catch (e) {
+        alert('Erro de conexão: ' + e.message);
     }
 }
 </script>
