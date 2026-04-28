@@ -4,819 +4,464 @@
 {% block extra_css %}
 {{ super() }}
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root {
+    --blue:   #3483fa;
+    --blue-d: #2968c8;
+    --green:  #00a650;
+    --orange: #f5a623;
+    --red:    #e63946;
+    --border: #e5e5e5;
+    --bg:     #f8f9fb;
+    --radius: 10px;
+    --trans:  0.2s ease;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); }
 
-    :root {
-        --bg:          #f0f4ff;
-        --surface:     #ffffff;
-        --surface2:    #f7f9ff;
-        --border:      #e4e9f7;
-        --border2:     #cdd5f0;
-        --text:        #1a1f36;
-        --muted:       #7480a0;
-        --blue:        #2563eb;
-        --blue-light:  #eff4ff;
-        --blue-border: #bfcfff;
-        --green:       #059669;
-        --green-light: #ecfdf5;
-        --orange:      #d97706;
-        --orange-light:#fffbeb;
-        --red:         #dc2626;
-        --red-light:   #fef2f2;
-        --purple:      #7c3aed;
-        --purple-light:#f5f3ff;
-        --radius:      14px;
-        --font:        'Plus Jakarta Sans', sans-serif;
-        --mono:        'IBM Plex Mono', monospace;
-        --shadow:      0 1px 4px rgba(37,99,235,0.07), 0 4px 16px rgba(37,99,235,0.05);
-    }
+/* ── page header ── */
+.page-header {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center;
+    gap: 12px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.page-header h1 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
+.badge-sac { background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .8px; }
+.refresh-info { font-size: 12px; color: #888; }
+.refresh-info span { font-weight: 700; color: var(--blue); }
+.btn-sm {
+    background: #fff; border: 1.5px solid var(--border); color: #333;
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: all var(--trans); font-family: inherit;
+}
+.btn-sm:hover { border-color: var(--blue); color: var(--blue); }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: var(--font); }
+/* ── wrap ── */
+.wrap { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
 
-    /* ── TOPBAR ─────────────────────────────── */
-    .topbar {
-        background: var(--blue);
-        padding: 0 28px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        height: 56px;
-        position: sticky;
-        top: 0;
-        z-index: 200;
-        box-shadow: 0 2px 12px rgba(37,99,235,0.25);
-    }
+.section-title {
+    font-size: 12px; font-weight: 700; color: #888;
+    text-transform: uppercase; letter-spacing: .8px;
+    margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    .topbar-logo {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 15px;
-        font-weight: 800;
-        color: white;
-        letter-spacing: -.3px;
-    }
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; position: relative; overflow: hidden;
+    transition: box-shadow var(--trans), transform var(--trans);
+}
+.kpi:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); transform: translateY(-2px); }
+.kpi::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; border-radius: var(--radius) var(--radius) 0 0;
+}
+.kpi.blue::after   { background: var(--blue); }
+.kpi.green::after  { background: var(--green); }
+.kpi.orange::after { background: var(--orange); }
+.kpi.red::after    { background: var(--red); }
+.kpi.gray::after   { background: #94a3b8; }
 
-    .badge-sac {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        font-size: 9px;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 20px;
-        letter-spacing: .8px;
-        text-transform: uppercase;
-        border: 1px solid rgba(255,255,255,0.3);
-    }
+.kpi-icon  { font-size: 20px; margin-bottom: 6px; }
+.kpi-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .6px; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1; margin: 4px 0 2px; }
+.kpi-sub   { font-size: 10px; color: #aaa; }
 
-    .topbar-spacer { flex: 1; }
+/* ── cards ── */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+.card-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+}
+.card-header h3 { font-size: 13px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
+.card-count { background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.card-count.orange { background: var(--orange); }
+.card-count.green  { background: var(--green); }
+.card-count.red    { background: var(--red); }
 
-    .topbar-user {
-        font-size: 13px;
-        color: rgba(255,255,255,0.75);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
+/* ── pergunta item ── */
+.pergunta-item {
+    padding: 12px 16px; border-bottom: 1px solid #f3f4f6;
+    transition: background var(--trans);
+}
+.pergunta-item:last-child { border-bottom: none; }
+.pergunta-item:hover { background: #f8f9fb; }
 
-    .live-pill {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
-        color: white;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: .6px;
-    }
+.pergunta-meta {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;
+}
+.pergunta-resource {
+    font-family: monospace; font-size: 11px; color: var(--blue);
+    background: #f0f4ff; padding: 2px 6px; border-radius: 4px;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pergunta-time { font-size: 11px; color: #aaa; white-space: nowrap; }
 
-    .live-dot {
-        width: 6px; height: 6px;
-        border-radius: 50%;
-        background: #4ade80;
-        animation: pulse 1.6s infinite;
-    }
+.badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; white-space: nowrap;
+}
+.badge.pendente   { background: #fff7ed; color: #d97706; }
+.badge.respondida { background: #f0fdf4; color: var(--green); }
+.badge.pedido     { background: #eff6ff; color: var(--blue); }
+.badge.pagamento  { background: #ecfdf5; color: #059669; }
 
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
+/* ── resposta box ── */
+.resposta-wrap {
+    display: none; margin-top: 8px; gap: 8px;
+}
+.resposta-wrap.open { display: flex; }
+.resposta-input {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; font-size: 13px; font-family: inherit;
+    resize: none; transition: border-color var(--trans);
+    outline: none;
+}
+.resposta-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(52,131,250,.1); }
+.btn-responder {
+    background: var(--blue); color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+    transition: background var(--trans);
+}
+.btn-responder:hover { background: var(--blue-d); }
+.btn-responder:disabled { background: #aaa; cursor: not-allowed; }
 
-    .btn-refresh {
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.25);
-        color: white;
-        padding: 6px 14px;
-        border-radius: 8px;
-        font-family: var(--font);
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        transition: background .2s;
-    }
+.btn-abrir-resposta {
+    background: transparent; border: 1.5px solid var(--border); color: #555;
+    padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all var(--trans);
+}
+.btn-abrir-resposta:hover { border-color: var(--blue); color: var(--blue); }
 
-    .btn-refresh:hover { background: rgba(255,255,255,0.25); }
+/* ── pedido item ── */
+.pedido-item {
+    padding: 10px 16px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 10px; font-size: 12px;
+    transition: background var(--trans);
+}
+.pedido-item:last-child { border-bottom: none; }
+.pedido-item:hover { background: #f8f9fb; }
+.pedido-resource {
+    font-family: monospace; font-size: 11px; color: var(--blue);
+    background: #f0f4ff; padding: 2px 6px; border-radius: 4px;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 
-    /* ── WRAPPER ────────────────────────────── */
-    .wrapper {
-        max-width: 1300px;
-        margin: 0 auto;
-        padding: 28px 24px;
-    }
+/* ── chart ── */
+.chart-wrap { padding: 16px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 70px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; background: var(--blue); }
+.bar-label { font-size: 10px; color: #888; }
+.bar-val   { font-size: 10px; font-weight: 700; color: #555; }
 
-    /* ── KPI GRID ───────────────────────────── */
-    .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-        margin-bottom: 28px;
-    }
+/* ── list scroll ── */
+.scroll-list { max-height: 360px; overflow-y: auto; }
+.scroll-list::-webkit-scrollbar { width: 4px; }
+.scroll-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
 
-    .kpi-card {
-        background: var(--surface);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        padding: 20px 22px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        box-shadow: var(--shadow);
-        transition: transform .2s, box-shadow .2s;
-        position: relative;
-        overflow: hidden;
-    }
+/* ── spinner ── */
+.empty { text-align: center; padding: 30px; color: #aaa; font-size: 13px; }
+.spinner-sm {
+    width: 28px; height: 28px; border: 3px solid #eee; border-top-color: var(--blue);
+    border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-    .kpi-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(37,99,235,0.12);
-    }
-
-    .kpi-card::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 3px;
-        border-radius: 0 0 var(--radius) var(--radius);
-    }
-
-    .kpi-card.blue::after   { background: var(--blue); }
-    .kpi-card.green::after  { background: var(--green); }
-    .kpi-card.orange::after { background: var(--orange); }
-    .kpi-card.red::after    { background: var(--red); }
-    .kpi-card.purple::after { background: var(--purple); }
-
-    .kpi-icon-wrap {
-        width: 48px; height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        flex-shrink: 0;
-    }
-
-    .kpi-icon-wrap.blue   { background: var(--blue-light);   }
-    .kpi-icon-wrap.green  { background: var(--green-light);  }
-    .kpi-icon-wrap.orange { background: var(--orange-light); }
-    .kpi-icon-wrap.red    { background: var(--red-light);    }
-    .kpi-icon-wrap.purple { background: var(--purple-light); }
-
-    .kpi-info { flex: 1; min-width: 0; }
-
-    .kpi-value {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--text);
-        line-height: 1;
-        font-family: var(--mono);
-    }
-
-    .kpi-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--muted);
-        margin-top: 4px;
-    }
-
-    /* ── TWO-COL LAYOUT ─────────────────────── */
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-
-    /* ── SECTION CARD ───────────────────────── */
-    .section-card {
-        background: var(--surface);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        overflow: hidden;
-        margin-bottom: 24px;
-    }
-
-    .section-card.no-mb { margin-bottom: 0; }
-
-    .card-header {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: var(--surface2);
-    }
-
-    .card-header h2 {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--text);
-        flex: 1;
-    }
-
-    .header-badge {
-        background: var(--border);
-        color: var(--muted);
-        font-size: 11px;
-        font-weight: 700;
-        padding: 2px 10px;
-        border-radius: 20px;
-    }
-
-    .header-badge.pending {
-        background: var(--orange-light);
-        color: var(--orange);
-        border: 1px solid rgba(217,119,6,.2);
-    }
-
-    /* ── FILTER TABS ─────────────────────────── */
-    .filter-tabs {
-        display: flex;
-        gap: 6px;
-        padding: 12px 20px;
-        border-bottom: 1px solid var(--border);
-        background: var(--surface);
-        flex-wrap: wrap;
-    }
-
-    .tab-btn {
-        background: var(--surface2);
-        border: 1.5px solid var(--border);
-        color: var(--muted);
-        padding: 5px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        font-family: var(--font);
-        transition: all .15s;
-    }
-
-    .tab-btn.active {
-        background: var(--blue-light);
-        border-color: var(--blue-border);
-        color: var(--blue);
-    }
-
-    /* ── TABLE ───────────────────────────────── */
-    .table-wrap { overflow-x: auto; max-height: 460px; overflow-y: auto; }
-
-    .table-wrap::-webkit-scrollbar { width: 4px; height: 4px; }
-    .table-wrap::-webkit-scrollbar-track { background: transparent; }
-    .table-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
-
-    table.data-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-    }
-
-    table.data-table thead th {
-        padding: 9px 16px;
-        text-align: left;
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: .6px;
-        border-bottom: 1px solid var(--border);
-        background: var(--surface2);
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        white-space: nowrap;
-    }
-
-    table.data-table tbody tr {
-        border-bottom: 1px solid var(--border);
-        transition: background .12s;
-    }
-
-    table.data-table tbody tr:last-child { border-bottom: none; }
-    table.data-table tbody tr:hover { background: var(--blue-light); }
-
-    table.data-table tbody td {
-        padding: 10px 16px;
-        color: var(--text);
-        vertical-align: middle;
-    }
-
-    .mono { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-
-    /* ── STATUS BADGES ───────────────────────── */
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .status-badge.pendente  { background: var(--orange-light); color: var(--orange); border: 1px solid rgba(217,119,6,.2); }
-    .status-badge.respondida { background: var(--green-light); color: var(--green); border: 1px solid rgba(5,150,105,.2); }
-    .status-badge.pago      { background: var(--green-light); color: var(--green); border: 1px solid rgba(5,150,105,.2); }
-    .status-badge.confirmado { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-border); }
-    .status-badge.cancelado { background: var(--red-light);  color: var(--red);  border: 1px solid rgba(220,38,38,.2); }
-    .status-badge.default   { background: var(--surface2);   color: var(--muted);border: 1px solid var(--border); }
-
-    /* ── PERGUNTA ROW ─────────────────────────── */
-    .pergunta-row {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border);
-        transition: background .12s;
-    }
-
-    .pergunta-row:hover { background: var(--blue-light); }
-    .pergunta-row:last-child { border-bottom: none; }
-
-    .perg-avatar {
-        width: 36px; height: 36px;
-        border-radius: 50%;
-        background: var(--blue-light);
-        border: 2px solid var(--blue-border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        flex-shrink: 0;
-    }
-
-    .perg-body { flex: 1; min-width: 0; }
-
-    .perg-resource {
-        font-size: 12px;
-        font-family: var(--mono);
-        color: var(--muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .perg-meta {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 5px;
-        flex-wrap: wrap;
-    }
-
-    .perg-time {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 4px;
-    }
-
-    /* ── MINI CHART ──────────────────────────── */
-    .mini-chart {
-        display: flex;
-        align-items: flex-end;
-        gap: 5px;
-        height: 70px;
-        padding: 12px 20px;
-    }
-
-    .mc-col {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-        height: 100%;
-        justify-content: flex-end;
-    }
-
-    .mc-bar {
-        width: 100%;
-        border-radius: 3px 3px 0 0;
-        background: linear-gradient(180deg, var(--blue) 0%, rgba(37,99,235,.3) 100%);
-        min-height: 3px;
-        transition: height .4s;
-    }
-
-    .mc-label {
-        font-size: 9px;
-        color: var(--muted);
-        font-weight: 600;
-        text-align: center;
-    }
-
-    /* ── EMPTY ───────────────────────────────── */
-    .empty {
-        text-align: center;
-        padding: 36px 20px;
-        color: var(--muted);
-        font-size: 13px;
-    }
-
-    .empty .e-icon { font-size: 30px; margin-bottom: 8px; }
-
-    /* ── SPINNER ─────────────────────────────── */
-    .spinner {
-        width: 18px; height: 18px;
-        border: 2px solid var(--border2);
-        border-top-color: var(--blue);
-        border-radius: 50%;
-        animation: spin .7s linear infinite;
-        display: inline-block;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Ações rápidas ───────────────────────── */
-    .quick-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        padding: 8px;
-    }
-
-    .qa-btn {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--muted);
-        border: none;
-        background: none;
-        font-family: var(--font);
-        text-align: left;
-        width: 100%;
-        transition: all .15s;
-    }
-
-    .qa-btn:hover { background: var(--blue-light); color: var(--blue); }
-    .qa-btn.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
-
-    .qa-badge {
-        margin-left: auto;
-        background: var(--orange);
-        color: white;
-        font-size: 10px;
-        font-weight: 700;
-        padding: 1px 7px;
-        border-radius: 20px;
-    }
-
-    @media (max-width: 900px) {
-        .two-col { grid-template-columns: 1fr; }
-        .topbar { padding: 0 16px; }
-        .wrapper { padding: 16px; }
-    }
+/* ── toast ── */
+.toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    transform: translateY(20px); opacity: 0; transition: all .3s ease;
+    pointer-events: none;
+}
+.toast.show { transform: none; opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- TOPBAR -->
-<div class="topbar">
-    <div class="topbar-logo">
-        🎧 SAC
-        <span class="badge-sac">Atendimento</span>
-    </div>
-    <div class="topbar-spacer"></div>
-    <div class="topbar-user">👤 {{ current_user.username }}</div>
-    <div class="live-pill"><div class="live-dot"></div>AO VIVO</div>
-    <span style="font-size:12px;color:rgba(255,255,255,.6)">Atualiza em <strong id="countdown" style="color:white">30</strong>s</span>
-    <button class="btn-refresh" onclick="forceRefresh()">
-        <i class="fas fa-sync-alt" id="refresh-icon"></i> Atualizar
+<div class="page-header">
+    <h1>🎧 Dashboard SAC</h1>
+    <span class="badge-sac">SAC</span>
+    <span style="font-size:13px;color:#555">Olá, <strong>{{ current_user.username }}</strong>!</span>
+    <div class="refresh-info">Atualiza em <span id="countdown">30</span>s</div>
+    <button class="btn-sm" onclick="forceRefresh()">
+        <i class="fas fa-sync-alt" id="ref-icon"></i> Atualizar
     </button>
 </div>
 
-<div class="wrapper">
+<div class="wrap">
 
-    <!-- KPI GRID -->
+    <!-- ── KPIs ── -->
+    <div class="section-title">📊 Resumo</div>
     <div class="kpi-grid">
-        <div class="kpi-card orange">
-            <div class="kpi-icon-wrap orange">💬</div>
-            <div class="kpi-info">
-                <div class="kpi-value" id="k-pend">—</div>
-                <div class="kpi-label">Perguntas Pendentes</div>
-            </div>
+        <div class="kpi orange">
+            <div class="kpi-icon">💬</div>
+            <div class="kpi-label">Perguntas Pendentes</div>
+            <div class="kpi-value" id="kpi-pendentes">—</div>
+            <div class="kpi-sub">aguardando resposta</div>
         </div>
-        <div class="kpi-card green">
-            <div class="kpi-icon-wrap green">✅</div>
-            <div class="kpi-info">
-                <div class="kpi-value" id="k-resp">—</div>
-                <div class="kpi-label">Respondidas (30d)</div>
-            </div>
+        <div class="kpi green">
+            <div class="kpi-icon">✅</div>
+            <div class="kpi-label">Respondidas</div>
+            <div class="kpi-value" id="kpi-respondidas">—</div>
+            <div class="kpi-sub">total geral</div>
         </div>
-        <div class="kpi-card blue">
-            <div class="kpi-icon-wrap blue">📅</div>
-            <div class="kpi-info">
-                <div class="kpi-value" id="k-hoje">—</div>
-                <div class="kpi-label">Perguntas Hoje</div>
-            </div>
+        <div class="kpi blue">
+            <div class="kpi-icon">📅</div>
+            <div class="kpi-label">Perguntas Hoje</div>
+            <div class="kpi-value" id="kpi-hoje">—</div>
+            <div class="kpi-sub">recebidas hoje</div>
         </div>
-        <div class="kpi-card purple">
-            <div class="kpi-icon-wrap purple">🛍️</div>
-            <div class="kpi-info">
-                <div class="kpi-value" id="k-ped">—</div>
-                <div class="kpi-label">Pedidos (7d)</div>
-            </div>
+        <div class="kpi gray">
+            <div class="kpi-icon">🛍️</div>
+            <div class="kpi-label">Pedidos 7 dias</div>
+            <div class="kpi-value" id="kpi-pedidos">—</div>
+            <div class="kpi-sub">via webhook</div>
         </div>
-        <div class="kpi-card green">
-            <div class="kpi-icon-wrap green">💳</div>
-            <div class="kpi-info">
-                <div class="kpi-value" id="k-pag">—</div>
-                <div class="kpi-label">Pagamentos (7d)</div>
-            </div>
+        <div class="kpi green">
+            <div class="kpi-icon">💳</div>
+            <div class="kpi-label">Pagamentos 7 dias</div>
+            <div class="kpi-value" id="kpi-pagamentos">—</div>
+            <div class="kpi-sub">via webhook</div>
+        </div>
+        <div class="kpi blue">
+            <div class="kpi-icon">📩</div>
+            <div class="kpi-label">Total Perguntas</div>
+            <div class="kpi-value" id="kpi-total">—</div>
+            <div class="kpi-sub">todas registradas</div>
         </div>
     </div>
 
-    <!-- PERGUNTAS + PAINEL LATERAL -->
-    <div class="two-col">
-
-        <!-- Perguntas -->
-        <div class="section-card no-mb">
-            <div class="card-header">
-                <h2>💬 Perguntas de Clientes</h2>
-                <span class="header-badge pending" id="cnt-pend-badge">0 pendentes</span>
-                <span class="header-badge" id="cnt-total-badge">0 total</span>
-            </div>
-            <div class="filter-tabs">
-                <button class="tab-btn active" data-tab="todas">Todas</button>
-                <button class="tab-btn" data-tab="pendente">Pendentes</button>
-                <button class="tab-btn" data-tab="respondida">Respondidas</button>
-            </div>
-            <div id="perguntas-list">
-                <div class="empty"><span class="spinner"></span></div>
-            </div>
-        </div>
-
-        <!-- Painel lateral -->
-        <div>
-            <!-- Volume chart -->
-            <div class="section-card">
-                <div class="card-header"><h2>📈 Perguntas — 7 dias</h2></div>
-                <div class="mini-chart" id="mini-chart">
-                    <div class="empty" style="width:100%;padding:10px"><span class="spinner"></span></div>
-                </div>
-            </div>
-
-            <!-- Ações rápidas de atendimento -->
-            <div class="section-card" style="margin-top:16px">
-                <div class="card-header"><h2>⚡ Filtros Rápidos</h2></div>
-                <div class="quick-actions">
-                    <button class="qa-btn active" data-tab-trigger="todas">📋 Todas as perguntas <span class="qa-badge" id="qa-total">0</span></button>
-                    <button class="qa-btn" data-tab-trigger="pendente">⏳ Sem resposta <span class="qa-badge" id="qa-pend">0</span></button>
-                    <button class="qa-btn" data-tab-trigger="respondida">✅ Respondidas</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- PEDIDOS RECENTES -->
-    <div class="section-card">
+    <!-- ── Volume perguntas ── -->
+    <div class="card">
         <div class="card-header">
-            <h2>🛍️ Pedidos Recentes (7 dias)</h2>
-            <span class="header-badge" id="cnt-ped-badge">0</span>
+            <h3>📈 Volume de perguntas — últimos 7 dias</h3>
         </div>
-        <div class="table-wrap">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID Evento</th>
-                        <th>Recurso / Pedido</th>
-                        <th>Seller</th>
-                        <th>Status</th>
-                        <th>Tentativas</th>
-                        <th>Recebido</th>
-                    </tr>
-                </thead>
-                <tbody id="pedidos-body">
-                    <tr><td colspan="6" class="empty"><span class="spinner"></span></td></tr>
-                </tbody>
-            </table>
+        <div class="chart-wrap">
+            <div class="bar-chart" id="bar-chart">
+                <div class="empty"><div class="spinner-sm"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Perguntas ── -->
+    <div class="card">
+        <div class="card-header">
+            <h3>💬 Perguntas recebidas</h3>
+            <span class="card-count orange" id="cnt-perguntas">0</span>
+        </div>
+        <div class="scroll-list" id="list-perguntas">
+            <div class="empty"><div class="spinner-sm"></div>Carregando perguntas…</div>
+        </div>
+    </div>
+
+    <!-- ── Pedidos ── -->
+    <div class="card">
+        <div class="card-header">
+            <h3>🛍️ Pedidos recentes</h3>
+            <span class="card-count" id="cnt-pedidos">0</span>
+        </div>
+        <div class="scroll-list" id="list-pedidos">
+            <div class="empty"><div class="spinner-sm"></div>Carregando pedidos…</div>
         </div>
     </div>
 
 </div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
 
 {% endblock %}
 
 {% block extra_js %}
 {{ super() }}
 <script>
-let state = {};
-let filtroAtivo = 'todas';
 let countdownVal = 30;
-let timerInterval;
+let timer;
 
-// ── Fetch ─────────────────────────────────────────────────────────────────────
-async function fetchData() {
+// ── fetch ─────────────────────────────────────────────────────
+async function fetchDados() {
     try {
-        const res = await fetch('/api/ml/sac/resumo');
-        if (!res.ok) throw new Error(res.status);
-        state = await res.json();
-        render();
-    } catch(e) {
-        console.error('Erro fetch SAC:', e);
-    }
+        const res  = await fetch('/api/ml/sac/resumo');
+        const data = await res.json();
+        if (data.error) { console.error(data.error); return; }
+        renderKpis(data.kpis);
+        renderBarChart(data.volume_perguntas || []);
+        renderPerguntas(data.perguntas || []);
+        renderPedidos(data.pedidos || []);
+    } catch (e) { console.error('Erro:', e); }
 }
 
 function forceRefresh() {
-    const icon = document.getElementById('refresh-icon');
-    icon.classList.add('fa-spin');
-    fetchData().finally(() => {
-        setTimeout(() => icon.classList.remove('fa-spin'), 600);
+    const ic = document.getElementById('ref-icon');
+    ic.classList.add('fa-spin');
+    fetchDados().finally(() => {
+        setTimeout(() => ic.classList.remove('fa-spin'), 600);
         resetCountdown();
     });
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
-function render() {
-    if (!state.kpis) return;
-    const k = state.kpis;
-
-    // KPIs
-    document.getElementById('k-pend').textContent = k.perguntas_pendentes  ?? 0;
-    document.getElementById('k-resp').textContent = k.perguntas_respondidas ?? 0;
-    document.getElementById('k-hoje').textContent = k.perguntas_hoje        ?? 0;
-    document.getElementById('k-ped').textContent  = k.pedidos_7d            ?? 0;
-    document.getElementById('k-pag').textContent  = k.pagamentos_7d         ?? 0;
-
-    // Badges header
-    document.getElementById('cnt-pend-badge').textContent  = (k.perguntas_pendentes||0) + ' pendentes';
-    document.getElementById('cnt-total-badge').textContent = (k.perguntas_total||0) + ' total';
-
-    // Quick actions
-    document.getElementById('qa-total').textContent = k.perguntas_total    ?? 0;
-    document.getElementById('qa-pend').textContent  = k.perguntas_pendentes ?? 0;
-
-    // Pedidos badge
-    document.getElementById('cnt-ped-badge').textContent = (k.pedidos_7d||0) + ' pedidos';
-
-    renderPerguntas(state.perguntas || []);
-    renderMiniChart(state.volume_perguntas || []);
-    renderPedidos(state.pedidos || []);
+// ── KPIs ──────────────────────────────────────────────────────
+function renderKpis(k) {
+    document.getElementById('kpi-pendentes').textContent  = k.perguntas_pendentes  ?? '—';
+    document.getElementById('kpi-respondidas').textContent= k.perguntas_respondidas?? '—';
+    document.getElementById('kpi-hoje').textContent       = k.perguntas_hoje       ?? '—';
+    document.getElementById('kpi-pedidos').textContent    = k.pedidos_7d           ?? '—';
+    document.getElementById('kpi-pagamentos').textContent = k.pagamentos_7d        ?? '—';
+    document.getElementById('kpi-total').textContent      = k.perguntas_total      ?? '—';
 }
 
-// ── Perguntas ─────────────────────────────────────────────────────────────────
-function renderPerguntas(data) {
-    const filtered = filtroAtivo === 'todas'
-        ? data
-        : data.filter(p => {
-            const s = (p.status||'').toLowerCase();
-            if (filtroAtivo === 'pendente')  return !s || s.includes('pend') || s.includes('unanswer') || s.includes('open') || s === 'pendente';
-            if (filtroAtivo === 'respondida') return s.includes('answer') || s.includes('respond') || s.includes('closed');
-            return true;
-        });
+// ── Bar chart ─────────────────────────────────────────────────
+function renderBarChart(vol) {
+    const wrap = document.getElementById('bar-chart');
+    if (!vol.length) { wrap.innerHTML = '<div class="empty">Sem dados de perguntas ainda</div>'; return; }
+    const max = Math.max(...vol.map(v => v.total), 1);
+    wrap.innerHTML = vol.map(v => `
+        <div class="bar-col">
+            <div class="bar-val">${v.total}</div>
+            <div class="bar" style="height:${Math.max(4,(v.total/max)*60)}px"></div>
+            <div class="bar-label">${v.data}</div>
+        </div>`).join('');
+}
 
-    const el = document.getElementById('perguntas-list');
-    if (!filtered.length) {
-        el.innerHTML = '<div class="empty"><div class="e-icon">💬</div><p>Nenhuma pergunta neste filtro.</p></div>';
+// ── Perguntas ─────────────────────────────────────────────────
+function renderPerguntas(items) {
+    const el  = document.getElementById('list-perguntas');
+    const cnt = document.getElementById('cnt-perguntas');
+    cnt.textContent = items.length;
+
+    if (!items.length) {
+        el.innerHTML = '<div class="empty">Nenhuma pergunta registrada ainda.<br><small>Perguntas chegam via webhook <code>questions</code> ou <code>messages</code>.</small></div>';
         return;
     }
 
-    const maxH = filtered.length > 8 ? 'max-height:520px;overflow-y:auto;' : '';
-    el.style = maxH;
-    el.innerHTML = filtered.map(p => {
-        const s = (p.status||'pendente').toLowerCase();
-        const isPend = !p.status || s.includes('pend') || s.includes('unanswer') || s.includes('open');
-        const statusCss   = isPend ? 'pendente' : 'respondida';
-        const statusLabel = isPend ? '⏳ Pendente' : '✅ Respondida';
-
-        return `<div class="pergunta-row">
-            <div class="perg-avatar">${isPend ? '❓' : '✅'}</div>
-            <div class="perg-body">
-                <div class="perg-resource" title="${esc(p.resource)}">${esc(truncate(p.resource, 60))}</div>
-                <div class="perg-meta">
-                    <span class="status-badge ${statusCss}">${statusLabel}</span>
-                    <span class="mono">Seller ${esc(p.user_id||'—')}</span>
-                    ${p.attempts > 1 ? `<span style="font-size:11px;color:var(--orange)">⚠ ${p.attempts}x</span>` : ''}
-                </div>
-                <div class="perg-time">${timeAgo(p.received_at)}</div>
+    el.innerHTML = items.map(item => `
+        <div class="pergunta-item" id="perg-${item.id}">
+            <div class="pergunta-meta">
+                <span class="badge ${item.status}">${item.status}</span>
+                <span class="pergunta-resource" title="${esc(item.resource)}">${esc(item.resource)}</span>
+                <span class="pergunta-time">${timeAgo(item.received_at)}</span>
+                ${item.status === 'pendente' ? `
+                <button class="btn-abrir-resposta" onclick="toggleResposta(${item.id})">
+                    <i class="fas fa-reply"></i> Responder
+                </button>` : ''}
             </div>
-        </div>`;
-    }).join('');
+            ${item.status === 'pendente' ? `
+            <div class="resposta-wrap" id="resposta-wrap-${item.id}">
+                <textarea class="resposta-input" id="resposta-txt-${item.id}" rows="2"
+                    placeholder="Digite sua resposta aqui…"></textarea>
+                <button class="btn-responder" onclick="enviarResposta(${item.id}, '${esc(item.resource)}')">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+            </div>` : ''}
+        </div>`).join('');
 }
 
-// ── Mini chart ────────────────────────────────────────────────────────────────
-function renderMiniChart(data) {
-    if (!data.length) return;
-    const max = Math.max(...data.map(d => d.total), 1);
-    document.getElementById('mini-chart').innerHTML = data.map(d => {
-        const pct = Math.max((d.total / max) * 100, 4);
-        return `<div class="mc-col">
-            <div class="mc-bar" style="height:${pct}%" title="${d.total}"></div>
-            <div class="mc-label">${d.data}</div>
-        </div>`;
-    }).join('');
+function toggleResposta(id) {
+    const wrap = document.getElementById(`resposta-wrap-${id}`);
+    if (wrap) {
+        wrap.classList.toggle('open');
+        if (wrap.classList.contains('open')) {
+            document.getElementById(`resposta-txt-${id}`).focus();
+        }
+    }
 }
 
-// ── Pedidos ───────────────────────────────────────────────────────────────────
-function renderPedidos(data) {
-    const body = document.getElementById('pedidos-body');
-    if (!data.length) {
-        body.innerHTML = '<tr><td colspan="6" class="empty"><div class="e-icon">🛍️</div><p>Nenhum pedido nos últimos 7 dias.</p></td></tr>';
+async function enviarResposta(id, resource) {
+    const txtEl = document.getElementById(`resposta-txt-${id}`);
+    const texto = txtEl ? txtEl.value.trim() : '';
+    if (!texto) { showToast('Digite uma resposta antes de enviar.', 'error'); return; }
+
+    const btn = document.querySelector(`#resposta-wrap-${id} .btn-responder`);
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+
+    try {
+        const res  = await fetch('/api/ml/sac/responder-pergunta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ evento_id: id, resource: resource, texto: texto })
+        });
+        const data = await res.json();
+
+        if (data.sucesso) {
+            showToast('✅ Resposta enviada com sucesso!', 'success');
+            fetchDados();
+        } else {
+            showToast('❌ ' + (data.erro || 'Erro ao enviar resposta'), 'error');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar'; }
+        }
+    } catch (e) {
+        showToast('❌ Erro de conexão: ' + e.message, 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar'; }
+    }
+}
+
+// ── Pedidos ───────────────────────────────────────────────────
+function renderPedidos(items) {
+    const el  = document.getElementById('list-pedidos');
+    const cnt = document.getElementById('cnt-pedidos');
+    cnt.textContent = items.length;
+
+    if (!items.length) {
+        el.innerHTML = '<div class="empty">Nenhum pedido registrado ainda.<br><small>Pedidos chegam via webhook <code>orders</code>.</small></div>';
         return;
     }
-    body.innerHTML = data.map(p => {
-        const s = (p.status||'').toLowerCase();
-        let sc = 'default';
-        if (s.includes('paid') || s.includes('pago')) sc = 'pago';
-        else if (s.includes('confirmed') || s.includes('confirm')) sc = 'confirmado';
-        else if (s.includes('cancel')) sc = 'cancelado';
-        return `<tr>
-            <td class="mono">${p.id}</td>
-            <td><span title="${esc(p.resource)}" class="mono">${esc(truncate(p.resource, 38))}</span></td>
-            <td class="mono">${esc(p.user_id||'—')}</td>
-            <td><span class="status-badge ${sc}">${esc(p.status||'—')}</span></td>
-            <td class="mono">${p.attempts||1}</td>
-            <td class="mono">${timeAgo(p.received_at)}</td>
-        </tr>`;
-    }).join('');
+
+    el.innerHTML = items.map(i => `
+        <div class="pedido-item">
+            <span class="badge pedido">pedido</span>
+            <span class="pedido-resource" title="${esc(i.resource)}">${esc(i.resource)}</span>
+            <span style="font-size:11px;color:#888">${i.user_id || '—'}</span>
+            <span style="font-size:11px;color:#aaa;white-space:nowrap">${timeAgo(i.received_at)}</span>
+        </div>`).join('');
 }
 
-// ── Filter tabs ───────────────────────────────────────────────────────────────
-function setFiltro(tab) {
-    filtroAtivo = tab;
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.tab === tab);
-    });
-    document.querySelectorAll('[data-tab-trigger]').forEach(b => {
-        b.classList.toggle('active', b.dataset.tabTrigger === tab);
-    });
-    renderPerguntas(state.perguntas || []);
-}
-
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => setFiltro(btn.dataset.tab));
-});
-
-document.querySelectorAll('[data-tab-trigger]').forEach(btn => {
-    btn.addEventListener('click', () => setFiltro(btn.dataset.tabTrigger));
-});
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── helpers ───────────────────────────────────────────────────
 function esc(t) {
     const d = document.createElement('div');
     d.textContent = String(t ?? '');
     return d.innerHTML;
 }
 
-function truncate(s, n) {
-    s = s || '';
-    return s.length > n ? s.slice(0, n) + '…' : s;
-}
-
 function timeAgo(iso) {
     if (!iso) return '—';
-    const diff = (Date.now() - new Date(iso + (iso.includes('Z')?'':'Z')).getTime()) / 1000;
+    const diff = (Date.now() - new Date(iso + 'Z').getTime()) / 1000;
     if (diff < 60)    return `${Math.round(diff)}s atrás`;
     if (diff < 3600)  return `${Math.round(diff/60)}min atrás`;
     if (diff < 86400) return `${Math.round(diff/3600)}h atrás`;
-    return new Date(iso + 'Z').toLocaleDateString('pt-BR');
+    return new Date(iso+'Z').toLocaleDateString('pt-BR');
 }
 
+let toastTimer;
+function showToast(msg, type='') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ── countdown ─────────────────────────────────────────────────
 function resetCountdown() {
-    clearInterval(timerInterval);
+    clearInterval(timer);
     countdownVal = 30;
     document.getElementById('countdown').textContent = 30;
-    timerInterval = setInterval(() => {
+    timer = setInterval(() => {
         countdownVal--;
         document.getElementById('countdown').textContent = countdownVal;
-        if (countdownVal <= 0) { fetchData(); resetCountdown(); }
+        if (countdownVal <= 0) { fetchDados(); resetCountdown(); }
     }, 1000);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-fetchData();
+fetchDados();
 resetCountdown();
 </script>
 {% endblock %}

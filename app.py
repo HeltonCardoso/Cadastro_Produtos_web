@@ -6827,6 +6827,38 @@ def api_sac_resumo():
         return jsonify({'error': str(e)}), 500
 
 
+# ──────────────────────────────────────────────────────────────
+# API SAC — responder pergunta via ML
+# ──────────────────────────────────────────────────────────────
+@app.route('/api/ml/sac/responder-pergunta', methods=['POST'])
+@login_required
+def api_sac_responder_pergunta():
+    """Marca o evento como respondido no banco."""
+    from models import MLWebhookEvent
+    data      = request.get_json(silent=True) or {}
+    evento_id = data.get('evento_id')
+    texto     = (data.get('texto') or '').strip()
+
+    if not evento_id or not texto:
+        return jsonify({'sucesso': False, 'erro': 'Parâmetros inválidos'}), 400
+
+    try:
+        evento = MLWebhookEvent.query.get(evento_id)
+        if not evento:
+            return jsonify({'sucesso': False, 'erro': 'Evento não encontrado'}), 404
+
+        evento.processed = True
+        evento.error_msg = f'Respondido por {current_user.username}: {texto[:200]}'
+        db.session.commit()
+        app.logger.info(f"[SAC] Pergunta {evento_id} respondida por {current_user.username}")
+        return jsonify({'sucesso': True, 'mensagem': 'Resposta registrada com sucesso'})
+
+    except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"[SAC] Erro ao responder: {e}")
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+
 # Import necessário para usar o 'or_' nas queries
 from sqlalchemy import or_
 
