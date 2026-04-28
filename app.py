@@ -6444,77 +6444,63 @@ def dashboard_ml_eventos():
 @login_required
 @master_required
 def api_master_resumo():
-    """API que retorna dados consolidados dos webhooks para o dashboard Master"""
     from models import MLWebhookEvent
-    from sqlalchemy import func, and_
+    from sqlalchemy import func, and_, or_
     from datetime import datetime, timedelta
     
     try:
-        # Data de 30 dias atrás
         data_30d = datetime.utcnow() - timedelta(days=30)
         data_7d = datetime.utcnow() - timedelta(days=7)
         
+        # Buscar todos os eventos dos últimos 30 dias
+        eventos_30d = MLWebhookEvent.query.filter(
+            MLWebhookEvent.received_at >= data_30d
+        ).all()
+        
         # ============================================
-        # 1. KPIs - Contagens por tipo
+        # CLASSIFICAR OS EVENTOS BASEADO NO RESOURCE
         # ============================================
         
-        # Catálogos criados (topic = catalog_listing ou catalog com status criado)
-        catalogos_novos = MLWebhookEvent.query.filter(
-            and_(
-                MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
-            )
-        ).count()
+        catalogos_novos = 0
+        sugestoes_catalogo = 0
+        anuncios_pausados = 0
+        anuncios_excluidos = 0
+        anuncios_reativados = 0
         
-        # Sugestões de catálogo (topic = catalog_suggestion ou similares)
-        sugestoes_catalogo = MLWebhookEvent.query.filter(
-            and_(
-                MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic == 'catalog_suggestion'
-            )
-        ).count()
+        # Contadores para o dashboard
+        for evento in eventos_30d:
+            resource = evento.resource or ''
+            topic = evento.topic or ''
+            payload = evento.get_data()
+            
+            # CLASSIFICAÇÃO BASEADA NO RESOURCE (mais confiável)
+            if 'items' in resource.lower() or 'item' in topic.lower():
+                # É um anúncio
+                status = str(payload.get('status', '')).lower()
+                
+                if 'paused' in status or 'pause' in resource.lower():
+                    anuncios_pausados += 1
+                elif 'deleted' in status or 'closed' in status or 'delete' in resource.lower():
+                    anuncios_excluidos += 1
+                elif 'active' in status:
+                    anuncios_reativados += 1
+                    
+            elif 'catalog' in resource.lower() or 'catalog' in topic.lower():
+                catalogos_novos += 1
+                
+            elif 'suggestion' in resource.lower() or 'benchmark' in resource.lower():
+                sugestoes_catalogo += 1
         
-        # Anúncios pausados (resource contém 'paused' ou status específico)
-        anuncios_pausados = MLWebhookEvent.query.filter(
-            and_(
-                MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic == 'items',
-                MLWebhookEvent.payload.like('%paused%')
-            )
-        ).count()
-        
-        # Anúncios excluídos
-        anuncios_excluidos = MLWebhookEvent.query.filter(
-            and_(
-                MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic == 'items',
-                MLWebhookEvent.payload.like('%deleted%')
-            )
-        ).count()
-        
-        # Anúncios reativados
-        anuncios_reativados = MLWebhookEvent.query.filter(
-            and_(
-                MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic == 'items',
-                MLWebhookEvent.payload.like('%active%')
-            )
-        ).count()
-        
-        # Total eventos últimos 7 dias
+        # Total de eventos nos últimos 7 dias
         total_7d = MLWebhookEvent.query.filter(
             MLWebhookEvent.received_at >= data_7d
         ).count()
         
-        total_catalog_eventos = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
-        ).count()
-        
         # ============================================
-        # 2. Volume diário (últimos 7 dias)
+        # VOLUME DIÁRIO (últimos 7 dias)
         # ============================================
         volume_diario = []
-        for i in range(6, -1, -1):  # Do dia -6 até hoje
+        for i in range(6, -1, -1):
             dia = (datetime.utcnow() - timedelta(days=i)).date()
             dia_inicio = datetime(dia.year, dia.month, dia.day)
             dia_fim = dia_inicio + timedelta(days=1)
@@ -6532,7 +6518,7 @@ def api_master_resumo():
             })
         
         # ============================================
-        # 3. Top Sellers por volume de eventos
+        # TOP SELLERS
         # ============================================
         top_sellers = db.session.query(
             MLWebhookEvent.user_id,
@@ -6540,45 +6526,42 @@ def api_master_resumo():
         ).filter(
             MLWebhookEvent.received_at >= data_30d,
             MLWebhookEvent.user_id.isnot(None),
-            MLWebhookEvent.user_id != ''
+            MLWebhookEvent.user_id != '',
+            MLWebhookEvent.user_id != 'null'
         ).group_by(
             MLWebhookEvent.user_id
         ).order_by(
             func.count(MLWebhookEvent.id).desc()
         ).limit(10).all()
         
-        top_sellers_list = [
-            {'user_id': s.user_id, 'total': s.total}
-            for s in top_sellers
-        ]
-        
         # ============================================
-        # 4. Alertas de anúncios (pausados/excluídos)
+        # ALERTAS (itens com problemas)
         # ============================================
-        anuncios_alertas = MLWebhookEvent.query.filter(
+        anuncios_alertas = []
+        eventos_items = MLWebhookEvent.query.filter(
             and_(
                 MLWebhookEvent.received_at >= data_30d,
-                MLWebhookEvent.topic == 'items',
                 or_(
-                    MLWebhookEvent.payload.like('%paused%'),
-                    MLWebhookEvent.payload.like('%deleted%'),
-                    MLWebhookEvent.payload.like('%closed%')
+                    MLWebhookEvent.resource.like('%items%'),
+                    MLWebhookEvent.topic.like('%item%')
                 )
             )
         ).order_by(
             MLWebhookEvent.received_at.desc()
         ).limit(20).all()
         
-        anuncios_alertas_list = []
-        for a in anuncios_alertas:
+        for a in eventos_items:
             payload = a.get_data()
-            tipo = 'pausado'
-            if 'deleted' in str(payload).lower():
+            resource = a.resource.lower()
+            
+            if 'paused' in resource or 'pause' in resource:
+                tipo = 'pausado'
+            elif 'deleted' in resource or 'closed' in resource:
                 tipo = 'excluido'
-            elif 'closed' in str(payload).lower():
-                tipo = 'fechado'
+            else:
+                tipo = 'alerta'
                 
-            anuncios_alertas_list.append({
+            anuncios_alertas.append({
                 'id': a.id,
                 'tipo': tipo,
                 'resource': a.resource,
@@ -6588,10 +6571,13 @@ def api_master_resumo():
             })
         
         # ============================================
-        # 5. Eventos de Catálogo
+        # CATÁLOGOS
         # ============================================
         catalogos = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
+            or_(
+                MLWebhookEvent.resource.like('%catalog%'),
+                MLWebhookEvent.topic.like('%catalog%')
+            )
         ).order_by(
             MLWebhookEvent.received_at.desc()
         ).limit(50).all()
@@ -6606,10 +6592,13 @@ def api_master_resumo():
         } for c in catalogos]
         
         # ============================================
-        # 6. Sugestões
+        # SUGESTÕES (benchmarks)
         # ============================================
         sugestoes = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic == 'catalog_suggestion'
+            or_(
+                MLWebhookEvent.resource.like('%benchmark%'),
+                MLWebhookEvent.topic.like('%suggestion%')
+            )
         ).order_by(
             MLWebhookEvent.received_at.desc()
         ).limit(50).all()
@@ -6618,12 +6607,12 @@ def api_master_resumo():
             'id': s.id,
             'resource': s.resource,
             'user_id': s.user_id,
-            'status': s.get_data().get('status', 'sugestão'),
+            'status': 'sugestão',
             'received_at': s.received_at.isoformat()
         } for s in sugestoes]
         
         # ============================================
-        # 7. Timeline (últimos 100 eventos)
+        # TIMELINE (últimos 100 eventos)
         # ============================================
         timeline = MLWebhookEvent.query.order_by(
             MLWebhookEvent.received_at.desc()
@@ -6647,18 +6636,18 @@ def api_master_resumo():
                 'anuncios_excluidos': anuncios_excluidos,
                 'anuncios_reativados': anuncios_reativados,
                 'total_7d': total_7d,
-                'total_catalog_eventos': total_catalog_eventos
+                'total_catalog_eventos': len(catalogos_list)
             },
             'volume_diario': volume_diario,
-            'top_sellers': top_sellers_list,
-            'anuncios_alertas': anuncios_alertas_list,
+            'top_sellers': [{'user_id': s.user_id, 'total': s.total} for s in top_sellers],
+            'anuncios_alertas': anuncios_alertas,
             'catalogos': catalogos_list,
             'sugestoes': sugestoes_list,
             'timeline': timeline_list
         })
         
     except Exception as e:
-        app.logger.error(f"Erro API master resumo: {str(e)}")
+        print(f"❌ Erro: {str(e)}")
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
@@ -6671,72 +6660,85 @@ def api_master_resumo():
 @app.route('/api/ml/sac/resumo')
 @login_required
 def api_sac_resumo():
-    """API que retorna dados para o dashboard SAC (perguntas, pedidos, pagamentos)"""
     from models import MLWebhookEvent
-    from sqlalchemy import func, and_
+    from sqlalchemy import func, and_, or_
     from datetime import datetime, timedelta
     
     try:
-        data_30d = datetime.utcnow() - timedelta(days=30)
         data_7d = datetime.utcnow() - timedelta(days=7)
         hoje_inicio = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
         
         # ============================================
-        # 1. KPIs - Perguntas
+        # PERGUNTAS (messages, questions)
         # ============================================
-        
-        # Total perguntas (questions)
         total_perguntas = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic == 'questions'
+            or_(
+                MLWebhookEvent.topic == 'messages',
+                MLWebhookEvent.topic == 'questions',
+                MLWebhookEvent.resource.like('%message%'),
+                MLWebhookEvent.resource.like('%question%')
+            )
         ).count()
         
-        # Perguntas pendentes (sem resposta - verificar payload)
+        # Perguntas pendentes (últimos 30 dias, sem resposta)
         perguntas_pendentes = MLWebhookEvent.query.filter(
             and_(
-                MLWebhookEvent.topic == 'questions',
+                MLWebhookEvent.received_at >= data_7d,
                 or_(
-                    MLWebhookEvent.processed == False,  # Ainda não processadas
-                    MLWebhookEvent.payload.notlike('%answer%')  # Sem resposta
-                )
+                    MLWebhookEvent.topic == 'messages',
+                    MLWebhookEvent.topic == 'questions'
+                ),
+                MLWebhookEvent.processed == False
             )
         ).count()
         
         # Perguntas respondidas
         perguntas_respondidas = MLWebhookEvent.query.filter(
             and_(
-                MLWebhookEvent.topic == 'questions',
-                MLWebhookEvent.payload.like('%answer%')
+                or_(
+                    MLWebhookEvent.topic == 'messages',
+                    MLWebhookEvent.topic == 'questions'
+                ),
+                MLWebhookEvent.processed == True
             )
         ).count()
         
         # Perguntas de hoje
         perguntas_hoje = MLWebhookEvent.query.filter(
             and_(
-                MLWebhookEvent.topic == 'questions',
-                MLWebhookEvent.received_at >= hoje_inicio
+                MLWebhookEvent.received_at >= hoje_inicio,
+                or_(
+                    MLWebhookEvent.topic == 'messages',
+                    MLWebhookEvent.topic == 'questions'
+                )
             )
         ).count()
         
         # ============================================
-        # 2. Pedidos (últimos 7 dias)
+        # PEDIDOS (orders, shipments, marketplace/benchmarks/items)
         # ============================================
         pedidos_7d = MLWebhookEvent.query.filter(
             and_(
-                MLWebhookEvent.topic == 'orders',
-                MLWebhookEvent.received_at >= data_7d
+                MLWebhookEvent.received_at >= data_7d,
+                or_(
+                    MLWebhookEvent.topic == 'orders',
+                    MLWebhookEvent.topic == 'shipments',
+                    MLWebhookEvent.resource.like('%order%'),
+                    MLWebhookEvent.resource.like('%shipment%')
+                )
             )
         ).count()
         
-        # Pagamentos (últimos 7 dias)
+        # Pagamentos
         pagamentos_7d = MLWebhookEvent.query.filter(
             and_(
-                MLWebhookEvent.topic == 'payments',
-                MLWebhookEvent.received_at >= data_7d
+                MLWebhookEvent.received_at >= data_7d,
+                MLWebhookEvent.topic == 'payments'
             )
         ).count()
         
         # ============================================
-        # 3. Volume de perguntas por dia (últimos 7 dias)
+        # VOLUME DE PERGUNTAS POR DIA
         # ============================================
         volume_perguntas = []
         for i in range(6, -1, -1):
@@ -6746,9 +6748,12 @@ def api_sac_resumo():
             
             qtd = MLWebhookEvent.query.filter(
                 and_(
-                    MLWebhookEvent.topic == 'questions',
                     MLWebhookEvent.received_at >= dia_inicio,
-                    MLWebhookEvent.received_at < dia_fim
+                    MLWebhookEvent.received_at < dia_fim,
+                    or_(
+                        MLWebhookEvent.topic == 'messages',
+                        MLWebhookEvent.topic == 'questions'
+                    )
                 )
             ).count()
             
@@ -6758,39 +6763,36 @@ def api_sac_resumo():
             })
         
         # ============================================
-        # 4. Lista de perguntas (últimas 50)
+        # LISTA DE PERGUNTAS
         # ============================================
         perguntas = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic == 'questions'
+            or_(
+                MLWebhookEvent.topic == 'messages',
+                MLWebhookEvent.topic == 'questions'
+            )
         ).order_by(
             MLWebhookEvent.received_at.desc()
         ).limit(50).all()
         
-        perguntas_list = []
-        for p in perguntas:
-            payload = p.get_data()
-            
-            # Determinar status baseado no payload
-            status = 'pendente'
-            if 'answer' in str(payload).lower():
-                status = 'respondida'
-            elif p.processed:
-                status = 'processada'
-                
-            perguntas_list.append({
-                'id': p.id,
-                'resource': p.resource,
-                'user_id': p.user_id,
-                'status': status,
-                'attempts': p.attempts,
-                'received_at': p.received_at.isoformat()
-            })
+        perguntas_list = [{
+            'id': p.id,
+            'resource': p.resource,
+            'user_id': p.user_id,
+            'status': 'respondida' if p.processed else 'pendente',
+            'attempts': p.attempts,
+            'received_at': p.received_at.isoformat()
+        } for p in perguntas]
         
         # ============================================
-        # 5. Lista de pedidos recentes (últimos 30)
+        # LISTA DE PEDIDOS
         # ============================================
         pedidos = MLWebhookEvent.query.filter(
-            MLWebhookEvent.topic == 'orders'
+            or_(
+                MLWebhookEvent.topic == 'orders',
+                MLWebhookEvent.topic == 'shipments',
+                MLWebhookEvent.resource.like('%order%'),
+                MLWebhookEvent.resource.like('%shipment%')
+            )
         ).order_by(
             MLWebhookEvent.received_at.desc()
         ).limit(30).all()
@@ -6799,7 +6801,7 @@ def api_sac_resumo():
             'id': p.id,
             'resource': p.resource,
             'user_id': p.user_id,
-            'status': p.get_data().get('status', 'N/A'),
+            'status': p.get_data().get('status', 'recebido'),
             'attempts': p.attempts,
             'received_at': p.received_at.isoformat()
         } for p in pedidos]
@@ -6819,7 +6821,7 @@ def api_sac_resumo():
         })
         
     except Exception as e:
-        app.logger.error(f"Erro API sac resumo: {str(e)}")
+        print(f"❌ Erro: {str(e)}")
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
