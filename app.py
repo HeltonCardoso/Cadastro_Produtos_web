@@ -6850,5 +6850,91 @@ def testar_dados_webhook():
         ]
     })
 
+@app.route('/api/mercadolivre/qualidade-detalhada/<mlb>')
+def api_qualidade_detalhada(mlb):
+    """
+    Retorna a qualidade detalhada do anúncio com buckets e variáveis de melhoria.
+    Endpoint oficial: /item/{mlb}/performance
+    """
+    try:
+        from mercadolivre_api_secure import ml_api_secure
+        
+        headers = ml_api_secure._get_headers()
+        url = f"https://api.mercadolibre.com/item/{mlb}/performance"
+        
+        response = requests.get(url, headers=headers, timeout=15)
+        
+        if response.status_code != 200:
+            # Fallback: cálculo local
+            resultado_produto = ml_api_secure.buscar_todos_atributos_produto(mlb)
+            if resultado_produto.get('sucesso'):
+                qualidade = resultado_produto.get('qualidade', {})
+                return jsonify({
+                    'sucesso': True,
+                    'score': qualidade.get('pontuacao', 0),
+                    'nivel': qualidade.get('nivel', 'Básica'),
+                    'buckets': [],
+                    'dicas': qualidade.get('dicas', []),
+                    'origem': 'calculado'
+                })
+            return jsonify({'sucesso': False, 'erro': 'Não foi possível buscar qualidade'})
+        
+        dados = response.json()
+        
+        # Processa os buckets em um formato amigável para o frontend
+        buckets_processados = []
+        todas_dicas = []
+        
+        for bucket in dados.get('buckets', []):
+            bucket_info = {
+                'key': bucket.get('key'),
+                'title': bucket.get('title'),
+                'status': bucket.get('status'),
+                'score': bucket.get('score', 0),
+                'variables': []
+            }
+            
+            for var in bucket.get('variables', []):
+                # Cada variável contém regras com links
+                for rule in var.get('rules', []):
+                    if rule.get('status') == 'PENDING':
+                        wordings = rule.get('wordings', {})
+                        acao = {
+                            'key': var.get('key'),
+                            'title': var.get('title'),
+                            'label': wordings.get('label', 'Melhorar'),
+                            'link': wordings.get('link', ''),
+                            'progress': rule.get('progress', 0),
+                            'score': var.get('score', 0)
+                        }
+                        bucket_info['variables'].append(acao)
+                        todas_dicas.append(acao)
+            
+            buckets_processados.append(bucket_info)
+        
+        # Mapeia nível para português
+        nivel_map = {
+            'bad': 'Básica',
+            'medium': 'Satisfatória',
+            'good': 'Profissional',
+            'professional': 'Profissional'
+        }
+        nivel = dados.get('level_wording') or nivel_map.get(dados.get('level', ''), 'Básica')
+        
+        return jsonify({
+            'sucesso': True,
+            'score': dados.get('score', 0),
+            'nivel': nivel,
+            'buckets': buckets_processados,
+            'dicas': todas_dicas[:20],
+            'entity_id': dados.get('entity_id'),
+            'calculated_at': dados.get('calculated_at')
+        })
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'sucesso': False, 'erro': str(e)}), 500
+    
 if __name__ == "__main__":
     app.run(debug=True)

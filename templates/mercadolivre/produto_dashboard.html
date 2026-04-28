@@ -23,6 +23,33 @@
 
     body { background: var(--ml-bg); }
 
+    /* Seção de melhorias - estilo ML */
+    .melhorias-section {
+        margin-top: 16px;
+        background: transparent;
+    }
+
+    .melhorias-section a {
+        transition: color 0.2s;
+    }
+
+    .melhorias-section a:hover {
+        color: var(--ml-blue-dark) !important;
+        text-decoration: underline !important;
+    }
+
+    /* Ajuste do quality-card para ficar mais compacto */
+    .quality-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+        border-radius: 12px;
+        min-width: 260px;
+    }
+
+    .quality-ring {
+        position: relative;
+        flex-shrink: 0;
+    }
+
     /* ── Barra de pesquisa fixa ── */
     .search-bar-sticky {
         position: sticky;
@@ -40,13 +67,174 @@
     }
     .search-bar-sticky.panel-open { margin-left: 140px; }
 
-    .search-label {
+    .quality-horizontal {
+        background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+        min-width: 480px;
+    }
+
+    .quality-score {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        border-right: 1px solid rgba(255,255,255,0.1);
+        min-width: 140px;
+    }
+
+    .quality-ring-small {
+        position: relative;
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+    }
+
+    .quality-ring-small svg {
+        transform: rotate(-90deg);
+    }
+
+    .quality-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .quality-label {
+        font-size: 10px;
+        color: rgba(255,255,255,0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .quality-nivel {
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        line-height: 1.2;
+    }
+
+    .quality-origem {
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 12px;
+        display: inline-block;
+        width: fit-content;
+        margin-top: 3px;
+    }
+
+    .quality-origem.oficial {
+        background: rgba(0,166,80,0.2);
+        color: #4dff9b;
+    }
+
+    /* Lado das melhorias */
+    .quality-melhorias {
+        flex: 1;
+        padding: 10px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .melhorias-header {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        margin-bottom: 6px;
+    }
+
+    .melhorias-count {
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+    }
+
+    .melhorias-sub {
+        font-size: 10px;
+        color: rgba(255,255,255,0.5);
+    }
+
+    .melhorias-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .melhoria-item-h {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+    }
+
+    .melhoria-item-h .melhoria-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.75);
+    }
+
+    .melhoria-item-h .melhoria-text i {
+        font-size: 5px;
+        color: #ff6b6b;
+    }
+
+    .melhoria-item-h a {
+        color: #6ea8fe;
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 500;
+        white-space: nowrap;
+        margin-left: 8px;
+    }
+
+    .melhoria-item-h a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+
+    /* Responsivo */
+    @media (max-width: 860px) {
+        .quality-horizontal {
+            flex-direction: column;
+            min-width: auto;
+        }
+        
+        .quality-score {
+            border-right: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .quality-melhorias {
+            padding: 10px 16px;
+        }
+    }
+        .search-label {
         font-size: 13px;
         font-weight: 600;
         color: #333;
         white-space: nowrap;
     }
 
+    /* Seção de melhorias */
+    .melhoria-bucket {
+        transition: box-shadow 0.2s;
+    }
+
+    .melhoria-bucket:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .btn-melhoria {
+        transition: all 0.2s;
+    }
+
+    .btn-melhoria:hover {
+        background: var(--ml-blue-dark) !important;
+        transform: translateY(-1px);
+    }
     .search-bar-sticky input {
         flex: 1;
         padding: 10px 16px;
@@ -928,29 +1116,36 @@
             <div class="info-card">
                 <div class="titulo-edit-wrap">
                     <div class="titulo-input-row">
-                        <input
-                            type="text"
-                            id="produto-titulo"
-                            class="titulo-edit-input"
-                            placeholder="Título do anúncio"
-                            maxlength="60"
-                            oninput="onTituloInput()"
-                        >
-                        <button class="btn-titulo-salvar" id="btn-titulo-salvar" onclick="salvarTitulo()" disabled title="Salvar título">
-                            <i class="fas fa-save"></i> Salvar título
-                        </button>
-                        <button class="btn-titulo-cancelar" id="btn-titulo-cancelar" onclick="cancelarTitulo()" style="display:none;" title="Cancelar">
-                            ✕
-                        </button>
+                        <input type="text" id="produto-titulo" class="titulo-edit-input" placeholder="Título do anúncio" maxlength="60" oninput="onTituloInput()">
+                        <button class="btn-titulo-salvar" id="btn-titulo-salvar" onclick="salvarTitulo()" disabled><i class="fas fa-save"></i> Salvar</button>
+                        <button class="btn-titulo-cancelar" id="btn-titulo-cancelar" onclick="cancelarTitulo()" style="display:none;">✕</button>
                     </div>
-                    <div class="titulo-char-count" id="titulo-char-count">0 / 60 caracteres</div>
+                    <div class="titulo-char-count" id="titulo-char-count">0 / 60</div>
                 </div>
                 <div class="produto-meta">
                     <span><i class="fas fa-barcode"></i> MLB: <strong id="produto-mlb"></strong></span>
                     <span><i class="fas fa-tag"></i> Categoria: <strong id="produto-categoria"></strong></span>
                 </div>
             </div>
-            <div class="quality-card" id="quality-card"></div>
+            
+            <!-- CARD DE QUALIDADE HORIZONTAL -->
+            <div class="quality-horizontal" id="quality-card">
+                <div class="quality-score">
+                    <div class="quality-ring-small" id="quality-ring"></div>
+                    <div class="quality-text">
+                        <div class="quality-label">Qualidade</div>
+                        <div class="quality-nivel" id="quality-nivel">—</div>
+                        <div class="quality-origem" id="quality-origem"></div>
+                    </div>
+                </div>
+                <div class="quality-melhorias" id="quality-melhorias">
+                    <div class="melhorias-header">
+                        <span class="melhorias-count">—</span>
+                        <span class="melhorias-sub">para alcançar</span>
+                    </div>
+                    <div class="melhorias-lista" id="melhorias-lista"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Barra de contadores -->
@@ -1111,16 +1306,22 @@ async function carregarProduto() {
         return;
     }
 
-    mlbAtual     = mlb;
+    mlbAtual = mlb;
     estadoCampos = {};
     descDadosCache = null;
 
-    document.getElementById('loading').style.display        = 'block';
+    document.getElementById('loading').style.display = 'block';
     document.getElementById('produto-content').style.display = 'none';
 
     try {
-        const res  = await fetch(`/api/mercadolivre/produto-completo/${mlb}`);
+        // 🔥 BUSCA QUALIDADE DETALHADA PRIMEIRO
+        const qualidadeRes = await fetch(`/api/mercadolivre/qualidade-detalhada/${mlb}`);
+        const qualidadeData = await qualidadeRes.json();
+        
+        // Busca dados completos do produto (atributos, etc)
+        const res = await fetch(`/api/mercadolivre/produto-completo/${mlb}`);
         const data = await res.json();
+        
         document.getElementById('loading').style.display = 'none';
 
         if (!data.sucesso) {
@@ -1130,19 +1331,28 @@ async function carregarProduto() {
 
         const tituloInput = document.getElementById('produto-titulo');
         tituloInput.value = data.titulo || '';
-        tituloOriginal    = data.titulo || '';
+        tituloOriginal = data.titulo || '';
         atualizarContadorTitulo();
-        document.getElementById('btn-titulo-salvar').disabled   = true;
+        document.getElementById('btn-titulo-salvar').disabled = true;
         document.getElementById('btn-titulo-cancelar').style.display = 'none';
 
-        document.getElementById('produto-mlb').textContent       = data.mlb;
+        document.getElementById('produto-mlb').textContent = data.mlb;
         document.getElementById('produto-categoria').textContent = data.categoria_id || 'N/A';
 
-        renderizarQualidade(data.qualidade);
+        // 🔥 MESCLA os dados de qualidade
+        const qualidadeCompleta = {
+            ...(qualidadeData.sucesso ? qualidadeData : data.qualidade),
+            pontuacao: qualidadeData.sucesso ? qualidadeData.score : (data.qualidade?.pontuacao || 0),
+            nivel: qualidadeData.sucesso ? qualidadeData.nivel : (data.qualidade?.nivel || 'Básica'),
+            buckets: qualidadeData.sucesso ? qualidadeData.buckets : [],
+            origem: qualidadeData.sucesso ? 'oficial' : (data.qualidade?.origem || 'calculado')
+        };
+        
+        renderizarQualidade(qualidadeCompleta);
         renderizarAtributos(data.atributos || []);
 
         document.getElementById('produto-content').style.display = 'block';
-        document.getElementById('btn-desc-panel').style.display  = 'flex';
+        document.getElementById('btn-desc-panel').style.display = 'flex';
 
     } catch (err) {
         document.getElementById('loading').style.display = 'none';
@@ -1151,32 +1361,158 @@ async function carregarProduto() {
 }
 
 // ─── QUALIDADE ────────────────────────────────────────────────────────────────
-function renderizarQualidade(q) {
-    const score  = q?.pontuacao ?? 0;
-    const nivel  = q?.nivel     ?? 'Básico';
-    const origem = q?.origem    ?? 'calculado';
-
-    const cor = score >= 80 ? '#4dff9b' : score >= 50 ? '#ffd166' : '#ff6b6b';
-    const r   = 32, circ = 2 * Math.PI * r;
+function renderizarQualidade(qualidade) {
+    const score = qualidade.pontuacao ?? qualidade.score ?? 0;
+    const nivel = qualidade.nivel ?? (score >= 80 ? 'Profissional' : score >= 60 ? 'Satisfatória' : 'Básica');
+    const origem = qualidade.origem || 'oficial';
+    
+    const cor = score >= 80 ? '#00a650' : score >= 50 ? '#ffd166' : '#ff6b6b';
+    const r = 21, circ = 2 * Math.PI * r;
     const offset = circ - (score / 100) * circ;
+    
+    // 🔥 CORREÇÃO: Texto perfeitamente centralizado e na orientação correta
+    const ringHtml = `
+        <svg width="52" height="52" viewBox="0 0 52 52" style="transform: rotate(-90deg);">
+            <circle cx="26" cy="26" r="${r}" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="4"/>
+            <circle cx="26" cy="26" r="${r}" fill="none" stroke="${cor}" stroke-width="4" 
+                stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
+            <text x="26" y="32" text-anchor="middle" fill="white" font-size="14" font-weight="700" 
+                  font-family="Arial, sans-serif" transform="rotate(90 26 26)">${score}</text>
+        </svg>
+    `;
+    
+    document.getElementById('quality-ring').innerHTML = ringHtml;
+    document.getElementById('quality-nivel').textContent = nivel;
+    document.getElementById('quality-origem').innerHTML = origem === 'oficial' ? '● Score oficial' : '⚠ Score calculado';
+    document.getElementById('quality-origem').className = `quality-origem ${origem}`;
+    
+    // Processa melhorias se tiver buckets
+    const temBuckets = qualidade.buckets && qualidade.buckets.length > 0;
+    if (temBuckets && qualidade.buckets) {
+        renderizarMelhoriasHorizontal(qualidade.buckets);
+    } else {
+        const headerEl = document.querySelector('.melhorias-header');
+        if (headerEl) headerEl.style.display = 'none';
+        document.getElementById('melhorias-lista').innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:11px;">Nenhuma melhoria pendente</div>';
+    }
+}
 
-    document.getElementById('quality-card').innerHTML = `
-        <div class="quality-ring">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-                <circle class="quality-ring-bg"   cx="36" cy="36" r="${r}"/>
-                <circle class="quality-ring-fill"  cx="36" cy="36" r="${r}"
-                    stroke="${cor}"
-                    stroke-dasharray="${circ}"
-                    stroke-dashoffset="${offset}"/>
-            </svg>
-            <div class="quality-ring-text" style="color:${cor}">${score}</div>
-        </div>
-        <div class="quality-info">
-            <div class="quality-label">Qualidade do anúncio</div>
-            <div class="quality-nivel">${nivel}</div>
-            <span class="quality-origem ${origem}">${origem === 'oficial' ? '● Score oficial ML' : '⚠ Score calculado'}</span>
+function renderizarMelhoriasHorizontal(buckets) {
+    // Coleta apenas itens pendentes
+    const itensPendentes = [];
+    for (const bucket of buckets) {
+        if (bucket.variables) {
+            for (const item of bucket.variables) {
+                if (item.progress !== 1 && item.link) {
+                    itensPendentes.push(item);
+                }
+            }
+        }
+    }
+    
+    // Limita a 4 itens para não ficar muito longo
+    const topItens = itensPendentes.slice(0, 4);
+    const count = topItens.length;
+    
+    // Atualiza header
+    const headerHtml = `
+        <span class="melhorias-count">${count}</span>
+        <span class="melhorias-sub">${count === 1 ? 'objetivo para alcançar' : 'objetivos para alcançar'}</span>
+    `;
+    document.querySelector('.melhorias-header').innerHTML = headerHtml;
+    
+    if (count === 0) {
+        document.getElementById('melhorias-lista').innerHTML = '<div style="color:rgba(255,255,255,0.5); font-size:11px;">✓ Parabéns! Anúncio completo.</div>';
+        return;
+    }
+    
+    // Renderiza lista
+    let listaHtml = '';
+    for (const item of topItens) {
+        // Resumo do título (primeiros 45 caracteres)
+        let tituloResumido = item.title.length > 45 ? item.title.substring(0, 42) + '...' : item.title;
+        listaHtml += `
+            <div class="melhoria-item-h">
+                <div class="melhoria-text">
+                    <i class="fas fa-circle"></i>
+                    <span>${escapeHtml(tituloResumido)}</span>
+                </div>
+                <a href="${escapeHtml(item.link)}" target="_blank">Melhorar →</a>
+            </div>
+        `;
+    }
+    
+    document.getElementById('melhorias-lista').innerHTML = listaHtml;
+}
+
+function renderizarMelhorias(buckets) {
+    let melhoriasContainer = document.getElementById('melhorias-container');
+    if (!melhoriasContainer) {
+        const qualityCard = document.getElementById('quality-card');
+        const container = document.createElement('div');
+        container.id = 'melhorias-container';
+        container.className = 'melhorias-section';
+        container.style.marginTop = '20px';
+        qualityCard.parentNode.insertBefore(container, qualityCard.nextSibling);
+        melhoriasContainer = container;
+    }
+    
+    // Pega APENAS os itens pendentes (status PENDING)
+    const itensPendentes = [];
+    for (const bucket of buckets) {
+        if (bucket.variables) {
+            for (const item of bucket.variables) {
+                if (item.progress !== 1 && item.link) {  // Apenas pendentes com link
+                    itensPendentes.push(item);
+                }
+            }
+        }
+    }
+    
+    // Limita a 6 itens para não poluir (ML mostra ~3-4)
+    const topItens = itensPendentes.slice(0, 6);
+    
+    if (topItens.length === 0) {
+        melhoriasContainer.innerHTML = `
+            <div style="background: #f0f9f0; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-check-circle" style="color: var(--ml-green); font-size: 16px;"></i>
+                <span style="font-size: 12px; color: #1a7a44;">Parabéns! Seu anúncio está completo.</span>
+            </div>
+        `;
+        return;
+    }
+    
+    // Título da seção (igual ao ML)
+    let html = `
+        <div style="margin-bottom: 12px;">
+            <div style="font-size: 12px; font-weight: 600; color: #333; margin-bottom: 4px;">
+                ${topItens.length} ${topItens.length === 1 ? 'objetivo para alcançar' : 'objetivos para alcançar'}
+            </div>
+            <div style="font-size: 11px; color: #888;">
+                Complete para atingir a pontuação máxima
+            </div>
         </div>
     `;
+    
+    // Lista de itens (estilo ML)
+    for (const item of topItens) {
+        html += `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <i class="fas fa-circle" style="font-size: 6px; color: var(--ml-red);"></i>
+                    <span style="font-size: 12px; color: #444; line-height: 1.4;">${escapeHtml(item.title)}</span>
+                </div>
+                ${item.link ? `
+                    <a href="${escapeHtml(item.link)}" target="_blank" 
+                       style="color: var(--ml-blue); text-decoration: none; font-size: 12px; white-space: nowrap; margin-left: 12px;">
+                        Melhorar <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+                    </a>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    melhoriasContainer.innerHTML = html;
 }
 
 // ─── RENDERIZAR ATRIBUTOS ─────────────────────────────────────────────────────

@@ -1,0 +1,313 @@
+{
+  "entity_type": "USER_PRODUCT",
+  "entity_id": "MLBU3099306180",
+  "score": 61,
+  "level": "medium",
+  "calculated_at": "2026-04-28T14:00:18.87Z",
+  "buckets": [
+    {
+      "key": "USER_PRODUCT",
+      "type": "USER_PRODUCT",
+      "status": "PENDING",
+      "score": 82.22223,
+      "title": "Dados do produto",
+      "calculated_at": "2026-04-28T14:00:18Z",
+      "variables": [
+        {
+          "key": "UP_STOCK_DEPOSITO",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Adicione mais estoque e evite perder vendas",
+          "rules": [
+            {
+              "key": "UP_HAS_STOCK_DEPOSITO",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Certifique-se de que seu anúncio tenha 2 ou mais unidades disponíveis.",
+                "label": "Adicionar estoque",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/stock-sku-default?item_id=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_CATALOG",
+          "status": "PENDING",
+          "score": 0,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Anuncie no catálogo e compita para ser a primeira opção de compra",
+          "rules": [
+            {
+              "key": "UP_CATALOG_OPTIN",
+              "status": "PENDING",
+              "progress": 0,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Anuncie no catálogo e compita para ser a primeira opção de compra",
+                "label": "Criar anúncio",
+                "link": "https://www.mercadolivre.com.br/publicar/catalogo/MLBU3099306180"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_SHORTS",
+          "status": "PENDING",
+          "score": 0,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Carregue um clipe (vídeo curto) para não perder vendas",
+          "rules": [
+            {
+              "key": "UP_HAS_SHORTS",
+              "status": "PENDING",
+              "progress": 0,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Crie vídeos de até um minuto em formato vertical",
+                "label": "Incluir clip",
+                "link": "https://www.mercadolivre.com.br/video/creator/upload?user_product_id=MLBU3099306180&item_id=MLB4017913557&item_syi=MLB4017913557&origin=quality#origin=quality"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_STOCK_AVAILABILITY_TIME",
+          "status": "PENDING",
+          "score": 0,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Exclua o tempo de disponibilidade para que seu anúncio seja mais competitivo",
+          "rules": [
+            {
+              "key": "UP_BEST_STOCK_AVAILABILITY_TIME",
+              "status": "PENDING",
+              "progress": 0,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Exclua o tempo de disponibilidade para deixar seu anúncio mais competitivo.",
+                "label": "Remover prazo",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/stock-availability-default?item_id=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_TECHNICAL_SPECIFICATIONS_MAIN",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Corrija as características para receber menos perguntas e devoluções",
+          "rules": [
+            {
+              "key": "UP_TS_MAIN_QUANTITY",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Preencha as características principais",
+                "label": "Preencher",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/techspecs-primary?item_id=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_GTIN",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Indique o código universal do seu produto para não perder exposição",
+          "rules": [
+            {
+              "key": "UP_HAS_GTIN",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Certifique-se de preencher o código pertencente a este produto para ocupar os primeiros lugares nos resultados de busca.",
+                "label": "Preencher código",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/universal-code-default?item_id=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_TITLE",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Edite o título ou use nossa recomendação para atrair mais compradores",
+          "rules": [
+            {
+              "key": "UP_TITLE_LENGTH_MIN",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Inclua mais detalhes. O título deve ter até 3 palavras.",
+                "label": "Adicionar detalhes",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/title-default?item_id=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_PICTURES",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Melhore as fotos para ter mais visitas",
+          "rules": [
+            {
+              "key": "UP_PICTURES_QUANTITY_MIN",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Adicione mais fotos para mostrar seu produto em diferentes ângulos, carregue pelo menos 3.",
+                "label": "Adicionar fotos",
+                "link": "https://www.mercadolivre.com.br/publicaciones/MLBU3099306180/modificar/omni/variation/dominio/picture-uploader-default"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "MLB4017965121",
+      "type": "ITEM",
+      "status": "PENDING",
+      "score": 21.42857,
+      "title": "Condições de venda",
+      "calculated_at": "2026-04-28T14:00:18Z",
+      "variables": [
+        {
+          "key": "UP_PROMOTIONS",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Participe de uma promoção para receber mais visitas",
+          "rules": [
+            {
+              "key": "UP_HAS_PROMOTIONS",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Participe de uma promoção para receber mais visitas",
+                "label": "Participar",
+                "link": "https://www.mercadolivre.com.br/anuncios/lista/promos?search=MLB4017965121"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_PRICE",
+          "status": "PENDING",
+          "score": 0,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Baixe o preço para recuperar a exposição do seu anúncio",
+          "rules": [
+            {
+              "key": "UP_DYNAMIC_PRICE",
+              "status": "PENDING",
+              "progress": 0,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Automatize seu preço com um valor mínimo competitivo para ser a melhor opção de compra",
+                "label": "Automatizar preço",
+                "link": "https://www.mercadolivre.com.br/syi/core/modify?taskId=prices_task&itemId=MLB4017965121"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "MLB4017913557",
+      "type": "ITEM",
+      "status": "PENDING",
+      "score": 37.14286,
+      "title": "Condições de venda",
+      "calculated_at": "2026-04-28T14:00:18Z",
+      "variables": [
+        {
+          "key": "UP_PROMOTIONS",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Participe de uma promoção para receber mais visitas",
+          "rules": [
+            {
+              "key": "UP_HAS_PROMOTIONS",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Participe de uma promoção para receber mais visitas",
+                "label": "Participar",
+                "link": "https://www.mercadolivre.com.br/anuncios/lista/promos?search=MLB4017913557"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_FINANCING",
+          "status": "COMPLETED",
+          "score": 100,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Ofereça parcelamento sem juros para que seu anúncio seja mais competitivo",
+          "rules": [
+            {
+              "key": "UP_LISTING_TYPE_PREMIUM",
+              "status": "COMPLETED",
+              "progress": 1,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Ofereça parcelamento sem juros para que seu anúncio seja mais competitivo.",
+                "label": "Incluir parcelas",
+                "link": "https://www.mercadolivre.com.br/syi/core/modify?taskId=listing_types_task&itemId=MLB4017913557"
+              }
+            }
+          ]
+        },
+        {
+          "key": "UP_PRICE",
+          "status": "PENDING",
+          "score": 0,
+          "calculated_at": "2026-04-28T14:00:18Z",
+          "title": "Baixe o preço para recuperar a exposição do seu anúncio",
+          "rules": [
+            {
+              "key": "UP_DYNAMIC_PRICE",
+              "status": "PENDING",
+              "progress": 0,
+              "mode": "OPPORTUNITY",
+              "calculated_at": "2026-04-28T14:00:18Z",
+              "wordings": {
+                "title": "Automatize seu preço com um valor mínimo competitivo para ser a melhor opção de compra",
+                "label": "Automatizar preço",
+                "link": "https://www.mercadolivre.com.br/syi/core/modify?taskId=prices_task&itemId=MLB4017913557"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "level_wording": "Satisfatória"
+}

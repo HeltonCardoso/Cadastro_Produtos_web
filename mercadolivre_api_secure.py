@@ -2408,72 +2408,81 @@ class MercadoLivreAPISecure:
 
     def _buscar_qualidade_oficial(self, mlb):
         """
-        Busca qualidade oficial do ML.
+        Busca qualidade oficial do ML usando o endpoint /performance.
 
-        O endpoint /items/{mlb}/quality retorna:
-          - quality_level: 0 (incompleto) ou 1 (completo)
-          - missing_attributes: lista de atributos faltando
+        O endpoint /item/{mlb}/performance retorna:
+          - score: 0-100 (score numérico real)
+          - level_wording: 'Básica' | 'Satisfatória' | 'Profissional' (MLB)
+          - buckets: lista de categorias com variáveis e ações pendentes
 
-        BUG FIX: o código anterior buscava os campos 'quality_score' e 'score'
-        que NÃO existem nessa resposta. O campo correto é 'quality_level'.
+        Referência: https://developers.mercadolibre.com.br/pt_br/qualidade-do-anuncio
         """
         try:
             headers = self._get_headers()
 
-            url = f"{self.base_url}/items/{mlb}/quality"
+            # Endpoint correto: /item/{mlb}/performance (sem 's' em item)
+            url = f"https://api.mercadolibre.com/item/{mlb}/performance"
             response = requests.get(url, headers=headers, timeout=15)
+
+            print(f"📊 Performance endpoint: {response.status_code} para {mlb}")
 
             if response.status_code != 200:
                 if response.status_code != 404:
-                    print(f"⚠️ Quality endpoint retornou {response.status_code} para {mlb}")
+                    print(f"⚠️ Performance endpoint retornou {response.status_code}: {response.text[:200]}")
                 return None
 
             dados = response.json()
 
-            # quality_level: 1 = completo, 0 = incompleto
-            quality_level = dados.get('quality_level')
+            score        = dados.get('score')         # 0-100
+            level_wording = dados.get('level_wording') # 'Básica', 'Satisfatória', 'Profissional'
+            level         = dados.get('level')         # 'Bad', 'Good', 'Professional'
 
-            if quality_level is None:
-                print(f"⚠️ quality_level não encontrado na resposta: {dados}")
+            if score is None:
+                print(f"⚠️ score não encontrado na resposta /performance: {dados}")
                 return None
 
-            # Extrai IDs dos atributos faltando para exibir dicas
-            missing_raw = dados.get('missing_attributes', [])
-            dicas = []
+            # Extrai dicas e atributos pendentes dos buckets
+            dicas       = []
             missing_ids = []
-            for m in missing_raw:
-                if isinstance(m, dict):
-                    nome = m.get('name') or m.get('id', '')
-                    missing_ids.append(m.get('id', ''))
-                elif isinstance(m, str):
-                    nome = m
-                    missing_ids.append(m)
-                else:
-                    continue
-                if nome:
-                    dicas.append(f'Preencher: {nome}')
+            buckets     = dados.get('buckets', [])
+            for bucket in buckets:
+                for variable in bucket.get('variables', []):
+                    if variable.get('status') == 'PENDING':
+                        for rule in variable.get('rules', []):
+                            if rule.get('status') == 'PENDING':
+                                wordings = rule.get('wordings', {})
+                                label = wordings.get('label') or wordings.get('title', '')
+                                if label:
+                                    dicas.append(label)
+                        var_key = variable.get('key', '')
+                        if var_key:
+                            missing_ids.append(var_key)
 
-            # Converte quality_level para um score percentual
-            # 1 = 100% (completo), 0 = incompleto (score calculado fora)
-            if quality_level == 1:
-                score = 100.0
-                nivel = 'Completo'
-            else:
-                # Deixa None para o chamador calcular com base nos atributos
-                score = None
-                nivel = 'Incompleto'
+            # Normaliza o nível para pt-BR caso venha em inglês
+            nivel_map = {
+                'Bad':          'Básica',
+                'Medium':       'Satisfatória',
+                'Good':         'Profissional',
+                'Professional': 'Profissional',
+                'Standard':     'Satisfatória',
+                'Basic':        'Básica',
+            }
+            nivel = level_wording or nivel_map.get(level, 'Básica')
+
+            print(f"✅ Qualidade oficial: score={score} nivel={nivel}")
 
             return {
-                'pontuacao':     score,       # None quando incompleto (calculado fora)
-                'nivel':         nivel,
-                'dicas':         dicas,
-                'missing_ids':   missing_ids,
-                'quality_level': quality_level,
-                'origem':        'oficial'
+                'pontuacao':   round(float(score), 1),
+                'nivel':       nivel,
+                'dicas':       dicas[:10],   # limita a 10 dicas
+                'missing_ids': missing_ids,
+                'origem':      'oficial'
             }
 
         except Exception as e:
-            print(f"Erro qualidade: {e}")
+            print(f"Erro qualidade /performance: {e}")
+            import traceback
+            traceback.print_exc()
             return None
 
 
