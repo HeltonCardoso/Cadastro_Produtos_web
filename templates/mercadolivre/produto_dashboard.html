@@ -696,6 +696,58 @@
 
     select.atributo-input { cursor: pointer; }
 
+    /* ── Combobox customizado ── */
+    .combobox-wrap {
+        position: relative;
+    }
+    .combobox-wrap .atributo-input {
+        padding-right: 30px;
+    }
+    .combobox-arrow {
+        position: absolute;
+        right: 9px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #aaa;
+        pointer-events: none;
+        transition: transform 0.2s;
+    }
+    .combobox-wrap.open .combobox-arrow {
+        transform: translateY(-50%) rotate(180deg);
+    }
+    .combobox-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 3px);
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1.5px solid var(--ml-blue);
+        border-radius: 7px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        z-index: 999;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .combobox-wrap.open .combobox-dropdown {
+        display: block;
+    }
+    .combobox-option {
+        padding: 8px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #333;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.12s;
+    }
+    .combobox-option:last-child { border-bottom: none; }
+    .combobox-option:hover, .combobox-option.highlighted {
+        background: #e8f0fe;
+        color: var(--ml-blue);
+    }
+    .combobox-option.hidden { display: none; }
+
     /* ── Campo number_unit ── */
     .input-unit-wrap {
         position: relative;
@@ -1092,7 +1144,7 @@
 <!-- Barra de pesquisa fixa -->
 <div class="search-bar-sticky">
     <span class="search-label">MLB</span>
-    <input type="text" id="mlb_input" placeholder="Digite o código MLB (ex: MLB1234567890)">
+    <input type="text" id="mlb_input" placeholder="MLB ou só os números (ex: 4017913557)">
     <button class="btn-search" onclick="carregarProduto()">
         <i class="fas fa-search"></i> Buscar produto
     </button>
@@ -1300,9 +1352,12 @@ document.getElementById('modal-overlay').addEventListener('click', e => { if (e.
 
 // ─── CARREGAR PRODUTO ─────────────────────────────────────────────────────────
 async function carregarProduto() {
-    const mlb = document.getElementById('mlb_input').value.trim().toUpperCase();
-    if (!mlb || !mlb.startsWith('MLB')) {
-        mostrarModal({ icone:'⚠️', titulo:'MLB inválido', mensagem:'Digite um MLB válido (ex: MLB1234567890)', botoes:[{texto:'OK'}] });
+    let rawInput = document.getElementById('mlb_input').value.trim().toUpperCase();
+    // Aceita somente números: adiciona prefixo MLB automaticamente
+    if (/^\d+$/.test(rawInput)) rawInput = 'MLB' + rawInput;
+    const mlb = rawInput;
+    if (!mlb || !mlb.startsWith('MLB') || mlb.length < 5) {
+        mostrarModal({ icone:'⚠️', titulo:'MLB inválido', mensagem:'Digite o código MLB ou apenas os números (ex: 1234567890)', botoes:[{texto:'OK'}] });
         return;
     }
 
@@ -1519,7 +1574,7 @@ function renderizarMelhorias(buckets) {
 function renderizarAtributos(atributos) {
     // Principais = 'principal' | Secundárias = 'recomendado' + 'secundario'
     // IDs a ocultar completamente da interface (case-insensitive)
-    const IDS_OCULTOS = ['STYLE', 'LINHA', 'LINE', 'PRODUCT_LINE'];
+    const IDS_OCULTOS = ['LINHA', 'LINE', 'PRODUCT_LINE'];
     const atributosFiltrados = atributos.filter(attr => {
         const attrId = (attr.id || '').toUpperCase();
         const hidden = IDS_OCULTOS.some(oculto => attrId === oculto.toUpperCase());
@@ -1563,8 +1618,14 @@ function buildCard(container, attr) {
         'BRAND',            // Marca
         'SLIDES_MATERIAL',  // Material das corrediças
         'HANDLES_MATERIAL', // Material das alças
+        'COLOR',            // Cor — texto livre
+        'MAIN_COLOR',       // Cor Principal — texto livre
+        'MAIN_MATERIAL',    // Material principal — texto livre
     ];  // sempre texto livre, ignoram valores_possiveis
-    const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued && !IDS_TEXTO_LIVRE.includes(id);
+    // Combobox: mostra sugestões predefinidas MAS permite digitar livremente
+    const IDS_COMBOBOX = ['STYLE', 'ITEM_STYLE', 'FINISH', 'GLOSS_LEVEL'];
+    const isCombobox      = IDS_COMBOBOX.includes(id);
+    const temDropdown     = valoresPoss.length > 0 && !isBoolean && !isMultivalued && !IDS_TEXTO_LIVRE.includes(id) && !isCombobox;
     const isObrigatorio   = attr.obrigatorio === true;
     // IDs que sempre suportam "Não se aplica" mesmo que a API não devolva o flag
     const IDS_FORCAM_NA = ['SOFA_TYPE', 'STYLE', 'ITEM_STYLE'];
@@ -1624,6 +1685,36 @@ function buildCard(container, attr) {
                     ${valoresPoss.length > 0 ? `list="datalist_${id}"` : ''}>
             </div>
             ${valoresPoss.length > 0 ? `<datalist id="datalist_${id}">${valoresPoss.map(v=>`<option value="${escapeHtml(v.name||'')}"></option>`).join('')}</datalist>` : ''}
+        `;
+
+    } else if (isCombobox) {
+        // Combobox customizado: input texto livre + dropdown com opções fixas por campo
+        const OPCOES_FIXAS = {
+            'GLOSS_LEVEL':  ['Fosco', 'Brilho', 'Semi-brilho', 'Semi-Fosco'],
+            'FINISH':       ['Pintura UV', 'Pintura BP', 'Verniz', 'Melamina BP', 'Pintura UV Atóxica', 'Epóxi'],
+            'STYLE':        ['Clássico', 'Romântico', 'Nórdico', 'Retrô/Vintage', 'Moderno', 'Praiano', 'Kitsch', 'Oriental', 'Rústico/Campestre', 'Minimalista', 'Industrial', 'Boêmio'],
+            'ITEM_STYLE':   ['Clássico', 'Romântico', 'Nórdico', 'Retrô/Vintage', 'Moderno', 'Praiano', 'Kitsch', 'Oriental', 'Rústico/Campestre', 'Minimalista', 'Industrial', 'Boêmio'],
+        };
+        // Merge: opções fixas + qualquer opção vinda da API que não esteja na lista
+        const opcoesFix  = OPCOES_FIXAS[id] || [];
+        const opcoesApi  = valoresPoss.map(v => v.name || '').filter(Boolean);
+        const todasOpcoes = [...new Set([...opcoesFix, ...opcoesApi.filter(o => !opcoesFix.includes(o))])];
+        const valAtual   = attr.valor || '';
+        const optsHtml   = todasOpcoes.map(o =>
+            `<div class="combobox-option" onclick="selecionarCombobox('${id}', ${JSON.stringify(o)})">${escapeHtml(o)}</div>`
+        ).join('');
+        inputHtml = `
+            <div class="combobox-wrap" id="combo_wrap_${id}">
+                <input type="text" id="attr_${id}" class="atributo-input"
+                    value="${escapeHtml(valAtual)}"
+                    placeholder="Selecione ou digite..."
+                    autocomplete="off"
+                    oninput="filtrarCombobox('${id}'); onInputChange('${id}')"
+                    onfocus="abrirCombobox('${id}')"
+                    onkeydown="navCombobox('${id}', event)">
+                <span class="combobox-arrow">▼</span>
+                <div class="combobox-dropdown" id="combo_list_${id}">${optsHtml}</div>
+            </div>
         `;
 
     } else if (temDropdown) {
@@ -1715,7 +1806,7 @@ function buildCard(container, attr) {
         valorOriginal:    attr.valor      || '',
         valueIdOriginal:  valueIdResolvidoParaSalvar,
         naoAplicaOrig:    eNaoAplica,
-        tipo:             isBoolean ? 'boolean' : isMultivalued ? 'multivalued' : temDropdown ? 'dropdown' : isNumberUnit ? 'number_unit' : 'text',
+        tipo:             isBoolean ? 'boolean' : isMultivalued ? 'multivalued' : temDropdown ? 'dropdown' : isCombobox ? 'combobox' : isNumberUnit ? 'number_unit' : 'text',
         suportaNA,
         unidade:          attr.unidade    || '',
         valoresPoss,
@@ -1998,7 +2089,7 @@ async function salvarTodosAtributos() {
 
     for (const [id, est] of Object.entries(estadoCampos)) {
 
-        const IDS_IGNORADOS_SAVE = ['STYLE', 'LINHA', 'LINE', 'PRODUCT_LINE'];
+        const IDS_IGNORADOS_SAVE = ['LINHA', 'LINE', 'PRODUCT_LINE'];
         if (IDS_IGNORADOS_SAVE.some(ig => id.toUpperCase() === ig)){
             console.log('Ignorando Atributo:', id);
             continue;
@@ -2033,6 +2124,19 @@ async function salvarTodosAtributos() {
                 console.log(`[MODIFICADO dropdown] ${id}: original="${est.valueIdOriginal}" novo="${sel.value}"`);
                 const opt = sel.options[sel.selectedIndex];
                 modificados[id] = { valor: opt ? (opt.dataset.name || opt.text) : '', value_id: sel.value, is_nao_se_aplica: false };
+            }
+
+        } else if (est.tipo === 'combobox') {
+            // Combobox: envia valor textual; se bater com uma opção predefinida usa também o value_id
+            const inp  = document.getElementById(`attr_${id}`);
+            const novo = inp ? inp.value.trim() : '';
+            if (novo && novo !== est.valorOriginal) {
+                console.log(`[MODIFICADO combobox] ${id}: original="${est.valorOriginal}" novo="${novo}"`);
+                // Tenta encontrar um value_id correspondente nas opções predefinidas
+                const match = est.valoresPoss.find(v => (v.name||'').toLowerCase() === novo.toLowerCase());
+                modificados[id] = match
+                    ? { valor: match.name, value_id: match.id, is_nao_se_aplica: false }
+                    : { valor: novo, is_nao_se_aplica: false };
             }
 
         } else {
@@ -2094,6 +2198,74 @@ async function salvarTodosAtributos() {
         mostrarModal({ icone:'❌', titulo:'Erro de conexão', mensagem: err.message, botoes:[{texto:'Fechar', classe:'danger'}] });
     }
 }
+
+// ─── COMBOBOX CUSTOMIZADO ─────────────────────────────────────────────────────
+function abrirCombobox(id) {
+    // Fecha todos os outros
+    document.querySelectorAll('.combobox-wrap.open').forEach(w => {
+        if (w.id !== 'combo_wrap_' + id) w.classList.remove('open');
+    });
+    const wrap = document.getElementById('combo_wrap_' + id);
+    if (wrap) wrap.classList.add('open');
+    filtrarCombobox(id);
+}
+
+function fecharCombobox(id) {
+    const wrap = document.getElementById('combo_wrap_' + id);
+    if (wrap) wrap.classList.remove('open');
+}
+
+function selecionarCombobox(id, valor) {
+    const inp = document.getElementById('attr_' + id);
+    if (inp) { inp.value = valor; }
+    fecharCombobox(id);
+    onInputChange(id);
+}
+
+function filtrarCombobox(id) {
+    const inp  = document.getElementById('attr_' + id);
+    const list = document.getElementById('combo_list_' + id);
+    if (!inp || !list) return;
+    const q = inp.value.trim().toLowerCase();
+    list.querySelectorAll('.combobox-option').forEach(opt => {
+        opt.classList.toggle('hidden', q.length > 0 && !opt.textContent.toLowerCase().includes(q));
+    });
+}
+
+function navCombobox(id, e) {
+    if (e.key === 'Escape') { fecharCombobox(id); return; }
+    if (e.key === 'Enter') {
+        const list = document.getElementById('combo_list_' + id);
+        if (!list) return;
+        const hl = list.querySelector('.combobox-option.highlighted:not(.hidden)');
+        if (hl) { e.preventDefault(); selecionarCombobox(id, hl.textContent); return; }
+        fecharCombobox(id);
+        return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const list = document.getElementById('combo_list_' + id);
+        if (!list) return;
+        const wrap = document.getElementById('combo_wrap_' + id);
+        if (wrap) wrap.classList.add('open');
+        const opts = [...list.querySelectorAll('.combobox-option:not(.hidden)')];
+        if (!opts.length) return;
+        const cur = opts.findIndex(o => o.classList.contains('highlighted'));
+        opts.forEach(o => o.classList.remove('highlighted'));
+        let next = e.key === 'ArrowDown' ? cur + 1 : cur - 1;
+        if (next < 0) next = opts.length - 1;
+        if (next >= opts.length) next = 0;
+        opts[next].classList.add('highlighted');
+        opts[next].scrollIntoView({ block: 'nearest' });
+    }
+}
+
+// Fecha comboboxes ao clicar fora
+document.addEventListener('click', e => {
+    if (!e.target.closest('.combobox-wrap')) {
+        document.querySelectorAll('.combobox-wrap.open').forEach(w => w.classList.remove('open'));
+    }
+});
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 function escapeHtml(t) {
