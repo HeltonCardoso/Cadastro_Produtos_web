@@ -109,6 +109,8 @@ def permissao_modulo(modulo):
 #app.register_blueprint(metrics_bp)
 app.register_blueprint(intelipost_bp)
 app.register_blueprint(ml_oauth_bp)
+from routes_ml_dashboard import ml_dashboard_bp
+app.register_blueprint(ml_dashboard_bp)
 
 # Configuração de logs
 handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=1)
@@ -5742,7 +5744,7 @@ def dashboard_master():
         'total_itens_processados': 0  # ← Valor padrão
     }
     
-    # Tenta buscar total de itens processados (se a tabela existir)
+   #  Tenta buscar total de itens processados (se a tabela existir)
     try:
         total = db.session.query(db.func.sum(ItemProcessado.id)).scalar()
         stats['total_itens_processados'] = total or 0
@@ -6432,6 +6434,419 @@ def dashboard_ml_eventos():
     """Renderiza o dashboard de eventos do Mercado Livre."""
     return render_template('mercadolivre/dashboard_eventos.html')
 
+
+
+# ============================================
+# API PARA DASHBOARD MASTER - DADOS DOS WEBHOOKS
+# ============================================
+
+@app.route('/api/ml/master/resumo')
+@login_required
+@master_required
+def api_master_resumo():
+    """API que retorna dados consolidados dos webhooks para o dashboard Master"""
+    from models import MLWebhookEvent
+    from sqlalchemy import func, and_
+    from datetime import datetime, timedelta
+    
+    try:
+        # Data de 30 dias atrás
+        data_30d = datetime.utcnow() - timedelta(days=30)
+        data_7d = datetime.utcnow() - timedelta(days=7)
+        
+        # ============================================
+        # 1. KPIs - Contagens por tipo
+        # ============================================
+        
+        # Catálogos criados (topic = catalog_listing ou catalog com status criado)
+        catalogos_novos = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
+            )
+        ).count()
+        
+        # Sugestões de catálogo (topic = catalog_suggestion ou similares)
+        sugestoes_catalogo = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic == 'catalog_suggestion'
+            )
+        ).count()
+        
+        # Anúncios pausados (resource contém 'paused' ou status específico)
+        anuncios_pausados = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic == 'items',
+                MLWebhookEvent.payload.like('%paused%')
+            )
+        ).count()
+        
+        # Anúncios excluídos
+        anuncios_excluidos = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic == 'items',
+                MLWebhookEvent.payload.like('%deleted%')
+            )
+        ).count()
+        
+        # Anúncios reativados
+        anuncios_reativados = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic == 'items',
+                MLWebhookEvent.payload.like('%active%')
+            )
+        ).count()
+        
+        # Total eventos últimos 7 dias
+        total_7d = MLWebhookEvent.query.filter(
+            MLWebhookEvent.received_at >= data_7d
+        ).count()
+        
+        total_catalog_eventos = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
+        ).count()
+        
+        # ============================================
+        # 2. Volume diário (últimos 7 dias)
+        # ============================================
+        volume_diario = []
+        for i in range(6, -1, -1):  # Do dia -6 até hoje
+            dia = (datetime.utcnow() - timedelta(days=i)).date()
+            dia_inicio = datetime(dia.year, dia.month, dia.day)
+            dia_fim = dia_inicio + timedelta(days=1)
+            
+            qtd = MLWebhookEvent.query.filter(
+                and_(
+                    MLWebhookEvent.received_at >= dia_inicio,
+                    MLWebhookEvent.received_at < dia_fim
+                )
+            ).count()
+            
+            volume_diario.append({
+                'data': dia.strftime('%d/%m'),
+                'total': qtd
+            })
+        
+        # ============================================
+        # 3. Top Sellers por volume de eventos
+        # ============================================
+        top_sellers = db.session.query(
+            MLWebhookEvent.user_id,
+            func.count(MLWebhookEvent.id).label('total')
+        ).filter(
+            MLWebhookEvent.received_at >= data_30d,
+            MLWebhookEvent.user_id.isnot(None),
+            MLWebhookEvent.user_id != ''
+        ).group_by(
+            MLWebhookEvent.user_id
+        ).order_by(
+            func.count(MLWebhookEvent.id).desc()
+        ).limit(10).all()
+        
+        top_sellers_list = [
+            {'user_id': s.user_id, 'total': s.total}
+            for s in top_sellers
+        ]
+        
+        # ============================================
+        # 4. Alertas de anúncios (pausados/excluídos)
+        # ============================================
+        anuncios_alertas = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.received_at >= data_30d,
+                MLWebhookEvent.topic == 'items',
+                or_(
+                    MLWebhookEvent.payload.like('%paused%'),
+                    MLWebhookEvent.payload.like('%deleted%'),
+                    MLWebhookEvent.payload.like('%closed%')
+                )
+            )
+        ).order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(20).all()
+        
+        anuncios_alertas_list = []
+        for a in anuncios_alertas:
+            payload = a.get_data()
+            tipo = 'pausado'
+            if 'deleted' in str(payload).lower():
+                tipo = 'excluido'
+            elif 'closed' in str(payload).lower():
+                tipo = 'fechado'
+                
+            anuncios_alertas_list.append({
+                'id': a.id,
+                'tipo': tipo,
+                'resource': a.resource,
+                'user_id': a.user_id,
+                'status': payload.get('status', 'N/A'),
+                'received_at': a.received_at.isoformat()
+            })
+        
+        # ============================================
+        # 5. Eventos de Catálogo
+        # ============================================
+        catalogos = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic.in_(['catalog_listing', 'catalog'])
+        ).order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(50).all()
+        
+        catalogos_list = [{
+            'id': c.id,
+            'topic': c.topic,
+            'resource': c.resource,
+            'user_id': c.user_id,
+            'status': c.get_data().get('status', 'N/A'),
+            'received_at': c.received_at.isoformat()
+        } for c in catalogos]
+        
+        # ============================================
+        # 6. Sugestões
+        # ============================================
+        sugestoes = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic == 'catalog_suggestion'
+        ).order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(50).all()
+        
+        sugestoes_list = [{
+            'id': s.id,
+            'resource': s.resource,
+            'user_id': s.user_id,
+            'status': s.get_data().get('status', 'sugestão'),
+            'received_at': s.received_at.isoformat()
+        } for s in sugestoes]
+        
+        # ============================================
+        # 7. Timeline (últimos 100 eventos)
+        # ============================================
+        timeline = MLWebhookEvent.query.order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(100).all()
+        
+        timeline_list = [{
+            'id': t.id,
+            'topic': t.topic,
+            'resource': t.resource,
+            'user_id': t.user_id,
+            'attempts': t.attempts,
+            'processed': t.processed,
+            'received_at': t.received_at.isoformat()
+        } for t in timeline]
+        
+        return jsonify({
+            'kpis': {
+                'catalogos_novos': catalogos_novos,
+                'sugestoes_catalogo': sugestoes_catalogo,
+                'anuncios_pausados': anuncios_pausados,
+                'anuncios_excluidos': anuncios_excluidos,
+                'anuncios_reativados': anuncios_reativados,
+                'total_7d': total_7d,
+                'total_catalog_eventos': total_catalog_eventos
+            },
+            'volume_diario': volume_diario,
+            'top_sellers': top_sellers_list,
+            'anuncios_alertas': anuncios_alertas_list,
+            'catalogos': catalogos_list,
+            'sugestoes': sugestoes_list,
+            'timeline': timeline_list
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Erro API master resumo: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================
+# API PARA DASHBOARD SAC
+# ============================================
+
+@app.route('/api/ml/sac/resumo')
+@login_required
+def api_sac_resumo():
+    """API que retorna dados para o dashboard SAC (perguntas, pedidos, pagamentos)"""
+    from models import MLWebhookEvent
+    from sqlalchemy import func, and_
+    from datetime import datetime, timedelta
+    
+    try:
+        data_30d = datetime.utcnow() - timedelta(days=30)
+        data_7d = datetime.utcnow() - timedelta(days=7)
+        hoje_inicio = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        # ============================================
+        # 1. KPIs - Perguntas
+        # ============================================
+        
+        # Total perguntas (questions)
+        total_perguntas = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic == 'questions'
+        ).count()
+        
+        # Perguntas pendentes (sem resposta - verificar payload)
+        perguntas_pendentes = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.topic == 'questions',
+                or_(
+                    MLWebhookEvent.processed == False,  # Ainda não processadas
+                    MLWebhookEvent.payload.notlike('%answer%')  # Sem resposta
+                )
+            )
+        ).count()
+        
+        # Perguntas respondidas
+        perguntas_respondidas = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.topic == 'questions',
+                MLWebhookEvent.payload.like('%answer%')
+            )
+        ).count()
+        
+        # Perguntas de hoje
+        perguntas_hoje = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.topic == 'questions',
+                MLWebhookEvent.received_at >= hoje_inicio
+            )
+        ).count()
+        
+        # ============================================
+        # 2. Pedidos (últimos 7 dias)
+        # ============================================
+        pedidos_7d = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.topic == 'orders',
+                MLWebhookEvent.received_at >= data_7d
+            )
+        ).count()
+        
+        # Pagamentos (últimos 7 dias)
+        pagamentos_7d = MLWebhookEvent.query.filter(
+            and_(
+                MLWebhookEvent.topic == 'payments',
+                MLWebhookEvent.received_at >= data_7d
+            )
+        ).count()
+        
+        # ============================================
+        # 3. Volume de perguntas por dia (últimos 7 dias)
+        # ============================================
+        volume_perguntas = []
+        for i in range(6, -1, -1):
+            dia = (datetime.utcnow() - timedelta(days=i)).date()
+            dia_inicio = datetime(dia.year, dia.month, dia.day)
+            dia_fim = dia_inicio + timedelta(days=1)
+            
+            qtd = MLWebhookEvent.query.filter(
+                and_(
+                    MLWebhookEvent.topic == 'questions',
+                    MLWebhookEvent.received_at >= dia_inicio,
+                    MLWebhookEvent.received_at < dia_fim
+                )
+            ).count()
+            
+            volume_perguntas.append({
+                'data': dia.strftime('%d/%m'),
+                'total': qtd
+            })
+        
+        # ============================================
+        # 4. Lista de perguntas (últimas 50)
+        # ============================================
+        perguntas = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic == 'questions'
+        ).order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(50).all()
+        
+        perguntas_list = []
+        for p in perguntas:
+            payload = p.get_data()
+            
+            # Determinar status baseado no payload
+            status = 'pendente'
+            if 'answer' in str(payload).lower():
+                status = 'respondida'
+            elif p.processed:
+                status = 'processada'
+                
+            perguntas_list.append({
+                'id': p.id,
+                'resource': p.resource,
+                'user_id': p.user_id,
+                'status': status,
+                'attempts': p.attempts,
+                'received_at': p.received_at.isoformat()
+            })
+        
+        # ============================================
+        # 5. Lista de pedidos recentes (últimos 30)
+        # ============================================
+        pedidos = MLWebhookEvent.query.filter(
+            MLWebhookEvent.topic == 'orders'
+        ).order_by(
+            MLWebhookEvent.received_at.desc()
+        ).limit(30).all()
+        
+        pedidos_list = [{
+            'id': p.id,
+            'resource': p.resource,
+            'user_id': p.user_id,
+            'status': p.get_data().get('status', 'N/A'),
+            'attempts': p.attempts,
+            'received_at': p.received_at.isoformat()
+        } for p in pedidos]
+        
+        return jsonify({
+            'kpis': {
+                'perguntas_total': total_perguntas,
+                'perguntas_pendentes': perguntas_pendentes,
+                'perguntas_respondidas': perguntas_respondidas,
+                'perguntas_hoje': perguntas_hoje,
+                'pedidos_7d': pedidos_7d,
+                'pagamentos_7d': pagamentos_7d
+            },
+            'volume_perguntas': volume_perguntas,
+            'perguntas': perguntas_list,
+            'pedidos': pedidos_list
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Erro API sac resumo: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+
+# Import necessário para usar o 'or_' nas queries
+from sqlalchemy import or_
+
+@app.route('/api/ml/testar-dados')
+@login_required
+def testar_dados_webhook():
+    from models import MLWebhookEvent
+    
+    total = MLWebhookEvent.query.count()
+    ultimos = MLWebhookEvent.query.order_by(MLWebhookEvent.received_at.desc()).limit(5).all()
+    
+    return jsonify({
+        'total_eventos': total,
+        'ultimos_eventos': [
+            {
+                'id': e.id,
+                'topic': e.topic,
+                'resource': e.resource,
+                'received_at': e.received_at.isoformat()
+            } for e in ultimos
+        ]
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)

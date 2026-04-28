@@ -1,26 +1,1031 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard Master{% endblock %}
+
+{% block extra_css %}
+{{ super() }}
+<style>
+    /* ══════════════════════════════════════════
+       DESIGN SYSTEM — Dashboard Master ML (TEMA CLARO)
+    ══════════════════════════════════════════ */
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+        --bg:          #f0f4ff;
+        --surface:     #ffffff;
+        --surface2:    #f7f9ff;
+        --border:      #e4e9f7;
+        --border2:     #cdd5f0;
+        --text:        #1a1f36;
+        --muted:       #7480a0;
+        --blue:        #2563eb;
+        --blue-glow:   rgba(37,99,235,0.1);
+        --green:       #059669;
+        --green-glow:  rgba(5,150,105,0.1);
+        --orange:      #d97706;
+        --orange-glow: rgba(217,119,6,0.1);
+        --red:         #dc2626;
+        --red-glow:    rgba(220,38,38,0.1);
+        --purple:      #7c3aed;
+        --purple-glow: rgba(124,58,237,0.1);
+        --yellow:      #fbbf24;
+        --radius:      12px;
+        --font:        'DM Sans', sans-serif;
+        --mono:        'JetBrains Mono', monospace;
+        --shadow:      0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        min-height: 100vh;
+    }
+
+    /* ── TOPBAR ─────────────────────────────── */
+    .topbar {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        border-bottom: none;
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 12px rgba(37,99,235,0.25);
+    }
+
+    .topbar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        color: white;
+        letter-spacing: -.3px;
+    }
+
+    .topbar-logo .badge-master {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 20px;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .topbar span[style*="color:var(--muted)"] {
+        color: rgba(255,255,255,0.75) !important;
+    }
+
+    .topbar-spacer { flex: 1; }
+
+    .live-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+        color: #4ade80;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .6px;
+    }
+
+    .live-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #4ade80;
+        animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+        0%,100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: .4; transform: scale(.8); }
+    }
+
+    .btn-refresh {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.25);
+        color: white;
+        padding: 7px 16px;
+        border-radius: 8px;
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        transition: all .2s;
+    }
+
+    .btn-refresh:hover {
+        background: rgba(255,255,255,0.25);
+        color: white;
+    }
+
+    .btn-refresh i {
+        color: white;
+    }
+
+    /* ── LAYOUT ─────────────────────────────── */
+    .layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        min-height: calc(100vh - 57px);
+    }
+
+    /* ── SIDEBAR ────────────────────────────── */
+    .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        padding: 20px 0;
+        position: sticky;
+        top: 57px;
+        height: calc(100vh - 57px);
+        overflow-y: auto;
+    }
+
+    .sidebar-section {
+        padding: 0 14px;
+        margin-bottom: 4px;
+    }
+
+    .sidebar-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 12px 10px 6px;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        transition: all .15s;
+        position: relative;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: var(--font);
+    }
+
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+
+    .nav-item.active {
+        background: var(--blue-glow);
+        color: var(--blue);
+        font-weight: 600;
+    }
+
+    .nav-item .nav-badge {
+        margin-left: auto;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 1px 7px;
+        border-radius: 20px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .nav-item .nav-badge.warn { background: var(--orange); }
+    .nav-item .nav-badge.ok   { background: var(--green); }
+    .nav-item .nav-badge:not(.warn):not(.ok) { background: var(--red); }
+
+    /* ── MAIN CONTENT ───────────────────────── */
+    .main {
+        padding: 28px;
+        overflow-y: auto;
+    }
+
+    /* ── PANELS ─────────────────────────────── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── KPI GRID ───────────────────────────── */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .kpi-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: var(--shadow);
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    }
+
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+    }
+
+    .kpi-card.blue::before   { background: linear-gradient(90deg, var(--blue), #60a5fa); }
+    .kpi-card.green::before  { background: linear-gradient(90deg, var(--green), #34d399); }
+    .kpi-card.orange::before { background: linear-gradient(90deg, var(--orange), #fcd34d); }
+    .kpi-card.red::before    { background: linear-gradient(90deg, var(--red), #f87171); }
+    .kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
+
+    .kpi-icon { font-size: 26px; margin-bottom: 10px; line-height: 1; }
+
+    .kpi-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+        font-family: var(--mono);
+        letter-spacing: -1px;
+    }
+
+    .kpi-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        margin-top: 6px;
+    }
+
+    .kpi-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+    }
+
+    /* ── SECTION HEADER ─────────────────────── */
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-count {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 9px;
+        border-radius: 20px;
+    }
+
+    /* ── CARD TABLE ─────────────────────────── */
+    .card-table {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+    }
+
+    .card-table-head {
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .table-wrap { overflow-x: auto; max-height: 420px; overflow-y: auto; }
+
+    .table-wrap::-webkit-scrollbar { width: 4px; height: 4px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+    table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    table.data-table thead th {
+        padding: 9px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface2);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        white-space: nowrap;
+    }
+
+    table.data-table tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background .15s;
+    }
+
+    table.data-table tbody tr:last-child { border-bottom: none; }
+    table.data-table tbody tr:hover { background: var(--surface2); }
+
+    table.data-table tbody td {
+        padding: 10px 16px;
+        color: var(--text);
+        vertical-align: middle;
+    }
+
+    .mono { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+    /* ── BADGES ─────────────────────────────── */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        white-space: nowrap;
+    }
+
+    .badge.pausado   { background: var(--orange-glow); color: var(--orange); border: 1px solid rgba(217,119,6,.2); }
+    .badge.excluido  { background: var(--red-glow);    color: var(--red);    border: 1px solid rgba(220,38,38,.2); }
+    .badge.catalogo  { background: var(--purple-glow); color: var(--purple); border: 1px solid rgba(124,58,237,.2); }
+    .badge.sugestao  { background: var(--blue-glow);   color: var(--blue);   border: 1px solid rgba(37,99,235,.2); }
+    .badge.ativo     { background: var(--green-glow);  color: var(--green);  border: 1px solid rgba(5,150,105,.2); }
+    .badge.default   { background: var(--surface2);    color: var(--muted);  border: 1px solid var(--border); }
+
+    /* ── CHART BAR ───────────────────────────── */
+    .chart-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+    }
+
+    .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 100px;
+        margin-top: 16px;
+    }
+
+    .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        height: 100%;
+        justify-content: flex-end;
+    }
+
+    .bar-fill {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        background: linear-gradient(180deg, var(--blue) 0%, rgba(37,99,235,.3) 100%);
+        transition: height .4s ease;
+        min-height: 3px;
+    }
+
+    .bar-label {
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .bar-val {
+        font-size: 11px;
+        font-family: var(--mono);
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    /* ── GRID 2 cols ─────────────────────────── */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    /* ── TIMELINE ───────────────────────────── */
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 18px;
+        border-bottom: 1px solid var(--border);
+        transition: background .15s;
+    }
+
+    .timeline-item:hover { background: var(--surface2); }
+    .timeline-item:last-child { border-bottom: none; }
+
+    .t-icon {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .t-icon.orders    { background: var(--blue-glow); }
+    .t-icon.items     { background: var(--orange-glow); }
+    .t-icon.catalog   { background: var(--purple-glow); }
+    .t-icon.questions { background: var(--green-glow); }
+    .t-icon.payments  { background: rgba(5,150,105,.1); }
+    .t-icon.other     { background: var(--surface2); }
+
+    .t-body { flex: 1; min-width: 0; }
+
+    .t-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .t-meta {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .t-time { font-size: 11px; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
+
+    /* ── EMPTY STATE ────────────────────────── */
+    .empty {
+        text-align: center;
+        padding: 40px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .empty .e-icon { font-size: 32px; margin-bottom: 10px; }
+
+    /* ── LOADING ────────────────────────────── */
+    .spinner {
+        width: 20px; height: 20px;
+        border: 2px solid var(--border2);
+        border-top-color: var(--blue);
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
+        display: inline-block;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ALERT STRIP ────────────────────────── */
+    .alert-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--red-glow);
+        border: 1px solid rgba(220,38,38,.2);
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--red);
+    }
+
+    .alert-strip.hidden { display: none; }
+
+    /* ── Sellers mini-list ───────────────────── */
+    .seller-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 18px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+    }
+
+    .seller-row:last-child { border-bottom: none; }
+
+    .seller-bar-wrap {
+        flex: 1;
+        height: 5px;
+        background: var(--surface2);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .seller-bar-fill {
+        height: 100%;
+        background: var(--blue);
+        border-radius: 4px;
+        transition: width .4s;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 900px) {
+        .layout { grid-template-columns: 1fr; }
+        .sidebar { display: none; }
+        .grid-2 { grid-template-columns: 1fr; }
+        .topbar { padding: 14px 16px; }
+        .main { padding: 16px; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h1>Dashboard Master</h1>
-    <p>Bem-vindo, {{ current_user.username }}! Você tem acesso total.</p>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Usuários</h5>
-                    <p>Total: {{ stats.total_usuarios }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Processos</h5>
-                    <p>Total: {{ stats.total_processos }}</p>
-                </div>
-            </div>
-        </div>
+<!-- O CONTEÚDO PERMANECE EXATAMENTE IGUAL -->
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="topbar-logo">
+        🛡️ Master
+        <span class="badge-master">Admin</span>
     </div>
+    <span style="font-size:13px;color:var(--muted)">Bem-vindo, {{ current_user.username }}</span>
+    <div class="topbar-spacer"></div>
+    <div class="live-pill"><div class="live-dot"></div>AO VIVO</div>
+    <div style="font-size:12px;color:var(--muted)">Atualiza em <strong id="countdown" style="color:var(--blue)">30</strong>s</div>
+    <button class="btn-refresh" onclick="forceRefresh()">
+        <i class="fas fa-sync-alt" id="refresh-icon"></i> Atualizar
+    </button>
 </div>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-label" style="padding-left:22px">Monitoramento ML</div>
+        <div class="sidebar-section">
+            <button class="nav-item active" data-panel="visao-geral">📊 Visão Geral</button>
+            <button class="nav-item" data-panel="catalogos">📋 Catálogos <span class="nav-badge ok" id="nav-cnt-cat">—</span></button>
+            <button class="nav-item" data-panel="sugestoes">💡 Sugestões <span class="nav-badge warn" id="nav-cnt-sug">—</span></button>
+            <button class="nav-item" data-panel="alertas">🚨 Alertas Anúncios <span class="nav-badge" id="nav-cnt-alert">—</span></button>
+            <button class="nav-item" data-panel="timeline">⚡ Timeline</button>
+        </div>
+        <div class="sidebar-label" style="padding-left:22px;margin-top:8px">Sistema</div>
+        <div class="sidebar-section">
+            <button class="nav-item" onclick="window.location='/dashboard/ml-eventos'">📡 Eventos Raw</button>
+            <button class="nav-item" onclick="window.location='/admin/usuarios'">👥 Usuários</button>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- ═══ PAINEL: VISÃO GERAL ══════════════════════════════ -->
+        <div class="panel active" id="panel-visao-geral">
+
+            <div id="alert-strip" class="alert-strip hidden">
+                🚨 <span id="alert-msg"></span>
+            </div>
+
+            <!-- KPIs -->
+            <div class="kpi-grid" id="kpi-grid">
+                <div class="kpi-card blue">
+                    <div class="kpi-icon">📋</div>
+                    <div class="kpi-value" id="k-cat-novos">—</div>
+                    <div class="kpi-label">Catálogos</div>
+                    <div class="kpi-sub">últimos 30 dias</div>
+                </div>
+                <div class="kpi-card purple">
+                    <div class="kpi-icon">💡</div>
+                    <div class="kpi-value" id="k-sugestoes">—</div>
+                    <div class="kpi-label">Sugestões ML</div>
+                    <div class="kpi-sub">últimos 30 dias</div>
+                </div>
+                <div class="kpi-card orange">
+                    <div class="kpi-icon">⏸️</div>
+                    <div class="kpi-value" id="k-pausados">—</div>
+                    <div class="kpi-label">Pausados ML</div>
+                    <div class="kpi-sub">últimos 30 dias</div>
+                </div>
+                <div class="kpi-card red">
+                    <div class="kpi-icon">🗑️</div>
+                    <div class="kpi-value" id="k-excluidos">—</div>
+                    <div class="kpi-label">Excluídos ML</div>
+                    <div class="kpi-sub">últimos 30 dias</div>
+                </div>
+                <div class="kpi-card green">
+                    <div class="kpi-icon">✅</div>
+                    <div class="kpi-value" id="k-reativados">—</div>
+                    <div class="kpi-label">Reativados</div>
+                    <div class="kpi-sub">últimos 30 dias</div>
+                </div>
+                <div class="kpi-card blue">
+                    <div class="kpi-icon">🔔</div>
+                    <div class="kpi-value" id="k-total7d">—</div>
+                    <div class="kpi-label">Eventos 7d</div>
+                    <div class="kpi-sub">total recebido</div>
+                </div>
+            </div>
+
+            <!-- Gráfico + Top Sellers -->
+            <div class="grid-2">
+                <div class="chart-section">
+                    <div class="section-title">📈 Volume de Eventos — 7 dias</div>
+                    <div class="bar-chart" id="bar-chart">
+                        <div class="empty" style="width:100%"><span class="spinner"></span></div>
+                    </div>
+                </div>
+                <div class="card-table" style="margin-bottom:0">
+                    <div class="card-table-head">
+                        <div class="section-title">🏪 Top Sellers Ativos</div>
+                    </div>
+                    <div id="sellers-list">
+                        <div class="empty"><span class="spinner"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Últimos alertas de anúncios -->
+            <div class="section-header">
+                <div class="section-title">🚨 Últimos Alertas de Anúncios</div>
+                <span class="section-count" id="cnt-alertas-panel">0</span>
+            </div>
+            <div class="card-table">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Recurso / Anúncio</th>
+                                <th>Seller</th>
+                                <th>Status</th>
+                                <th>Recebido</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alertas-mini-body">
+                            <tr><td colspan="6" class="empty"><span class="spinner"></span><\/tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /visao-geral -->
+
+        <!-- ═══ PAINEL: CATÁLOGOS ═══════════════════════════════ -->
+        <div class="panel" id="panel-catalogos">
+            <div class="section-header">
+                <div class="section-title">📋 Criação de Catálogos pelo ML</div>
+                <span class="section-count" id="cnt-cat">0 eventos</span>
+            </div>
+            <div class="card-table">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Tópico</th><th>Recurso</th><th>Seller</th><th>Status/Ação</th><th>Recebido</th></tr>
+                        </thead>
+                        <tbody id="cat-body">
+                            <tr><td colspan="6" class="empty"><span class="spinner"></span><\/tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PAINEL: SUGESTÕES ════════════════════════════════ -->
+        <div class="panel" id="panel-sugestoes">
+            <div class="section-header">
+                <div class="section-title">💡 Sugestões de Catálogo</div>
+                <span class="section-count" id="cnt-sug">0 sugestões</span>
+            </div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">
+                O Mercado Livre envia sugestões para você criar/aderir catalogos existentes.
+                Analise e decida se irá aceitar cada sugestão.
+            </p>
+            <div class="card-table">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Recurso</th><th>Seller</th><th>Status</th><th>Recebido</th></tr>
+                        </thead>
+                        <tbody id="sug-body">
+                            <tr><td colspan="5" class="empty"><span class="spinner"></span><\/tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PAINEL: ALERTAS ══════════════════════════════════ -->
+        <div class="panel" id="panel-alertas">
+            <div class="section-header">
+                <div class="section-title">🚨 Anúncios Pausados / Excluídos pelo ML</div>
+                <span class="section-count" id="cnt-alert-panel">0</span>
+            </div>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px">
+                Anúncios que sofreram ação automática pelo Mercado Livre. Verifique possíveis violações ou problemas de estoque.
+            </p>
+            <div class="card-table">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>ID</th><th>Situação</th><th>Recurso / Anúncio</th><th>Seller</th><th>Status Raw</th><th>Tentativas</th><th>Recebido</th></tr>
+                        </thead>
+                        <tbody id="alert-body">
+                            <tr><td colspan="7" class="empty"><span class="spinner"></span><\/tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PAINEL: TIMELINE ═════════════════════════════════ -->
+        <div class="panel" id="panel-timeline">
+            <div class="section-header">
+                <div class="section-title">⚡ Timeline Geral de Eventos</div>
+                <span class="section-count" id="cnt-timeline">0 eventos</span>
+            </div>
+            <div class="card-table">
+                <div class="table-wrap" style="max-height: 620px">
+                    <div id="timeline-body">
+                        <div class="empty"><span class="spinner"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const TOPICS_INFO = {
+    orders:          { label: 'Pedido',    icon: '🛍️', css: 'orders' },
+    payments:        { label: 'Pagamento', icon: '💳', css: 'payments' },
+    items:           { label: 'Anúncio',   icon: '📦', css: 'items' },
+    questions:       { label: 'Pergunta',  icon: '💬', css: 'questions' },
+    catalog_listing: { label: 'Catálogo',  icon: '📋', css: 'catalog' },
+    catalog:         { label: 'Catálogo',  icon: '📋', css: 'catalog' },
+};
+
+let state = {};
+let countdownVal = 30;
+let timerInterval;
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+document.querySelectorAll('[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-panel]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const panelId = 'panel-' + btn.dataset.panel;
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(panelId)?.classList.add('active');
+    });
+});
+
+// ── Fetch ────────────────────────────────────────────────────────────────────
+async function fetchData() {
+    try {
+        const res = await fetch('/api/ml/master/resumo');
+        if (!res.ok) throw new Error(res.status);
+        state = await res.json();
+        render();
+    } catch(e) {
+        console.error('Erro fetch master:', e);
+    }
+}
+
+function forceRefresh() {
+    const icon = document.getElementById('refresh-icon');
+    icon.classList.add('fa-spin');
+    fetchData().finally(() => {
+        setTimeout(() => icon.classList.remove('fa-spin'), 600);
+        resetCountdown();
+    });
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function render() {
+    if (!state.kpis) return;
+    const k = state.kpis;
+
+    // KPIs
+    document.getElementById('k-cat-novos').textContent  = k.catalogos_novos   ?? 0;
+    document.getElementById('k-sugestoes').textContent  = k.sugestoes_catalogo ?? 0;
+    document.getElementById('k-pausados').textContent   = k.anuncios_pausados  ?? 0;
+    document.getElementById('k-excluidos').textContent  = k.anuncios_excluidos ?? 0;
+    document.getElementById('k-reativados').textContent = k.anuncios_reativados ?? 0;
+    document.getElementById('k-total7d').textContent    = k.total_7d           ?? 0;
+
+    // Nav badges
+    document.getElementById('nav-cnt-cat').textContent   = k.total_catalog_eventos ?? 0;
+    document.getElementById('nav-cnt-sug').textContent   = k.sugestoes_catalogo     ?? 0;
+    const totalAlertas = (k.anuncios_pausados||0) + (k.anuncios_excluidos||0);
+    document.getElementById('nav-cnt-alert').textContent  = totalAlertas;
+    if (totalAlertas > 0)
+        document.getElementById('nav-cnt-alert').style.background = 'var(--red)';
+
+    // Alert strip
+    if (totalAlertas > 0) {
+        const strip = document.getElementById('alert-strip');
+        strip.classList.remove('hidden');
+        document.getElementById('alert-msg').textContent =
+            `${k.anuncios_pausados} anúncio(s) pausado(s) e ${k.anuncios_excluidos} excluído(s) pelo Mercado Livre nos últimos 30 dias.`;
+    }
+
+    renderChart(state.volume_diario || []);
+    renderSellers(state.top_sellers || []);
+    renderAlertas(state.anuncios_alertas || []);
+    renderCatalogos(state.catalogos || []);
+    renderSugestoes(state.sugestoes || []);
+    renderTimeline(state.timeline || []);
+}
+
+// ── Chart ─────────────────────────────────────────────────────────────────────
+function renderChart(data) {
+    if (!data.length) return;
+    const max = Math.max(...data.map(d => d.total), 1);
+    const chart = document.getElementById('bar-chart');
+    chart.innerHTML = data.map(d => {
+        const pct = Math.max((d.total / max) * 100, 3);
+        return `<div class="bar-col">
+            <div class="bar-val">${d.total}</div>
+            <div class="bar-fill" style="height:${pct}%"></div>
+            <div class="bar-label">${d.data}</div>
+        </div>`;
+    }).join('');
+}
+
+// ── Sellers ──────────────────────────────────────────────────────────────────
+function renderSellers(data) {
+    const el = document.getElementById('sellers-list');
+    if (!data.length) { el.innerHTML = '<div class="empty"><div class="e-icon">🏪</div><p>Nenhum seller encontrado</p></div>'; return; }
+    const max = Math.max(...data.map(s => s.total), 1);
+    el.innerHTML = data.map(s => `
+        <div class="seller-row">
+            <span class="mono" style="min-width:90px">${esc(s.user_id || '—')}</span>
+            <div class="seller-bar-wrap">
+                <div class="seller-bar-fill" style="width:${(s.total/max*100).toFixed(0)}%"></div>
+            </div>
+            <span class="mono">${s.total}</span>
+        </div>`).join('');
+}
+
+// ── Alertas ──────────────────────────────────────────────────────────────────
+function renderAlertas(data) {
+    document.getElementById('cnt-alertas-panel').textContent = data.length + ' alertas';
+    document.getElementById('cnt-alert-panel').textContent   = data.length + ' alertas';
+
+    const rows = data.map(a => `<tr>
+        <td class="mono">${a.id}</td>
+        <td><span class="badge ${a.tipo}">${a.tipo === 'pausado' ? '⏸️ Pausado' : '🗑️ Excluído'}</span></td>
+        <td><span title="${esc(a.resource)}" style="font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(truncate(a.resource,40))}</span></td>
+        <td class="mono">${esc(a.user_id || '—')}</td>
+        <td><span class="badge default">${esc(a.status || '—')}</span></td>
+        <td class="mono">${timeAgo(a.received_at)}</td>
+    </table>`).join('');
+
+    const empty = `<tr><td colspan="6" class="empty"><div class="e-icon">✅</div><p>Nenhum alerta encontrado</p><\/tr>`;
+    const mini  = document.getElementById('alertas-mini-body');
+    const full  = document.getElementById('alert-body');
+    if (mini) mini.innerHTML = rows || empty;
+    if (full) full.innerHTML = rows.replace(/colspan="6"/g, 'colspan="7"') || `<tr><td colspan="7" class="empty"><div class="e-icon">✅</div><p>Nenhum alerta</p><\/tr>`;
+}
+
+// ── Catálogos ─────────────────────────────────────────────────────────────────
+function renderCatalogos(data) {
+    document.getElementById('cnt-cat').textContent = data.length + ' eventos';
+    const body = document.getElementById('cat-body');
+    if (!data.length) { body.innerHTML = '<tr><td colspan="6" class="empty"><div class="e-icon">📋</div><p>Nenhum evento de catálogo</p><\/tr>'; return; }
+    body.innerHTML = data.map(c => `<tr>
+        <td class="mono">${c.id}</td>
+        <td><span class="badge catalogo">📋 ${esc(c.topic||'catalog')}</span></td>
+        <td><span title="${esc(c.resource)}" style="font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(truncate(c.resource,42))}</span></td>
+        <td class="mono">${esc(c.user_id||'—')}</td>
+        <td><span class="badge default">${esc(c.status||'—')}</span></td>
+        <td class="mono">${timeAgo(c.received_at)}</td>
+    </tr>`).join('');
+}
+
+// ── Sugestões ─────────────────────────────────────────────────────────────────
+function renderSugestoes(data) {
+    document.getElementById('cnt-sug').textContent = data.length + ' sugestões';
+    document.getElementById('nav-cnt-sug').textContent = data.length;
+    const body = document.getElementById('sug-body');
+    if (!data.length) { body.innerHTML = '<tr><td colspan="5" class="empty"><div class="e-icon">💡</div><p>Nenhuma sugestão pendente</p><\/tr>'; return; }
+    body.innerHTML = data.map(s => `<tr>
+        <td class="mono">${s.id}</td>
+        <td><span title="${esc(s.resource)}" style="font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(truncate(s.resource,44))}</span></td>
+        <td class="mono">${esc(s.user_id||'—')}</td>
+        <td><span class="badge sugestao">💡 ${esc(s.status||'sugestão')}</span></td>
+        <td class="mono">${timeAgo(s.received_at)}</td>
+    </tr>`).join('');
+}
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+function renderTimeline(data) {
+    document.getElementById('cnt-timeline').textContent = data.length + ' eventos';
+    const body = document.getElementById('timeline-body');
+    if (!data.length) { body.innerHTML = '<div class="empty"><div class="e-icon">📭</div><p>Nenhum evento</p></div>'; return; }
+
+    body.innerHTML = data.map((e, i) => {
+        const topicKey = (e.topic||'').toLowerCase();
+        const tEntry   = Object.entries(TOPICS_INFO).find(([k]) => topicKey.includes(k));
+        const tInfo    = tEntry ? tEntry[1] : { label: e.topic||'Outro', icon: '🔔', css: 'other' };
+        const isNew    = i === 0 ? 'style="background:rgba(37,99,235,0.05)"' : '';
+        return `<div class="timeline-item" ${isNew}>
+            <div class="t-icon ${tInfo.css}">${tInfo.icon}</div>
+            <div class="t-body">
+                <div class="t-title">${esc(e.resource || e.topic || '—')}</div>
+                <div class="t-meta">
+                    <span>${tInfo.label}</span>
+                    <span class="mono">ID ${e.user_id||'—'}</span>
+                    ${e.attempts > 1 ? `<span style="color:var(--orange)">⚠ ${e.attempts} tentativas</span>` : ''}
+                </div>
+            </div>
+            <div class="t-time">${timeAgo(e.received_at)}</div>
+        </div>`;
+    }).join('');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(t) {
+    const d = document.createElement('div');
+    d.textContent = String(t ?? '');
+    return d.innerHTML;
+}
+
+function truncate(s, n) {
+    s = s || '';
+    return s.length > n ? s.slice(0, n) + '…' : s;
+}
+
+function timeAgo(iso) {
+    if (!iso) return '—';
+    const diff = (Date.now() - new Date(iso + (iso.includes('Z')?'':'Z')).getTime()) / 1000;
+    if (diff < 60)    return `${Math.round(diff)}s atrás`;
+    if (diff < 3600)  return `${Math.round(diff/60)}min atrás`;
+    if (diff < 86400) return `${Math.round(diff/3600)}h atrás`;
+    return new Date(iso + 'Z').toLocaleDateString('pt-BR');
+}
+
+function resetCountdown() {
+    clearInterval(timerInterval);
+    countdownVal = 30;
+    document.getElementById('countdown').textContent = 30;
+    timerInterval = setInterval(() => {
+        countdownVal--;
+        document.getElementById('countdown').textContent = countdownVal;
+        if (countdownVal <= 0) { fetchData(); resetCountdown(); }
+    }, 1000);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+fetchData();
+resetCountdown();
+</script>
 {% endblock %}
