@@ -1,11 +1,467 @@
 {% extends 'base.html' %}
 {% block title %}Dashboard SAC{% endblock %}
+
+{% block extra_css %}
+{{ super() }}
+<style>
+:root {
+    --blue:   #3483fa;
+    --blue-d: #2968c8;
+    --green:  #00a650;
+    --orange: #f5a623;
+    --red:    #e63946;
+    --border: #e5e5e5;
+    --bg:     #f8f9fb;
+    --radius: 10px;
+    --trans:  0.2s ease;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); }
+
+/* ── page header ── */
+.page-header {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center;
+    gap: 12px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+.page-header h1 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
+.badge-sac { background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .8px; }
+.refresh-info { font-size: 12px; color: #888; }
+.refresh-info span { font-weight: 700; color: var(--blue); }
+.btn-sm {
+    background: #fff; border: 1.5px solid var(--border); color: #333;
+    padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+    transition: all var(--trans); font-family: inherit;
+}
+.btn-sm:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ── wrap ── */
+.wrap { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+
+.section-title {
+    font-size: 12px; font-weight: 700; color: #888;
+    text-transform: uppercase; letter-spacing: .8px;
+    margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; position: relative; overflow: hidden;
+    transition: box-shadow var(--trans), transform var(--trans);
+}
+.kpi:hover { box-shadow: 0 4px 14px rgba(0,0,0,.08); transform: translateY(-2px); }
+.kpi::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; border-radius: var(--radius) var(--radius) 0 0;
+}
+.kpi.blue::after   { background: var(--blue); }
+.kpi.green::after  { background: var(--green); }
+.kpi.orange::after { background: var(--orange); }
+.kpi.red::after    { background: var(--red); }
+.kpi.gray::after   { background: #94a3b8; }
+
+.kpi-icon  { font-size: 20px; margin-bottom: 6px; }
+.kpi-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .6px; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1; margin: 4px 0 2px; }
+.kpi-sub   { font-size: 10px; color: #aaa; }
+
+/* ── cards ── */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+.card-header {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+}
+.card-header h3 { font-size: 13px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
+.card-count { background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.card-count.orange { background: var(--orange); }
+.card-count.green  { background: var(--green); }
+.card-count.red    { background: var(--red); }
+
+/* ── pergunta item ── */
+.pergunta-item {
+    padding: 12px 16px; border-bottom: 1px solid #f3f4f6;
+    transition: background var(--trans);
+}
+.pergunta-item:last-child { border-bottom: none; }
+.pergunta-item:hover { background: #f8f9fb; }
+
+.pergunta-meta {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap;
+}
+.pergunta-resource {
+    font-family: monospace; font-size: 11px; color: var(--blue);
+    background: #f0f4ff; padding: 2px 6px; border-radius: 4px;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pergunta-time { font-size: 11px; color: #aaa; white-space: nowrap; }
+
+.badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; white-space: nowrap;
+}
+.badge.pendente   { background: #fff7ed; color: #d97706; }
+.badge.respondida { background: #f0fdf4; color: var(--green); }
+.badge.pedido     { background: #eff6ff; color: var(--blue); }
+.badge.pagamento  { background: #ecfdf5; color: #059669; }
+
+/* ── resposta box ── */
+.resposta-wrap {
+    display: none; margin-top: 8px; gap: 8px;
+}
+.resposta-wrap.open { display: flex; }
+.resposta-input {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; font-size: 13px; font-family: inherit;
+    resize: none; transition: border-color var(--trans);
+    outline: none;
+}
+.resposta-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(52,131,250,.1); }
+.btn-responder {
+    background: var(--blue); color: #fff; border: none;
+    padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+    transition: background var(--trans);
+}
+.btn-responder:hover { background: var(--blue-d); }
+.btn-responder:disabled { background: #aaa; cursor: not-allowed; }
+
+.btn-abrir-resposta {
+    background: transparent; border: 1.5px solid var(--border); color: #555;
+    padding: 4px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all var(--trans);
+}
+.btn-abrir-resposta:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ── pedido item ── */
+.pedido-item {
+    padding: 10px 16px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 10px; font-size: 12px;
+    transition: background var(--trans);
+}
+.pedido-item:last-child { border-bottom: none; }
+.pedido-item:hover { background: #f8f9fb; }
+.pedido-resource {
+    font-family: monospace; font-size: 11px; color: var(--blue);
+    background: #f0f4ff; padding: 2px 6px; border-radius: 4px;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── chart ── */
+.chart-wrap { padding: 16px; }
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 70px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; background: var(--blue); }
+.bar-label { font-size: 10px; color: #888; }
+.bar-val   { font-size: 10px; font-weight: 700; color: #555; }
+
+/* ── list scroll ── */
+.scroll-list { max-height: 360px; overflow-y: auto; }
+.scroll-list::-webkit-scrollbar { width: 4px; }
+.scroll-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+/* ── spinner ── */
+.empty { text-align: center; padding: 30px; color: #aaa; font-size: 13px; }
+.spinner-sm {
+    width: 28px; height: 28px; border: 3px solid #eee; border-top-color: var(--blue);
+    border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── toast ── */
+.toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    transform: translateY(20px); opacity: 0; transition: all .3s ease;
+    pointer-events: none;
+}
+.toast.show { transform: none; opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h1>Dashboard SAC</h1>
-    <p>Bem-vindo, {{ current_user.username }}! Módulo de Atendimento.</p>
-    <div class="alert alert-info">
-        <i class="fas fa-headset"></i> Aqui você gerencia pedidos e clientes.
-    </div>
+
+<div class="page-header">
+    <h1>🎧 Dashboard SAC</h1>
+    <span class="badge-sac">SAC</span>
+    <span style="font-size:13px;color:#555">Olá, <strong>{{ current_user.username }}</strong>!</span>
+    <div class="refresh-info">Atualiza em <span id="countdown">30</span>s</div>
+    <button class="btn-sm" onclick="forceRefresh()">
+        <i class="fas fa-sync-alt" id="ref-icon"></i> Atualizar
+    </button>
 </div>
+
+<div class="wrap">
+
+    <!-- ── KPIs ── -->
+    <div class="section-title">📊 Resumo</div>
+    <div class="kpi-grid">
+        <div class="kpi orange">
+            <div class="kpi-icon">💬</div>
+            <div class="kpi-label">Perguntas Pendentes</div>
+            <div class="kpi-value" id="kpi-pendentes">—</div>
+            <div class="kpi-sub">aguardando resposta</div>
+        </div>
+        <div class="kpi green">
+            <div class="kpi-icon">✅</div>
+            <div class="kpi-label">Respondidas</div>
+            <div class="kpi-value" id="kpi-respondidas">—</div>
+            <div class="kpi-sub">total geral</div>
+        </div>
+        <div class="kpi blue">
+            <div class="kpi-icon">📅</div>
+            <div class="kpi-label">Perguntas Hoje</div>
+            <div class="kpi-value" id="kpi-hoje">—</div>
+            <div class="kpi-sub">recebidas hoje</div>
+        </div>
+        <div class="kpi gray">
+            <div class="kpi-icon">🛍️</div>
+            <div class="kpi-label">Pedidos 7 dias</div>
+            <div class="kpi-value" id="kpi-pedidos">—</div>
+            <div class="kpi-sub">via webhook</div>
+        </div>
+        <div class="kpi green">
+            <div class="kpi-icon">💳</div>
+            <div class="kpi-label">Pagamentos 7 dias</div>
+            <div class="kpi-value" id="kpi-pagamentos">—</div>
+            <div class="kpi-sub">via webhook</div>
+        </div>
+        <div class="kpi blue">
+            <div class="kpi-icon">📩</div>
+            <div class="kpi-label">Total Perguntas</div>
+            <div class="kpi-value" id="kpi-total">—</div>
+            <div class="kpi-sub">todas registradas</div>
+        </div>
+    </div>
+
+    <!-- ── Volume perguntas ── -->
+    <div class="card">
+        <div class="card-header">
+            <h3>📈 Volume de perguntas — últimos 7 dias</h3>
+        </div>
+        <div class="chart-wrap">
+            <div class="bar-chart" id="bar-chart">
+                <div class="empty"><div class="spinner-sm"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Perguntas ── -->
+    <div class="card">
+        <div class="card-header">
+            <h3>💬 Perguntas recebidas</h3>
+            <span class="card-count orange" id="cnt-perguntas">0</span>
+        </div>
+        <div class="scroll-list" id="list-perguntas">
+            <div class="empty"><div class="spinner-sm"></div>Carregando perguntas…</div>
+        </div>
+    </div>
+
+    <!-- ── Pedidos ── -->
+    <div class="card">
+        <div class="card-header">
+            <h3>🛍️ Pedidos recentes</h3>
+            <span class="card-count" id="cnt-pedidos">0</span>
+        </div>
+        <div class="scroll-list" id="list-pedidos">
+            <div class="empty"><div class="spinner-sm"></div>Carregando pedidos…</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+let countdownVal = 30;
+let timer;
+
+// ── fetch ─────────────────────────────────────────────────────
+async function fetchDados() {
+    try {
+        const res  = await fetch('/api/ml/sac/resumo');
+        const data = await res.json();
+        if (data.error) { console.error(data.error); return; }
+        renderKpis(data.kpis);
+        renderBarChart(data.volume_perguntas || []);
+        renderPerguntas(data.perguntas || []);
+        renderPedidos(data.pedidos || []);
+    } catch (e) { console.error('Erro:', e); }
+}
+
+function forceRefresh() {
+    const ic = document.getElementById('ref-icon');
+    ic.classList.add('fa-spin');
+    fetchDados().finally(() => {
+        setTimeout(() => ic.classList.remove('fa-spin'), 600);
+        resetCountdown();
+    });
+}
+
+// ── KPIs ──────────────────────────────────────────────────────
+function renderKpis(k) {
+    document.getElementById('kpi-pendentes').textContent  = k.perguntas_pendentes  ?? '—';
+    document.getElementById('kpi-respondidas').textContent= k.perguntas_respondidas?? '—';
+    document.getElementById('kpi-hoje').textContent       = k.perguntas_hoje       ?? '—';
+    document.getElementById('kpi-pedidos').textContent    = k.pedidos_7d           ?? '—';
+    document.getElementById('kpi-pagamentos').textContent = k.pagamentos_7d        ?? '—';
+    document.getElementById('kpi-total').textContent      = k.perguntas_total      ?? '—';
+}
+
+// ── Bar chart ─────────────────────────────────────────────────
+function renderBarChart(vol) {
+    const wrap = document.getElementById('bar-chart');
+    if (!vol.length) { wrap.innerHTML = '<div class="empty">Sem dados de perguntas ainda</div>'; return; }
+    const max = Math.max(...vol.map(v => v.total), 1);
+    wrap.innerHTML = vol.map(v => `
+        <div class="bar-col">
+            <div class="bar-val">${v.total}</div>
+            <div class="bar" style="height:${Math.max(4,(v.total/max)*60)}px"></div>
+            <div class="bar-label">${v.data}</div>
+        </div>`).join('');
+}
+
+// ── Perguntas ─────────────────────────────────────────────────
+function renderPerguntas(items) {
+    const el  = document.getElementById('list-perguntas');
+    const cnt = document.getElementById('cnt-perguntas');
+    cnt.textContent = items.length;
+
+    if (!items.length) {
+        el.innerHTML = '<div class="empty">Nenhuma pergunta registrada ainda.<br><small>Perguntas chegam via webhook <code>questions</code> ou <code>messages</code>.</small></div>';
+        return;
+    }
+
+    el.innerHTML = items.map(item => `
+        <div class="pergunta-item" id="perg-${item.id}">
+            <div class="pergunta-meta">
+                <span class="badge ${item.status}">${item.status}</span>
+                <span class="pergunta-resource" title="${esc(item.resource)}">${esc(item.resource)}</span>
+                <span class="pergunta-time">${timeAgo(item.received_at)}</span>
+                ${item.status === 'pendente' ? `
+                <button class="btn-abrir-resposta" onclick="toggleResposta(${item.id})">
+                    <i class="fas fa-reply"></i> Responder
+                </button>` : ''}
+            </div>
+            ${item.status === 'pendente' ? `
+            <div class="resposta-wrap" id="resposta-wrap-${item.id}">
+                <textarea class="resposta-input" id="resposta-txt-${item.id}" rows="2"
+                    placeholder="Digite sua resposta aqui…"></textarea>
+                <button class="btn-responder" onclick="enviarResposta(${item.id}, '${esc(item.resource)}')">
+                    <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+            </div>` : ''}
+        </div>`).join('');
+}
+
+function toggleResposta(id) {
+    const wrap = document.getElementById(`resposta-wrap-${id}`);
+    if (wrap) {
+        wrap.classList.toggle('open');
+        if (wrap.classList.contains('open')) {
+            document.getElementById(`resposta-txt-${id}`).focus();
+        }
+    }
+}
+
+async function enviarResposta(id, resource) {
+    const txtEl = document.getElementById(`resposta-txt-${id}`);
+    const texto = txtEl ? txtEl.value.trim() : '';
+    if (!texto) { showToast('Digite uma resposta antes de enviar.', 'error'); return; }
+
+    const btn = document.querySelector(`#resposta-wrap-${id} .btn-responder`);
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
+
+    try {
+        const res  = await fetch('/api/ml/sac/responder-pergunta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ evento_id: id, resource: resource, texto: texto })
+        });
+        const data = await res.json();
+
+        if (data.sucesso) {
+            showToast('✅ Resposta enviada com sucesso!', 'success');
+            fetchDados();
+        } else {
+            showToast('❌ ' + (data.erro || 'Erro ao enviar resposta'), 'error');
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar'; }
+        }
+    } catch (e) {
+        showToast('❌ Erro de conexão: ' + e.message, 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar'; }
+    }
+}
+
+// ── Pedidos ───────────────────────────────────────────────────
+function renderPedidos(items) {
+    const el  = document.getElementById('list-pedidos');
+    const cnt = document.getElementById('cnt-pedidos');
+    cnt.textContent = items.length;
+
+    if (!items.length) {
+        el.innerHTML = '<div class="empty">Nenhum pedido registrado ainda.<br><small>Pedidos chegam via webhook <code>orders</code>.</small></div>';
+        return;
+    }
+
+    el.innerHTML = items.map(i => `
+        <div class="pedido-item">
+            <span class="badge pedido">pedido</span>
+            <span class="pedido-resource" title="${esc(i.resource)}">${esc(i.resource)}</span>
+            <span style="font-size:11px;color:#888">${i.user_id || '—'}</span>
+            <span style="font-size:11px;color:#aaa;white-space:nowrap">${timeAgo(i.received_at)}</span>
+        </div>`).join('');
+}
+
+// ── helpers ───────────────────────────────────────────────────
+function esc(t) {
+    const d = document.createElement('div');
+    d.textContent = String(t ?? '');
+    return d.innerHTML;
+}
+
+function timeAgo(iso) {
+    if (!iso) return '—';
+    const diff = (Date.now() - new Date(iso + 'Z').getTime()) / 1000;
+    if (diff < 60)    return `${Math.round(diff)}s atrás`;
+    if (diff < 3600)  return `${Math.round(diff/60)}min atrás`;
+    if (diff < 86400) return `${Math.round(diff/3600)}h atrás`;
+    return new Date(iso+'Z').toLocaleDateString('pt-BR');
+}
+
+let toastTimer;
+function showToast(msg, type='') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ── countdown ─────────────────────────────────────────────────
+function resetCountdown() {
+    clearInterval(timer);
+    countdownVal = 30;
+    document.getElementById('countdown').textContent = 30;
+    timer = setInterval(() => {
+        countdownVal--;
+        document.getElementById('countdown').textContent = countdownVal;
+        if (countdownVal <= 0) { fetchDados(); resetCountdown(); }
+    }, 1000);
+}
+
+fetchDados();
+resetCountdown();
+</script>
 {% endblock %}

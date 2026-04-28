@@ -364,7 +364,38 @@ def dashboard_master():
         from flask import flash, redirect, url_for
         flash('Acesso negado.', 'danger')
         return redirect(url_for('home'))
-    return render_template('dashboard_master.html')
+
+    from models import Usuario, Processo
+
+    try:
+        total_usuarios  = Usuario.query.count()
+    except Exception:
+        total_usuarios  = 0
+
+    try:
+        total_processos = Processo.query.count()
+    except Exception:
+        total_processos = 0
+
+    try:
+        from log_utils import contar_processos_hoje
+        processos_hoje = contar_processos_hoje()
+    except Exception:
+        hoje_inicio = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        try:
+            processos_hoje = Processo.query.filter(
+                Processo.created_at >= hoje_inicio
+            ).count()
+        except Exception:
+            processos_hoje = 0
+
+    stats = {
+        'total_usuarios':  total_usuarios,
+        'total_processos': total_processos,
+        'processos_hoje':  processos_hoje,
+    }
+
+    return render_template('dashboard_master.html', stats=stats)
 
 
 @ml_dashboard_bp.route('/dashboard/sac')
