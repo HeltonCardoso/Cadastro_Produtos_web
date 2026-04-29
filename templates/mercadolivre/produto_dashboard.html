@@ -2,6 +2,8 @@
 
 {% block title %}Qualidade do Produto - Mercado Livre{% endblock %}
 
+{% block page_title %}Preenchimento de Fichas Técnicas{% endblock %}
+
 {% block extra_css %}
 {{ super() }}
 <style>
@@ -51,21 +53,33 @@
     }
 
     /* ── Barra de pesquisa fixa ── */
+    /* Usa fixed para funcionar independente do scroll do base.html */
     .search-bar-sticky {
-        position: sticky;
-        top: 0;
-        z-index: 100;
+        position: fixed;
+        top: 57px;          /* altura da top-bar do base.html */
+        left: 260px;        /* largura da sidebar expandida do base.html */
+        right: 0;
+        z-index: 500;   /* abaixo do desc-panel(9000) — acompanha o conteúdo */
         background: white;
         border-bottom: 1px solid var(--ml-border);
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        padding: 12px 24px;
+        padding: 20px 34px;
         display: flex;
         gap: 10px;
         align-items: center;
-        margin-left: 0;
-        transition: margin-left 0.32s cubic-bezier(0.4,0,0.2,1);
+        transition: left 0.32s cubic-bezier(0.4,0,0.2,1),
+                    top  0.32s cubic-bezier(0.4,0,0.2,1);
     }
-    .search-bar-sticky.panel-open { margin-left: 140px; }
+
+
+    /* Mobile: sem sidebar */
+    @media (max-width: 991px) {
+        .search-bar-sticky { left: 0 !important; }
+    }
+
+
+    /* Espaço reservado para a search-bar não sobrepor o conteúdo */
+    .search-bar-spacer { display: none; }
 
     .quality-horizontal {
         background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
@@ -276,6 +290,7 @@
         max-width: 1800px;
         margin: 0 auto;
         padding: 20px 24px;
+        padding-top: 74px; /* 62px search-bar + 12px respiro */
         transition: padding-left 0.32s cubic-bezier(0.4,0,0.2,1);
     }
     .dashboard-container.panel-open { padding-left: 150px; }
@@ -1142,7 +1157,7 @@
 </div>
 
 <!-- Barra de pesquisa fixa -->
-<div class="search-bar-sticky">
+<div class="search-bar-sticky" id="search-bar-sticky">
     <span class="search-label">MLB</span>
     <input type="text" id="mlb_input" placeholder="MLB ou só os números (ex: 4017913557)">
     <button class="btn-search" onclick="carregarProduto()">
@@ -1152,6 +1167,9 @@
         <i class="fas fa-file-alt"></i> Ver Descrição
     </button>
 </div>
+
+<!-- Espaço reservado para a barra fixa não sobrepor o conteúdo -->
+<div class="search-bar-spacer"></div>
 
 <div class="dashboard-container">
 
@@ -1701,7 +1719,7 @@ function buildCard(container, attr) {
         const todasOpcoes = [...new Set([...opcoesFix, ...opcoesApi.filter(o => !opcoesFix.includes(o))])];
         const valAtual   = attr.valor || '';
         const optsHtml   = todasOpcoes.map(o =>
-            `<div class="combobox-option" onclick="selecionarCombobox('${id}', ${JSON.stringify(o)})">${escapeHtml(o)}</div>`
+            `<div class="combobox-option" data-val="${escapeHtml(o)}">${escapeHtml(o)}</div>`
         ).join('');
         inputHtml = `
             <div class="combobox-wrap" id="combo_wrap_${id}">
@@ -1711,11 +1729,24 @@ function buildCard(container, attr) {
                     autocomplete="off"
                     oninput="filtrarCombobox('${id}'); onInputChange('${id}')"
                     onfocus="abrirCombobox('${id}')"
+                    onblur="onBlurCombobox('${id}')"
                     onkeydown="navCombobox('${id}', event)">
                 <span class="combobox-arrow">▼</span>
                 <div class="combobox-dropdown" id="combo_list_${id}">${optsHtml}</div>
             </div>
         `;
+        // Adiciona mousedown via addEventListener após render (evita problemas com inline handlers e aspas)
+        requestAnimationFrame(() => {
+            const list = document.getElementById('combo_list_' + id);
+            if (!list) return;
+            list.querySelectorAll('.combobox-option').forEach(opt => {
+                opt.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    comboboxPick(e, id, this.dataset.val);
+                });
+            });
+        });
 
     } else if (temDropdown) {
         // Select dropdown
@@ -2200,8 +2231,21 @@ async function salvarTodosAtributos() {
 }
 
 // ─── COMBOBOX CUSTOMIZADO ─────────────────────────────────────────────────────
+// Flag global: true quando o mousedown foi numa opção — impede o blur de fechar antes do pick
+let _comboPickPending = false;
+
+function comboboxPick(e, id, valor) {
+    e.preventDefault();          // evita blur no input
+    e.stopPropagation();
+    _comboPickPending = true;
+    const inp = document.getElementById('attr_' + id);
+    if (inp) inp.value = valor;
+    fecharCombobox(id);
+    onInputChange(id);
+    setTimeout(() => { _comboPickPending = false; }, 50);
+}
+
 function abrirCombobox(id) {
-    // Fecha todos os outros
     document.querySelectorAll('.combobox-wrap.open').forEach(w => {
         if (w.id !== 'combo_wrap_' + id) w.classList.remove('open');
     });
@@ -2213,13 +2257,6 @@ function abrirCombobox(id) {
 function fecharCombobox(id) {
     const wrap = document.getElementById('combo_wrap_' + id);
     if (wrap) wrap.classList.remove('open');
-}
-
-function selecionarCombobox(id, valor) {
-    const inp = document.getElementById('attr_' + id);
-    if (inp) { inp.value = valor; }
-    fecharCombobox(id);
-    onInputChange(id);
 }
 
 function filtrarCombobox(id) {
@@ -2238,7 +2275,7 @@ function navCombobox(id, e) {
         const list = document.getElementById('combo_list_' + id);
         if (!list) return;
         const hl = list.querySelector('.combobox-option.highlighted:not(.hidden)');
-        if (hl) { e.preventDefault(); selecionarCombobox(id, hl.textContent); return; }
+        if (hl) { e.preventDefault(); comboboxPick(e, id, hl.textContent); return; }
         fecharCombobox(id);
         return;
     }
@@ -2260,12 +2297,12 @@ function navCombobox(id, e) {
     }
 }
 
-// Fecha comboboxes ao clicar fora
-document.addEventListener('click', e => {
-    if (!e.target.closest('.combobox-wrap')) {
-        document.querySelectorAll('.combobox-wrap.open').forEach(w => w.classList.remove('open'));
-    }
-});
+function onBlurCombobox(id) {
+    // Só fecha se não estiver no meio de um pick
+    setTimeout(() => {
+        if (!_comboPickPending) fecharCombobox(id);
+    }, 50);
+}
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 function escapeHtml(t) {
@@ -2426,4 +2463,76 @@ function copiarDescricao() {
 
 document.getElementById('mlb_input').addEventListener('keypress', e => { if (e.key === 'Enter') carregarProduto(); });
 </script>
+
+<script>
+// ── Ajusta search-bar acompanhando animação real do sidebar ──────────────────
+(function() {
+    let _rafId = null;
+
+    function getSidebarWidth() {
+        const wrapper = document.getElementById('sidebarWrapper');
+        if (!wrapper) return 0;
+        return wrapper.getBoundingClientRect().width;
+    }
+
+    function getPanelWidth() {
+        const panel = document.getElementById('desc-panel');
+        if (!panel || !panel.classList.contains('open')) return 0;
+        return panel.getBoundingClientRect().width;
+    }
+
+    function syncSearchBar() {
+        const bar = document.getElementById('search-bar-sticky');
+        if (!bar) return;
+        bar.style.left = (getSidebarWidth() + getPanelWidth()) + 'px';
+    }
+
+    // Roda syncSearchBar frame-a-frame durante toda a transição da sidebar (320ms + margem)
+    function syncDuringTransition() {
+        if (_rafId) cancelAnimationFrame(_rafId);
+        const start = performance.now();
+        const duration = 380;
+        function frame(now) {
+            syncSearchBar();
+            if (now - start < duration) {
+                _rafId = requestAnimationFrame(frame);
+            } else {
+                syncSearchBar(); // garante valor final correto
+                _rafId = null;
+            }
+        }
+        _rafId = requestAnimationFrame(frame);
+    }
+
+    // Observa mudança de classe no #sidebarWrapper (collapsed/mobile-open)
+    // base.js faz: sidebar.classList.toggle('collapsed')
+    const wrapper = document.getElementById('sidebarWrapper');
+    if (wrapper) {
+        new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.attributeName === 'class') syncDuringTransition();
+            });
+        }).observe(wrapper, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Observa o desc-panel (abre/fecha instantâneo, sem transição longa)
+    const panel = document.getElementById('desc-panel');
+    if (panel) {
+        new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                if (m.attributeName === 'class') syncDuringTransition();
+            });
+        }).observe(panel, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Sync inicial após DOM e após load completo
+    document.addEventListener('DOMContentLoaded', syncSearchBar);
+    window.addEventListener('load', function() {
+        syncSearchBar();
+        setTimeout(syncSearchBar, 100);
+    });
+    window.addEventListener('resize', syncSearchBar);
+})();
+</script>
+
 {% endblock %}
