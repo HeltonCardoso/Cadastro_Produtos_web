@@ -544,6 +544,7 @@ def api_carregar_config_google_sheets():
         return jsonify({'success': False, 'error': str(e)}), 500
     
 @app.route('/api/dashboard/atualizar-metricas')
+@cache.cached(timeout=30)
 def api_atualizar_metricas():
     """API para atualizar métricas do dashboard"""
     try:
@@ -709,6 +710,7 @@ def campanhas_ativas():
         esta_autenticado=esta_autenticado
     )
 @app.route('/api/campanhas-ativas', methods=['GET'])
+@cache.cached(timeout=60)
 def api_campanhas_ativas():
     """API para buscar TODAS as promoções do vendedor usando o endpoint oficial"""
     try:
@@ -6445,6 +6447,7 @@ def dashboard_ml_eventos():
 # ============================================
 
 @app.route('/api/ml/master/resumo')
+@cache.cached(timeout=60)
 @login_required
 @master_required
 def api_master_resumo():
@@ -6662,6 +6665,7 @@ def api_master_resumo():
 # ============================================
 
 @app.route('/api/ml/sac/resumo')
+@cache.cached(timeout=60)
 @login_required
 def api_sac_resumo():
     from models import MLWebhookEvent
