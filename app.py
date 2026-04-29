@@ -50,8 +50,12 @@ app.config.from_object(Config)
 app.secret_key = Config.SECRET_KEY
 
 # 🔹 PRIMEIRO: Inicializa o banco de dados
+#db.init_app(app)
 db.init_app(app)
-
+cache = Cache(app, config={
+    'CACHE_TYPE': 'SimpleCache',
+    'CACHE_DEFAULT_TIMEOUT': 60
+})
 # 🔹 SEGUNDO: Configura o Login Manager (DEPOIS do db.init_app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -6937,4 +6941,4 @@ def api_qualidade_detalhada(mlb):
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
     
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
