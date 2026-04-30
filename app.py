@@ -6859,30 +6859,20 @@ from sqlalchemy import or_
 def debug_banco():
     from sqlalchemy import text
     
-    # Todas as tabelas que existem no banco
-    tabelas = db.session.execute(text("""
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public'
-        ORDER BY table_name
-    """)).fetchall()
-
-    # Contar registros em qualquer tabela que tenha "webhook" ou "ml" no nome
-    contagens = []
-    for (tabela,) in tabelas:
-        if any(k in tabela.lower() for k in ['webhook', 'ml_', 'mercado']):
-            try:
-                total = db.session.execute(
-                    text(f'SELECT COUNT(*) FROM "{tabela}"')
-                ).scalar()
-                contagens.append({'tabela': tabela, 'total': total})
-            except Exception as e:
-                contagens.append({'tabela': tabela, 'erro': str(e)})
-
-    return jsonify({
-        'todas_tabelas': [t[0] for t in tabelas],
-        'tabelas_ml': contagens
-    })
+    try:
+        tabelas = db.session.execute(text("""
+            SELECT table_name, 
+                   pg_relation_size(quote_ident(table_name)) as tamanho
+            FROM information_schema.tables 
+            WHERE table_schema = 'public'
+            ORDER BY tamanho DESC
+        """)).fetchall()
+        
+        return jsonify({
+            'tabelas': [{'nome': t[0], 'bytes': t[1]} for t in tabelas]
+        })
+    except Exception as e:
+        return jsonify({'erro': str(e)})
 
 @app.route('/api/ml/testar-dados')
 @login_required
