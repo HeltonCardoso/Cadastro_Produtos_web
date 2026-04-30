@@ -6854,32 +6854,34 @@ def api_sac_resumo():
 # Import necessário para usar o 'or_' nas queries
 from sqlalchemy import or_
 
-@app.route('/api/ml/debug-topicos')
-@login_required
-def debug_topicos():
-    from models import MLWebhookEvent
-    from sqlalchemy import func, text
+@app.route('/api/ml/debug-banco')
+@login_required  
+def debug_banco():
+    from sqlalchemy import text
+    
+    # Todas as tabelas que existem no banco
+    tabelas = db.session.execute(text("""
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public'
+        ORDER BY table_name
+    """)).fetchall()
 
-    # Total geral
-    total = MLWebhookEvent.query.count()
-
-    # Todos os tópicos distintos com contagem
-    topicos = db.session.query(
-        MLWebhookEvent.topic,
-        func.count(MLWebhookEvent.id).label('total')
-    ).group_by(MLWebhookEvent.topic)\
-     .order_by(func.count(MLWebhookEvent.id).desc())\
-     .limit(50).all()
-
-    # Amostra de recursos únicos para entender o padrão
-    recursos = db.session.query(
-        MLWebhookEvent.resource
-    ).distinct().limit(30).all()
+    # Contar registros em qualquer tabela que tenha "webhook" ou "ml" no nome
+    contagens = []
+    for (tabela,) in tabelas:
+        if any(k in tabela.lower() for k in ['webhook', 'ml_', 'mercado']):
+            try:
+                total = db.session.execute(
+                    text(f'SELECT COUNT(*) FROM "{tabela}"')
+                ).scalar()
+                contagens.append({'tabela': tabela, 'total': total})
+            except Exception as e:
+                contagens.append({'tabela': tabela, 'erro': str(e)})
 
     return jsonify({
-        'total_no_banco': total,
-        'topicos': [{'topic': t or 'NULL', 'total': c} for t, c in topicos],
-        'amostra_resources': [r[0] for r in recursos]
+        'todas_tabelas': [t[0] for t in tabelas],
+        'tabelas_ml': contagens
     })
 
 @app.route('/api/ml/testar-dados')
