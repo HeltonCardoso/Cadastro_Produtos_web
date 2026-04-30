@@ -6858,15 +6858,30 @@ from sqlalchemy import or_
 @login_required
 def debug_topicos():
     from models import MLWebhookEvent
-    from sqlalchemy import func
+    from sqlalchemy import func, text
+
+    # Total geral
+    total = MLWebhookEvent.query.count()
+
+    # Todos os tópicos distintos com contagem
     topicos = db.session.query(
         MLWebhookEvent.topic,
         func.count(MLWebhookEvent.id).label('total')
     ).group_by(MLWebhookEvent.topic)\
      .order_by(func.count(MLWebhookEvent.id).desc())\
-     .all()
-    return jsonify([{'topic': t, 'total': c} for t, c in topicos])
-    
+     .limit(50).all()
+
+    # Amostra de recursos únicos para entender o padrão
+    recursos = db.session.query(
+        MLWebhookEvent.resource
+    ).distinct().limit(30).all()
+
+    return jsonify({
+        'total_no_banco': total,
+        'topicos': [{'topic': t or 'NULL', 'total': c} for t, c in topicos],
+        'amostra_resources': [r[0] for r in recursos]
+    })
+
 @app.route('/api/ml/testar-dados')
 @login_required
 def testar_dados_webhook():
