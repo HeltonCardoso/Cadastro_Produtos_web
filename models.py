@@ -274,6 +274,15 @@ class MLWebhookEvent(db.Model):
     processed      = db.Column(db.Boolean, default=False)         # True quando sua lógica processou
     error_msg      = db.Column(db.Text, nullable=True)            # Erro de processamento, se houver
 
+    def get_data(self) -> dict:
+        """Desserializa o payload JSON armazenado.
+        Retorna dict vazio em caso de erro — nunca levanta exceção.
+        """
+        try:
+            return json.loads(self.payload or '{}')
+        except Exception:
+            return {}
+
     def to_dict(self):
         return {
             'id':             self.id,
