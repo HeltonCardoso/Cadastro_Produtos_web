@@ -6854,32 +6854,27 @@ def api_sac_resumo():
 # Import necessário para usar o 'or_' nas queries
 from sqlalchemy import or_
 
-@app.route('/api/ml/debug-topicos')
+@app.route('/api/diagnostico-bd')
 @login_required
-def debug_topicos():
-    from models import MLWebhookEvent
-    from sqlalchemy import func, text
+def diagnostico_bd():
+    from models import TokenConfig, MLWebhookEvent
+    import os
 
-    # Total geral
-    total = MLWebhookEvent.query.count()
+    db_url = app.config.get('SQLALCHEMY_DATABASE_URI', '')
+    tipo = 'postgresql ✅' if 'postgresql' in db_url else 'sqlite ⚠️ PROBLEMA!'
 
-    # Todos os tópicos distintos com contagem
-    topicos = db.session.query(
-        MLWebhookEvent.topic,
-        func.count(MLWebhookEvent.id).label('total')
-    ).group_by(MLWebhookEvent.topic)\
-     .order_by(func.count(MLWebhookEvent.id).desc())\
-     .limit(50).all()
-
-    # Amostra de recursos únicos para entender o padrão
-    recursos = db.session.query(
-        MLWebhookEvent.resource
-    ).distinct().limit(30).all()
+    try:
+        total_webhooks = MLWebhookEvent.query.count()
+        tokens = [{'service': t.service, 'tem_dados': bool(t.get_data())} 
+                  for t in TokenConfig.query.all()]
+    except Exception as e:
+        return jsonify({'erro': str(e), 'tipo_banco': tipo})
 
     return jsonify({
-        'total_no_banco': total,
-        'topicos': [{'topic': t or 'NULL', 'total': c} for t, c in topicos],
-        'amostra_resources': [r[0] for r in recursos]
+        'tipo_banco': tipo,
+        'DATABASE_URL_presente': bool(os.environ.get('DATABASE_URL')),
+        'total_webhooks': total_webhooks,
+        'tokens': tokens,
     })
 
 @app.route('/api/ml/testar-dados')
