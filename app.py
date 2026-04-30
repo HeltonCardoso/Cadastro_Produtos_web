@@ -6854,25 +6854,33 @@ def api_sac_resumo():
 # Import necessário para usar o 'or_' nas queries
 from sqlalchemy import or_
 
-@app.route('/api/ml/debug-banco')
-@login_required  
-def debug_banco():
-    from sqlalchemy import text
-    
-    try:
-        tabelas = db.session.execute(text("""
-            SELECT table_name, 
-                   pg_relation_size(quote_ident(table_name)) as tamanho
-            FROM information_schema.tables 
-            WHERE table_schema = 'public'
-            ORDER BY tamanho DESC
-        """)).fetchall()
-        
-        return jsonify({
-            'tabelas': [{'nome': t[0], 'bytes': t[1]} for t in tabelas]
-        })
-    except Exception as e:
-        return jsonify({'erro': str(e)})
+@app.route('/api/ml/debug-topicos')
+@login_required
+def debug_topicos():
+    from models import MLWebhookEvent
+    from sqlalchemy import func, text
+
+    # Total geral
+    total = MLWebhookEvent.query.count()
+
+    # Todos os tópicos distintos com contagem
+    topicos = db.session.query(
+        MLWebhookEvent.topic,
+        func.count(MLWebhookEvent.id).label('total')
+    ).group_by(MLWebhookEvent.topic)\
+     .order_by(func.count(MLWebhookEvent.id).desc())\
+     .limit(50).all()
+
+    # Amostra de recursos únicos para entender o padrão
+    recursos = db.session.query(
+        MLWebhookEvent.resource
+    ).distinct().limit(30).all()
+
+    return jsonify({
+        'total_no_banco': total,
+        'topicos': [{'topic': t or 'NULL', 'total': c} for t, c in topicos],
+        'amostra_resources': [r[0] for r in recursos]
+    })
 
 @app.route('/api/ml/testar-dados')
 @login_required
