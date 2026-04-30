@@ -187,19 +187,22 @@ with app.app_context():
                 db.session.add(usuario)
                 print(f"✅ Usuário criado: {u['username']}")
             else:
-                # Usuário existe — verifica se o hash atual funciona.
-                # Se não (hash gerado com versão/método diferente do Werkzeug),
-                # regenera com pbkdf2:sha256.
+                # Usuário existe — só intervém se o hash estiver tecnicamente
+                # corrompido (erro ao tentar verificar). Senhas que foram
+                # alteradas pelo sistema são preservadas: uma senha diferente
+                # da padrão retorna False normalmente, sem levantar exceção,
+                # e não é tocada.
+                hash_corrompido = False
                 try:
-                    senha_ok = check_password_hash(usuario.password_hash, u['senha'])
+                    check_password_hash(usuario.password_hash, u['senha'])
                 except Exception:
-                    senha_ok = False
+                    hash_corrompido = True
 
-                if not senha_ok:
+                if hash_corrompido:
                     usuario.set_password(u['senha'])
-                    print(f"🔄 Hash corrigido para: {u['username']} (incompatibilidade Werkzeug)")
+                    print(f"🔄 Hash corrompido corrigido: {u['username']}")
                 else:
-                    print(f"✔️  Usuário OK: {u['username']}")
+                    print(f"✔️  Usuário OK: {u['username']} (senha preservada)")
 
         db.session.commit()
         
