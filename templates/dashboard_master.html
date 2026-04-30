@@ -10,7 +10,6 @@
     --green:  #00a650;
     --orange: #f5a623;
     --red:    #e63946;
-    --purple: #7c3aed;
     --border: #e5e5e5;
     --bg:     #f8f9fb;
     --radius: 10px;
@@ -19,19 +18,13 @@
 * { box-sizing: border-box; }
 body { background: var(--bg); }
 
-/* ── page header ── */
 .page-header {
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center;
+    gap: 12px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.05);
 }
 .page-header h1 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
-.badge-master { background: #1a1a2e; color: #ffe600; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .8px; }
+.badge-master { background: #1a1a2e; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: .8px; }
 .refresh-info { font-size: 12px; color: #888; }
 .refresh-info span { font-weight: 700; color: var(--blue); }
 .btn-sm {
@@ -42,10 +35,8 @@ body { background: var(--bg); }
 }
 .btn-sm:hover { border-color: var(--blue); color: var(--blue); }
 
-/* ── container ── */
 .wrap { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
 
-/* ── section title ── */
 .section-title {
     font-size: 12px; font-weight: 700; color: #888;
     text-transform: uppercase; letter-spacing: .8px;
@@ -53,8 +44,8 @@ body { background: var(--bg); }
 }
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ── stat cards ── */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 24px; }
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 24px; }
 .kpi {
     background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
     padding: 14px 16px; position: relative; overflow: hidden;
@@ -69,101 +60,120 @@ body { background: var(--bg); }
 .kpi.green::after  { background: var(--green); }
 .kpi.orange::after { background: var(--orange); }
 .kpi.red::after    { background: var(--red); }
-.kpi.purple::after { background: var(--purple); }
+.kpi.dark::after   { background: #1a1a2e; }
 .kpi.gray::after   { background: #94a3b8; }
 
-.kpi-icon { font-size: 20px; margin-bottom: 6px; }
+.kpi-icon  { font-size: 20px; margin-bottom: 6px; }
 .kpi-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: .6px; }
 .kpi-value { font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1; margin: 4px 0 2px; }
-.kpi-sub { font-size: 10px; color: #aaa; }
+.kpi-sub   { font-size: 10px; color: #aaa; }
 
-/* ── two-col grid ── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-@media(max-width:900px) { .two-col { grid-template-columns: 1fr; } }
-
-/* ── card ── */
-.card {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
-}
+/* ── cards ── */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
 .card-header {
     padding: 12px 16px; border-bottom: 1px solid var(--border);
     display: flex; align-items: center; gap: 8px;
 }
 .card-header h3 { font-size: 13px; font-weight: 700; color: #1a1a2e; margin: 0; flex: 1; }
-.card-count { background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.card-count { color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.card-count.blue   { background: var(--blue); }
 .card-count.orange { background: var(--orange); }
+.card-count.red    { background: var(--red); }
 .card-count.green  { background: var(--green); }
-.card-count.purple { background: var(--purple); }
 
-/* ── table list ── */
-.item-list { max-height: 280px; overflow-y: auto; }
-.item-list::-webkit-scrollbar { width: 4px; }
-.item-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+/* ── grid ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 1000px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 700px)  { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-.item-row {
+/* ── alerta row ── */
+.alerta-row {
     padding: 10px 16px; border-bottom: 1px solid #f3f4f6;
-    display: flex; align-items: center; gap: 10px;
-    font-size: 12px; transition: background var(--trans);
+    display: flex; align-items: center; gap: 10px; font-size: 12px;
+    transition: background var(--trans);
 }
-.item-row:last-child { border-bottom: none; }
-.item-row:hover { background: #f8f9fb; }
-.item-row .resource {
+.alerta-row:last-child { border-bottom: none; }
+.alerta-row:hover { background: #f8f9fb; }
+.alerta-resource {
     font-family: monospace; font-size: 11px; color: var(--blue);
     background: #f0f4ff; padding: 2px 6px; border-radius: 4px;
     flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.item-row .time { font-size: 11px; color: #aaa; white-space: nowrap; }
+.alerta-time { font-size: 11px; color: #aaa; white-space: nowrap; }
 
+/* ── timeline row ── */
+.tl-row {
+    padding: 8px 16px; border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 8px; font-size: 12px;
+    transition: background var(--trans);
+}
+.tl-row:last-child { border-bottom: none; }
+.tl-row:hover { background: #f8f9fb; }
+.tl-topic {
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    white-space: nowrap; background: #f0f4ff; color: var(--blue);
+}
+.tl-resource {
+    font-family: monospace; font-size: 11px; color: #555;
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tl-time { font-size: 11px; color: #aaa; white-space: nowrap; }
+
+/* ── badge ── */
 .badge {
     display: inline-block; padding: 2px 8px; border-radius: 20px;
     font-size: 10px; font-weight: 700; white-space: nowrap;
 }
-.badge.pausado   { background: #fff7ed; color: #d97706; }
-.badge.excluido  { background: #fef2f2; color: var(--red); }
-.badge.alerta    { background: #f0f4ff; color: var(--blue); }
-.badge.catalogo  { background: #f5f3ff; color: var(--purple); }
-.badge.sugestao  { background: #ecfdf5; color: var(--green); }
+.badge.pausado  { background: #fff7ed; color: #d97706; }
+.badge.excluido { background: #fff1f1; color: var(--red); }
+.badge.alerta   { background: #f0f4ff; color: var(--blue); }
 
-/* ── sistema cards ── */
-.sys-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 20px; }
-.sys-card {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 14px 16px; text-align: center;
-}
-.sys-card .sys-value { font-size: 22px; font-weight: 700; color: #1a1a2e; }
-.sys-card .sys-label { font-size: 11px; color: #888; margin-top: 4px; }
+/* ── seller row ── */
+.seller-row { padding: 8px 16px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.seller-row:last-child { border-bottom: none; }
+.seller-bar-wrap { flex: 1; background: #f3f4f6; border-radius: 4px; height: 6px; overflow: hidden; }
+.seller-bar { height: 6px; background: var(--blue); border-radius: 4px; }
+.seller-total { font-weight: 700; color: #1a1a2e; min-width: 32px; text-align: right; }
 
-/* ── volume chart ── */
+/* ── chart ── */
 .chart-wrap { padding: 16px; }
-.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
-.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.bar {
-    width: 100%; border-radius: 4px 4px 0 0; min-height: 4px;
-    background: var(--blue); transition: height .3s ease;
-}
-.bar-label { font-size: 10px; color: #888; }
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; background: var(--blue); }
+.bar-label { font-size: 9px; color: #888; }
 .bar-val   { font-size: 10px; font-weight: 700; color: #555; }
 
-/* ── empty ── */
+/* ── scroll ── */
+.scroll-list { max-height: 320px; overflow-y: auto; }
+.scroll-list::-webkit-scrollbar { width: 4px; }
+.scroll-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+/* ── spinner / empty ── */
 .empty { text-align: center; padding: 30px; color: #aaa; font-size: 13px; }
-.spinner-sm {
-    width: 28px; height: 28px; border: 3px solid #eee; border-top-color: var(--blue);
-    border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px;
-}
+.spinner-sm { width: 28px; height: 28px; border: 3px solid #eee; border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 10px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── timeline full width ── */
-.full-card { margin-bottom: 20px; }
+/* ── toast ── */
+.toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    transform: translateY(20px); opacity: 0; transition: all .3s ease; pointer-events: none;
+}
+.toast.show { transform: none; opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
 </style>
 {% endblock %}
 
 {% block content %}
 
 <div class="page-header">
-    <h1>📊 Dashboard Master</h1>
+    <h1>⚙️ Dashboard Master — Mercado Livre</h1>
     <span class="badge-master">MASTER</span>
     <span style="font-size:13px;color:#555">Olá, <strong>{{ current_user.username }}</strong>!</span>
-    <div class="refresh-info">Atualiza em <span id="countdown">30</span>s</div>
+    <div class="refresh-info">Atualiza em <span id="countdown">60</span>s</div>
     <button class="btn-sm" onclick="forceRefresh()">
         <i class="fas fa-sync-alt" id="ref-icon"></i> Atualizar
     </button>
@@ -171,281 +181,186 @@ body { background: var(--bg); }
 
 <div class="wrap">
 
-    <!-- ── Sistema ── -->
-    <div class="section-title">⚙️ Sistema</div>
-    <div class="sys-grid">
-        <div class="sys-card">
-            <div class="sys-value">{{ stats.total_usuarios }}</div>
-            <div class="sys-label">Usuários</div>
-        </div>
-        <div class="sys-card">
-            <div class="sys-value">{{ stats.total_processos }}</div>
-            <div class="sys-label">Processos</div>
-        </div>
-        <div class="sys-card">
-            <div class="sys-value">{{ stats.processos_hoje }}</div>
-            <div class="sys-label">Processos hoje</div>
-        </div>
-        <div class="sys-card">
-            <div class="sys-value" id="sys-total-webhooks">—</div>
-            <div class="sys-label">Webhooks 7 dias</div>
-        </div>
-    </div>
-
-    <!-- ── KPIs Mercado Livre ── -->
-    <div class="section-title">🛒 Mercado Livre — últimos 30 dias</div>
+    <!-- ── KPIs ── -->
+    <p class="section-title">📊 Visão geral — últimos 30 dias</p>
     <div class="kpi-grid">
-        <div class="kpi purple">
-            <div class="kpi-icon">📋</div>
-            <div class="kpi-label">Catálogos</div>
-            <div class="kpi-value" id="kpi-catalogos">—</div>
-            <div class="kpi-sub">eventos recebidos</div>
-        </div>
-        <div class="kpi green">
-            <div class="kpi-icon">💡</div>
-            <div class="kpi-label">Sugestões</div>
-            <div class="kpi-value" id="kpi-sugestoes">—</div>
-            <div class="kpi-sub">price &amp; catalog</div>
-        </div>
-        <div class="kpi orange">
-            <div class="kpi-icon">⏸️</div>
-            <div class="kpi-label">Anúncios Pausados</div>
-            <div class="kpi-value" id="kpi-pausados">—</div>
-            <div class="kpi-sub">via webhook</div>
-        </div>
-        <div class="kpi red">
-            <div class="kpi-icon">🗑️</div>
-            <div class="kpi-label">Excluídos/Fechados</div>
-            <div class="kpi-value" id="kpi-excluidos">—</div>
-            <div class="kpi-sub">via webhook</div>
-        </div>
-        <div class="kpi blue">
-            <div class="kpi-icon">✅</div>
-            <div class="kpi-label">Reativados</div>
-            <div class="kpi-value" id="kpi-reativados">—</div>
-            <div class="kpi-sub">via webhook</div>
-        </div>
-        <div class="kpi gray">
-            <div class="kpi-icon">🔔</div>
-            <div class="kpi-label">Total 7 dias</div>
-            <div class="kpi-value" id="kpi-total7d">—</div>
-            <div class="kpi-sub">notificações</div>
-        </div>
+        <div class="kpi blue"><div class="kpi-icon">📦</div><div class="kpi-label">Eventos 7 dias</div><div class="kpi-value" id="k-7d">—</div><div class="kpi-sub">webhooks recebidos</div></div>
+        <div class="kpi blue"><div class="kpi-icon">🗂️</div><div class="kpi-label">Catálogos</div><div class="kpi-value" id="k-catalogos">—</div><div class="kpi-sub">eventos de catálogo</div></div>
+        <div class="kpi green"><div class="kpi-icon">💡</div><div class="kpi-label">Sugestões</div><div class="kpi-value" id="k-sugestoes">—</div><div class="kpi-sub">benchmark/suggestion</div></div>
+        <div class="kpi orange"><div class="kpi-icon">⏸️</div><div class="kpi-label">Pausados</div><div class="kpi-value" id="k-pausados">—</div><div class="kpi-sub">anúncios pausados</div></div>
+        <div class="kpi red"><div class="kpi-icon">🗑️</div><div class="kpi-label">Excluídos</div><div class="kpi-value" id="k-excluidos">—</div><div class="kpi-sub">anúncios excluídos</div></div>
+        <div class="kpi green"><div class="kpi-icon">✅</div><div class="kpi-label">Reativados</div><div class="kpi-value" id="k-reativados">—</div><div class="kpi-sub">anúncios ativos</div></div>
     </div>
 
-    <!-- ── Volume diário ── -->
-    <div class="card full-card">
-        <div class="card-header">
-            <h3>📈 Volume de notificações — últimos 7 dias</h3>
-        </div>
-        <div class="chart-wrap">
-            <div class="bar-chart" id="bar-chart">
-                <div class="empty"><div class="spinner-sm"></div></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Catálogos + Sugestões ── -->
-    <div class="two-col">
+    <!-- ── Volume diário + Top sellers ── -->
+    <div class="grid-2">
         <div class="card">
-            <div class="card-header">
-                <h3>📋 Catálogos</h3>
-                <span class="card-count purple" id="cnt-cat">0</span>
-            </div>
-            <div class="item-list" id="list-catalogos">
-                <div class="empty"><div class="spinner-sm"></div></div>
+            <div class="card-header"><h3>📈 Volume de webhooks — 7 dias</h3></div>
+            <div class="chart-wrap" id="chart-volume">
+                <div class="empty"><div class="spinner-sm"></div>Carregando…</div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
-                <h3>💡 Sugestões de Preço / Catálogo</h3>
-                <span class="card-count green" id="cnt-sug">0</span>
+                <h3>🏆 Top sellers ativos</h3>
+                <span class="card-count blue" id="cnt-sellers">0</span>
             </div>
-            <div class="item-list" id="list-sugestoes">
-                <div class="empty"><div class="spinner-sm"></div></div>
+            <div class="scroll-list" id="lista-sellers">
+                <div class="empty"><div class="spinner-sm"></div>Carregando…</div>
             </div>
         </div>
     </div>
 
-    <!-- ── Anúncios com alerta ── -->
-    <div class="card full-card">
-        <div class="card-header">
-            <h3>⚠️ Anúncios com alteração</h3>
-            <span class="card-count orange" id="cnt-alertas">0</span>
+    <!-- ── Alertas + Catálogos + Timeline ── -->
+    <div class="grid-3">
+        <div class="card">
+            <div class="card-header">
+                <h3>⚠️ Alertas de anúncios</h3>
+                <span class="card-count orange" id="cnt-alertas">0</span>
+            </div>
+            <div class="scroll-list" id="lista-alertas">
+                <div class="empty"><div class="spinner-sm"></div>Carregando…</div>
+            </div>
         </div>
-        <div class="item-list" id="list-alertas">
-            <div class="empty"><div class="spinner-sm"></div></div>
+        <div class="card">
+            <div class="card-header">
+                <h3>🗂️ Catálogos recentes</h3>
+                <span class="card-count blue" id="cnt-catalogos">0</span>
+            </div>
+            <div class="scroll-list" id="lista-catalogos">
+                <div class="empty"><div class="spinner-sm"></div>Carregando…</div>
+            </div>
         </div>
-    </div>
-
-    <!-- ── Timeline geral ── -->
-    <div class="card full-card">
-        <div class="card-header">
-            <h3>🕐 Últimas notificações recebidas</h3>
-            <span class="card-count" id="cnt-timeline">0</span>
-        </div>
-        <div class="item-list" id="list-timeline">
-            <div class="empty"><div class="spinner-sm"></div></div>
+        <div class="card">
+            <div class="card-header">
+                <h3>🕐 Timeline de eventos</h3>
+                <span class="card-count blue" id="cnt-timeline">0</span>
+            </div>
+            <div class="scroll-list" id="lista-timeline">
+                <div class="empty"><div class="spinner-sm"></div>Carregando…</div>
+            </div>
         </div>
     </div>
 
 </div>
-{% endblock %}
 
-{% block extra_js %}
-{{ super() }}
+<div class="toast" id="toast"></div>
+
 <script>
-let countdownVal = 30;
-let timer;
+const $ = id => document.getElementById(id);
+const fmt = dt => dt ? new Date(dt).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
 
-// ── topic labels ──────────────────────────────────────────────
-const TOPIC_LABELS = {
-    items:                { label:'Anúncio',     cls:'alerta' },
-    orders:               { label:'Pedido',      cls:'alerta' },
-    questions:            { label:'Pergunta',    cls:'alerta' },
-    payments:             { label:'Pagamento',   cls:'alerta' },
-    catalog_listing:      { label:'Catálogo',    cls:'catalogo' },
-    'user-products-families': { label:'Catálogo',cls:'catalogo' },
-    price_suggestion:     { label:'Sugestão',    cls:'sugestao' },
-    public_candidates:    { label:'Promoção',    cls:'sugestao' },
-    fbm_stock_operations: { label:'Estoque',     cls:'alerta' },
-    'stock-locations':    { label:'Estoque',     cls:'alerta' },
-};
-
-function topicInfo(topic) {
-    const t = (topic || '').toLowerCase();
-    for (const [k, v] of Object.entries(TOPIC_LABELS)) {
-        if (t.includes(k.toLowerCase())) return v;
-    }
-    return { label: topic || 'Outro', cls: 'alerta' };
+function showToast(msg, type='') {
+    const t = $('toast');
+    t.textContent = msg; t.className = 'toast show ' + type;
+    setTimeout(() => t.className = 'toast', 3000);
 }
 
-// ── fetch ─────────────────────────────────────────────────────
-async function fetchDados() {
-    try {
-        const res  = await fetch('/api/ml/master/resumo');
-        const data = await res.json();
-        if (data.error) { console.error(data.error); return; }
-        renderKpis(data.kpis);
-        renderBarChart(data.volume_diario || []);
-        renderList('list-catalogos',  data.catalogos || [], 'catalogo', 'cnt-cat');
-        renderList('list-sugestoes',  data.sugestoes || [], 'sugestao', 'cnt-sug');
-        renderAlertas(data.anuncios_alertas || []);
-        renderTimeline(data.timeline || []);
-        document.getElementById('sys-total-webhooks').textContent = data.kpis.total_7d ?? '—';
-    } catch (e) { console.error('Erro:', e); }
+function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderBarChart(data) {
+    const el = $('chart-volume');
+    if (!data || !data.length) { el.innerHTML = '<div class="empty">Sem dados</div>'; return; }
+    const max = Math.max(...data.map(d => d.total), 1);
+    el.innerHTML = '<div class="bar-chart">' +
+        data.map(d => `<div class="bar-col">
+            <div class="bar-val">${d.total}</div>
+            <div class="bar" style="height:${Math.max(4, Math.round(d.total/max*60))}px"></div>
+            <div class="bar-label">${d.data}</div>
+        </div>`).join('') + '</div>';
+}
+
+function renderSellers(sellers) {
+    const el = $('lista-sellers');
+    if (!sellers || !sellers.length) { el.innerHTML = '<div class="empty">Nenhum seller com eventos.</div>'; return; }
+    $('cnt-sellers').textContent = sellers.length;
+    const max = sellers[0].total || 1;
+    el.innerHTML = sellers.map((s, i) => `
+        <div class="seller-row">
+            <span style="font-size:11px;color:#888;min-width:16px;">${i+1}</span>
+            <span style="font-family:monospace;font-size:11px;flex:1;overflow:hidden;text-overflow:ellipsis;">${escHtml(s.user_id || 'N/A')}</span>
+            <div class="seller-bar-wrap"><div class="seller-bar" style="width:${Math.round(s.total/max*100)}%"></div></div>
+            <span class="seller-total">${s.total}</span>
+        </div>`).join('');
+}
+
+function renderAlertas(alertas) {
+    const el = $('lista-alertas');
+    if (!alertas || !alertas.length) { el.innerHTML = '<div class="empty">Nenhum alerta.</div>'; return; }
+    $('cnt-alertas').textContent = alertas.length;
+    el.innerHTML = alertas.map(a => `
+        <div class="alerta-row">
+            <span class="alerta-resource">${escHtml(a.resource)}</span>
+            <span class="badge ${a.tipo}">${a.tipo}</span>
+            <span class="alerta-time">${fmt(a.received_at)}</span>
+        </div>`).join('');
+}
+
+function renderCatalogos(catalogos) {
+    const el = $('lista-catalogos');
+    if (!catalogos || !catalogos.length) { el.innerHTML = '<div class="empty">Nenhum catálogo.</div>'; return; }
+    $('cnt-catalogos').textContent = catalogos.length;
+    el.innerHTML = catalogos.map(c => `
+        <div class="alerta-row">
+            <span class="alerta-resource">${escHtml(c.resource)}</span>
+            <span class="alerta-time">${fmt(c.received_at)}</span>
+        </div>`).join('');
+}
+
+function renderTimeline(timeline) {
+    const el = $('lista-timeline');
+    if (!timeline || !timeline.length) { el.innerHTML = '<div class="empty">Nenhum evento.</div>'; return; }
+    $('cnt-timeline').textContent = timeline.length;
+    el.innerHTML = timeline.map(t => `
+        <div class="tl-row">
+            <span class="tl-topic">${escHtml(t.topic || '?')}</span>
+            <span class="tl-resource">${escHtml(t.resource)}</span>
+            <span class="tl-time">${fmt(t.received_at)}</span>
+        </div>`).join('');
+}
+
+function loadData() {
+    fetch('/api/ml/master/resumo')
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(d => {
+            if (d.error) { showToast('Erro: ' + d.error, 'error'); return; }
+            const k = d.kpis || {};
+            $('k-7d').textContent        = k.total_7d ?? '0';
+            $('k-catalogos').textContent = k.catalogos_novos ?? '0';
+            $('k-sugestoes').textContent = k.sugestoes_catalogo ?? '0';
+            $('k-pausados').textContent  = k.anuncios_pausados ?? '0';
+            $('k-excluidos').textContent = k.anuncios_excluidos ?? '0';
+            $('k-reativados').textContent = k.anuncios_reativados ?? '0';
+
+            renderBarChart(d.volume_diario || []);
+            renderSellers(d.top_sellers    || []);
+            renderAlertas(d.anuncios_alertas || []);
+            renderCatalogos(d.catalogos    || []);
+            renderTimeline(d.timeline      || []);
+        })
+        .catch(err => {
+            showToast('Erro ao carregar dados', 'error');
+            console.error(err);
+        });
+}
+
+let countdown = 60;
+function tick() {
+    $('countdown').textContent = countdown;
+    if (--countdown < 0) { countdown = 60; loadData(); }
 }
 
 function forceRefresh() {
-    const ic = document.getElementById('ref-icon');
-    ic.classList.add('fa-spin');
-    fetchDados().finally(() => {
-        setTimeout(() => ic.classList.remove('fa-spin'), 600);
-        resetCountdown();
-    });
+    countdown = 60;
+    const icon = $('ref-icon');
+    icon.classList.add('fa-spin');
+    loadData();
+    setTimeout(() => icon.classList.remove('fa-spin'), 1000);
 }
 
-// ── KPIs ──────────────────────────────────────────────────────
-function renderKpis(k) {
-    document.getElementById('kpi-catalogos').textContent = k.total_catalog_eventos ?? 0;
-    document.getElementById('kpi-sugestoes').textContent = k.sugestoes_catalogo ?? 0;
-    document.getElementById('kpi-pausados').textContent  = k.anuncios_pausados ?? 0;
-    document.getElementById('kpi-excluidos').textContent = k.anuncios_excluidos ?? 0;
-    document.getElementById('kpi-reativados').textContent= k.anuncios_reativados ?? 0;
-    document.getElementById('kpi-total7d').textContent   = k.total_7d ?? 0;
-}
-
-// ── Bar chart ─────────────────────────────────────────────────
-function renderBarChart(vol) {
-    const wrap = document.getElementById('bar-chart');
-    if (!vol.length) { wrap.innerHTML = '<div class="empty">Sem dados</div>'; return; }
-    const max = Math.max(...vol.map(v => v.total), 1);
-    wrap.innerHTML = vol.map(v => `
-        <div class="bar-col">
-            <div class="bar-val">${v.total}</div>
-            <div class="bar" style="height:${Math.max(4, (v.total/max)*70)}px"></div>
-            <div class="bar-label">${v.data}</div>
-        </div>`).join('');
-}
-
-// ── Generic list ──────────────────────────────────────────────
-function renderList(id, items, cls, cntId) {
-    const el  = document.getElementById(id);
-    const cnt = document.getElementById(cntId);
-    if (cnt) cnt.textContent = items.length;
-    if (!items.length) {
-        el.innerHTML = '<div class="empty">Nenhum evento encontrado</div>';
-        return;
-    }
-    el.innerHTML = items.map(i => `
-        <div class="item-row">
-            <span class="badge ${cls}">${i.topic || 'evento'}</span>
-            <span class="resource" title="${esc(i.resource)}">${esc(i.resource)}</span>
-            <span class="time">${timeAgo(i.received_at)}</span>
-        </div>`).join('');
-}
-
-// ── Alertas ───────────────────────────────────────────────────
-function renderAlertas(items) {
-    const el  = document.getElementById('list-alertas');
-    const cnt = document.getElementById('cnt-alertas');
-    cnt.textContent = items.length;
-    if (!items.length) { el.innerHTML = '<div class="empty">Nenhuma alteração detectada</div>'; return; }
-    el.innerHTML = items.map(i => `
-        <div class="item-row">
-            <span class="badge ${i.tipo}">${i.tipo}</span>
-            <span class="resource" title="${esc(i.resource)}">${esc(i.resource)}</span>
-            <span style="font-size:11px;color:#888;margin-left:auto">${i.user_id || '—'}</span>
-            <span class="time">${timeAgo(i.received_at)}</span>
-        </div>`).join('');
-}
-
-// ── Timeline ──────────────────────────────────────────────────
-function renderTimeline(items) {
-    const el  = document.getElementById('list-timeline');
-    const cnt = document.getElementById('cnt-timeline');
-    cnt.textContent = items.length;
-    if (!items.length) { el.innerHTML = '<div class="empty">Sem notificações</div>'; return; }
-    el.innerHTML = items.map(i => {
-        const ti = topicInfo(i.topic);
-        return `<div class="item-row">
-            <span class="badge ${ti.cls}">${ti.label}</span>
-            <span class="resource" title="${esc(i.resource)}">${esc(i.resource)}</span>
-            <span style="font-size:11px;color:#888">${i.user_id || '—'}</span>
-            <span class="time">${timeAgo(i.received_at)}</span>
-        </div>`;
-    }).join('');
-}
-
-// ── helpers ───────────────────────────────────────────────────
-function esc(t) {
-    const d = document.createElement('div');
-    d.textContent = String(t ?? '');
-    return d.innerHTML;
-}
-
-function timeAgo(iso) {
-    if (!iso) return '—';
-    const diff = (Date.now() - new Date(iso + 'Z').getTime()) / 1000;
-    if (diff < 60)    return `${Math.round(diff)}s atrás`;
-    if (diff < 3600)  return `${Math.round(diff/60)}min atrás`;
-    if (diff < 86400) return `${Math.round(diff/3600)}h atrás`;
-    return new Date(iso+'Z').toLocaleDateString('pt-BR');
-}
-
-// ── countdown ─────────────────────────────────────────────────
-function resetCountdown() {
-    clearInterval(timer);
-    countdownVal = 30;
-    document.getElementById('countdown').textContent = 30;
-    timer = setInterval(() => {
-        countdownVal--;
-        document.getElementById('countdown').textContent = countdownVal;
-        if (countdownVal <= 0) { fetchDados(); resetCountdown(); }
-    }, 1000);
-}
-
-fetchDados();
-resetCountdown();
+loadData();
+setInterval(tick, 1000);
 </script>
 {% endblock %}
