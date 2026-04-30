@@ -2,18 +2,21 @@
 import os
 from pathlib import Path
 
-
 class Config:
     SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "segredo-desenvolvimento")
     UPLOAD_FOLDER = os.path.abspath('uploads')
     DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
 
     # ── Banco de dados ─────────────────────────────────────────────────────
-    # Render entrega DATABASE_URL como "postgres://..." mas SQLAlchemy
-    # exige "postgresql://...". A linha abaixo corrige automaticamente.
     _db_url = os.environ.get('DATABASE_URL', 'sqlite:///logs.db')
+    
+    # Corrige postgres:// para postgresql://
     if _db_url.startswith('postgres://'):
         _db_url = _db_url.replace('postgres://', 'postgresql://', 1)
+    
+    # Adiciona o driver psycopg 3 se estiver usando PostgreSQL
+    if 'postgresql://' in _db_url and 'postgresql+psycopg://' not in _db_url:
+        _db_url = _db_url.replace('postgresql://', 'postgresql+psycopg://', 1)
 
     SQLALCHEMY_DATABASE_URI = _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -21,7 +24,7 @@ class Config:
     # Evita conexões mortas após inatividade no Render
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_pre_ping': True,
-        'pool_recycle':  300,
+        'pool_recycle': 300,
     }
 
     # ── Google Sheets ──────────────────────────────────────────────────────
