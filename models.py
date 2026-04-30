@@ -89,8 +89,8 @@ class Usuario(UserMixin, db.Model):
     permissoes_extras = db.relationship('Permissao', backref='usuario', lazy=True, cascade='all, delete-orphan')
     
     def set_password(self, password):
-        """Cria hash da senha"""
-        self.password_hash = generate_password_hash(password)
+        """Cria hash da senha — método fixo para garantir compatibilidade entre versões do Werkzeug"""
+        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
     
     def check_password(self, password):
         """Verifica senha"""

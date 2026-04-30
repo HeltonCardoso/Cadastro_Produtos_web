@@ -154,54 +154,53 @@ with app.app_context():
         db.session.commit()
         
         # ============================================
-        # CRIA USUÁRIOS PADRÃO
+        # CRIA OU CORRIGE USUÁRIOS PADRÃO
+        # Usuários existentes com hash incompatível (gerado em outro ambiente
+        # ou com versão diferente do Werkzeug) têm o hash regenerado
+        # automaticamente a cada startup usando pbkdf2:sha256, estável
+        # em todas as versões do Werkzeug.
         # ============================================
-        
-        # Usuário Master
-        perfil_master = Perfil.query.filter_by(nome='Master').first()
-        if perfil_master:
-            master = Usuario.query.filter_by(username='master').first()
-            if not master:
-                master = Usuario(
-                    username='master',
-                    email='master@sistema.com',
-                    perfil_id=perfil_master.id,
+        from werkzeug.security import check_password_hash
+
+        usuarios_padrao = [
+            {'username': 'master',   'email': 'master@sistema.com',   'perfil': 'Master',   'senha': 'master123'},
+            {'username': 'sac',      'email': 'sac@sistema.com',      'perfil': 'SAC',      'senha': 'sac123'},
+            {'username': 'cadastro', 'email': 'cadastro@sistema.com', 'perfil': 'Cadastro', 'senha': 'cadastro123'},
+        ]
+
+        for u in usuarios_padrao:
+            perfil = Perfil.query.filter_by(nome=u['perfil']).first()
+            if not perfil:
+                continue
+
+            usuario = Usuario.query.filter_by(username=u['username']).first()
+
+            if not usuario:
+                # Usuário não existe — cria do zero com hash correto
+                usuario = Usuario(
+                    username=u['username'],
+                    email=u['email'],
+                    perfil_id=perfil.id,
                     is_active=True
                 )
-                master.set_password('master123')
-                db.session.add(master)
-                print("✅ Usuário Master criado: master / master123")
-        
-        # Usuário SAC
-        perfil_sac = Perfil.query.filter_by(nome='SAC').first()
-        if perfil_sac:
-            sac = Usuario.query.filter_by(username='sac').first()
-            if not sac:
-                sac = Usuario(
-                    username='sac',
-                    email='sac@sistema.com',
-                    perfil_id=perfil_sac.id,
-                    is_active=True
-                )
-                sac.set_password('sac123')
-                db.session.add(sac)
-                print("✅ Usuário SAC criado: sac / sac123")
-        
-        # Usuário Cadastro
-        perfil_cadastro = Perfil.query.filter_by(nome='Cadastro').first()
-        if perfil_cadastro:
-            cadastro = Usuario.query.filter_by(username='cadastro').first()
-            if not cadastro:
-                cadastro = Usuario(
-                    username='cadastro',
-                    email='cadastro@sistema.com',
-                    perfil_id=perfil_cadastro.id,
-                    is_active=True
-                )
-                cadastro.set_password('cadastro123')
-                db.session.add(cadastro)
-                print("✅ Usuário Cadastro criado: cadastro / cadastro123")
-        
+                usuario.set_password(u['senha'])
+                db.session.add(usuario)
+                print(f"✅ Usuário criado: {u['username']}")
+            else:
+                # Usuário existe — verifica se o hash atual funciona.
+                # Se não (hash gerado com versão/método diferente do Werkzeug),
+                # regenera com pbkdf2:sha256.
+                try:
+                    senha_ok = check_password_hash(usuario.password_hash, u['senha'])
+                except Exception:
+                    senha_ok = False
+
+                if not senha_ok:
+                    usuario.set_password(u['senha'])
+                    print(f"🔄 Hash corrigido para: {u['username']} (incompatibilidade Werkzeug)")
+                else:
+                    print(f"✔️  Usuário OK: {u['username']}")
+
         db.session.commit()
         
         print("\n" + "="*50)
