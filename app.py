@@ -6982,6 +6982,34 @@ def api_qualidade_detalhada(mlb):
         import traceback
         traceback.print_exc()
         return jsonify({'sucesso': False, 'erro': str(e)}), 500
+
+@app.route('/debug-auth')
+def debug_auth():
+    from flask_login import current_user, login_required
+    from werkzeug.security import check_password_hash
+    
+    user = Usuario.query.filter_by(username='master').first()
+    if not user:
+        return "❌ Usuário master não encontrado no banco"
+    
+    # Testar senha
+    senha_ok = check_password_hash(user.password_hash, 'master123')
+    
+    # Verificar se o usuário está ativo
+    ativo = user.is_active
+    
+    # Verificar perfil
+    perfil = user.perfil if hasattr(user, 'perfil') else "Sem perfil"
+    
+    return {
+        "usuario_encontrado": True,
+        "username": user.username,
+        "senha_correta": senha_ok,
+        "usuario_ativo": ativo,
+        "perfil": perfil,
+        "perfil_id": user.perfil_id,
+        "id": user.id
+    }
     
 if __name__ == "__main__":
     app.run(debug=False)
