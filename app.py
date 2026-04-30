@@ -6362,6 +6362,17 @@ def obter_dados_completos_perfil():
 # ──────────────────────────────────────────────────────────────
 # WEBHOOK — recebe notificações do Mercado Livre
 # ──────────────────────────────────────────────────────────────
+
+@app.route('/mercadolivre/oauth/webhook', methods=['POST'])
+def webhook_mercadolivre():
+    """MODO MANUTENÇÃO - Apenas responde 200 sem salvar nada"""
+    
+    # Apenas loga que recebeu
+    app.logger.info(f"[ML-Webhook] Recebido (modo manutenção)")
+    
+    # Responde 200 imediatamente - ML para de reenviar
+    return "", 200
+"""
 @app.route('/mercadolivre/oauth/webhook', methods=['POST'])
 def webhook_mercadolivre():
     from models import MLWebhookEvent
@@ -6408,7 +6419,7 @@ def webhook_mercadolivre():
         app.logger.error(f"[ML-Webhook] Erro: {e}")
 
     return "", 200
-
+"""
 @app.route('/api/ml/limpar-eventos-antigos', methods=['POST'])
 @login_required
 @master_required
