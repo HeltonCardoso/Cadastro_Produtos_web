@@ -394,6 +394,7 @@ def dashboard_master():
         'total_processos': total_processos,
         'processos_hoje':  processos_hoje,
     }
+    
 
     return render_template('dashboard_master.html', stats=stats)
 
