@@ -173,9 +173,15 @@ body { background: var(--bg); }
     <h1>⚙️ Dashboard Master — Mercado Livre</h1>
     <span class="badge-master">MASTER</span>
     <span style="font-size:13px;color:#555">Olá, <strong>{{ current_user.username }}</strong>!</span>
-    <div class="refresh-info">Atualiza em <span id="countdown">60</span>s</div>
+    <div class="refresh-info">Atualiza em <span id="countdown">120</span>s</div>
     <button class="btn-sm" onclick="forceRefresh()">
         <i class="fas fa-sync-alt" id="ref-icon"></i> Atualizar
+    </button>
+    <button class="btn-sm" onclick="limparEventos()" style="border-color:#e63946;color:#e63946;" title="Remove eventos com mais de 30 dias do banco">
+        🗑️ Limpar antigos
+    </button>
+    <button class="btn-sm" onclick="criarIndices()" style="border-color:#00a650;color:#00a650;" title="Cria índices no banco para acelerar as queries (rode 1x após deploy)">
+        ⚡ Criar índices
     </button>
 </div>
 
@@ -346,18 +352,50 @@ function loadData() {
         });
 }
 
-let countdown = 60;
+// ── Polling com 120 s — metade das requisições vs 60 s ──────────────────────
+let countdown = 120;
 function tick() {
     $('countdown').textContent = countdown;
-    if (--countdown < 0) { countdown = 60; loadData(); }
+    if (--countdown < 0) { countdown = 120; loadData(); }
 }
 
 function forceRefresh() {
-    countdown = 60;
+    countdown = 120;
     const icon = $('ref-icon');
     icon.classList.add('fa-spin');
     loadData();
     setTimeout(() => icon.classList.remove('fa-spin'), 1000);
+}
+
+// ── Limpar eventos antigos (>30 dias) ───────────────────────────────────────
+function limparEventos() {
+    if (!confirm('Remover todos os eventos com mais de 30 dias?\nEssa ação não pode ser desfeita.')) return;
+    fetch('/api/ml/limpar-eventos-antigos', { method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({dias: 30})
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.sucesso) showToast(`✅ ${d.deletados} eventos removidos`, 'success');
+        else showToast('Erro: ' + d.erro, 'error');
+    })
+    .catch(() => showToast('Erro na requisição', 'error'));
+}
+
+// ── Criar índices no banco (rode 1x após deploy) ─────────────────────────────
+function criarIndices() {
+    if (!confirm('Criar índices no banco?\nIsso pode levar alguns segundos. Recomendado rodar apenas 1 vez após o deploy.')) return;
+    showToast('Criando índices…');
+    fetch('/api/ml/criar-indices', { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+        const ok  = (d.criados || []).length;
+        const err = (d.erros   || []).length;
+        if (err === 0) showToast(`⚡ ${ok} índice(s) criado(s) com sucesso`, 'success');
+        else showToast(`${ok} criado(s), ${err} erro(s) — veja o console`, 'error');
+        console.table(d);
+    })
+    .catch(() => showToast('Erro na requisição', 'error'));
 }
 
 loadData();

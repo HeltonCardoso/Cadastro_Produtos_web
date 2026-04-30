@@ -6364,11 +6364,6 @@ def obter_dados_completos_perfil():
 # ──────────────────────────────────────────────────────────────
 @app.route('/mercadolivre/oauth/webhook', methods=['POST'])
 def webhook_mercadolivre():
-    """
-    Endpoint registrado no painel do seu aplicativo ML.
-    Salva cada evento no banco e responde 200 imediatamente,
-    evitando que o ML fique reenviando indefinidamente.
-    """
     from models import MLWebhookEvent
     import json as _json
 
@@ -6380,26 +6375,52 @@ def webhook_mercadolivre():
     attempts       = int(data.get('attempts', 1))
     application_id = str(data.get('application_id', ''))
 
+    # ── DEDUPLICAÇÃO: ignora eventos idênticos nos últimos 60s ──
+    JANELA = timedelta(seconds=60)
+    corte  = datetime.utcnow() - JANELA
+    ja_existe = MLWebhookEvent.query.filter(
+        MLWebhookEvent.topic    == topic,
+        MLWebhookEvent.resource == resource,
+        MLWebhookEvent.user_id  == user_id,
+        MLWebhookEvent.received_at >= corte
+    ).first()
+
+    if ja_existe:
+        app.logger.debug(f"[ML-Webhook] DUPLICADO ignorado: topic={topic} resource={resource}")
+        return "", 200  # responde 200 para o ML não reenviar
+
+    # ── FILTRO: descarta tópicos de baixo valor ──
+    TOPICOS_IGNORADOS = {'catalog_listing_enrollment', 'benchmark'}
+    if topic in TOPICOS_IGNORADOS:
+        return "", 200
+
     try:
         evento = MLWebhookEvent(
-            topic          = topic,
-            resource       = resource,
-            user_id        = user_id,
-            attempts       = attempts,
-            application_id = application_id,
-            payload        = _json.dumps(data),
-            processed      = False,
+            topic=topic, resource=resource, user_id=user_id,
+            attempts=attempts, application_id=application_id,
+            payload=_json.dumps(data), processed=False,
         )
         db.session.add(evento)
         db.session.commit()
-        app.logger.info(f"[ML-Webhook] topic={topic} resource={resource} id={evento.id}")
+        app.logger.info(f"[ML-Webhook] NOVO topic={topic} resource={resource} id={evento.id}")
     except Exception as e:
         db.session.rollback()
-        app.logger.error(f"[ML-Webhook] Erro ao salvar evento: {e}")
+        app.logger.error(f"[ML-Webhook] Erro: {e}")
 
-    # Sempre responde 200 — obrigatório para o ML parar de reenviar
     return "", 200
 
+@app.route('/api/ml/limpar-eventos-antigos', methods=['POST'])
+@login_required
+@master_required
+def limpar_eventos_antigos():
+    """Remove eventos com mais de 30 dias para não explodir o banco."""
+    from models import MLWebhookEvent
+    corte = datetime.utcnow() - timedelta(days=30)
+    deletados = MLWebhookEvent.query.filter(
+        MLWebhookEvent.received_at < corte
+    ).delete(synchronize_session=False)
+    db.session.commit()
+    return jsonify({'deletados': deletados, 'corte': corte.isoformat()})
 
 # ──────────────────────────────────────────────────────────────
 # API — dados para o dashboard de eventos
@@ -6454,6 +6475,7 @@ def dashboard_ml_eventos():
  
 @app.route('/api/ml/master/resumo')
 @login_required
+@cache.cached(timeout=120, key_prefix=lambda: f"sac_resumo_{current_user.id}")
 @master_required
 @cache.cached(timeout=60)
 def api_master_resumo():
@@ -6670,7 +6692,9 @@ def _extract_buyer_info(payload):
  
  
 @app.route('/api/ml/sac/resumo')
+@cache.cached(timeout=120, key_prefix=lambda: f"sac_resumo_{current_user.id}")
 @login_required
+@cache.cached(timeout=120, key_prefix=lambda: f"sac_resumo_{current_user.id}")
 @permissao_modulo('pedidos')
 @cache.cached(timeout=60)
 def api_sac_resumo():
